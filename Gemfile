@@ -20,7 +20,7 @@ group :assets do
   gem 'jquery-rails'
 end
 
-gem 'devise'
+#gem 'devise'
 
 gem 'whenever', :require => false
 
