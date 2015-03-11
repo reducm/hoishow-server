@@ -1,8 +1,8 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :user_follow_star do
-    user :user
-    star :star
+  factory :concert_city_relation do
+    concert :concert
+    city :city
   end
 end

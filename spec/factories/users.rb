@@ -2,15 +2,15 @@
 
 FactoryGirl.define do
   factory :user do
-    mobile "MyString"
-    email "MyString"
-    encrypted_password "MyString"
-    last_sign_in_at "2015-03-10 16:32:22"
+    mobile { "136322593" + "#{Random.rand(0..9)}" }
+    email {Faker::Internet.email}
+    #encrypted_password "MyString"
+    last_sign_in_at {Time.now - 1.weeks}
     avatar "MyString"
-    nickname "MyString"
+    nickname {Faker::Name.name}
     sex 1
-    birthday "2015-03-10 16:32:22"
+    birthday Time.now
     salt "MyString"
-    has_set_password false
+    #has_set_password false
   end
 end

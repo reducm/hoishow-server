@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :area do
-    name "MyString"
-    seats_count 1
-    stadium nil
+    sequence(:name) {|n| "Fuck#{n}"}
+    seats_count {Random.rand(10..100)}
+    stadium :stadium
   end
 end

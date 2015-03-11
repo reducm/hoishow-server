@@ -2,9 +2,9 @@
 
 FactoryGirl.define do
   factory :concert do
-    title "MyString"
-    description "MyText"
-    start_date ""
-    end_date ""
+    name {Faker::Name.name}
+    description {Faker::Name.name}
+    start_date {Time.now - 2.weeks}
+    end_date {Time.now - 1.weeks}
   end
 end

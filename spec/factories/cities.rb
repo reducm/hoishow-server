@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :city do
-    pinyin "MyString"
-    name "MyString"
-    code "MyString"
+    pinyin {Faker::Name.name}
+    name {Faker::Name.name}
+    sequence(:code){|n| n}
   end
 end

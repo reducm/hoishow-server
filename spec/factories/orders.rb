@@ -2,15 +2,15 @@
 
 FactoryGirl.define do
   factory :order do
-    amount "9.99"
-    concert_name "MyString"
-    stadium_name "MyString"
-    area_name "MyString"
-    valid_time "MyString"
-    out_id "MyString"
-    city_name "MyString"
-    star_name "MyString"
-    user nil
+    amount {Random.rand(1..10)}
+    concert_name {Faker::Namei.name}
+    stadium_name {Faker::Namei.name}
+    area_name {Faker::Namei.name}
+    valid_time {Faker::Namei.name}
+    out_id {Faker::Namei.name}
+    city_name {Faker::Namei.name}
+    star_name {Faker::Namei.name}
+    user :user
     concert_id 1
     city_id 1
     stadium_id 1

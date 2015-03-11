@@ -2,10 +2,12 @@
 
 FactoryGirl.define do
   factory :show do
-    min_pirce "9.99"
-    max_price "9.99"
+    name {Faker::Name.name}
+    min_pirce 1.0
+    max_price 10.0
     poster "MyString"
-    show_time ""
-    concert nil
+    show_time {Time.now + 1.weeks}
+    concert :concert
+    stadium :stadium
   end
 end

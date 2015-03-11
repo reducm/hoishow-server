@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :star do
-    name "MyString"
+    name {Faker::Name.name}
     avatar "MyString"
   end
 end

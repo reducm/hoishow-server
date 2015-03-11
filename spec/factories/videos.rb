@@ -3,6 +3,6 @@
 FactoryGirl.define do
   factory :video do
     address "MyString"
-    star nil
+    star :star
   end
 end

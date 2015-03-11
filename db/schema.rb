@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150310085930) do
+ActiveRecord::Schema.define(version: 20150311102232) do
 
   create_table "areas", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -42,8 +42,18 @@ ActiveRecord::Schema.define(version: 20150310085930) do
 
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
+  create_table "concert_city_relations", force: :cascade do |t|
+    t.integer  "concert_id", limit: 4
+    t.integer  "city_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "concert_city_relations", ["city_id"], name: "index_concert_city_relations_on_city_id", using: :btree
+  add_index "concert_city_relations", ["concert_id"], name: "index_concert_city_relations_on_concert_id", using: :btree
+
   create_table "concerts", force: :cascade do |t|
-    t.string   "title",       limit: 255
+    t.string   "name",        limit: 255
     t.text     "description", limit: 65535
     t.datetime "start_date"
     t.datetime "end_date"
@@ -55,7 +65,6 @@ ActiveRecord::Schema.define(version: 20150310085930) do
     t.decimal  "amount",                   precision: 10
     t.string   "concert_name", limit: 255
     t.string   "stadium_name", limit: 255
-    t.string   "area_name",    limit: 255
     t.string   "show_name",    limit: 255
     t.string   "valid_time",   limit: 255
     t.string   "out_id",       limit: 255
@@ -66,11 +75,11 @@ ActiveRecord::Schema.define(version: 20150310085930) do
     t.integer  "city_id",      limit: 4
     t.integer  "stadium_id",   limit: 4
     t.integer  "star_id",      limit: 4
-    t.integer  "area_id",      limit: 4
     t.integer  "show_id",      limit: 4
     t.integer  "status",       limit: 4
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
+    t.string   "seats_info",   limit: 255
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -93,6 +102,17 @@ ActiveRecord::Schema.define(version: 20150310085930) do
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
+
+  create_table "show_area_relations", force: :cascade do |t|
+    t.integer  "show_id",    limit: 4
+    t.integer  "area_id",    limit: 4
+    t.decimal  "price",                precision: 10
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+  end
+
+  add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree
+  add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
     t.decimal  "min_pirce",              precision: 10
@@ -130,6 +150,16 @@ ActiveRecord::Schema.define(version: 20150310085930) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "user_follow_concerts", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "concert_id", limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "user_follow_concerts", ["concert_id"], name: "index_user_follow_concerts_on_concert_id", using: :btree
+  add_index "user_follow_concerts", ["user_id"], name: "index_user_follow_concerts_on_user_id", using: :btree
+
   create_table "user_follow_stars", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "star_id",    limit: 4
@@ -166,5 +196,4 @@ ActiveRecord::Schema.define(version: 20150310085930) do
   add_index "videos", ["concert_id"], name: "index_videos_on_concert_id", using: :btree
   add_index "videos", ["star_id"], name: "index_videos_on_star_id", using: :btree
 
-  add_foreign_key "payments", "orders"
 end
