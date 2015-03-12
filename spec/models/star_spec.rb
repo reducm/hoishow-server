@@ -1,5 +1,11 @@
 require 'spec_helper'
 
 describe Star do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "validation" do
+    it "star name should be presences" do
+      star = Star.new
+      expect(star.valid?).to be_false
+      expect(star).to have(1).error_on(:name)
+    end
+  end
 end

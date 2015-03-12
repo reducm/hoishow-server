@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150312070856) do
+ActiveRecord::Schema.define(version: 20150312081658) do
 
   create_table "areas", force: :cascade do |t|
     t.string   "name",        limit: 255
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 20150312070856) do
     t.string   "concert_name", limit: 255
     t.string   "stadium_name", limit: 255
     t.string   "show_name",    limit: 255
-    t.string   "valid_time",   limit: 255
+    t.datetime "valid_time"
     t.string   "out_id",       limit: 255
     t.string   "city_name",    limit: 255
     t.string   "star_name",    limit: 255
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 20150312070856) do
   add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
-    t.decimal  "min_pirce",              precision: 10
+    t.decimal  "min_price",              precision: 10
     t.decimal  "max_price",              precision: 10
     t.string   "poster",     limit: 255
     t.string   "name",       limit: 255

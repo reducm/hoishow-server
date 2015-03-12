@@ -3,11 +3,11 @@
 FactoryGirl.define do
   factory :show do
     name {Faker::Name.name}
-    min_pirce 1.0
+    min_price 1.0
     max_price 10.0
     poster "MyString"
     show_time {Time.now + 1.weeks}
-    concert :concert
-    stadium :stadium
+    association :concert
+    association :stadium
   end
 end

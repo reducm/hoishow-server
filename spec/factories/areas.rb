@@ -4,6 +4,6 @@ FactoryGirl.define do
   factory :area do
     sequence(:name) {|n| "Fuck#{n}"}
     seats_count {Random.rand(10..100)}
-    stadium :stadium
+    association :stadium
   end
 end

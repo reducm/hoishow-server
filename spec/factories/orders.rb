@@ -10,7 +10,7 @@ FactoryGirl.define do
     out_id {Faker::Namei.name}
     city_name {Faker::Namei.name}
     star_name {Faker::Namei.name}
-    user :user
+    association :user
     concert_id 1
     city_id 1
     stadium_id 1
