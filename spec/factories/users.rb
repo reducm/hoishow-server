@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :user do
-    mobile { "1363225934" + "#{Random.rand(0..9)}" }
+    sequence(:mobile) {|n| "1363225934" + n.to_s }
     email {Faker::Internet.email}
     #encrypted_password "MyString"
     last_sign_in_at {Time.now - 1.weeks}

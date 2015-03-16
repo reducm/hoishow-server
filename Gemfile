@@ -44,6 +44,10 @@ gem 'awesome_print'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+#
+gem 'redis-objects'
+gem 'dalli'
+gem "second_level_cache"
 
 group :test do
   gem 'faker', "~> 1.1.2"
