@@ -2,6 +2,9 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'shoulda/matchers'
+require 'rspec/collection_matchers'
+require 'rails_helper'
 #require 'rspec/autorun'
 require 'pry'
 
@@ -23,7 +26,10 @@ RSpec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
   config.include FactoryGirl::Syntax::Methods
-  config.color_enabled = true
+  config.include ApiAuthHelper
+  config.color = true
+  config.tty = true
+  config.order = "random"
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation

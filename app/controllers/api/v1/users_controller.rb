@@ -2,18 +2,16 @@
 class Api::V1::UsersController < Api::V1::ApplicationController
   before_filter :check_login!, only: [:update_user, :get_user]
   def sign_in
-    if params[:mobile] && params[:verification]
+    if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
         code = Rails.cache.read(cache_key(params[:mobile]))
         if code.blank?
           return error_json "验证码已过期"
-        elsif code == params[:verification]
+        elsif code == params[:code]
           #TODO method and view jbuild
-          user = User.find_mobile(params[:mobile])
-          user.sign_in_api
-          Rails.cache.delete(cache_key(params[:mobile])) if user.mobile != "13435858622"
-          result = { api_token: user.api_token, expires_in: user.api_expires_in.to_ms, mobile: user.mobile, avatar: user.avatar.url || "", email: user.email, username: user.username || "" }
-          render json: result.to_json
+          @user = User.find_mobile(params[:mobile])
+          @user.sign_in_api
+          Rails.cache.delete(cache_key(params[:mobile])) if @user.mobile != "13435858622"
         else
           return error_json "验证码错误"
         end
@@ -31,7 +29,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       return error_json "手机号码格式不对!" 
     end
 
-    if Redis::Objects.redis.get("user_#{mobile}").present?
+    if Rails.cache.read(cache_key(mobile)).present?
       return error_json "您操作太过于频繁了!" 
     end
 
@@ -54,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
 
-  def update_user
+  def update_cuser
     #params need type mobile api_token, and avatar, email, username, ( password, verification)
     case params[:type]
     when "avatar"

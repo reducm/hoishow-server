@@ -19,23 +19,23 @@ describe Order do
   context "create order" do
     it ":city, :concert, :stadium, :star, :show should be presence" do
       order = Order.new 
-      expect(order.valid?).to be_false
+      expect(order.valid?).to be_falsey
       Order::ASSOCIATION_ATTRS.each do|sym|
         expect(order).to have(1).error_on(sym.to_s + "_name")
       end
     end
 
      it "order should have out_id" do
-       expect(@order.out_id.present?).to be_true
+       expect(@order.out_id.present?).to be_truthy
      end
 
      it "order should have valid_time" do
-       expect(@order.valid_time.present?).to be_true
+       expect(@order.valid_time.present?).to be_truthy
      end
 
 
     it "order should create success" do
-      expect(@order.valid?).to be_true 
+      expect(@order.valid?).to be_truthy 
     end
 
     it "order amount" do

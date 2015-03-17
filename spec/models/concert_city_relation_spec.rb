@@ -15,10 +15,10 @@ describe ConcertCityRelation do
       @concert.concert_city_relations.create(city: @city2)
       @concert2.concert_city_relations.create(city: @city2)
 
-      expect(@city.in? @concert.cities).to be_true
-      expect(@city.in? @concert2.cities).to be_true
-      expect(@city2.in? @concert.cities).to be_true
-      expect(@city2.in? @concert2.cities).to be_true
+      expect(@city.in? @concert.cities).to be_truthy
+      expect(@city.in? @concert2.cities).to be_truthy
+      expect(@city2.in? @concert.cities).to be_truthy
+      expect(@city2.in? @concert2.cities).to be_truthy
     end
   end
 end

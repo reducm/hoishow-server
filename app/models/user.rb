@@ -10,4 +10,17 @@ class User < ActiveRecord::Base
 
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true 
 
+  def sign_in_api
+    return if self.api_token.present? && self.api_expires_in.present?
+    
+    self.api_token = SecureRandom.hex(16)
+    self.api_expires_in = 1.years
+    save!
+  end
+
+  class << self
+    def find_mobile(mobile="")
+      where(mobile: mobile).first_or_create!
+    end
+  end
 end
