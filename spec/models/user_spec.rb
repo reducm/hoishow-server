@@ -5,6 +5,15 @@ describe User do
     @user = create(:user) 
   end
 
+  context "test sex enum" do
+    it "test save" do
+      @user.male!
+      expect(@user.sex).to eq "male"
+      expect(@user.male?).to be true
+      expect(User.male.size).to eq 1
+    end
+  end
+
   context "#find_mobile" do
     it "should create user when a new mobile comin" do
       user = User.find_mobile("13632269944")
@@ -43,6 +52,15 @@ describe User do
       expect(user.valid?).to be_falsey
       expect(user).to have(1).error_on(:mobile)
     end
+  end
 
+  context "avatar" do
+    it "user's avatar should save ok!" do
+      file = fixture_file_upload("/about.png", "image/png")
+      @user.avatar = file     
+      @user.save!
+      expect(@user.valid?).to be true
+      expect(@user.avatar.url.present?).to be true
+    end
   end
 end

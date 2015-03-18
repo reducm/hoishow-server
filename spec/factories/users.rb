@@ -14,6 +14,11 @@ FactoryGirl.define do
     sex 1
     birthday Time.now
     salt "MyString"
+    api_token "123"
+    api_expires_in 7.days
     #has_set_password false
+    factory :user_with_avatr do 
+      avatar { fixture_file_upload("/about.png", "image/png") }
+    end
   end
 end

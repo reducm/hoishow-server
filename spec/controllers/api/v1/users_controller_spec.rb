@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe Api::V1::UsersController do
   render_views
+  before('each') do
+    @user = create :user
+  end
   context "#verification" do
      it "users sholud has code" do
        mobile = "13632269944"
@@ -66,18 +69,32 @@ describe Api::V1::UsersController do
     end
 
     it "wrong argument should be forbit" do
-      post :sign_in, with_key(mobile: "jhjgeygasdfg")
+      post :sign_in, with_key()
       expect(response.status).to eq 403
       expect(response.body).to include("传递参数出现不匹配")
-
-      post :sign_in, with_key(code: "888")
-      expect(response.status).to eq 403
-      expect(response.body).to include("传递参数出现不匹配")
-
-
     end
   end
 
   context "#update_user" do
+    it "type avatar" do
+      post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "avatar", avatar: fixture_file_upload("/about.png", "image/png"), format: :json )
+      expect(response.status).to eq 200
+      expect( (JSON.parse response.body)["avatar"].is_a?(String) ).to be true
+    end
+
+     it "type avatar error" do
+      post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "avatar" )
+      expect(response.status).to eq 403
+      expect(response.body).to include "avatar"
+    end
+  end
+
+  context "#get_user" do
+    it "get_user should success" do
+      post :get_user, with_key( api_token: @user.api_token, mobile: @user.mobile, format: :json )
+      expect(response.status).to eq 200
+      expect(response.body).to include "nickname"
+      expect(response.body).to include "mobile"
+    end
   end
 end

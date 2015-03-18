@@ -9,6 +9,8 @@ Rails.application.routes.draw do
           post "update_user" => "users#update_user"
         end
       end
+
+      resources :stars, only: [:index, :show]
     end
   end
 end

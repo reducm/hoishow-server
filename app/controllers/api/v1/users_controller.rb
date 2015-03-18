@@ -52,50 +52,29 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
 
-  def update_cuser
+  def update_user
     #params need type mobile api_token, and avatar, email, username, ( password, verification)
     case params[:type]
     when "avatar"
       if params[:avatar].blank? || !params[:avatar].try(:content_type) =~ "image"
-        error_json "params[:avatar] error"
-        return false
+        return error_json "params[:avatar] error"
       end
       @user.avatar = params[:avatar]
-      user_json(@user) 
       return false
-    when "username"
-      @user.username = params[:username]
-      user_json(@user) 
+    when "nickname"
+      @user.nickname = params[:username]
       return false
-    when "email"
-      @user.email = params[:email]
-      user_json(@user) 
-      return false
-    when "password"
-      code = Redis::Objects.redis.get(params[:mobile])
-      if code.blank?
-        error_json( "验证码已过期" ) 
-        return false
-      elsif code == params[:verification]
-        Redis::Objects.redis.del(params[:mobile])
-        @user.password = params[:password]
-        @user.password_confirmation = params[:password_confirmation]
-        user_json(@user) 
-        return false
-      else
-        error_json "验证码错误"
-      end
     else
-      error_json "type error"
+      return error_json "type error"
     end
   end
 
 
   def get_user
     #params need mobile api_token
-    user_json User.find_mobile(params[:mobile])
-    
+    @user =  User.find_mobile(params[:mobile])
   end
+
   protected
   def find_or_create_code(mobile)
     code = Rails.cache.read(cache_key(mobile))

@@ -30,6 +30,13 @@ RSpec.configure do |config|
   config.color = true
   config.tty = true
   config.order = "random"
+  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+
+  config.include ActionDispatch::TestProcess
+
+  FactoryGirl::SyntaxRunner.class_eval do
+      include ActionDispatch::TestProcess
+  end
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
