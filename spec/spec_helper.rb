@@ -30,13 +30,13 @@ RSpec.configure do |config|
   config.color = true
   config.tty = true
   config.order = "random"
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include ActionDispatch::TestProcess
 
   FactoryGirl::SyntaxRunner.class_eval do
-      include ActionDispatch::TestProcess
+    include ActionDispatch::TestProcess
   end
+  config.fixture_path = "#{Rails.root}/spec/fixtures"
 
   config.before(:suite) do
     DatabaseCleaner.strategy = :truncation
@@ -60,7 +60,6 @@ RSpec.configure do |config|
   end
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

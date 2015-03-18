@@ -18,7 +18,7 @@ FactoryGirl.define do
     api_expires_in 7.days
     #has_set_password false
     factory :user_with_avatr do 
-      avatar { fixture_file_upload("/about.png", "image/png") }
+      avatar { fixture_file_upload(File.join Rails.root, %w(spec fixtures about.png)) }
     end
   end
 end

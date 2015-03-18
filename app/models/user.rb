@@ -26,6 +26,10 @@ class User < ActiveRecord::Base
     save!
   end
 
+  def follow_star(star)
+    user_follow_stars.where(star_id: star.id).first_or_create
+  end
+
   class << self
     def find_mobile(mobile="")
       where(mobile: mobile).first_or_create!
