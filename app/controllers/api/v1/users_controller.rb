@@ -62,7 +62,23 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       @user.avatar = params[:avatar]
       return false
     when "nickname"
-      @user.nickname = params[:username]
+      if params[:nickname].blank?
+        return error_json "params[:nickname] error"
+      end
+      @user.nickname = params[:nickname]
+      return false
+    when "sex"
+      if params[:sex].blank? || !params[:sex].in?(0..2)
+        return error_json "params[:sex] error"
+      end
+      @user.sex = params[:sex]
+      return false
+    when "birthday"
+      #只检测为非空够不够？
+      if params[:birthday].blank?
+        return error_json "params[:birthday] error"
+      end
+      @user.birthday = params[:birthday]
       return false
     else
       return error_json "type error"

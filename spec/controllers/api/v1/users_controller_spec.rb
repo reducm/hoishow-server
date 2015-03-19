@@ -87,6 +87,52 @@ describe Api::V1::UsersController do
       expect(response.status).to eq 403
       expect(response.body).to include "avatar"
     end
+
+     it "type nickname" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "nickname", nickname: "tom", format: :json )
+       expect(response.status).to eq 200
+       expect( (JSON.parse response.body)["nickname"].blank?).to be false
+     end
+
+     it "type nickname is blank" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "nickname" )
+       expect(response.status).to eq 403
+       expect( (JSON.parse response.body)["nickname"].blank?).to be true
+     end
+
+     it "type sex" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "sex", sex: 0, format: :json )
+       expect(response.status).to eq 200
+       expect( (JSON.parse response.body)["sex"] ).to eq "male"
+     end
+
+     it "type sex is blank" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "sex",  format: :json )
+       expect(response.status).to eq 403
+       expect( (JSON.parse response.body)["sex"].blank? ).to be true
+     end
+
+     it "type sex is error" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "sex", sex: "2a", format: :json )
+       expect(response.status).to eq 403
+       expect(response.body).to include "sex"
+     end
+
+     it "type birthday" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "birthday", birthday: Time.now, format: :json )
+       expect(response.status).to eq 200
+       expect((JSON.parse response.body)["birthday"].blank?).to be false  
+     end
+
+
+     it "type birthday is blank" do
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "birthday",  format: :json )
+       expect(response.status).to eq 403
+       expect( (JSON.parse response.body)["birthday"].blank? ).to be true
+     end
+
+
+
   end
 
   context "#get_user" do
