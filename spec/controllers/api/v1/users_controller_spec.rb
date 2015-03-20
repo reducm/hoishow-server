@@ -91,6 +91,8 @@ describe Api::V1::UsersController do
      it "type nickname" do
        post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "nickname", nickname: "tom", format: :json )
        expect(response.status).to eq 200
+       @user.reload
+       expect(@user.nickname).to eq "tom"
        expect( (JSON.parse response.body)["nickname"].blank?).to be false
      end
 
@@ -101,7 +103,7 @@ describe Api::V1::UsersController do
      end
 
      it "type sex" do
-       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "sex", sex: 0, format: :json )
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "sex", sex: "male", format: :json )
        expect(response.status).to eq 200
        expect( (JSON.parse response.body)["sex"] ).to eq "male"
      end
@@ -119,9 +121,12 @@ describe Api::V1::UsersController do
      end
 
      it "type birthday" do
-       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "birthday", birthday: Time.now, format: :json )
+       time = "1426844347962"
+       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "birthday", birthday: time, format: :json )
        expect(response.status).to eq 200
        expect((JSON.parse response.body)["birthday"].blank?).to be false  
+       @user.reload
+       expect(@user.birthday.strftime("%Y-%m-%d")).to eq Time.from_ms(time).strftime("%Y-%m-%d")
      end
 
 
@@ -141,6 +146,10 @@ describe Api::V1::UsersController do
       expect(response.status).to eq 200
       expect(response.body).to include "nickname"
       expect(response.body).to include "mobile"
+      expect(response.body).to include "api_token"
+      expect(response.body).to include "api_expires_in"
+      expect(response.body).to include "sex"
+      expect(response.body).to include "birthday"
     end
   end
 end

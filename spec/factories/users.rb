@@ -11,7 +11,7 @@ FactoryGirl.define do
     last_sign_in_at {Time.now - 1.weeks}
     avatar "MyString"
     nickname {Faker::Name.name}
-    sex 1
+    sex 0 
     birthday Time.now
     salt "MyString"
     api_token "123"
@@ -20,5 +20,6 @@ FactoryGirl.define do
     factory :user_with_avatr do 
       avatar { fixture_file_upload(File.join Rails.root, %w(spec fixtures about.png)) }
     end
+    
   end
 end
