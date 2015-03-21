@@ -2,9 +2,9 @@
 
 FactoryGirl.define do
   factory :comment do
-    type_mode "MyString"
-    type_mode_id 1
-    content "MyString"
-    useer ""
+    subject_type "Star"
+    subject_id "1"
+    content "fuck you"
+    association :user
   end
 end

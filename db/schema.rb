@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150317081756) do
+ActiveRecord::Schema.define(version: 20150321074325) do
 
   create_table "api_auths", force: :cascade do |t|
     t.string   "key",        limit: 255
@@ -39,12 +39,12 @@ ActiveRecord::Schema.define(version: 20150317081756) do
   end
 
   create_table "comments", force: :cascade do |t|
-    t.string   "subject",    limit: 255
-    t.integer  "subject_id", limit: 4
-    t.text     "content",    limit: 65535
-    t.integer  "user_id",    limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.text     "content",      limit: 65535
+    t.integer  "user_id",      limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
@@ -150,6 +150,16 @@ ActiveRecord::Schema.define(version: 20150317081756) do
   end
 
   add_index "stadiums", ["city_id"], name: "index_stadiums_on_city_id", using: :btree
+
+  create_table "star_concert_relations", force: :cascade do |t|
+    t.integer  "star_id",    limit: 4
+    t.integer  "concert_id", limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "star_concert_relations", ["concert_id"], name: "index_star_concert_relations_on_concert_id", using: :btree
+  add_index "star_concert_relations", ["star_id"], name: "index_star_concert_relations_on_star_id", using: :btree
 
   create_table "stars", force: :cascade do |t|
     t.string   "name",       limit: 255
