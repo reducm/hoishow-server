@@ -2,6 +2,7 @@
 class User < ActiveRecord::Base
   has_many :orders
   has_many :comments
+
   has_many :user_follow_stars
   has_many :stars, through: :user_follow_stars  
 
@@ -28,6 +29,10 @@ class User < ActiveRecord::Base
 
   def follow_star(star)
     user_follow_stars.where(star_id: star.id).first_or_create!
+  end
+
+  def follow_concert(concert)
+    user_follow_concerts.where(concert_id: concert.id).first_or_create!
   end
 
   class << self

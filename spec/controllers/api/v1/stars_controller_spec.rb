@@ -91,4 +91,22 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       ap JSON.parse( response.body )
     end
   end
+
+  context "#show with user" do
+    before('each') do
+      3.times {create :star}     
+      @user = create :user
+      Star.limit(3).each do |star|
+        @user.follow_star(star)
+      end
+    end
+
+    it "3 stars is_followed should be true " do
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("is_followed")
+      expect(JSON.parse(response.body)["is_followed"]).to be true
+    end
+
+  end
+
 end

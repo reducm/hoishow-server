@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -86,6 +86,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   def get_user
     #params need mobile api_token
     @user =  User.find_mobile(params[:mobile])
+  end
+
+  def follow_subject
+    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
+    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first 
+    return error_json("could not find subject") if subject.blank?
+    begin
+      @user.send("follow_#{params[:subject_type].downcase}", subject)
+      render json: {msg: "ok"}, status: 200
+    rescue
+      return error_json("follow fail, #{$@}")
+    end
   end
 
   protected

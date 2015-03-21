@@ -152,4 +152,32 @@ describe Api::V1::UsersController do
       expect(response.body).to include "birthday"
     end
   end
+
+  context "#follow_subject" do
+    it "should follow star success" do 
+      @star = create(:star)
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: @star.id, format: :json )
+      @user.reload
+      expect(@user.stars.size > 0).to be true
+    end
+
+    it "should follow concert success" do 
+      @concert = create(:concert)
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, format: :json )
+      @user.reload
+      expect(@user.concerts.size > 0).to be true
+    end
+
+    it "wrong subject_type should return 403" do 
+      @star = create :star
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "star", subject_id: @star.id, format: :json )
+      expect(response.status).to eq 403 
+    end
+
+    it "wrong subject_id should return 403" do 
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
+      expect(response.status).to eq 403 
+    end
+
+  end
 end
