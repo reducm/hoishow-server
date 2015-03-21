@@ -9,5 +9,6 @@ FactoryGirl.define do
     show_time {Time.now + 1.weeks}
     association :concert
     association :stadium
+    association :city
   end
 end

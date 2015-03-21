@@ -15,4 +15,9 @@ class Star < ActiveRecord::Base
   def hoi_concert(concert)
     star_concert_relations.where(concert: concert).first_or_create!
   end
+
+  def shows
+    concert_ids = concerts.pluck(:id)    
+    Show.where(concert_id: concert_ids)
+  end
 end

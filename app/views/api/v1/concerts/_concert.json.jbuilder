@@ -8,9 +8,9 @@ json.end_date concert.end_date.to_ms
 json.poster concert.poster.url rescue nil
 
 if need_stars
-  json.array! concert.stars, "api/v1/stars/star", as: star
+  json.array! concert.stars, "api/v1/stars/star", as: :star
 end
 
 if need_comments
-  json.array! concert.comments, "api/v1/comments/comment", as: comment
+  json.array! concert.comments, "api/v1/comments/comment", as: :comment
 end

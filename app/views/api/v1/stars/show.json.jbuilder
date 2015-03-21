@@ -9,5 +9,7 @@ json.comments do
 end
 
 
-json.shows []
+json.shows do
+  json.array! @star.shows, partial: 'api/v1/shows/show', as: :show
+end
 json.videos []

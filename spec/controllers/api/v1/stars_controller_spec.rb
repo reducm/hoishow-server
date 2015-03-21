@@ -79,6 +79,16 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       get :show, with_key(id: @star.id, format: :json)
       expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
     end
- 
+
+    it "concerts sholud has something real" do
+      3.times do
+        concert = create(:concert)
+        @star.hoi_concert(concert)
+        3.times{|n| create(:show, concert: concert)}
+      end
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["shows"].size > 0 ).to be true
+      ap JSON.parse( response.body )
+    end
   end
 end
