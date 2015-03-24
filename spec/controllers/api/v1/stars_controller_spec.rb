@@ -68,7 +68,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       end
       get :show, with_key(id: @star.id, format: :json)
       expect(JSON.parse( response.body )["concerts"].size > 0 ).to be true
-      ap JSON.parse( response.body )
     end
 
     it "comments sholud has something real" do

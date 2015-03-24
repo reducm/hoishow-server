@@ -6,5 +6,7 @@ FactoryGirl.define do
     description {Faker::Name.name}
     start_date {Time.now - 2.weeks}
     end_date {Time.now - 1.weeks}
+    status 1
+    poster "aslkdfalksdlkj"
   end
 end

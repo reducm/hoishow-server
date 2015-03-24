@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       end
 
       resources :stars
+      resources :concerts
     end
   end
 end
