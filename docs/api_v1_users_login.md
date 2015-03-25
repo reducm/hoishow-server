@@ -110,6 +110,15 @@ type: `POST`
 
 成功时返回{msg: "ok"}, 状态200
 
+--------
+## 对演唱会投票
+[/api/v1/users/vote_a_concert]()
+
+必需参数 `{api_token: "users_token", mobile: "users mobile", concert: "Concert对象"}` 
+
+成功时返回{msg: "ok"}, 状态200
+
+
 -------
 
 # 用户对象
