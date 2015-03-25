@@ -1,6 +1,6 @@
 API V1 不需登录
 
-#基础参数，错误返回码
+# 基础参数，错误返回码
 1. 所有api请求时，url后需要带`.json`
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
@@ -29,7 +29,7 @@ type: `GET`
 ```
 
 ----
-##明星详情
+## 明星详情
 [/api/v1/stars/:id]()
 
 type: `GET`
@@ -58,7 +58,7 @@ type: `GET`
 
 -------------
 
-##演唱会列表
+## 演唱会列表
 [/api/v1/concerts]()
 
 type: `GET`
@@ -86,11 +86,11 @@ type: `GET`
 ```
 
 ----
-#对象查询
+# 对象查询
 
-##Star对象
+## Star对象
 
-##Concert对象
+## Concert对象
 ```javascript
 {
   id: concert_id,
@@ -105,7 +105,7 @@ type: `GET`
 }
 ```
 
-##Show对象
+## Show对象
 ```javascript
 {
   id: show_id,
@@ -118,7 +118,7 @@ type: `GET`
 }
 ```
 
-##Comment对象
+## Comment对象
 ```javascript
 {
   id: coment_id,
