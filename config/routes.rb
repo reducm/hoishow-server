@@ -8,6 +8,7 @@ Rails.application.routes.draw do
           post "get_user" => "users#get_user"
           post "update_user" => "users#update_user"
           post "follow_subject" => "users#follow_subject"
+          post "vote_a_concert" => "users#vote_a_concert"
         end
       end
 

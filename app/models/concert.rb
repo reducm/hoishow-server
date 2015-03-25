@@ -5,6 +5,9 @@ class Concert < ActiveRecord::Base
   has_many :user_follow_concerts
   has_many :followers, through: :user_follow_concerts, source: :user
 
+  has_many :user_vote_concerts
+  has_many :voters, through: :user_vote_concerts, source: :user
+
   has_many :concert_city_relations
   has_many :cities, through: :concert_city_relations
 
@@ -26,4 +29,9 @@ class Concert < ActiveRecord::Base
   def shows_count
     shows.count
   end
+
+  def voters_count
+    voters.count
+  end
+
 end

@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_a_concert]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -97,6 +97,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       render json: {msg: "ok"}, status: 200
     rescue
       return error_json("follow fail, #{$@}")
+    end
+  end
+
+  def vote_a_concert
+    begin
+      @user.vote_concert(params[:concert])
+      render json: {msg: "ok"}, status: 200
+    rescue
+      return error_json("vote fail, #{$@}")
     end
   end
 
