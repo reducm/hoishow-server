@@ -47,6 +47,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
   context "#show without user" do
     before('each') do
      @star = create :star     
+      @user = create :user
     end
 
     it "should has attributes" do
@@ -71,7 +72,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     end
 
     it "comments sholud has something real" do
-      @user = create :user
       3.times do|n|
         @user.comments.create_comment(@star, "fuck you#{n}")
       end
@@ -79,7 +79,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
     end
 
-    it "concerts sholud has something real" do
+    it "shows sholud has something real" do
       3.times do
         concert = create(:concert)
         @star.hoi_concert(concert)

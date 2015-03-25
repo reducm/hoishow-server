@@ -1,6 +1,8 @@
 need_stars ||= false
 need_comments ||= false
+need_shows ||= false
 
+user = @user
 @followed_concerts = user.present? ? user.concerts.pluck(:id) : []
 
 json.(concert, :id, :name, :description, :status, :followers_count, :comments_count, :shows_count)
@@ -17,3 +19,9 @@ end
 if need_comments
   json.array! concert.comments, "api/v1/comments/comment", as: :comment
 end
+
+if need_shows
+  json.array! concert.shows, "api/v1/shows/show", as: :show
+end
+
+
