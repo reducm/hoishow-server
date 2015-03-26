@@ -86,6 +86,33 @@ type: `GET`
 ```
 
 ----
+## 演唱会详情
+[/api/v1/concerts/:id]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    mobile: "13512310293",
+    code: "123456" //短信验证码
+  }
+```
+
+成功时返回：
+```javascript
+  {
+    id: "123",
+    name: "汪峰",
+    is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
+    cities: [{参照city对象}],
+    stars: [{参照star对象}],
+    shows: [{参照show对象},...],
+    comments: [{参照comment对象},...],
+  }
+```
+
+----
 # 对象查询
 
 ## Star对象
