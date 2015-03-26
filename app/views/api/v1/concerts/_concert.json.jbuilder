@@ -1,7 +1,7 @@
 need_stars ||= false
 need_comments ||= false
 need_shows ||= false
-
+#TODO is_voted
 user = @user
 @followed_concerts = user.present? ? user.concertsOfUser.pluck(:id) : []
 
