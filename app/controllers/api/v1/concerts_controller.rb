@@ -21,4 +21,7 @@ class Api::V1::ConcertsController < Api::V1::ApplicationController
     end
   end
 
+  def show
+    @concert = Concert.find(params[:id])
+  end
 end
