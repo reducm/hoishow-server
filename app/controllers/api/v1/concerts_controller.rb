@@ -5,5 +5,7 @@ class Api::V1::ConcertsController < Api::V1::ApplicationController
     @concerts = Concert.limit(20)
   end
 
-
+  def show
+    @concert = Concert.find(params[:id])
+  end
 end
