@@ -58,10 +58,12 @@ type: `GET`
 
 -------------
 
-## 演唱会列表
-[/api/v1/concerts]()
+## 演唱会和演出列表
+[/api/v1/concerts/get_all_object]()
 
 type: `GET`
+
+必须参数`{object_type: "concert或者show"}`
 
 可选参数
 ```javascript
@@ -79,12 +81,24 @@ type: `GET`
     concerts: [
       {
         is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
+        is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
         参照concert对象参数
       }
     ]
   }
 ```
-
+或者
+```javascript
+  {
+    page: 1,
+    per: 20,
+    concerts: [
+      {
+        参照show对象参数
+      }
+    ]
+  }
+```
 ----
 ## 演唱会详情
 [/api/v1/concerts/:id]()

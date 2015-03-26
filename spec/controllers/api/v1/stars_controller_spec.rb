@@ -87,7 +87,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       end
       get :show, with_key(id: @star.id, format: :json)
       expect(JSON.parse( response.body )["shows"].size > 0 ).to be true
-      ap JSON.parse( response.body )
     end
   end
 

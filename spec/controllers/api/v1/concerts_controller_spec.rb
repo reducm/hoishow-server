@@ -25,8 +25,10 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("end_date")
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
+      expect(response.body).to include("is_voted")
       JSON.parse(response.body).each do|object| 
         expect(object["is_followed"]).to be false
+        expect(object["is_voted"]).to be false
       end
     end
 
@@ -37,6 +39,9 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         Concert.limit(5).each do |concert|
           @user.follow_concert(concert) 
         end
+        Concert.limit(3).each do |concert|
+          @user.vote_concert(concert)
+        end
       end
 
       it "5 concerts is_followed should be true " do
@@ -45,6 +50,10 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         expect(response.body).to include("is_followed")
         followed_concerts = JSON.parse(response.body).select{|concert| concert["is_followed"] == true}
         expect(followed_concerts.size).to eq 5
+
+        expect(response.body).to include("is_voted")
+        voted_concerts = JSON.parse(response.body).select{|concert| concert["is_voted"] == true}
+        expect(voted_concerts.size).to eq 3
       end
 
     end

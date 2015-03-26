@@ -8,6 +8,8 @@ class Api::V1::ConcertsController < Api::V1::ApplicationController
 
   
     #TODO kaminari
+  #page:1
+  #per:20
   def get_all_object
     case params[:object_type]
     when "concert"
