@@ -28,7 +28,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#index with user" do
     before('each') do
-      9.times {create :star}     
+      5.times {create :star}
       @user = create :user
       Star.limit(3).each do |star|
         @user.follow_star(star)
@@ -47,7 +47,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
   context "#show without user" do
     before('each') do
      @star = create :star     
-      @user = create :user
     end
 
     it "should has attributes" do
@@ -72,6 +71,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     end
 
     it "comments sholud has something real" do
+      @user = create :user
       3.times do|n|
         @user.comments.create_comment(@star, "fuck you#{n}")
       end

@@ -30,7 +30,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
     context "#index with user" do
       before('each') do
-        9.times {create :concert}     
+        9.times {create :concert}
         @user = create :user
         Concert.limit(5).each do |concert|
          @user.follow_concert(concert) 

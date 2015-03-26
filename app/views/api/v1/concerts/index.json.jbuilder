@@ -1,4 +1,4 @@
 json.array! @concerts do |concert|
-  json.partial! "concert", locals: {concert: concert, user: @user}
+  json.partial! "api/v1/concerts/concert", locals: {concert: concert, user: @user}
 end
 

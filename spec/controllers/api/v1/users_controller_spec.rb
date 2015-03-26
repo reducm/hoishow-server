@@ -165,7 +165,7 @@ describe Api::V1::UsersController do
       @concert = create(:concert)
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, format: :json )
       @user.reload
-      expect(@user.concerts.size > 0).to be true
+      expect(@user.concertsOfUser.size > 0).to be true
     end
 
     it "wrong subject_type should return 403" do 

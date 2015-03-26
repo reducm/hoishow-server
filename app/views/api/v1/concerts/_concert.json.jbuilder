@@ -3,7 +3,7 @@ need_comments ||= false
 need_shows ||= false
 
 user = @user
-@followed_concerts = user.present? ? user.concerts.pluck(:id) : []
+@followed_concerts = user.present? ? user.concertsOfUser.pluck(:id) : []
 
 json.(concert, :id, :name, :description, :status, :followers_count, :comments_count, :shows_count)
 

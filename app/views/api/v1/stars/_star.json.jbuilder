@@ -1,4 +1,4 @@
-user = @user
+#user = @user
 @followed_stars = user.present? ? user.stars.pluck(:id) : []
 
 json.(star, :id, :name)
