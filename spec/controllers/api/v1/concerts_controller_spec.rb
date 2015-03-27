@@ -82,13 +82,8 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         expect(response.body).to include("city")
       end
 
-
     end
 
-
-
-
-    #==================test for chenzhe
 
     context "#show without user" do
       before('each') do
@@ -100,55 +95,53 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         expect(response.body).to include("id")
         expect(response.body).to include("name")
         expect(response.body).to include("is_followed")
+        expect(response.body).to include("is_voted")
         expect(response.body).to include("cities")
         expect(response.body).to include("stars")
         expect(response.body).to include("shows")
         expect(response.body).to include("comments")
       end
 
-      #it "stars sholud has something real" do
-      #binding.pry
-      #@star = create(:star)
-      #@star.hoi_concert(@concert)
-      #get :show, with_key(id: @user.id, format: :json)
-      #expect(JSON.parse( response.body )["stars"].size > 0 ).to be true
-      #end
+      it "stars sholud has something real" do
+        star = create(:star)
+        star.hoi_concert(@concert)
+        expect(@concert.stars.count > 0).to be true
+      end
 
-      #it "comments sholud has something real" do
-      #@user = create :user
-      #3.times do|n|
-      #@user.comments.create_comment(@star, "fuck you#{n}")
-      #end
-      #get :show, with_key(id: @star.id, format: :json)
-      #expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
-      #end
+      it "comments sholud has something real" do
+        @user = create :user
+        3.times do|n|
+          @user.comments.create_comment(@concert, "fuck you#{n}")
+        end
+        get :show, with_key(id: @concert.id, format: :json)
+        expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
+      end
 
-      #it "shows sholud has something real" do
-      #3.times do
-      #concert = create(:concert)
-      #@star.hoi_concert(concert)
-      #3.times{|n| create(:show, concert: concert)}
-      #end
-      #get :show, with_key(id: @star.id, format: :json)
-      #expect(JSON.parse( response.body )["shows"].size > 0 ).to be true
-      #ap JSON.parse( response.body )
-      #end
-      #end
+      it "shows sholud has something real" do
+        3.times do
+          star = create(:star)
+          star.hoi_concert(@concert)
+          3.times{|n| create(:show, concert: @concert)}
+        end
+        expect(@concert.shows.count > 0).to be true
+      end
 
-      #context "#show with user" do
-      #before('each') do
-      #3.times {create :concert}     
-      #@user = create :user
-      #Star.limit(3).each do |concert|
-      #@user.follow_concert(concert)
-      #end
-      #end
+      context "#show with user" do
+        before('each') do
+          3.times {create :concert}     
+          @user = create :user
+          Concert.limit(3).each do |concert|
+            @user.follow_concert(concert)
+          end
+        end
 
-      #it "3 concerts is_followed should be true " do
-      #get :show, with_key(id: concert.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      #expect(response.body).to include("is_followed")
-      #expect(JSON.parse(response.body)["is_followed"]).to be true
-      #end
+        it "3 concerts is_followed should be true " do
+          get :show, with_key(id: Concert.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+          expect(response.body).to include("is_followed")
+          expect(JSON.parse(response.body)["is_followed"]).to be true
+        end
+
+      end
 
     end
   end

@@ -99,6 +99,7 @@ type: `GET`
     ]
   }
 ```
+
 ----
 ## 演唱会详情
 [/api/v1/concerts/:id]()
@@ -119,6 +120,7 @@ type: `GET`
     id: "123",
     name: "汪峰",
     is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
+    is_voted: false //如果传用户信息，将会返回用户是否投票该演唱会，否则统一为false
     cities: [{参照city对象}],
     stars: [{参照star对象}],
     shows: [{参照show对象},...],

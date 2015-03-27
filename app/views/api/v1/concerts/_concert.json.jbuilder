@@ -1,12 +1,12 @@
 need_stars ||= false
 need_comments ||= false
 need_shows ||= false
-#TODO is_voted
+
 user = @user
 @followed_concerts = user.present? ? user.concertsOfUser.pluck(:id) : []
 @voted_concerts = user.present? ? user.concerts.pluck(:id) : []
 
-json.(concert, :id, :name, :description, :status, :followers_count, :comments_count, :shows_count)
+json.(concert, :id, :name, :description, :status, :followers_count, :comments_count, :shows_count, :voters_count)
 
 json.start_date concert.start_date.to_ms
 json.end_date concert.end_date.to_ms
