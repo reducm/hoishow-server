@@ -102,11 +102,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         expect(response.body).to include("comments")
       end
 
-      it "stars sholud has something real" do
-        star = create(:star)
-        star.hoi_concert(@concert)
-        expect(@concert.stars.count > 0).to be true
-      end
+      #TODO stars, shows 
 
       it "comments sholud has something real" do
         @user = create :user
@@ -115,15 +111,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
         end
         get :show, with_key(id: @concert.id, format: :json)
         expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
-      end
-
-      it "shows sholud has something real" do
-        3.times do
-          star = create(:star)
-          star.hoi_concert(@concert)
-          3.times{|n| create(:show, concert: @concert)}
-        end
-        expect(@concert.shows.count > 0).to be true
       end
 
       context "#show with user" do

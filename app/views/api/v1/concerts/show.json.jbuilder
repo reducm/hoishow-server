@@ -1,7 +1,7 @@
 json.partial! "concert", { concert: @concert, user: @user  }
 
 json.stars do
-  json.array! @concert.stars, partial: 'api/v1/stars/star', as: :show
+  json.array! @concert.stars, partial: 'api/v1/stars/star', as: :star
 end
 
 json.comments do
