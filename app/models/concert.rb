@@ -18,6 +18,8 @@ class Concert < ActiveRecord::Base
 
   has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
 
+  mount_uploader :poster, PosterUploader 
+
   def followers_count
     followers.count
   end

@@ -13,11 +13,8 @@ Rails.application.routes.draw do
       end
 
       resources :stars
-      resources :concerts do
-        collection do
-          get "get_all_object" => "concerts#get_all_object"
-        end
-      end
+      resources :concerts 
+      resources :shows
     end
   end
 end

@@ -158,14 +158,14 @@ describe Api::V1::UsersController do
       @star = create(:star)
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: @star.id, format: :json )
       @user.reload
-      expect(@user.stars.size > 0).to be true
+      expect(@user.follow_stars.size > 0).to be true
     end
 
     it "should follow concert success" do 
       @concert = create(:concert)
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, format: :json )
       @user.reload
-      expect(@user.concertsOfUser.size > 0).to be true
+      expect(@user.follow_concerts.size > 0).to be true
     end
 
     it "wrong subject_type should return 403" do 
@@ -186,7 +186,7 @@ describe Api::V1::UsersController do
       @concert = create(:concert)
       post :vote_a_concert, with_key( api_token: @user.api_token, mobile: @user.mobile, concert: @concert, format: :json )
       @user.reload
-      expect(@user.concerts.size > 0).to be true
+      expect(@user.vote_concerts.size > 0).to be true
     end
   end
 

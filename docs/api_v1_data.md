@@ -63,8 +63,6 @@ type: `GET`
 
 type: `GET`
 
-必须参数`{object_type: "concert或者show"}`
-
 可选参数
 ```javascript
   {
@@ -127,6 +125,28 @@ type: `GET`
     comments: [{参照comment对象},...],
   }
 ```
+
+-------
+## 演出列表
+
+[/api/v1/shows/]()
+
+type: `GET`
+
+成功时返回
+```javascript
+  {
+    page: 1,
+    per: 20,
+    shows: [
+      {
+        参照show对象参数
+      }
+    ]
+  }
+```
+
+
 
 ----
 # 对象查询

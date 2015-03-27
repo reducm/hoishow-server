@@ -4,13 +4,13 @@ class User < ActiveRecord::Base
   has_many :comments
 
   has_many :user_follow_stars
-  has_many :stars, through: :user_follow_stars  
+  has_many :follow_stars, through: :user_follow_stars, source: :star
 
   has_many :user_follow_concerts
-  has_many :concertsOfUser, through: :user_follow_concerts, source: :concert
+  has_many :follow_concerts, through: :user_follow_concerts, source: :concert
 
   has_many :user_vote_concerts
-  has_many :concerts, through: :user_vote_concerts
+  has_many :vote_concerts, through: :user_vote_concerts, source: :concert
 
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true 
 

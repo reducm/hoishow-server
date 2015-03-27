@@ -1,8 +1,6 @@
-#user = @user
-@followed_stars = user.present? ? user.stars.pluck(:id) : []
+user ||= nil
+@followed_stars = user.present? ? user.follow_stars.pluck(:id) : []
 
 json.(star, :id, :name)
 json.avatar star.avatar.url rescue nil 
 json.is_followed star.id.in?(@followed_stars) ? true : false
-
-
