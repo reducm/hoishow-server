@@ -84,7 +84,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
     end
 
-
     context "#show without user" do
       before('each') do
         @concert = create :concert     
@@ -144,5 +143,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       end
 
     end
+
   end
 end

@@ -92,7 +92,7 @@ type: `GET`
   {
     page: 1,
     per: 20,
-    concerts: [
+    shows: [
       {
         参照show对象参数
       }
@@ -142,6 +142,7 @@ type: `GET`
   start_date: "众筹开始时间",
   end_date: "众筹结束时间"
   poster: "海报url",
+  status: "众筹状态，分为众筹中和已结束"
   followers_count: "关注数",
   comments_count: "评论数",
   shows_count: "演唱会数目"
