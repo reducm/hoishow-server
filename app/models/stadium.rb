@@ -1,6 +1,6 @@
 class Stadium < ActiveRecord::Base
   has_many :areas
-  belongs_to :city
+  belongs_to :district
   has_many :shows
 
   validates :name, presence: {message: "Name不能为空"}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150328081530) do
+ActiveRecord::Schema.define(version: 20150330135006) do
 
   create_table "api_auths", force: :cascade do |t|
     t.string   "key",        limit: 255
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(version: 20150328081530) do
     t.string   "code",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.boolean  "is_hot",     limit: 1
   end
 
   create_table "comments", force: :cascade do |t|
@@ -68,6 +69,13 @@ ActiveRecord::Schema.define(version: 20150328081530) do
     t.datetime "updated_at",                null: false
     t.string   "poster",      limit: 255
     t.integer  "status",      limit: 4
+  end
+
+  create_table "districts", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "city_id",    limit: 4
   end
 
   create_table "orders", force: :cascade do |t|
@@ -141,13 +149,14 @@ ActiveRecord::Schema.define(version: 20150328081530) do
   add_index "shows", ["stadium_id"], name: "index_shows_on_stadium_id", using: :btree
 
   create_table "stadiums", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "address",    limit: 255
-    t.decimal  "longitude",              precision: 10
-    t.decimal  "latitude",               precision: 10
-    t.integer  "city_id",    limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.string   "name",        limit: 255
+    t.string   "address",     limit: 255
+    t.decimal  "longitude",               precision: 10
+    t.decimal  "latitude",                precision: 10
+    t.integer  "city_id",     limit: 4
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.integer  "district_id", limit: 4
   end
 
   add_index "stadiums", ["city_id"], name: "index_stadiums_on_city_id", using: :btree
