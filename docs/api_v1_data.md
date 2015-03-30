@@ -59,7 +59,7 @@ type: `GET`
 -------------
 
 ## 演唱会和演出列表
-[/api/v1/concerts/get_all_object]()
+[/api/v1/concerts/]()
 
 type: `GET`
 
