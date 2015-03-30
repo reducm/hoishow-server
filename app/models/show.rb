@@ -15,6 +15,10 @@ class Show < ActiveRecord::Base
 
   delegate :stars, to: :concert
 
+  paginates_per 20
+
+  mount_uploader :poster, PosterUploader 
+
   private
   def valids_price
     if min_price.present? && max_price.present?
