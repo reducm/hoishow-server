@@ -117,7 +117,68 @@ type: `POST`
 必需参数 `{api_token: "users_token", mobile: "users mobile", concert_id: "Concertid", city_id: "Cityid"}` 
 
 成功时返回{msg: "ok"}, 状态200
+
 -------
+## 用户关注的明星
+[/api/v1/users/followed_stars]()
+
+
+type: `GET`
+
+必需参数 `{api_token: "users_token", mobile: "users mobile"}` 
+
+成功时返回：
+```javascript
+  [{
+    id: "123",
+    name: "汪峰",
+    avatar: "http://www.xxx/1.jpg",
+    is_followed: true
+  }...]
+```
+
+-------
+## 用户关注的演唱会
+[/api/v1/users/followed_concerts]()
+
+type: `GET`
+
+必需参数 `{api_token: "users_token", mobile: "users mobile"}`
+
+成功时返回：
+```javascript
+  {
+    concerts: [
+      {
+        is_followed: true
+        is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
+        参照concert对象参数
+      }
+    ]
+  }
+```
+
+
+
+-------
+
+## Concert对象
+```javascript
+{
+  id: concert_id,
+  name: "Concert名称",
+  description: "介绍",
+  start_date: "众筹开始时间",
+  end_date: "众筹结束时间"
+  poster: "海报url",
+  status: "voting(众筹中) or finished(众筹结束)"
+  followers_count: "关注数",
+  comments_count: "评论数",
+  shows_count: "演唱会数目"
+}
+```
+
+
 
 # 用户对象
 

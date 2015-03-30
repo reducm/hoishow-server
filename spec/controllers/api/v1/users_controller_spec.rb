@@ -193,4 +193,36 @@ describe Api::V1::UsersController do
     end
   end
 
+  context "#followed_stars" do
+    before('each') do
+      30.times {create :star}
+      Star.limit(29).each do |star|
+        @user.follow_star(star)
+      end
+    end
+
+    it "should have 24 stars" do
+      post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body).size).to eq 24
+    end
+
+  end
+
+  context "#followed_concerts" do
+    before('each') do
+      30.times {create :concert}
+      Concert.limit(29).each do |concert|
+        @user.follow_concert(concert)
+      end
+    end
+
+    it "should have 23 concerts" do
+      post :followed_concerts, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body).size).to eq 23
+    end
+
+  end
+
+
+
 end

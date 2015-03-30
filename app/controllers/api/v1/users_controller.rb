@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -110,6 +110,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       return error_json("vote fail, #{$@}")
     end
   end
+
+  def followed_stars
+    @stars = @user.follow_stars.limit(24)
+  end
+  
+  def followed_concerts
+    @concerts = @user.follow_concerts.limit(23)
+  end
+
+
 
   protected
   def find_or_create_code(mobile)
