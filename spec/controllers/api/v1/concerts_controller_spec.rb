@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::ConcertsController, :type => :controller do
   render_views
 
-  context "#get all concerts without user" do
+  context "#index without user" do
     before('each') do
       30.times {create :concert}
     end
@@ -31,15 +31,34 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
     end
   end
 
-  context "#get all concerts with user" do
+  context "#index paginate test" do
+    before('each') do
+      100.times {create :concert}
+    end
+
+    it "should get 20 concerts without user" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 20
+    end    
+
+    it "with page params" do
+      get :index, with_key(page: 2, format: :json)
+      concerts_id = Concert.pluck(:id)
+      expect(concerts_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
+    end
+  end
+
+  context "#index with user" do
     before('each') do
       9.times {create :concert}
       @user = create :user
+      city = create :city
       Concert.limit(5).each do |concert|
         @user.follow_concert(concert) 
       end
       Concert.limit(3).each do |concert|
-        @user.vote_concert(concert)
+        @user.vote_concert(concert, city)
       end
     end
 
@@ -70,15 +89,20 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
       expect(response.body).to include("comments")
+      #ap JSON.parse response.body
+    end
+
+    it "status should going string" do
+      get :show, with_key(id: @concert.id, format: :json)
+      expect(JSON.parse(response.body)["status"]).to eq "voting"
     end
 
     #TODO stars, shows 
-    it "stars" do
+    it "stars should has something" do
       @star = create :star
       @star.hoi_concert(@concert)
       get :show, with_key(id: @concert.id, format: :json)
       expect(JSON.parse( response.body )["stars"].size > 0 ).to be true
-      ap JSON.parse( response.body )
     end
 
     it "comments sholud has something real" do

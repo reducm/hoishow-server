@@ -35,22 +35,34 @@ describe User do
   end
 
   context "validates" do
-    it "name should be presences" do
+    it "mobile should be presences" do
       user = User.new
       expect(user.valid?).to be_falsey
       expect(user).to have(2).error_on(:mobile)
     end
 
-    it "name should be formated" do
+    it "mobile should be formated" do
       user = User.new(mobile: "123")
       expect(user.valid?).to be_falsey
       expect(user).to have(1).error_on(:mobile)
     end
 
-    it "name should be uniqueness" do
+    it "mobile should be uniqueness" do
       user = User.new(mobile: @user.mobile)
       expect(user.valid?).to be_falsey
       expect(user).to have(1).error_on(:mobile)
+    end
+  end
+
+  context "#vote_concert" do
+    it "concert/city should be presence" do
+      user = create(:user)
+      concert = create :concert
+      city = create :city
+      user.vote_concert(concert, city)
+      expect(user.user_vote_concerts.size > 0).to be true
+      expect(user.user_vote_concerts.first.city.present?).to be true
+      expect(user.user_vote_concerts.first.concert.present?).to be true
     end
   end
 

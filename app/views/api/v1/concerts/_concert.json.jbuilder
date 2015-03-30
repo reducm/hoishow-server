@@ -14,15 +14,15 @@ json.poster concert.poster.url rescue nil
 json.is_followed concert.id.in?(@followed_concerts) ? true : false
 json.is_voted concert.id.in?(@voted_concerts) ? true : false
 if need_stars
-  json.stars { json.array! concert.stars, "api/v1/stars/star", as: :star }
+  json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
 end
 
 if need_comments
-  json.comments { json.array! concert.comments, "api/v1/comments/comment", as: :comment }
+  json.comments{ json.array! concert.comments, partial: "api/v1/comments/comment", as: :comment }
 end
 
 if need_shows
-  json.shows { json.array! concert.shows, "api/v1/shows/show", as: :show }
+  json.shows{ json.array! concert.shows, partial: "api/v1/shows/show", as: :show }
 end
 
 

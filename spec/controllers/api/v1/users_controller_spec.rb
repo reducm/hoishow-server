@@ -181,12 +181,15 @@ describe Api::V1::UsersController do
 
   end
 
-  context "#vote_a_concert" do
+  context "#vote_concert" do
     it "should vote concert success" do
       @concert = create(:concert)
-      post :vote_a_concert, with_key( api_token: @user.api_token, mobile: @user.mobile, concert: @concert, format: :json )
+      @city = create(:city)
+      post :vote_concert, with_key( api_token: @user.api_token, mobile: @user.mobile, concert_id: @concert.id, city_id: @city.id, format: :json )
       @user.reload
+      expect(response.status).to eq 200
       expect(@user.vote_concerts.size > 0).to be true
+      expect(@user.user_vote_concerts.first.city.present?).to be true
     end
   end
 

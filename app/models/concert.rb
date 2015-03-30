@@ -18,6 +18,13 @@ class Concert < ActiveRecord::Base
 
   has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
 
+  paginates_per 20
+
+  enum status: {
+    voting: 0,
+    finished: 1
+  }
+
   mount_uploader :poster, PosterUploader 
 
   def followers_count

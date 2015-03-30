@@ -38,8 +38,8 @@ class User < ActiveRecord::Base
     user_follow_concerts.where(concert_id: concert.id).first_or_create!
   end
 
-  def vote_concert(concert)
-    user_vote_concerts.where(concert_id: concert.id).first_or_create!
+  def vote_concert(concert, city)
+    user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!
   end
 
  class << self

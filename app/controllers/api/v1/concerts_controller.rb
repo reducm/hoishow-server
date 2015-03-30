@@ -2,7 +2,8 @@ class Api::V1::ConcertsController < Api::V1::ApplicationController
   before_action :check_has_user
   def index
     # TODO kaminari
-    @concerts = Concert.limit(20)
+    params[:page] ||= 1
+    @concerts = Concert.page(params[:page])
   end
 
   def show

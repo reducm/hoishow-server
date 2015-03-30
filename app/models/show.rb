@@ -13,6 +13,8 @@ class Show < ActiveRecord::Base
 
   before_create :set_city
 
+  delegate :stars, to: :concert
+
   private
   def valids_price
     if min_price.present? && max_price.present?

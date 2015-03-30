@@ -19,5 +19,11 @@ describe Show do
       expect(show.valid?).to be false
       expect(show).to have(1).error_on(:stadium)
     end  
+
+    it "response to stars" do
+      show = create(:show)
+      expect(show.respond_to?(:stars)).to be true
+      expect(show.stars).to eq show.concert.stars
+    end
   end
 end

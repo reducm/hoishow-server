@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_a_concert]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -100,9 +100,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
   end
 
-  def vote_a_concert
+  def vote_concert
     begin
-      @user.vote_concert(params[:concert])
+      @concert = Concert.where(id: params[:concert_id]).first
+      @city = City.where(id: params[:city_id]).first
+      @user.vote_concert(@concert, @city)
       render json: {msg: "ok"}, status: 200
     rescue
       return error_json("vote fail, #{$@}")
