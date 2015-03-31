@@ -201,9 +201,21 @@ describe Api::V1::UsersController do
       end
     end
 
-    it "should have 24 stars" do
+    it "should have 12 stars(base on controller per)" do
       post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      expect(JSON.parse(response.body).size).to eq 24
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 12 
+    end
+
+    it "should has attributes" do
+      post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("avatar")
+      expect(response.body).to include("is_followed")
+      JSON.parse(response.body).each do|object| 
+        expect(object["is_followed"]).to be true 
+      end
     end
 
   end
@@ -216,13 +228,27 @@ describe Api::V1::UsersController do
       end
     end
 
-    it "should have 23 concerts" do
+    it "should have 20 concerts(base on controller per)" do
       post :followed_concerts, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      expect(JSON.parse(response.body).size).to eq 23
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 20
+    end
+
+    it "should has attributes" do
+      post :followed_concerts, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("description")
+      expect(response.body).to include("start_date")
+      expect(response.body).to include("end_date")
+      expect(response.body).to include("status")
+      expect(response.body).to include("shows_count")
+      expect(response.body).to include("is_voted")
+      JSON.parse(response.body).each do|object| 
+        expect(object["is_followed"]).to be true 
+      end
     end
 
   end
-
-
 
 end

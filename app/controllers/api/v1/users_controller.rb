@@ -112,11 +112,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def followed_stars
-    @stars = @user.follow_stars.limit(24)
+    params[:page] ||= 1
+    @stars = @user.follow_stars.page(params[:page]).per(12)
   end
   
   def followed_concerts
-    @concerts = @user.follow_concerts.limit(23)
+    params[:page] ||= 1
+    @concerts = @user.follow_concerts.page(params[:page]).per(20)
   end
 
 
