@@ -7,4 +7,8 @@ class Api::V1::StarsController < Api::V1::ApplicationController
   def show
     @star = Star.find(params[:id])
   end
+
+  def search
+    @stars = Star.search(params[:q]).records
+  end
 end

@@ -28,7 +28,30 @@ type: `GET`
   }...]
 ```
 
+--------
+## 搜索明星
+[/api/v1/stars/search]()
+
+type: `GET`
+
+必选参数
+```javascript
+  {
+    q: "查询关键字"
+  }
+```
+
+成功时返回：
+```javascript
+  [{
+    id: "123",
+    name: "汪峰",
+    avatar: "http://www.xxx/1.jpg",
+  }...]
+```
+
 ----
+
 ## 明星详情
 [/api/v1/stars/:id]()
 
@@ -74,15 +97,13 @@ type: `GET`
 
 成功时返回：
 ```javascript
-  {
-    concerts: [
-      {
-        is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
-        is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
-        参照concert对象参数
-      }
-    ]
-  }
+  [
+    {
+      is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
+      is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
+      参照concert对象参数
+    }
+  ]
 ```
 
 ----

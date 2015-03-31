@@ -14,7 +14,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :stars
+      resources :stars do
+        collection do
+          get "search"
+        end
+      end
       resources :concerts 
       resources :shows
     end

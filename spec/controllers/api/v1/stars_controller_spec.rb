@@ -104,7 +104,19 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(response.body).to include("is_followed")
       expect(JSON.parse(response.body)["is_followed"]).to be true
     end
+  end
 
+  context "#search" do
+    before('each') do
+      3.times {|n|create :star, name: "tom#{n}"}     
+      4.times {|n|create :star, name: "xo#{n}"}     
+    end
+
+    it "search should has results" do
+      get :search, with_key(q: "tom", format: :json)
+      binding.pry
+      expect(JSON.parse(response.body).size).to eq 3
+    end
   end
 
 end

@@ -49,6 +49,10 @@ gem 'redis-objects'
 gem 'dalli'
 gem "second_level_cache"
 
+gem "elasticsearch"
+gem "elasticsearch-rails"
+gem "elasticsearch-model"
+
 group :test do
   gem 'faker', "~> 1.4.3"
   gem 'fakeweb'
