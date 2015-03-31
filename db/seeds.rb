@@ -1,31 +1,33 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
+require 'benchmark'
 
+begin
+  file = File.open(File.join(Rails.root, 'db', 'city_district.json'), 'r')
+  cities = JSON.parse(file.read)
+  Benchmark.bm do |b|
+    b.report "basic city data" do
+      City.transaction do
+        cities.each do |city_json|
 
+          city = City.where(name: city_json["name"]).first_or_initialize
 
-#city = JSON.parse(File.open("city_district.json","r").read)
-city = JSON.parse(File.open(File.join(Rails.root, 'db', 'city_district.json'), 'r').read)
+          city.update_attributes!(
+            pinyin: city_json["pinyin"], 
+            code: city_json["code"], 
+            is_hot: city_json["hot"] || false
+          )
 
-num = 0
-city_count = city.count
-
-
-while (num < city_count) do
-  City.where(name: city[num]["name"]).first_or_initialize.update_attributes!(pinyin: city[num]["pinyin"], code: city[num]["code"], is_hot: city[num]["hot"] || false)
-
-  district_array = city[num]["districts"]
-  district_array_count = district_array.count
-  i = 0
-  while(i < district_array_count) do
-    District.where(name: district_array[i]["name"]).first_or_initialize.update_attributes!(city_id: district_array[i]["city_id"])
-    i += 1
+          districts = city_json["districts"]
+          District.transaction do
+            districts.each do |district_json|
+              district = city.districts.where(name: district_json["name"]).first_or_create!
+            end
+          end
+        end
+      end
+    end
   end
-
-  num += 1
-
+rescue Exception => e
+  ap $@
+ensure
+  file.close
 end
