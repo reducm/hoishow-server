@@ -8,8 +8,8 @@
 
 
 
-
-city = JSON.parse(File.open("/Users/tangwenjie/projects/hoishow-server/db/city_district.json","r").read)
+#city = JSON.parse(File.open("city_district.json","r").read)
+city = JSON.parse(File.open(File.join(Rails.root, 'db', 'city_district.json'), 'r').read)
 
 num = 0
 city_count = city.count
