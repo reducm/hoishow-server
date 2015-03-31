@@ -3,5 +3,6 @@
 FactoryGirl.define do
   factory :district do
     name "MyString"
+    association :city
   end
 end

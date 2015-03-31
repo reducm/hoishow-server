@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :stadium do
-    association :city
+    association :district
     name {Faker::Name.name}
     address {Faker::Address.street_address}
     longitude {Faker::Address.longitude}
