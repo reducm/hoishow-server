@@ -45,7 +45,8 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
 
     it "city should has something" do
       @city = create :city
-      @stadium = create(:stadium, city: @city) 
+      @district = create :district, city: @city
+      @stadium = create(:stadium, district: @district) 
       @show = create(:show, city: @stadium.city) 
       get :show, with_key(id: @show.id, format: :json)
       expect(JSON.parse(response.body)["city"].size > 0).to be true 

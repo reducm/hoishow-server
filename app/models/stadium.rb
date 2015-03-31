@@ -6,5 +6,5 @@ class Stadium < ActiveRecord::Base
   validates :name, presence: {message: "Name不能为空"}
   validates :city, presence: {message: "City不能为空"}
 
-  delegate :city, :city=, to: :district
+  delegate :city, to: :district
 end

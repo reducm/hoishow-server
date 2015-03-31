@@ -4,9 +4,10 @@ describe Order do
   before :each  do
     @user = create :user
     @city = create :city
+    @district = create :district, city: @city
     @star = create :star
     @concert = create :concert
-    @stadium = create(:stadium, city: @city)
+    @stadium = create(:stadium, district: @district)
     @show = create :show, concert: @concert, stadium: @stadium
     3.times do|n|
       area =  create :area, stadium: @stadium

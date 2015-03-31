@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :district do
-    name "MyString"
+    name {Faker::Name.name}
     association :city
   end
 end
