@@ -21,12 +21,12 @@ describe Star do
     end
   end
 
-  context "#wrap_search" do
+  context "#search" do
     it "search should be ok" do
       10.times{|n| Star.create(name: "Tom#{n}")}
-      expect(Star.wrap_search("om").count).to eq 10
-      expect(Star.wrap_search("t").count).to eq 10
-      expect(Star.wrap_search("tom").count).to eq 10
+      expect(Star.search("om").count).to eq 10
+      expect(Star.search("t").count).to eq 10
+      expect(Star.search("tom").count).to eq 10
     end
   end
 end

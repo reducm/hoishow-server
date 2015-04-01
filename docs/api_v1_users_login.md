@@ -158,6 +158,28 @@ type: `GET`
   }
 ```
 
+----------
+## 用户创建互动Topic, 包括明星Star互动、Concert演唱会互动
+[/api/v1/users/create_topic]()
+
+type `POST`
+
+必需参数 
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    subject_type: "Star or Concert", //创建互动的是明星或演唱会
+    subject_id: "star_id or concert_id", //具体的明星id或者演唱会id
+    content: "内容", 
+    city_id: "" //当subject_type是Concert时，必须传city_id
+  }
+```
+
+成功时返回
+```javascript
+  Topic对象
+```
 
 
 -------

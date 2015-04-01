@@ -248,7 +248,14 @@ describe Api::V1::UsersController do
         expect(object["is_followed"]).to be true 
       end
     end
-
   end
 
+  context "#create_topic" do
+    it "create success" do
+      @concert = create :concert
+      @city = create :city
+      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", city_id: @city.id, format: :json)
+      expect(assigns(:topic).valid?).to be true
+    end   
+  end
 end

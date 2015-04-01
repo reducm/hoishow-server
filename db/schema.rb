@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150330135006) do
+ActiveRecord::Schema.define(version: 20150401092742) do
 
   create_table "api_auths", force: :cascade do |t|
     t.string   "key",        limit: 255
@@ -176,6 +176,20 @@ ActiveRecord::Schema.define(version: 20150330135006) do
     t.string   "avatar",     limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+  end
+
+  add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
+
+  create_table "topics", force: :cascade do |t|
+    t.string   "creator_type", limit: 255
+    t.integer  "creator_id",   limit: 4
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.text     "content",      limit: 65535
+    t.boolean  "is_top",       limit: 1,     default: false
+    t.integer  "city_id",      limit: 4
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
   end
 
   create_table "user_follow_concerts", force: :cascade do |t|

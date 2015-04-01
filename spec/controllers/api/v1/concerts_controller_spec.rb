@@ -88,7 +88,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("cities")
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
-      expect(response.body).to include("comments")
       #ap JSON.parse response.body
     end
 
@@ -105,14 +104,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse( response.body )["stars"].size > 0 ).to be true
     end
 
-    it "comments sholud has something real" do
-      @user = create :user
-      3.times do|n|
-        @user.comments.create_comment(@concert, "fuck you#{n}")
-      end
-      get :show, with_key(id: @concert.id, format: :json)
-      expect(JSON.parse( response.body )["comments"].size > 0 ).to be true
-    end
   end
 
   context "#show with user" do

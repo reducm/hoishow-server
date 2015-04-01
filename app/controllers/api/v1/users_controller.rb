@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -121,6 +121,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @concerts = @user.follow_concerts.page(params[:page]).per(20)
   end
 
+  def create_topic
+    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: params[:contet], city_id: params[:city_id])
+    if !@topic.save
+      return error_json(@topic.errors.full_messages)
+    end
+  end
 
 
   protected

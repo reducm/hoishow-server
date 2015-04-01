@@ -16,7 +16,8 @@ class Concert < ActiveRecord::Base
 
   validates :name, presence: {message: "演唱会名不能为空"}
 
-  has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
+  has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
+
 
   paginates_per 20
 
@@ -29,10 +30,6 @@ class Concert < ActiveRecord::Base
 
   def followers_count
     followers.count
-  end
-
-  def comments_count
-    comments.count
   end
 
   def shows_count

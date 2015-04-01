@@ -19,6 +19,10 @@ class Show < ActiveRecord::Base
 
   mount_uploader :poster, PosterUploader 
 
+  def topics
+    Topic.where(city_id: city.id, subject_type: Concert.name, subject_id: concert.id)
+  end
+
   private
   def valids_price
     if min_price.present? && max_price.present?
