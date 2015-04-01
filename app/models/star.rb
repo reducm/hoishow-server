@@ -1,5 +1,6 @@
 class Star < ActiveRecord::Base
-  include Searchable
+  #include Searchable
+  searchkick  word_start: [:name], word_middle: [:name], word_end: [:name]
   has_many :videos
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user

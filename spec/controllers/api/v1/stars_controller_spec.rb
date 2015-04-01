@@ -110,13 +110,26 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     before('each') do
       3.times {|n|create :star, name: "tom#{n}"}     
       4.times {|n|create :star, name: "xo#{n}"}     
+      2.times {|n|create :star, name: "芙蓉#{n}"}     
     end
 
     it "search should has results" do
       get :search, with_key(q: "tom", format: :json)
-      binding.pry
       expect(JSON.parse(response.body).size).to eq 3
     end
+
+    it "search should has results when input chinese" do
+      get :search, with_key(q: "蓉", format: :json)
+      expect(JSON.parse(response.body).size).to eq 2
+    end
+
+    it "search should has results when input single word" do
+      get :search, with_key(q: "o", format: :json)
+      expect(JSON.parse(response.body).size).to eq 7
+    end
+
+
+    
   end
 
 end

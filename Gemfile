@@ -53,6 +53,8 @@ gem "elasticsearch"
 gem "elasticsearch-rails"
 gem "elasticsearch-model"
 
+gem 'searchkick'
+
 group :test do
   gem 'faker', "~> 1.4.3"
   gem 'fakeweb'
