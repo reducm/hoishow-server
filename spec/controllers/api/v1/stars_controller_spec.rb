@@ -108,9 +108,9 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#search" do
     before('each') do
-      3.times {|n|create :star, name: "tom#{n}"}     
-      4.times {|n|create :star, name: "xo#{n}"}     
-      2.times {|n|create :star, name: "芙蓉#{n}"}     
+      3.times {|n|Star.create name: "tom#{n}"}     
+      4.times {|n|Star.create name: "xo#{n}"}     
+      2.times {|n|Star.create name: "芙蓉#{n}"}     
     end
 
     it "search should has results" do
@@ -127,9 +127,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       get :search, with_key(q: "o", format: :json)
       expect(JSON.parse(response.body).size).to eq 7
     end
-
-
-    
   end
 
 end

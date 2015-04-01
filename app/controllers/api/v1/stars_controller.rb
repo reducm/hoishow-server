@@ -9,7 +9,6 @@ class Api::V1::StarsController < Api::V1::ApplicationController
   end
 
   def search
-    Star.reindex
-    @stars = Star.search params[:q], fields: [{name: :word_start}, {name: :word_middle}, {name: :word_end}]
+    @stars = Star.search params[:q]
   end
 end

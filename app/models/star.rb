@@ -1,6 +1,6 @@
 class Star < ActiveRecord::Base
-  include Searchable
-  searchkick
+  #include Searchable
+  #searchkick Searchable::WORD_TYPE.map{|k| Hash[k, [:name]] }.inject(&:merge)
 
   has_many :videos
   has_many :user_follow_stars
@@ -24,10 +24,9 @@ class Star < ActiveRecord::Base
     Show.where(concert_id: concert_ids)
   end
 
-  def search_data
-    as_json only: [:name]
-    {
-      name: name,
-    }
+  class << self
+    def search(q)
+      where("name like ?", "%#{q}%")
+    end
   end
 end

@@ -20,4 +20,13 @@ describe Star do
       expect(@star.shows.size > 0).to be true
     end
   end
+
+  context "#wrap_search" do
+    it "search should be ok" do
+      10.times{|n| Star.create(name: "Tom#{n}")}
+      expect(Star.wrap_search("om").count).to eq 10
+      expect(Star.wrap_search("t").count).to eq 10
+      expect(Star.wrap_search("tom").count).to eq 10
+    end
+  end
 end

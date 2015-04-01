@@ -49,10 +49,10 @@ gem 'redis-objects'
 gem 'dalli'
 gem "second_level_cache"
 
-gem "elasticsearch"
-gem "elasticsearch-rails"
-gem "elasticsearch-model"
-gem 'searchkick'
+#gem "elasticsearch"
+#gem "elasticsearch-rails"
+#gem "elasticsearch-model"
+#gem 'searchkick'
 
 gem 'searchkick'
 
