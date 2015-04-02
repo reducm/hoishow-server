@@ -61,8 +61,6 @@ class User < ActiveRecord::Base
     a
   end
 
-
-
  class << self
     def find_mobile(mobile="")
       where(mobile: mobile).first_or_create!

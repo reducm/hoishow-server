@@ -85,7 +85,12 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       3.times {create :star}     
       @user = create :user
       Star.limit(3).each do |star|
+        #关注
         @user.follow_star(star)
+        #concert被关注
+        concert = create :concert
+        @user.follow_concert(concert)
+        star.hoi_concert(concert)
       end
     end
 
@@ -93,6 +98,22 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(response.body).to include("is_followed")
       expect(JSON.parse(response.body)["is_followed"]).to be true
+    end
+
+    it "if user has followed concert, concert should be is_followed true" do
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body)["concerts"].first["is_followed"]).to be true
+    end
+
+    it "should have topic staff" do
+      Star.all.each do |star|
+        #创建topic
+        topic = star.topics.create(content: "fuck tom", subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
+        @user.like_topic(topic)
+      end 
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body)["topics"].count > 0 ).to be true
+      expect(JSON.parse(response.body)["topics"].first["is_like"] ).to be true
     end
   end
 

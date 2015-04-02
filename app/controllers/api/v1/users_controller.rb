@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -125,6 +125,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: params[:content], city_id: params[:city_id])
     if !@topic.save
       return error_json(@topic.errors.full_messages)
+    end
+  end
+
+  def like_topic
+    @topic = Topic.where(id: params[:topic_id]).first
+    if @topic.present?
+      @user.like_topic(@topic)
+      render json: {msg: "ok"}, status: 200
+    else
+      return error_json("can not find topic by #{params[:topic_id]}")
     end
   end
 

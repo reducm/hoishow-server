@@ -181,6 +181,27 @@ type `POST`
   Topic对象
 ```
 
+----------
+## 用户点赞topic
+[/api/v1/users/like_topic]()
+
+type `POST`
+
+必需参数 
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    topic_id: "Topic的id",
+  }
+```
+
+成功时返回
+```javascript
+  {msg: "ok"}// 状态200
+```
+
+
 ------
 ## 用户创建评论
 [/api/v1/users/create_comment]()

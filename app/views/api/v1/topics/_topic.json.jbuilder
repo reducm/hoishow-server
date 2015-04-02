@@ -1,6 +1,6 @@
 user ||= false
 json.(topic, :id, :content, :created_at, :is_top, :like_count, :subject_type, :subject_id)
-json.city{ json.partial!("api/v1/cities/city", {city: topic.city}) }
+json.city{ json.partial!("api/v1/cities/city", {city: topic.city}) } if topic.city.present?
 json.creator do 
   json.name topic.creator_name 
   json.avatar topic.creator.avatar.url rescue nil

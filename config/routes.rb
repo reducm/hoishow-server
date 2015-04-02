@@ -12,6 +12,7 @@ Rails.application.routes.draw do
           post "followed_stars" => "users#followed_stars"
           post "followed_concerts" => "users#followed_concerts"
           post "create_topic" => "users#create_topic"
+          post "like_topic" => "users#like_topic"
         end
       end
 

@@ -290,4 +290,27 @@ describe Api::V1::UsersController do
       #ap JSON.parse(response.body)
      end
   end
+
+  context "#like_topic" do
+    it "like success" do
+      @topic = create :topic
+      post :like_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, format: :json)
+      expect(response.status).to eq 200
+      expect(@user.like_topics.count).to eq 1
+      expect(@topic.like_count).to eq 1
+    end
+
+    it "wrong topic should be false" do
+      post :like_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, topic_id: 123, format: :json)
+      expect(response.status).to eq 403
+    end
+
+    it "wrong topic should be false" do
+      @topic = create :topic
+      @user.like_topic(@topic)
+      post :like_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, format: :json)
+      expect(response.status).to eq 200
+      expect(@user.like_topics.count).to eq 1
+    end
+  end
 end
