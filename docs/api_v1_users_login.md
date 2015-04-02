@@ -181,7 +181,20 @@ type `POST`
   Topic对象
 ```
 
+------
+## 用户创建评论
+[/api/v1/users/create_comment]()
 
+type `POST`
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    subject_type: "Star or Concert or Comment", //创建的评论是关于明星、或演唱会、或另一条评论
+    subject_id: "具体的明星id、或者演唱会id、或评论id",
+    content: "内容"
+  }
+```
 -------
 
 ## Concert对象
