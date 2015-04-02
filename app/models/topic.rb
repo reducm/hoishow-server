@@ -4,10 +4,14 @@ class Topic < ActiveRecord::Base
   validates :creator_id, presence: true
   validates :creator_type, presence: true
   validates :subject_type, presence: true
+  validates :content, presence: true
   validates :subject_id, presence: true
   validate :check_city_id
   has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
 
+
+  has_many :user_like_topics
+  has_many :likers, through: :user_like_topics, source: :user
 
   def subject
      begin
@@ -25,6 +29,23 @@ class Topic < ActiveRecord::Base
       Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
     end
+  end
+
+  def creator_name
+    if creator.is_a?(User)
+      creator.show_name
+    elsif creator.is_a?(Star)
+      creator.name
+    end
+  end
+
+  def is_like(user)
+    ids = user_like_topics.pluck(:user_id)
+    user.id.in?(ids) rescue false
+  end
+
+  def like_count
+    user_like_topics.count
   end
 
   private 

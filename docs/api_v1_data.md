@@ -207,3 +207,26 @@ type: `GET`
   code: "城市代码",
 }
 ```
+
+## Topic对象
+```javascript
+{
+  id: "id",
+  content: "话题内容",
+  city: {城市对象}.
+  subject_type: "Star or Concert", //互动的主体
+  subject_id: "star_id or concert_id", //互动的主体id
+  creator:  {
+    name: "名称",
+    avatar: "头像url",
+    is_admin: "true or false" //是否由运营人员创建
+  }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
+  like_count: "点赞的数目",
+  comments_count: "comment的数目",
+  created_at: "话题创建时间",
+  is_top: "true or false", //是否置顶
+  is_liked: "true or false"//是否点赞过
+}
+```
+
+

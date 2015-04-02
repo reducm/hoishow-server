@@ -261,15 +261,33 @@ describe Api::V1::UsersController do
     it "create wrong when argument miss" do
       @concert = create :concert
       @city = create :city
-      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", content: "fuck jas", city_id: @city.id, format: :json)
-      expect(assigns(:topic)).to have(1).error_on(:subject_id)   
+      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", content: "fuck tom", city_id: @city.id, format: :json)
+      expect(assigns(:topic)).to have(1).error_on(:subject_id)
     end
 
     it "create wrong when miss city_id" do
       @concert = create :concert
       @city = create :city
-      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck jas", format: :json)
-      expect(assigns(:topic)).to have(1).error_on(:city_id)   
+      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", format: :json)
+      expect(assigns(:topic)).to have(1).error_on(:city_id)
     end
+
+     it "create should has attributes" do
+      @concert = create :concert
+      @city = create :city
+      post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", city_id: @city.id, format: :json)
+      expect(JSON.parse(response.body)).to include("id")
+      expect(JSON.parse(response.body)).to include("content")
+      expect(JSON.parse(response.body)).to include("created_at")
+      expect(JSON.parse(response.body)).to include("subject_type")
+      expect(JSON.parse(response.body)).to include("subject_id")
+      expect(JSON.parse(response.body)).to include("is_top")
+      expect(JSON.parse(response.body)).to include("like_count")
+      expect(JSON.parse(response.body)).to include("city")
+      expect(JSON.parse(response.body)).to include("creator")
+      expect(JSON.parse(response.body)).to include("comments_count")
+      expect(JSON.parse(response.body)).to include("is_like")
+      #ap JSON.parse(response.body)
+     end
   end
 end

@@ -14,6 +14,9 @@ class User < ActiveRecord::Base
   has_many :user_vote_concerts
   has_many :vote_concerts, through: :user_vote_concerts, source: :concert
 
+  has_many :user_like_topics
+  has_many :like_topics, through: :user_like_topics, source: :topic
+
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true 
 
   mount_uploader :avatar, AvatarUploader 
@@ -43,6 +46,22 @@ class User < ActiveRecord::Base
   def vote_concert(concert, city)
     user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!
   end
+
+  def like_topic(topic)
+    user_like_topics.where(topic_id: topic.id).first_or_create!
+  end
+
+  def show_name
+    nickname || encode_mobile
+  end
+
+  def encode_mobile
+    a = self.mobile
+    a[3..6] = "****"
+    a
+  end
+
+
 
  class << self
     def find_mobile(mobile="")

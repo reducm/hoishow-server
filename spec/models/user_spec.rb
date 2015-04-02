@@ -66,6 +66,16 @@ describe User do
     end
   end
 
+  context "#like_topic" do
+    it "like_topic should be ok" do
+      user = create(:user)
+      topic = create(:topic)
+      user.like_topic(topic) 
+      expect(topic.like_count).to eq 1
+      expect(user.like_topics.count).to eq 1
+    end
+  end
+
   context "avatar" do
     it "user's avatar should save ok!" do
       file = fixture_file_upload("/about.png", "image/png")
