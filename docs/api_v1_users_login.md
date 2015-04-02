@@ -123,7 +123,7 @@ type: `POST`
 [/api/v1/users/followed_stars]()
 
 
-type: `GET`
+type: `POST`
 
 必需参数 `{api_token: "users_token", mobile: "users mobile"}` 
 
@@ -141,7 +141,7 @@ type: `GET`
 ## 用户关注的演唱会
 [/api/v1/users/followed_concerts]()
 
-type: `GET`
+type: `POST`
 
 必需参数 `{api_token: "users_token", mobile: "users mobile"}`
 
@@ -179,6 +179,14 @@ type `POST`
 成功时返回
 ```javascript
   Topic对象
+{
+  content: "话题内容"
+  city_name: "城市名字"
+  creator:  "话题创建者，可以是用户或者明星或者演唱会运营人员"
+  loves: "点赞的数目"
+  comments: "comment的数目"
+  create_date: "话题创建时间"
+}
 ```
 
 

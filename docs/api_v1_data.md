@@ -191,10 +191,19 @@ type: `GET`
 ## Comment对象
 ```javascript
 {
-  id: coment_id,
+  id: comment_id,
   subuject_type: "评论对象，可以是star或者concert",
   subject_id: "评论对象id",
   content: "评论",
   user: {:id, :nickname, :avatar},
+}
+```
+## City对象
+```javascript
+{
+  id: city_id,
+  pinyin: "城市名称的拼音",
+  name: "城市名字",
+  code: "城市代码",
 }
 ```
