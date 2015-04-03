@@ -111,6 +111,17 @@ type: `POST`
 成功时返回{msg: "ok"}, 状态200
 
 --------
+## 取消关注明星或演唱会
+[/api/v1/users/unfollow_subject]()
+
+必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert, 注意大写", subject_id: "star_id或concert_id"}`
+
+成功时返回{msg: "ok"}, 状态200
+
+--------
+
+
+
 ## 对演唱会投票
 [/api/v1/users/vote_concert]()
 
