@@ -178,8 +178,47 @@ describe Api::V1::UsersController do
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
       expect(response.status).to eq 403 
     end
+  end
+
+  context "#unfollow_subject" do
+    before('each') do
+      @star = create(:star)
+      @concert = create(:concert)
+      @user.follow_star(@star)
+      @user.follow_concert(@concert)
+    end
+
+    it "should unfollow star success" do
+      post :unfollow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: @star.id, format: :json )
+      @user.reload
+      expect(response.status).to eq 200
+      expect(@user.follow_stars.size ).to eq 0
+    end
+
+    it "should unfollow concert success" do
+      post :unfollow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, format: :json )
+      @user.reload
+      expect(response.status).to eq 200
+      expect(@user.follow_concerts.size ).to eq 0
+    end
+
+    it "wrong subject_type should return 403" do 
+      @star = create :star
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "star", subject_id: @star.id, format: :json )
+      expect(response.status).to eq 403 
+    end
+
+    it "wrong subject_id should return 403" do 
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
+      expect(response.status).to eq 403 
+    end
+ 
 
   end
+
+
+
+
 
   context "#vote_concert" do
     it "should vote concert success" do

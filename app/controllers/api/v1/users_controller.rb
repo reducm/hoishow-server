@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -99,6 +99,20 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       return error_json("follow fail, #{$@}")
     end
   end
+
+  def unfollow_subject
+    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
+    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first 
+    return error_json("could not find subject") if subject.blank?
+    begin
+      @user.send("unfollow_#{params[:subject_type].downcase}", subject)
+      render json: {msg: "ok"}, status: 200
+    rescue
+      return error_json("unfollow fail, #{$@}")
+    end
+  end
+
+
 
   def vote_concert
     begin
