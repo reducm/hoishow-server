@@ -7,7 +7,7 @@ class Topic < ActiveRecord::Base
   validates :content, presence: true
   validates :subject_id, presence: true
   validate :check_city_id
-  has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
+  has_many :comments, :class_name => "Comment", :foreign_key => 'topic_id'
 
 
   has_many :user_like_topics
@@ -19,7 +19,7 @@ class Topic < ActiveRecord::Base
     rescue 
       Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
-    end
+     end
   end
 
   def creator

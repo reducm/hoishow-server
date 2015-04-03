@@ -1,4 +1,4 @@
-json.(comment, :id, :subject_type, :subject_id, :content)
+json.(comment, :id, :topic_id, :content)
 json.user  do
   json.id comment.user.id
   json.nickname comment.user.nickname

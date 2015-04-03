@@ -1,8 +1,7 @@
 class Comment < ActiveRecord::Base
   belongs_to :user
+  belongs_to :topic
   validates :user_id, presence: true
-  validates :subject_type, presence: true
-  validates :subject_id, presence: true
 
   def self.create_comment(subject, content)
     create!(subject_type: subject.class.name, subject_id: subject.id, content: content)

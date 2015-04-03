@@ -2,9 +2,8 @@
 
 FactoryGirl.define do
   factory :comment do
-    subject_type "Star"
-    subject_id "1"
     content "fuck you"
     association :user
+    association :topic
   end
 end
