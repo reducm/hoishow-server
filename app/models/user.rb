@@ -55,7 +55,9 @@ class User < ActiveRecord::Base
     end
   end
 
-
+  def create_comment(topic, parent_id = nil, content)
+    comments.where(topic_id: topic.id, parent_id: parent_id, content: content).first_or_create!
+  end
 
   def vote_concert(concert, city)
     user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!

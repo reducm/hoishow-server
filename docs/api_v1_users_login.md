@@ -106,6 +106,8 @@ type: `POST`
 ## 关注明星或演唱会
 [/api/v1/users/follow_subject]()
 
+type: `POST`
+
 必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert, 注意大写", subject_id: "star_id或concert_id"}`
 
 成功时返回{msg: "ok"}, 状态200
@@ -114,16 +116,32 @@ type: `POST`
 ## 取消关注明星或演唱会
 [/api/v1/users/unfollow_subject]()
 
+type: `POST`
+
 必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert, 注意大写", subject_id: "star_id或concert_id"}`
 
 成功时返回{msg: "ok"}, 状态200
 
 --------
 
+## 创建评论
+[/api/v1/users/create_comment]()
+
+type: `POST`
+
+可选参数 `{parent_id: "comment.parent_id"//对某一个评论所作出的评论，默认为nil}`
+
+必需参数 `{api_token: "users_token", mobile: "users mobile", topic: Topic对象, content: "评论的内容"}` 
+
+成功时返回{msg: "ok"}, 状态200
+
+--------
 
 
 ## 对演唱会投票
 [/api/v1/users/vote_concert]()
+
+type: `POST`
 
 必需参数 `{api_token: "users_token", mobile: "users mobile", concert_id: "Concertid", city_id: "Cityid"}` 
 

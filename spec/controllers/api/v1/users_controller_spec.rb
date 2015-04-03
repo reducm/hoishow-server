@@ -212,13 +212,18 @@ describe Api::V1::UsersController do
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
       expect(response.status).to eq 403 
     end
- 
-
   end
 
-
-
-
+  context "#create_comment" do
+    it "should create comment success" do
+      @topic = create(:topic)
+      @commnet = create(:comment)
+      post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @commnet.parent_id, content: "fuckkkkkkk jasjajsjsajsdjasdjas", format: :json )
+      @user.reload
+      expect(response.status).to eq 200
+      expect(@user.comments.count).to eq 1
+    end
+  end
 
   context "#vote_concert" do
     it "should vote concert success" do

@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -112,7 +112,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
   end
 
-
+  def create_comment
+    @topic = Topic.where(id: params[:topic_id]).first
+    if @topic.present?
+      @user.create_comment(@topic, params[:parent_id], params[:content])
+      render json: {msg: "ok"}, status: 200
+    else
+      return error_json("can not create comment") 
+    end
+  end
 
   def vote_concert
     begin
@@ -151,7 +159,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       return error_json("can not find topic by #{params[:topic_id]}")
     end
   end
-
 
   protected
   def find_or_create_code(mobile)

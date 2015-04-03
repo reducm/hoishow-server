@@ -76,6 +76,14 @@ describe User do
     end
   end
 
+  context "#create_comment" do
+    it "should create comment success " do
+      comment = create :comment
+      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
+      expect(@user.comments.count).to eq 1
+    end
+  end
+
   context "avatar" do
     it "user's avatar should save ok!" do
       file = fixture_file_upload("/about.png", "image/png")
