@@ -113,6 +113,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       end 
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body)["topics"].count > 0 ).to be true
+      ap JSON.parse(response.body)
       expect(JSON.parse(response.body)["topics"].first["is_like"] ).to be true
     end
   end
