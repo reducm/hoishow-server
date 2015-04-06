@@ -131,9 +131,9 @@ type: `POST`
 
 可选参数 `{parent_id: "comment.parent_id"//对某一个评论所作出的评论，默认为nil}`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile", topic: Topic对象, content: "评论的内容"}` 
+必需参数 `{api_token: "users_token", mobile: "users mobile", topic_id: Topic的id, content: "评论的内容"}` 
 
-成功时返回{msg: "ok"}, 状态200
+成功时返回{Comment对象}, 状态200
 
 --------
 
@@ -231,51 +231,38 @@ type `POST`
 ```
 
 
-------
-## 用户创建评论
-[/api/v1/users/create_comment]()
+-----------
 
-type `POST`
+## 用户买票、选区接口
+
+[/api/v1/shows/:id/preorder]()
+
+type `GET`
+
+必需参数 
 ```javascript
   {
     api_token: "users_token",
     mobile: "users mobile",
-    subject_type: "Star or Concert or Comment", //创建的评论是关于明星、或演唱会、或另一条评论
-    subject_id: "具体的明星id、或者演唱会id、或评论id",
-    content: "内容"
   }
+  //show的id在url里传递
 ```
--------
 
-## Concert对象
+成功时返回
 ```javascript
 {
-  id: concert_id,
-  name: "Concert名称",
-  description: "介绍",
-  start_date: "众筹开始时间",
-  end_date: "众筹结束时间"
-  poster: "海报url",
-  status: "voting(众筹中) or finished(众筹结束)"
-  followers_count: "关注数",
-  comments_count: "评论数",
-  shows_count: "演唱会数目"
+  stadium: {
+    Stadium对象Key/Value,
+    areas: [{ //Area价格由低到高排序
+      id: area_id,
+      name: 区名,
+      seats_count: 座位总数,
+      seats_left: 座位剩余,  
+      is_sold_out: 是否售完true or false，
+      price: 该场show在此区域的售价, float类型,
+    }....]
+  },
+  show: {Show对象}
 }
 ```
 
-
-
-# 用户对象
-
-```javascript
-  {
-      api_token: api_token, 
-      api_expires_in: "距离当前还有多少秒过期", 
-      mobile: "13632323232", 
-      avatar: "http://www.xxx/1.jpg",  //用户头像
-      nickname: "李枝江",
-      sex: "male", //"male"表示男性， "female"表示女性， "secret"表示保密
-      birthday: "32872394934" //时间戳
-    }
-```
------

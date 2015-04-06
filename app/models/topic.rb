@@ -7,7 +7,7 @@ class Topic < ActiveRecord::Base
   validates :content, presence: true
   validates :subject_id, presence: true
   validate :check_city_id
-  has_many :comments, :class_name => "Comment", :foreign_key => 'topic_id'
+  has_many :comments
 
 
   has_many :user_like_topics

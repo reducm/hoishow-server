@@ -24,7 +24,11 @@ Rails.application.routes.draw do
         end
       end
       resources :concerts 
-      resources :shows
+      resources :shows do
+        member do
+          get "preorder"
+        end
+      end
     end
   end
 end

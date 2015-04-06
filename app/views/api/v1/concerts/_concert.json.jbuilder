@@ -19,6 +19,3 @@ end
 if need_shows
   json.shows{ json.array! concert.shows, partial: "api/v1/shows/show", as: :show }
 end
-
-
-

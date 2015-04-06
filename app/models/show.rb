@@ -5,6 +5,7 @@ class Show < ActiveRecord::Base
 
   has_many :show_area_relations
   has_many :areas, through: :show_area_relations
+  has_many :orders
 
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}
@@ -21,6 +22,17 @@ class Show < ActiveRecord::Base
 
   def topics
     Topic.where(city_id: city.id, subject_type: Concert.name, subject_id: concert.id)
+  end
+
+  def area_seats_left(area)
+    #TODO after order has status 
+    #area.seats_count - orders.success_order.in
+    10 
+  end
+
+  def area_is_sold_out(area)
+    #TODO after order has status 
+    false
   end
 
   private

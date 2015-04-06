@@ -4,6 +4,7 @@ class Order < ActiveRecord::Base
   #Order创建的时候，要保存concert, stadium,city,star,show的name和id，用冗余避免多表查询
   #seats_info 例: 12:10.0|25:230.0|, 约定格式 area_id:price|area_id2:price|area_id3:price, 类似单车的seat_info, 不过hoishow是复数。price的来源是show与area的中间表show_area_relations, 把price保存下来的好处是，以后查orders时，不需要再从庞大的中间表读数据，area_id则可以从area表去把数据区名读取出来
   #
+  belongs_to :show
 
   validates :user, presence: {message: "User不能为空"}
   validates :seats_info, presence: true

@@ -99,9 +99,9 @@ type: `GET`
 ```javascript
   [
     {
+      参照concert对象参数
       is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
       is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
-      参照concert对象参数
     }
   ]
 ```
@@ -157,6 +157,19 @@ type: `GET`
 ----
 # 对象查询
 
+##User对象 
+
+```javascript
+  {
+      api_token: api_token, 
+      api_expires_in: "距离当前还有多少秒过期", 
+      mobile: "13632323232", 
+      avatar: "http://www.xxx/1.jpg",  //用户头像
+      nickname: "李枝江",
+      sex: "male", //"male"表示男性， "female"表示女性， "secret"表示保密
+      birthday: "32872394934" //时间戳
+    }
+```
 ## Star对象
 
 ## Concert对象
@@ -188,16 +201,6 @@ type: `GET`
 }
 ```
 
-## Comment对象
-```javascript
-{
-  id: comment_id,
-  subuject_type: "评论对象，可以是star或者concert",
-  subject_id: "评论对象id",
-  content: "评论",
-  user: {:id, :nickname, :avatar},
-}
-```
 ## City对象
 ```javascript
 {
@@ -207,6 +210,7 @@ type: `GET`
   code: "城市代码",
 }
 ```
+
 
 ## Topic对象
 ```javascript
@@ -229,4 +233,14 @@ type: `GET`
 }
 ```
 
+## Comment对象
+```javascript
+{
+  id: comment_id,
+  topic_id: Topic的id,
+  parent_id: 如果是回复，parent_id代表被回复Comment的id,
+  content: "评论",
+  user: {:id, :nickname, :avatar},
+}
+```
 

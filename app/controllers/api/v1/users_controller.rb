@@ -115,10 +115,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   def create_comment
     @topic = Topic.where(id: params[:topic_id]).first
     if @topic.present?
-      @user.create_comment(@topic, params[:parent_id], params[:content])
-      render json: {msg: "ok"}, status: 200
+      @comment = @user.create_comment(@topic, params[:parent_id], params[:content])
+      if @comment.errors.any?
+        return error_json("comment create_error: #{@comment.errors.full_messages}")
+      end
+      #render json comment's view
     else
-      return error_json("can not create comment") 
+      return error_json("can not find topic by topic_id: #{params[:topic_id]}") 
     end
   end
 

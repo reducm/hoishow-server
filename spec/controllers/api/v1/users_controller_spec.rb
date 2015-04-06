@@ -215,13 +215,18 @@ describe Api::V1::UsersController do
   end
 
   context "#create_comment" do
-    it "should create comment success" do
+    it "should create reply comment success" do
       @topic = create(:topic)
-      @commnet = create(:comment)
-      post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @commnet.parent_id, content: "fuckkkkkkk jasjajsjsajsdjasdjas", format: :json )
+      @comment = create(:comment)
+      post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: "fuckkkkkkk tomtomtomt", format: :json )
       @user.reload
       expect(response.status).to eq 200
-      expect(@user.comments.count).to eq 1
+      expect(assigns(:comment).parent_id).to eq @comment.id
+      expect(response.body).to include("topic_id")
+      expect(response.body).to include("user")
+      expect(response.body).to include("content")
+      expect(response.body).to include("parent_id")
+      #ap JSON.parse(response.body) 
     end
   end
 
