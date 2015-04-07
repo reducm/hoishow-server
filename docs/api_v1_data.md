@@ -155,6 +155,23 @@ type: `GET`
 
 
 ----
+## 互动详情
+[/api/v1/topics/:id]()
+
+type: `GET`
+
+成功时返回：
+```javascript
+  {
+    creator: "创建者"
+    content: "内容"
+    city: [{参照city对象}], //没有返回nil
+    comments: [{参照comment对象},...],
+    comments_count: "评论数" 
+  }
+```
+
+----
 # 对象查询
 
 ##User对象 

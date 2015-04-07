@@ -29,6 +29,7 @@ Rails.application.routes.draw do
           get "preorder"
         end
       end
+      resources :topics, only: :show
     end
   end
 end
