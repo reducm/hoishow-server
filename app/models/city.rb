@@ -13,4 +13,8 @@ class City < ActiveRecord::Base
     district_ids = districts.pluck(:id)
     Stadium.where(district_id: district_ids)
   end
+
+  def hold_concert(concert)
+    concert_city_relations.where(concert: concert).first_or_create!
+  end
 end

@@ -23,7 +23,11 @@ Rails.application.routes.draw do
           get "search"
         end
       end
-      resources :concerts 
+      resources :concerts do
+        member do
+          get "city_rank"
+        end
+      end
       resources :shows do
         member do
           get "preorder"

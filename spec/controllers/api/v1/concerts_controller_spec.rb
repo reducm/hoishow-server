@@ -121,5 +121,26 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse(response.body)["is_followed"]).to be true
     end
   end
+
+  context "#city_rank" do
+    before('each') do
+      @concert = create :concert
+      @city1 = create :city
+      @city2 = create :city
+      @user1 = create :user
+      @user2 = create :user
+      @city1.hold_concert(@concert)
+      @city2.hold_concert(@concert)
+      @user1.vote_concert(@concert, @city1)
+      @user1.vote_concert(@concert, @city2)
+      @user2.vote_concert(@concert, @city2)
+    end
+    
+    it "should has something" do
+      get :city_rank, with_key(id: @concert.id, format: :json)
+      expect(response.body).to include("city_vote_count")
+      ap JSON.parse(response.body)
+    end
+  end
 end
 
