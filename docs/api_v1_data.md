@@ -188,7 +188,17 @@ type: `GET`
     }
 ```
 ## Star对象
-
+````
+  {
+    id:star_id,
+    name: "明星的名字",
+    avatar: "明星的头像",
+    is_followed: "是否被关注",
+    concerts:{Concert对象},//当need_concerts不为false的时候
+    shows:{Show对象},//当need_shows不为false的时候
+    topics:{Topic对象},//当need_topics不为false的时候
+  }
+```
 ## Concert对象
 ```javascript
 {
@@ -201,7 +211,12 @@ type: `GET`
   status: "voting(众筹中) or finished(众筹结束)"
   followers_count: "关注数",
   comments_count: "评论数",
-  shows_count: "演唱会数目"
+  shows_count: "演唱会数目",
+  voters_count: "投票人数",
+  is_followed: "是否被关注",
+  is_voted: "是否被投票",
+  stars: {Star对象},//当need_stars不为false的时候
+  shows: {Show对象}//当need_shows不为false的时候
 }
 ```
 
@@ -210,6 +225,11 @@ type: `GET`
 {
   id: show_id,
   name: "Show名称",
+  min_price: "最小价格",
+  max_price: "最高价格",
+  concert_id: "concert_id",
+  city_id: "city_id",
+  stadium_id: "stadium_id",
   show_time: "开show时间",
   poster: "海报url",
   concert: {concert对象},
@@ -225,6 +245,18 @@ type: `GET`
   pinyin: "城市名称的拼音",
   name: "城市名字",
   code: "城市代码",
+}
+```
+
+## Stadium对象
+```javascript
+{
+  id: stadium_id,
+  name: "场馆名字",
+  address: "场馆地址",
+  longitude: "经度",
+  latitude: "维度",
+  city: {City对象}
 }
 ```
 
