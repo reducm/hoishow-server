@@ -131,7 +131,23 @@ type: `GET`
     stars: [{参照star对象}],
     shows: [{参照show对象},...],
     comments: [{参照comment对象},...],
+    city_rank: [{参照city_rank接口返回的结构}]
   }
+```
+
+-----------
+## Concert城市投票排名
+[/api/v1/concerts/:id/city_rank]()
+
+type: `GET`
+
+成功时返回：
+```javascript
+  //按照投票数的由高到低排序
+  [{
+    City对象,
+    vote_count: 投票数
+  }]
 ```
 
 -------
