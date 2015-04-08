@@ -52,4 +52,16 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       expect(JSON.parse(response.body)["city"].size > 0).to be true 
     end
   end
+
+  context "#preorder" do
+    before('each') do
+      @user = create :user
+      @show = create :show
+    end
+
+    it "response should has something" do
+      get :preorder, with_key(id: @show.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      ap JSON.parse(response.body)
+    end
+  end
 end
