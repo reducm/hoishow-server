@@ -42,4 +42,27 @@ describe Show do
       expect(shows.index Show.page(2).first).to be 20
     end
   end
+
+  context "#setas_count" do
+    before('each') do
+      @user = create :user
+      @stadium = create :stadium
+      10.times{create :area, stadium: @stadium}
+      @show = create :show, stadium: @stadium
+      Area.all.each_with_index do |area, i|
+        relation = @show.show_area_relations.create(area: area, price: ( i+1 )*1.1)
+        2.times do
+          order = @user.orders.init_from_show(@show)
+          order.set_tickets_and_price([relation, relation])
+        end
+      end
+    end
+
+    it "each area's seats_left should be right" do
+      Area.all.each do |area|
+        expect( @show.area_seats_left(area) ).to eq ( area.seats_count - 4 )
+      end
+    end
+
+  end
 end

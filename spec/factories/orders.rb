@@ -8,14 +8,24 @@ FactoryGirl.define do
     valid_time {Faker::Name.name}
     out_id {Faker::Name.name}
     city_name {Faker::Name.name}
-    star_name {Faker::Name.name}
     show_name {Faker::Name.name}
     association :user
     concert_id 1
     city_id 1
     stadium_id 1
-    star_id 1
     show_id 1
     seats_info "12.0:1|13.0|2"
+    factory :paid_order do
+      status Order.statuses[:paid]
+    end
+    factory :success_order do
+      status Order.statuses[:success]
+    end
+    factory :refund_order do
+      status Order.statuses[:refund]
+    end
+    factory :outdate_order do
+      status Order.statuses[:outdate]
+    end
   end
 end

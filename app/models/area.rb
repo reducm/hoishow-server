@@ -3,6 +3,7 @@ class Area < ActiveRecord::Base
 
   has_many :show_area_relations
   has_many :shows, through: :show_area_relations
+  has_many :tickets
 
   validates :stadium, presence: {message: "Stadium不能为空"}
 end

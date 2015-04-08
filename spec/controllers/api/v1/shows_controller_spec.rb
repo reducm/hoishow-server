@@ -55,13 +55,21 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
 
   context "#preorder" do
     before('each') do
-      @user = create :user
-      @show = create :show
+      @stadium = create :stadium
+      10.times{create :area, stadium: @stadium}
+      @show = create :show, stadium: @stadium
+      Area.all.each_with_index do |area, i|
+        @show.show_area_relations.create(area: area, price: ( i+1 )*( 1.1 ))
+      end
     end
 
     it "response should has something" do
-      get :preorder, with_key(id: @show.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      ap JSON.parse(response.body)
+      get :preorder, with_key(id: @show.id, format: :json)
+      ap JSON.parse(response.body)["stadium"]["areas"]
+      expect(response.body).to include("stadium")
+      expect(response.body).to include("areas")
+      expect(response.body).to include("is_sold_out")
+      expect(response.body).to include("show")
     end
   end
 end

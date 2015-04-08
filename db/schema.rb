@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150403023554) do
+ActiveRecord::Schema.define(version: 20150408102706) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -97,12 +97,10 @@ ActiveRecord::Schema.define(version: 20150403023554) do
     t.datetime "valid_time"
     t.string   "out_id",       limit: 255
     t.string   "city_name",    limit: 255
-    t.string   "star_name",    limit: 255
     t.integer  "user_id",      limit: 4
     t.integer  "concert_id",   limit: 4
     t.integer  "city_id",      limit: 4
     t.integer  "stadium_id",   limit: 4
-    t.integer  "star_id",      limit: 4
     t.integer  "show_id",      limit: 4
     t.integer  "status",       limit: 4
     t.datetime "created_at",                              null: false
@@ -132,11 +130,12 @@ ActiveRecord::Schema.define(version: 20150403023554) do
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
 
   create_table "show_area_relations", force: :cascade do |t|
-    t.integer  "show_id",    limit: 4
-    t.integer  "area_id",    limit: 4
-    t.decimal  "price",                precision: 10
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.integer  "show_id",     limit: 4
+    t.integer  "area_id",     limit: 4
+    t.decimal  "price",                 precision: 6, scale: 2
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
+    t.boolean  "is_sold_out", limit: 1,                         default: false
   end
 
   add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree
@@ -190,6 +189,22 @@ ActiveRecord::Schema.define(version: 20150403023554) do
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
+
+  create_table "tickets", force: :cascade do |t|
+    t.integer  "area_id",         limit: 4
+    t.integer  "show_id",         limit: 4
+    t.decimal  "price",                       precision: 10
+    t.integer  "order_id",        limit: 4
+    t.string   "code",            limit: 255
+    t.datetime "code_valid_time"
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.integer  "status",          limit: 4
+  end
+
+  add_index "tickets", ["area_id"], name: "index_tickets_on_area_id", using: :btree
+  add_index "tickets", ["order_id"], name: "index_tickets_on_order_id", using: :btree
+  add_index "tickets", ["show_id"], name: "index_tickets_on_show_id", using: :btree
 
   create_table "topics", force: :cascade do |t|
     t.string   "creator_type", limit: 255

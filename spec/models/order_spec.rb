@@ -5,7 +5,6 @@ describe Order do
     @user = create :user
     @city = create :city
     @district = create :district, city: @city
-    @star = create :star
     @concert = create :concert
     @stadium = create(:stadium, district: @district)
     @show = create :show, concert: @concert, stadium: @stadium
@@ -13,8 +12,8 @@ describe Order do
       area =  create :area, stadium: @stadium
       @show.show_area_relations.create(area: area, price: rand(1..10))
     end
-    @order = @user.orders.init_from_data(city: @city, concert: @concert, star: @star, stadium: @stadium, show: @show)
-    @order.set_seats_and_price(ShowAreaRelation.all)
+    @order = @user.orders.init_from_data(city: @city, concert: @concert, stadium: @stadium, show: @show)
+    @order.set_tickets_and_price(ShowAreaRelation.all)
   end
 
   context "create order" do
@@ -44,8 +43,24 @@ describe Order do
       expect(@order.amount).to eq result
     end
 
-    it "Order#seats_count" do
-      expect(@order.seats_count).to eq ShowAreaRelation.all.size
+    it "Order#tickets_count" do
+      expect(@order.tickets_count).to eq ShowAreaRelation.all.size
+    end
+
+    it "new order's status should be pending" do
+      expect(@order.pending?).to be true
+    end
+  end
+
+  context "scope" do
+    it ":valid_orders" do
+      #before each has one pending_order
+      3.times{  create :order }
+      3.times{  create :paid_order }
+      3.times{create :success_order}
+      2.times{create :outdate_order}
+      2.times{create :refund_order}
+      expect(Order.valid_orders.count).to eq 10
     end
   end
 end

@@ -191,13 +191,42 @@ type: `GET`
     concert: {参考concert对象}
     city: {参考city对象}
     stadium: {参考stadium对象}
-    topic: {参考topic对象}
+    topics: [ {参考topic对象} ]
   }
 ```
 
 ----
 
+## 买票、选区接口
 
+[/api/v1/shows/:id/preorder]()
+
+type `GET`
+
+必需参数 
+```javascript
+  //show的id在url里传递
+```
+
+成功时返回
+```javascript
+{
+  stadium: {
+    Stadium对象Key/Value,
+    areas: [{ //Area价格由低到高排序
+      id: area_id,
+      name: 区名,
+      seats_count: 座位总数,
+      seats_left: 座位剩余,  
+      is_sold_out: 是否售完true or false，
+      price: 该场show在此区域的售价, float类型,
+    }....]
+  },
+  show: {Show对象}
+}
+```
+
+------------
 
 ## 话题详情
 [/api/v1/topics/:id]()
@@ -207,11 +236,8 @@ type: `GET`
 成功时返回：
 ```javascript
   {
-    creator: "创建者"
-    content: "内容"
-    city: [{参照city对象}], //没有返回nil
+    参考Topic对象的key/value
     comments: [{参照comment对象},...],
-    comments_count: "评论数" 
   }
 ```
 

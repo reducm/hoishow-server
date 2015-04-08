@@ -1,5 +1,4 @@
 class Api::V1::ShowsController < Api::V1::ApplicationController
-  before_action :check_login!, only: [:preorder]
   def index
     params[:page] ||= 1
     @shows = Show.page(params[:page])

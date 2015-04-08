@@ -233,36 +233,4 @@ type `POST`
 
 -----------
 
-## 用户买票、选区接口
-
-[/api/v1/shows/:id/preorder]()
-
-type `GET`
-
-必需参数 
-```javascript
-  {
-    api_token: "users_token",
-    mobile: "users mobile",
-  }
-  //show的id在url里传递
-```
-
-成功时返回
-```javascript
-{
-  stadium: {
-    Stadium对象Key/Value,
-    areas: [{ //Area价格由低到高排序
-      id: area_id,
-      name: 区名,
-      seats_count: 座位总数,
-      seats_left: 座位剩余,  
-      is_sold_out: 是否售完true or false，
-      price: 该场show在此区域的售价, float类型,
-    }....]
-  },
-  show: {Show对象}
-}
-```
 

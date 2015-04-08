@@ -6,6 +6,7 @@ class Show < ActiveRecord::Base
   has_many :show_area_relations
   has_many :areas, through: :show_area_relations
   has_many :orders
+  has_many :tickets
 
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}
@@ -25,14 +26,13 @@ class Show < ActiveRecord::Base
   end
 
   def area_seats_left(area)
-    #TODO after order has status 
-    #area.seats_count - orders.success_order.in
-    10 
+    valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
+    count = area.seats_count - valid_tickets.count
+    count > 0 ? count : 0
   end
 
   def area_is_sold_out(area)
-    #TODO after order has status 
-    false
+    show_area_relations.where(area_id: area.id).first.is_sold_out
   end
 
   private
