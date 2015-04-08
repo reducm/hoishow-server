@@ -9,3 +9,6 @@ json.stadium do
     end
   end
 end
+json.show do
+  json.partial! "api/v1/shows/show", show: @show
+end
