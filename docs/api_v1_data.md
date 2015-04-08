@@ -186,6 +186,12 @@ type: `GET`
     concert_id: "123", //从属演唱会id
     city_id: "123", //从属城市id
     stadium_id: "123", //从属场馆id
+    show_time: "201504081428370800"
+    poster: "http://xx.jpg"
+    concert: {参考concert对象}
+    city: {参考city对象}
+    stadium: {参考stadium对象}
+    topic: {参考topic对象}
   }
 ```
 
@@ -193,7 +199,7 @@ type: `GET`
 
 
 
-## 互动详情
+## 话题详情
 [/api/v1/topics/:id]()
 
 type: `GET`
@@ -305,8 +311,8 @@ type: `GET`
   id: "id",
   content: "话题内容",
   city: {城市对象}.
-  subject_type: "Star or Concert", //互动的主体
-  subject_id: "star_id or concert_id", //互动的主体id
+  subject_type: "Star or Concert", //话题的主体
+  subject_id: "star_id or concert_id", //话题的主体id
   creator:  {
     name: "名称",
     avatar: "头像url",
