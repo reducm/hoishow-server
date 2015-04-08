@@ -171,6 +171,28 @@ type: `GET`
 
 
 ----
+## 演出详情
+[/api/v1/shows/:id]()
+
+type: `GET`
+
+成功时返回：
+```javascript
+  {
+    id: "123"
+    name: "演出名称"
+    min_price: "100"
+    max_price: "1000"
+    concert_id: "123", //从属演唱会id
+    city_id: "123", //从属城市id
+    stadium_id: "123", //从属场馆id
+  }
+```
+
+----
+
+
+
 ## 互动详情
 [/api/v1/topics/:id]()
 
