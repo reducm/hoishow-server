@@ -59,13 +59,13 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       10.times{create :area, stadium: @stadium}
       @show = create :show, stadium: @stadium
       Area.all.each_with_index do |area, i|
-        @show.show_area_relations.create(area: area, price: ( i+1 )*( 1.1 ))
+        relation = create :show_area_relation, area: area, show: @show
       end
     end
 
     it "response should has something" do
       get :preorder, with_key(id: @show.id, format: :json)
-      ap JSON.parse(response.body)["stadium"]["areas"]
+      #ap JSON.parse(response.body)["stadium"]["areas"]
       expect(response.body).to include("stadium")
       expect(response.body).to include("areas")
       expect(response.body).to include("is_sold_out")

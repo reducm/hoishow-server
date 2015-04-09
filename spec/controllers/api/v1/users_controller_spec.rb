@@ -362,4 +362,48 @@ describe Api::V1::UsersController do
       expect(@user.like_topics.count).to eq 1
     end
   end
+
+  context "#create_order" do
+    before('each') do
+      @stadium = create :stadium
+      10.times{create :area, stadium: @stadium}
+      @show = create :show, stadium: @stadium
+      Area.all.each_with_index do |area, i|
+        @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+      end
+      @areas = Area.all.to_a
+    end  
+
+    it "create_order should success" do
+      post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
+      expect(response.body).to include("out_id")
+      expect(response.body).to include("amount")
+      expect(response.body).to include("valid_time")
+      expect(response.body).to include("concert")
+      expect(response.body).to include("stadium")
+      expect(response.body).to include("show")
+      expect(response.body).to include("city")
+      expect(response.body).to include("status")
+      expect(response.body).to include("tickets")
+      #ap JSON.parse response.body
+    end
+
+    it "create_order at threads should be lock" do
+      threads =  []
+
+      #ActiveRecord::Base.connection.disconnect!
+      1.times do
+        threads << Thread.new do
+          #ActiveRecord::Base.establish_connection
+          ap "show" if @show.blank?
+          ap "area" if @areas.first.blank?
+          post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: @areas.first.id, quantity: 2, format: :json)
+          ap  response.body
+        end
+      end
+      threads.each {|t| t.join}
+      #ActiveRecord::Base.establish_connection
+      expect(Order.count).to eq 1
+    end
+  end
 end
