@@ -15,10 +15,15 @@ gem 'kaminari'
 
 gem "rest-client"
 # Use CoffeeScript for .coffee assets and views
-group :assets do
-  gem 'coffee-rails', '~> 4.1.0'
-  gem 'jquery-rails'
-end
+
+#assets
+#editor
+gem 'rails_kindeditor'
+gem 'coffee-rails', '~> 4.1.0'
+gem 'jquery-rails'
+gem 'bootstrap-sass'
+gem 'font-awesome-sass', '~> 4.3.0'
+#####END assets ######
 
 #gem 'devise'
 

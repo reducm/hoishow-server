@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>开Show后台</title>
+  <%= stylesheet_link_tag    'operation', media: 'all' %>
+  <%= javascript_include_tag 'operation' %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <%= render partial: "layouts/sidebar" %>
+  <%= yield %>
+
+</body>
+</html>
