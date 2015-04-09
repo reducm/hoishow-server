@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150408102706) do
+ActiveRecord::Schema.define(version: 20150409025033) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 20150408102706) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.decimal  "amount",                   precision: 10
+    t.decimal  "amount",                   precision: 10, scale: 2
     t.string   "concert_name", limit: 255
     t.string   "stadium_name", limit: 255
     t.string   "show_name",    limit: 255
@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(version: 20150408102706) do
     t.integer  "stadium_id",   limit: 4
     t.integer  "show_id",      limit: 4
     t.integer  "status",       limit: 4
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.datetime "created_at",                                        null: false
+    t.datetime "updated_at",                                        null: false
     t.string   "seats_info",   limit: 255
   end
 
@@ -119,12 +119,12 @@ ActiveRecord::Schema.define(version: 20150408102706) do
     t.string   "trade_id",      limit: 255
     t.datetime "pay_at"
     t.datetime "refund_at"
-    t.decimal  "amount",                    precision: 10
-    t.decimal  "refund_amount",             precision: 10
+    t.decimal  "amount",                    precision: 10, scale: 2
+    t.decimal  "refund_amount",             precision: 10, scale: 2
     t.string   "paid_origin",   limit: 255
     t.integer  "order_id",      limit: 4
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
@@ -136,22 +136,23 @@ ActiveRecord::Schema.define(version: 20150408102706) do
     t.datetime "created_at",                                                    null: false
     t.datetime "updated_at",                                                    null: false
     t.boolean  "is_sold_out", limit: 1,                         default: false
+    t.integer  "seats_count", limit: 4
   end
 
   add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree
   add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
-    t.decimal  "min_price",              precision: 10
-    t.decimal  "max_price",              precision: 10
+    t.decimal  "min_price",              precision: 10, scale: 2
+    t.decimal  "max_price",              precision: 10, scale: 2
     t.string   "poster",     limit: 255
     t.string   "name",       limit: 255
     t.datetime "show_time"
     t.integer  "concert_id", limit: 4
     t.integer  "city_id",    limit: 4
     t.integer  "stadium_id", limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
@@ -161,11 +162,11 @@ ActiveRecord::Schema.define(version: 20150408102706) do
   create_table "stadiums", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.string   "address",     limit: 255
-    t.decimal  "longitude",               precision: 10
-    t.decimal  "latitude",                precision: 10
+    t.decimal  "longitude",               precision: 10, scale: 6
+    t.decimal  "latitude",                precision: 10, scale: 6
     t.integer  "city_id",     limit: 4
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                                       null: false
+    t.datetime "updated_at",                                       null: false
     t.integer  "district_id", limit: 4
   end
 
@@ -193,12 +194,12 @@ ActiveRecord::Schema.define(version: 20150408102706) do
   create_table "tickets", force: :cascade do |t|
     t.integer  "area_id",         limit: 4
     t.integer  "show_id",         limit: 4
-    t.decimal  "price",                       precision: 10
+    t.decimal  "price",                       precision: 10, scale: 2
     t.integer  "order_id",        limit: 4
     t.string   "code",            limit: 255
     t.datetime "code_valid_time"
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
     t.integer  "status",          limit: 4
   end
 
