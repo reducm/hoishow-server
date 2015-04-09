@@ -221,7 +221,8 @@ type `POST`
     api_token: "users_token",
     mobile: "users mobile",
     show_id: "Show的id",
-    areas: [area_id, area_id...], //要买票的area_id 的数组
+    area_id: area的id, 
+    quantity: 3 //购买数量
   }
 ```
 
