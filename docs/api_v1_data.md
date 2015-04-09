@@ -257,8 +257,11 @@ type: `GET`
       birthday: "32872394934" //时间戳
     }
 ```
+
+
 ## Star对象
-````
+
+```javascript
   {
     id:star_id,
     name: "明星的名字",
@@ -269,6 +272,7 @@ type: `GET`
     topics:{Topic对象},//当need_topics不为false的时候
   }
 ```
+
 ## Concert对象
 ```javascript
 {
@@ -362,4 +366,3 @@ type: `GET`
   user: {:id, :nickname, :avatar},
 }
 ```
-

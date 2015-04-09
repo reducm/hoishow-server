@@ -36,4 +36,14 @@ Rails.application.routes.draw do
       resources :topics, only: :show
     end
   end
+
+  namespace :operation do
+    root to: "home#index"
+    resources :stars
+    resources :concerts
+    resources :shows
+    resources :orders
+    resources :users
+    resources :admins
+  end
 end
