@@ -210,8 +210,8 @@ type `POST`
 ```
 
 ----------
-## 用户点赞topic
-[/api/v1/users/like_topic]()
+## 用户创建Order
+[/api/v1/users/create_order]()
 
 type `POST`
 
@@ -220,15 +220,15 @@ type `POST`
   {
     api_token: "users_token",
     mobile: "users mobile",
-    topic_id: "Topic的id",
+    show_id: "Show的id",
+    areas: [area_id, area_id...], //要买票的area_id 的数组
   }
 ```
 
 成功时返回
 ```javascript
-  {msg: "ok"}// 状态200
+  Order对象
 ```
-
 
 -----------
 
