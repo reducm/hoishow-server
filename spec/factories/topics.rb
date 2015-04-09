@@ -15,5 +15,10 @@ FactoryGirl.define do
       subject_id 1
       association :city
     end
+    factory :star_topic do
+      creator_type "User"
+      subject_type Star.name
+      subject_id 1
+    end
   end
 end

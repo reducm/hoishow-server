@@ -16,6 +16,8 @@ class Star < ActiveRecord::Base
 
   mount_uploader :avatar, AvatarUploader 
 
+  paginates_per 20
+
   def hoi_concert(concert)
     star_concert_relations.where(concert: concert).first_or_create!
   end

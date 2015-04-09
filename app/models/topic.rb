@@ -13,6 +13,8 @@ class Topic < ActiveRecord::Base
   has_many :user_like_topics
   has_many :likers, through: :user_like_topics, source: :user
 
+  paginates_per 20
+ 
   def subject
      begin
       Object::const_get(subject_type).where(id: subject_id).first 

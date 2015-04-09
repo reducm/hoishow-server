@@ -8,10 +8,10 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       100.times {create :star}
     end
 
-    it "should get 18 shows without user" do
+    it "should get 20 shows without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 18
+      expect(JSON.parse(response.body).size).to eq 20 
     end    
 
     it "should has attributes" do
@@ -23,6 +23,24 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       JSON.parse(response.body).each do|object| 
         expect(object["is_followed"]).to be false
       end
+    end
+  end
+
+  context "#index paginate test" do
+    before('each') do
+      100.times {create :star}
+    end
+
+    it "should get 20 stars without user" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 20
+    end    
+
+    it "with page params" do
+      get :index, with_key(page: 2, format: :json)
+      stars_id = Star.pluck(:id).sort
+      expect(stars_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
     end
   end
 
