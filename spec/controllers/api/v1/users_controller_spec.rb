@@ -388,22 +388,5 @@ describe Api::V1::UsersController do
       #ap JSON.parse response.body
     end
 
-    it "create_order at threads should be lock" do
-      threads =  []
-
-      #ActiveRecord::Base.connection.disconnect!
-      1.times do
-        threads << Thread.new do
-          #ActiveRecord::Base.establish_connection
-          ap "show" if @show.blank?
-          ap "area" if @areas.first.blank?
-          post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: @areas.first.id, quantity: 2, format: :json)
-          ap  response.body
-        end
-      end
-      threads.each {|t| t.join}
-      #ActiveRecord::Base.establish_connection
-      expect(Order.count).to eq 1
-    end
   end
 end

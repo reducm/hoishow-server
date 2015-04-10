@@ -35,6 +35,7 @@ Rails.application.routes.draw do
         end
       end
       resources :topics 
+      resources :orders, only: [:index, :show]
     end
   end
 
@@ -46,5 +47,6 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
+    #TODO api_auth
   end
 end

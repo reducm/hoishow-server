@@ -63,6 +63,5 @@ describe Show do
         expect( @show.area_seats_left(area) ).to eq ( @show.show_area_relations.where(area: area).first.seats_count - 4 )
       end
     end
-
   end
 end
