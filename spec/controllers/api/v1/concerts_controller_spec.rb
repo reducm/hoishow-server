@@ -88,6 +88,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("cities")
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
+      expect(response.body).to include("topics")
       #ap JSON.parse response.body
     end
 
