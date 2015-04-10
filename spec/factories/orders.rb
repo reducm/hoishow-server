@@ -14,7 +14,6 @@ FactoryGirl.define do
     city_id 1
     stadium_id 1
     show_id 1
-    seats_info "12.0:1|13.0|2"
     factory :paid_order do
       status Order.statuses[:paid]
     end
