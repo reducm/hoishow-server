@@ -15,6 +15,7 @@ Rails.application.routes.draw do
           post "create_topic" => "users#create_topic"
           post "like_topic" => "users#like_topic"
           post "create_comment" => "users#create_comment"
+          post "create_order" => "users#create_order"
         end
       end
 
@@ -34,6 +35,7 @@ Rails.application.routes.draw do
         end
       end
       resources :topics 
+      resources :orders, only: [:index, :show]
     end
   end
 
@@ -45,5 +47,6 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
+    #TODO api_auth
   end
 end

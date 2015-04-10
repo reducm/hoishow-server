@@ -27,7 +27,8 @@ class Show < ActiveRecord::Base
 
   def area_seats_left(area)
     valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
-    count = area.seats_count - valid_tickets.count
+    relation = show_area_relations.where(area_id: area.id).first
+    count = relation.seats_count - valid_tickets.count
     count > 0 ? count : 0
   end
 

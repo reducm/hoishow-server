@@ -63,4 +63,47 @@ describe Order do
       expect(Order.valid_orders.count).to eq 10
     end
   end
+
+  context "test create_order concurrency" do
+    before('each') do
+      @stadium = create :stadium
+      10.times{create :area, stadium: @stadium}
+      @show = create :show, stadium: @stadium
+      Area.all.each_with_index do |area, i|
+        @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+      end
+      @user = create :user
+    end  
+
+    #it "is_sold_out should be lock with multiple threads" do
+      #threads = []
+      #@area = Area.first
+      #@relation = ShowAreaRelation.where(show_id: @show.id, area_id: @area.id).first
+      #10.times do|i| 
+        #ap i
+        #threads << Thread.new do
+          #relations = [@relation, @relation]
+          #ap "#{i} thread"
+          #ShowAreaRelation.transaction do
+            #ap "#{i} with_lok, user: #{@user}"
+            #if @relation.is_sold_out
+              #ap "is_sold_out"
+            #else
+              #@order = @user.orders.init_from_show(@show)
+              #@order.set_tickets_and_price(relations)
+              #@relation.reload
+              #if @show.area_seats_left(@relation.area) == 0
+                #@relation.update_attributes(is_sold_out: true)
+              #end
+            #end
+            #ap "end #{i} with_lok"
+          #end
+        #end
+      #end
+
+      #threads.each {|t|t.join}
+      #expect(Order.count).to eq 1
+    #end
+    
+  end
 end

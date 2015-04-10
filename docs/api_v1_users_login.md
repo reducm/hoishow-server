@@ -210,8 +210,8 @@ type `POST`
 ```
 
 ----------
-## 用户点赞topic
-[/api/v1/users/like_topic]()
+## 用户创建Order
+[/api/v1/users/create_order]()
 
 type `POST`
 
@@ -220,16 +220,64 @@ type `POST`
   {
     api_token: "users_token",
     mobile: "users mobile",
-    topic_id: "Topic的id",
+    show_id: "Show的id",
+    area_id: area的id, 
+    quantity: 3 //购买数量
   }
 ```
 
 成功时返回
 ```javascript
-  {msg: "ok"}// 状态200
+  Order对象
+```
+
+-----------
+
+## 查看我的订单列表
+[/api/v1/orders]()
+
+type `GET`
+
+必需参数 
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+  }
+```
+
+可选参数
+```javascript
+{
+  page: 1
+}
+```
+
+
+成功时返回
+```javascript
+  Order对象数组
 ```
 
 
 -----------
 
+## 查看订单详情
+[/api/v1/orders/:out_id]()
+
+type `GET`
+
+必需参数 
+```javascript
+  url携带order out_id参数
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+  }
+```
+
+成功时返回
+```javascript
+  Order对象
+```
 

@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order]
   def sign_in
     if params[:mobile] && params[:code]
       if verify_phone?(params[:mobile])
@@ -160,6 +160,31 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       render json: {msg: "ok"}, status: 200
     else
       return error_json("can not find topic by #{params[:topic_id]}")
+    end
+  end
+
+  def create_order
+    @show = Show.find(params[:show_id])
+    @relation = ShowAreaRelation.where(show_id: @show.id, area_id: params[:area_id]).first
+
+    if @show.area_seats_left(@relation.area) - params[:quantity] < 0
+      return error_json("购买票数大于该区剩余票数!")
+    end
+
+    relations ||= []
+    params[:quantity].times{relations.push @relation}
+
+    @relation.with_lock do
+      if @relation.is_sold_out
+        return error_json("你所买的区域暂时不能买票, 请稍后再试")
+      else
+        @order = @user.orders.init_from_show(@show)
+        @order.set_tickets_and_price(relations)
+        @relation.reload
+        if @show.area_seats_left(@relation.area) == 0
+          @relation.update_attributes(is_sold_out: true)
+        end
+      end
     end
   end
 

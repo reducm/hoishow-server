@@ -139,7 +139,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
     it "should has something" do
       get :city_rank, with_key(id: @concert.id, format: :json)
       expect(response.body).to include("vote_count")
-      ap JSON.parse(response.body)
+      #ap JSON.parse(response.body)
     end
   end
 end
