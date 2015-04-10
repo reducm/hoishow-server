@@ -83,5 +83,10 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-nav'
   gem 'thin'
+
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rvm'
 end
 
