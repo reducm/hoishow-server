@@ -22,6 +22,7 @@ class Order < ActiveRecord::Base
     outdate: 4 #过期
   }
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
+  scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, Order.statuses[:pending]) }
 
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库

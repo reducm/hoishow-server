@@ -28,6 +28,8 @@ gem 'font-awesome-sass', '~> 4.3.0'
 #gem 'devise'
 
 gem 'whenever', :require => false
+gem 'sidekiq'
+gem 'sinatra', :require => nil
 
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
