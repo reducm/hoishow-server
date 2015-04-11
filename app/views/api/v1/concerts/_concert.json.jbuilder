@@ -1,4 +1,5 @@
 need_stars ||= false
+need_topics||= false
 need_shows ||= false
 user ||= nil
 
@@ -14,6 +15,10 @@ json.is_followed concert.id.in?(@followed_concerts) ? true : false
 json.is_voted concert.id.in?(@voted_concerts) ? true : false
 if need_stars
   json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
+end
+
+if need_topics
+  json.topics{ json.array! concert.topics, partial: "api/v1/topics/topic", as: :topic }
 end
 
 if need_shows

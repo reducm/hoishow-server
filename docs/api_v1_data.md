@@ -130,7 +130,7 @@ type: `GET`
     cities: [{参照city对象}],
     stars: [{参照star对象}],
     shows: [{参照show对象},...],
-    comments: [{参照comment对象},...],
+    topics: [{参照topic对象},...],
     city_rank: [{参照city_rank接口返回的结构}]
   }
 ```
