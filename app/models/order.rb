@@ -55,6 +55,13 @@ class Order < ActiveRecord::Base
     tickets.count
   end
 
+  def status_outdate?
+    if pending? && created_at < Time.now - 15.minutes
+      outdate!
+    end
+    outdate?
+  end
+
   private
   def set_attr_after_create
     generate_out_id

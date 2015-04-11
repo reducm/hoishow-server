@@ -1,30 +1,45 @@
-<div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Start Bootstrap
-                    </a>
-                </li>
-                <li>
-                    <a href="#">Dashboard</a>
-                </li>
-                <li>
-                    <a href="#">Shortcuts</a>
-                </li>
-                <li>
-                    <a href="#">Overview</a>
-                </li>
-                <li>
-                    <a href="#">Events</a>
-                </li>
-                <li>
-                    <a href="#">About</a>
-                </li>
-                <li>
-                    <a href="#">Services</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
-                </li>
-            </ul>
-        </div>
+<nav class="navbar navbar-inverse navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+<div class="navbar-header">
+  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+    <span class="sr-only">Toggle navigation</span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+
+  <%= link_to '开Show运营后台', operation_root_path , class: 'navbar-brand'%>
+</div>
+
+<div class="navbar-default navbar-inverse sidebar" role="navigation">
+  <div class="sidebar-nav navbar-collapse">
+    <ul class="nav" id="side-menu">
+      <li>
+        <a href="#"><i class="fa fa-globe fa-fw"></i> 艺人 <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li>
+            <%= link_to operation_stars_path do %>
+              <i class="fa fa-bicycle fa-fw"></i> 单车
+            <% end %>
+          </li>
+          <li>
+            <%= link_to "" do %>
+              <i class="fa fa-table fa-fw"></i> 网票网
+            <% end %>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#"><i class="fa fa-globe fa-fw"></i> Concert <span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li>
+            <%= link_to operation_concerts_path do %>
+              <i class="fa fa-bicycle fa-fw"></i> Concert列表
+            <% end %>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <!-- /.sidebar-collapse -->
+</div>
+</nav>

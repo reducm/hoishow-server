@@ -23,6 +23,7 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'bootstrap-sass'
 gem 'font-awesome-sass', '~> 4.3.0'
+gem 'simple_form'
 #####END assets ######
 
 #gem 'devise'
