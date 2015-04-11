@@ -1,0 +1,27 @@
+<table id="concerts-table" class="table table-bordered">
+  <thead>
+    <tr>
+      <th>演出艺人</th>
+      <th>演出</th>
+      <th>状态</th>
+      <th>投票时间范围</th>
+      <th>Show数量</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <% @concerts.each do|concert|%>
+        <td><%= concert.stars.pluck(:name).join(",") %></td>
+        <td><%= concert.name %></td>
+        <td><%= concert.status_cn %></td>
+        <td><%= concert.votedate_cn %></td>
+        <td><%= concert.shows.count %></td>
+        <td>
+          <%= link_to "查看", operation_concert_path(concert)%> 
+          <%= link_to "编辑", edit_operation_concert_path(concert)%> 
+        </td>
+      <%end%>
+    </tr>
+  </tbody>
+</table>

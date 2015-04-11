@@ -1,3 +1,4 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
@@ -41,6 +42,7 @@ Rails.application.routes.draw do
 
   namespace :operation do
     root to: "home#index"
+    mount Sidekiq::Web => '/sidekiq'
     resources :stars
     resources :concerts
     resources :shows
