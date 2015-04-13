@@ -32,6 +32,19 @@ class Concert < ActiveRecord::Base
     followers.count
   end
 
+  def status_cn
+    case status
+    when "voting"
+      "投票中"
+    when "finished"
+      "投票完结"
+    end
+  end
+
+  def votedate_cn
+    "#{ start_date.strfcn_date }~#{ end_date.strfcn_date }"
+  end
+
   def shows_count
     shows.count
   end

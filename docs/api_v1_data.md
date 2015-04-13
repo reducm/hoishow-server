@@ -130,7 +130,7 @@ type: `GET`
     cities: [{参照city对象}],
     stars: [{参照star对象}],
     shows: [{参照show对象},...],
-    comments: [{参照comment对象},...],
+    topics: [{参照topic对象},...],
     city_rank: [{参照city_rank接口返回的结构}]
   }
 ```
@@ -368,5 +368,24 @@ type: `GET`
 ```
 
 ## Order对象
+```javascript
+{
+  out_id: 123,
+  amount: 99.9,
+  concert_name: "演唱会名字",
+  concert_id: 123, //演唱会id
+  stadium_id: 123, //场馆id
+  stadium_name: "场馆名字",
+  show_name: "演出名字",
+  show_id: 123, //演出id
+  city_name: "城市名字",
+  city_id: 123, //城市id
+  status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
+  tickets: [{Ticket对象1},{Ticket对象2}...],
+  created_at: "201504102140270000",
+  updated_at: "201504102140270000",
+  valid_time: "201504102140270000"
+}
+```
 
 ## Ticket对象

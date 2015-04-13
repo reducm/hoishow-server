@@ -17,3 +17,6 @@ brew install elasticsearch
 
 ##所有model添加到elasticsearch
 > rake environment elasticsearch:import:all
+
+##Sidekiq
+bundle exec sidekiq
