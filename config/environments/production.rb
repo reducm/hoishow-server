@@ -76,5 +76,5 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  config.cache_store = [:dalli_store, '10.6.19.184', {:namespace => "hsp", :compress => true}] 
+  config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsp", :compress => true}]
 end
