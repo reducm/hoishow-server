@@ -7,4 +7,6 @@ class Stadium < ActiveRecord::Base
   validates :city, presence: {message: "City不能为空"}
 
   delegate :city, to: :district
+
+  paginates_per 20
 end

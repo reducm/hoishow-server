@@ -9,6 +9,8 @@ class City < ActiveRecord::Base
 
   validates :name, presence: {message: "城市名字不能为空"}, uniqueness: {message: "城市名字不能重复"}
 
+  paginates_per 20
+
   def stadiums
     district_ids = districts.pluck(:id)
     Stadium.where(district_id: district_ids)

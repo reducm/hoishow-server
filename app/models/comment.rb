@@ -3,6 +3,8 @@ class Comment < ActiveRecord::Base
   belongs_to :topic
   validates :user_id, presence: true
 
+  paginates_per 20
+
   def self.create_comment(subject, content)
     create!(subject_type: subject.class.name, subject_id: subject.id, content: content)
   end
