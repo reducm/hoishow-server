@@ -1,10 +1,11 @@
-# config valid only for current version of Capistrano
 lock '3.4.0'
 
 set :stages, ["staging", "production"]
 set :default_stage, "staging"
-
+set :whenever_environment,  ->{ fetch :rails_env }
 set :keep_releases, 5
+
+set :sidekiq_cmd, ->{ "bundle exec sidekiq -e #{rails_env}" }
 
 set :linked_files, %w{config/database.yml config/secrets.yml}
 set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
