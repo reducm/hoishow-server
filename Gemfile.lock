@@ -68,6 +68,9 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano-sidekiq (0.5.2)
+      capistrano
+      sidekiq
     carrierwave (0.6.2)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -308,6 +311,7 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
+  capistrano-sidekiq
   carrierwave (= 0.6.2)
   carrierwave-upyun (= 0.1.5)
   coffee-rails (~> 4.1.0)
