@@ -5,6 +5,8 @@ set :default_stage, "staging"
 set :whenever_environment,  ->{ fetch :rails_env }
 set :whenever_roles, ->{ [:db, :app] }
 
+set :sidekiq_monit_default_hooks, false
+
 set :linked_files, %w{config/database.yml config/secrets.yml}
 set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
 
