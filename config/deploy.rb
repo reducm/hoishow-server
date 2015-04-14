@@ -51,5 +51,5 @@ set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock co
 #    end
 #  end
 #
-  after :finishing, 'deploy:cleanup'
+#  after :finishing, 'deploy:cleanup'
 #end
