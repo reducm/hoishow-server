@@ -4,6 +4,13 @@ GIT
   specs:
     quiet_assets (0.0.1)
 
+GIT
+  remote: https://github.com/itison/capistrano3-fast-assets.git
+  revision: 35f1cda8f2d3aa342c430fc39786c5578b076824
+  specs:
+    capistrano3-fast-assets (0.0.1)
+      capistrano (>= 3.1.0)
+
 GEM
   remote: http://ruby.taobao.org/
   specs:
@@ -316,6 +323,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rvm
   capistrano-sidekiq
+  capistrano3-fast-assets!
   carrierwave (= 0.6.2)
   carrierwave-upyun (= 0.1.5)
   coffee-rails (~> 4.1.0)
