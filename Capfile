@@ -21,7 +21,6 @@ require 'capistrano/rails'
 # require 'capistrano/chruby'
 require 'capistrano/bundler'
 require 'capistrano/rails/assets'
-require 'capistrano/fast-assets'
 require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require "whenever/capistrano"
