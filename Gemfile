@@ -95,3 +95,5 @@ group :development, :test do
   gem 'capistrano-passenger'
 end
 
+# error notify
+gem 'exception_notification'
