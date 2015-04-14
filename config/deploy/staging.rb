@@ -5,10 +5,10 @@ system "ssh-add"
 
 set :application, "hoishow-server"
 set :deploy_via, :remote_cache
-set :repo_url, "git@git.bestapp.us:root/hoishow-server.git"
+set :repo_url, "git@git.bestapp.us:karra/hoishow-server.git"
 
 set :scm, :git
-set :branch, "staging"
+set :branch, "dev"
 
 set :use_sudo, false
 set :user, 'deploy'
