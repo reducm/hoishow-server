@@ -93,6 +93,7 @@ group :development, :test do
   gem 'capistrano-rvm'
   gem 'capistrano-sidekiq'
   gem 'capistrano-passenger'
+  gem 'capistrano3-fast-assets'
 end
 
 # error notify
