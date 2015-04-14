@@ -56,6 +56,7 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+  config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsp", :compress => true}]
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = 'http://assets.example.com'
@@ -76,5 +77,16 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-  config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsp", :compress => true}]
+
+  config.action_mailer.default_url_options = { :host => 'dan-che.com' }
+
+  ActionMailer::Base.smtp_settings = {
+    :address              => "smtp.exmail.qq.com",
+    :port                 => 25,
+    :domain               => "dan-che.com",
+    :user_name            => "dc-notify@bestapp.us",
+    :password             => "DanChe2014",
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  } #TODO 更换为hoishow的邮箱
 end
