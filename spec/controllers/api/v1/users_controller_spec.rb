@@ -5,6 +5,42 @@ describe Api::V1::UsersController do
   before('each') do
     @user = create :user
   end
+
+  context "#index" do
+    before('each') do
+      30.times {create :user}
+    end
+
+    it "should get 20 users" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 20
+    end    
+
+    it "should has attributes" do
+      get :index, with_key(format: :json)
+      expect(response.body).to include("mobile")
+      expect(response.body).to include("api_token")
+      expect(response.body).to include("api_expires_in")
+      expect(response.body).to include("nickname")
+      expect(response.body).to include("sex")
+      expect(response.body).to include("avatar")
+      expect(response.body).to include("birthday")
+    end
+  end
+
+  context "#index paginate test" do
+    before('each') do
+      100.times {create :user}
+    end
+    
+    it "with page params" do
+      get :index, with_key(page: 2, format: :json)
+      users_mobile = User.pluck(:mobile)
+      expect(JSON.parse(response.body).first["mobile"]).to eq users_mobile[20] #第二页第一个 
+    end
+  end
+
   context "#verification" do
     it "users sholud has code" do
       mobile = "13632269944"
