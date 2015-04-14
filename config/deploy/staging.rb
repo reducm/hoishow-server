@@ -12,7 +12,7 @@ set :branch, "staging"
 
 set :use_sudo, false
 set :user, 'deploy'
-set :rails_env, "production"
+set :rails_env, "staging"
 set :deploy_to, '/data/deploy/hoishow-server'
 
 server '122.226.100.76', user: 'deploy', roles: %w{web app db}
