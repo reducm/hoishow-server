@@ -13,8 +13,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def update
     @concert = Concert.find(params[:id])
-    binding.pry
-    if @concert.update_attributes(params[:concert])
+    if @concert.update_attributes(params[:concert].symbolize_keys)
       redirect_to :index
     else
       flash[:notice] = @concert.errors.full_messages

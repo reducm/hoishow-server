@@ -1,8 +1,9 @@
 <%= simple_form_for [:operation, concert ] do|f| %>
   <%= f.input :name %>
-  <%= f.input :start_date %>
-  <%= f.input :end_date%>
+  <%= f.input :start_date, as: :datetimepicker %>
+  <%= f.input :end_date, as: :datetimepicker %>
   <%= f.input :status %>
   <%= f.kindeditor :description %>
   <%= f.button :submit %>
 <%end%>
+
