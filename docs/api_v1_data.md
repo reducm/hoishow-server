@@ -237,7 +237,9 @@ type: `GET`
 可选参数
 ```javascript
   {
-    page: "2" //页码
+    page: "2" //页码, 默认是1
+    subject_type: "star's name" or "concert's name" //若不指定subject默认返回全部topic
+    subject_id: star's id or concert's id //若不指定subject默认返回全部topic
   }
 ```
 
