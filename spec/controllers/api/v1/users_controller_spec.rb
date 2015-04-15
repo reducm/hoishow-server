@@ -33,7 +33,7 @@ describe Api::V1::UsersController do
     before('each') do
       100.times {create :user}
     end
-    
+
     it "with page params" do
       get :index, with_key(page: 2, format: :json)
       users_mobile = User.pluck(:mobile)
@@ -357,7 +357,7 @@ describe Api::V1::UsersController do
       expect(assigns(:topic)).to have(1).error_on(:city_id)
     end
 
-     it "create should has attributes" do
+    it "create should has attributes" do
       @concert = create :concert
       @city = create :city
       post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", city_id: @city.id, format: :json)
@@ -373,7 +373,7 @@ describe Api::V1::UsersController do
       expect(JSON.parse(response.body)).to include("comments_count")
       expect(JSON.parse(response.body)).to include("is_like")
       #ap JSON.parse(response.body)
-     end
+    end
   end
 
   context "#like_topic" do
@@ -423,6 +423,29 @@ describe Api::V1::UsersController do
       expect(response.body).to include("tickets")
       #ap JSON.parse response.body
     end
-
   end
+
+  threads = []
+  threads << Thread.new do
+    context "#create_order" do
+      before('each') do
+        @stadium = create :stadium
+        10.times{create :area, stadium: @stadium}
+        @show = create :show, stadium: @stadium
+        Area.all.each_with_index do |area, i|
+          @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+        end
+        @areas = Area.all.to_a
+      end  
+
+      it "should raise errors if order is sold out" do
+        2.times do
+          post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
+        end
+        ap JSON.parse response.body
+        expect(response.body).to eq "{\"errors\":\"购买票数大于该区剩余票数!\"}"
+      end
+    end
+  end
+  threads.each { |thr| thr.join  }
 end
