@@ -1,0 +1,35 @@
+<div id="block-login" class="block">
+  <h2>Hoishow后台登录</h2>
+  <div class="content login">
+    <div class="flash">
+    <% flash.each do |type, message| -%>
+      <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+        <p><%= message %></p>
+      </div>
+    <% end -%>
+    </div>
+    <%= form_for(:session, :url => operation_sessions_path) do |f| %>
+      <div class="group wat-cf">
+        <div class="left">
+          <%= f.label "用户名", :class=>"label right" %>
+        </div>
+        <div class="right">
+          <%= f.text_field :username, :class=>"text_field" %>
+        </div>
+      </div>
+      <div class="group wat-cf">
+        <div class="left">
+          <%= f.label :password, "密码", :class=>"label right" %>
+        </div>
+        <div class="right">
+          <%= f.password_field :password, :class=>"text_field" %>
+        </div>
+      </div>
+      <div class="group navform wat-cf">
+        <div class="right">
+          <%= f.submit "登陆" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
