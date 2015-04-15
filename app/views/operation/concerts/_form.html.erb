@@ -1,8 +1,8 @@
-<%= simple_form_for [:operation, concert ] do|f| %>
-  <%= f.input :name %>
-  <%= f.input :start_date, as: :datetimepicker %>
-  <%= f.input :end_date, as: :datetimepicker %>
-  <%= f.input :status, default: concert.status_cn, collection: ["投票中", "投票完结"] %>
+<%= simple_form_for [:operation, concert ] do |f| %>
+  <%= f.input :name, label: "演出投票名称" %>
+  <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker %>
+  <%= f.input :end_date, label: "投票结束时间", as: :datetimepicker %>
+  <%= f.input :status, label: "状态", default: concert.status_cn, collection: ["投票中", "投票完结"] %>
   <%= f.kindeditor :description %>
   <%= f.button :submit %>
 <%end%>
