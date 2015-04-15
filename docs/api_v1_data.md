@@ -81,7 +81,7 @@ type: `GET`
 
 -------------
 
-## 演唱会和演出列表
+## 演唱会列表
 [/api/v1/concerts/]()
 
 type: `GET`
@@ -228,6 +228,30 @@ type `GET`
 
 ------------
 
+## 话题列表
+
+[/api/v1/topics/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码, 默认是1
+    subject_type: "star's name" or "concert's name" //若不指定subject默认返回全部topic
+    subject_id: star's id or concert's id //若不指定subject默认返回全部topic
+  }
+```
+
+成功时返回
+```javascript
+  {
+    topics: [{参照topic对象},...]
+  }
+```
+
+----
+
 ## 话题详情
 [/api/v1/topics/:id]()
 
@@ -238,6 +262,138 @@ type: `GET`
   {
     参考Topic对象的key/value
     comments: [{参照comment对象},...],
+  }
+```
+
+------------
+
+## 评论列表
+
+[/api/v1/comments/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    comments: [{参照comment对象},...]
+  }
+```
+
+------------
+
+## 用户列表
+
+[/api/v1/users/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    users: [{参照user对象},...]
+  }
+```
+
+------------
+
+## 城市列表
+
+[/api/v1/cities/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    cities: [{参照city对象},...]
+  }
+```
+
+------------
+
+## 场馆列表
+
+[/api/v1/stadiums/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    stadiums: [{参照stadium对象},...]
+  }
+```
+
+------------
+
+## 订单列表
+
+[/api/v1/orders/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    orders: [{参照order对象},...]
+  }
+```
+
+------------
+
+## 门票列表
+
+[/api/v1/tickets/]()
+
+type: `GET`
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回
+```javascript
+  {
+    tickets: [{参照ticket对象},...]
   }
 ```
 

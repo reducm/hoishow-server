@@ -10,8 +10,8 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <% @concerts.each do|concert|%>
+    <% @concerts.each do|concert|%>
+      <tr>
         <td><%= concert.stars.pluck(:name).join(",") %></td>
         <td><%= concert.name %></td>
         <td><%= concert.status_cn %></td>
@@ -21,7 +21,7 @@
           <%= link_to "查看", operation_concert_path(concert)%> 
           <%= link_to "编辑", edit_operation_concert_path(concert)%> 
         </td>
-      <%end%>
-    </tr>
+      </tr>
+    <%end%>
   </tbody>
 </table>

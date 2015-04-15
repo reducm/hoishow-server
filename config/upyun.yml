@@ -1,0 +1,28 @@
+development: &DEFAULT
+  upyun_username: "xiongpan"
+  upyun_password: "hoishow2014"
+  upyun_bucket: "hoishow-static"
+  assets_bucket: 'hoishow-static'
+  upyun_bucket_domain: "hoishow-static.b0.upaiyun.com"
+  upyun_upload_url: "http://hoishow-static.b0.upaiyun.com"
+  hoishow-img:
+    upyun_username: "xiongpan"
+    upyun_password: "hoishow2014"
+    upyun_bucket: "hoishow-img"
+    upyun_bucket_domain: "hoishow-img.b0.upaiyun.com"
+    upyun_upload_url: "http://hoishow-img.b0.upaiyun.com"
+  hoishow-file:
+    upyun_username: "xiongpan"
+    upyun_password: "hoishow2014"
+    upyun_bucket: "hoishow-img"
+    upyun_bucket_domain: "hoishow-img.b0.upaiyun.com"
+    upyun_upload_url: "http://hoishow-img.b0.upaiyun.com"
+
+test:
+  <<: *DEFAULT
+
+production:
+  <<: *DEFAULT
+
+staging:
+  <<: *DEFAULT

@@ -91,5 +91,9 @@ group :development, :test do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
+  gem 'capistrano-sidekiq'
+  gem 'capistrano-passenger'
 end
 
+# error notify
+gem 'exception_notification'

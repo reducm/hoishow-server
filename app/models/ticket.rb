@@ -15,6 +15,8 @@ class Ticket < ActiveRecord::Base
 
   before_create :set_status
 
+  paginates_per 20
+
   protected
   def set_status
     self.status = :pending
