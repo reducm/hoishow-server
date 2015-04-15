@@ -23,3 +23,6 @@ test:
 
 production:
   <<: *DEFAULT
+
+staging:
+  <<: *DEFAULT
