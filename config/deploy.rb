@@ -13,7 +13,13 @@ set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock co
 
 namespace :deploy do
   task :compile_assets do
-    run "cd #{deploy_to}/current/; bundle exec rake assets:precompile && bundle exec rake assets:cdn"
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "assets:cdn"
+        end
+      end
+    end
   end
 
   after :finishing, 'deploy:cleanup'
