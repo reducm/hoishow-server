@@ -42,10 +42,10 @@ img_url = 'coldplay.png'
 stars.each do |star|
   star = Star.create(name: star, avatar: img_url)
 
-  concert = Concert.create(name: "#{star}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0)
+  concert = Concert.create(name: "#{star.name}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0)
   StarConcertRelation.create(star_id: star.id, concert_id: concert.id)
 
-  Show.create(name: "#{star}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: 1)
+  Show.create(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: 1)
 
   Topic.create(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id)
 end
