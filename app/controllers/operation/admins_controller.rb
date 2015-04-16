@@ -1,5 +1,6 @@
 class Operation::AdminsController < Operation::ApplicationController
   before_filter :check_login!, only: [:index]
+  load_and_authorize_resource
 
   def index
     params[:page] ||= 1

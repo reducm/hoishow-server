@@ -41,6 +41,7 @@
       <li>
         <a href="#"><i class="fa fa-globe fa-fw"></i> 系统管理 <span class="fa arrow"></span></a>
         <ul class="nav nav-second-level">
+          <% if can? :manage, current_admin %>
           <li>
             <%= link_to operation_admins_path do %>
               <i class="fa fa-bicycle fa-fw"></i> 系统用户管理
