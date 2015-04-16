@@ -1,10 +1,13 @@
 class Operation::ConcertsController < Operation::ApplicationController
+  before_filter :check_login!
+  load_and_authorize_resource
+
   def index
     @concerts = Concert.page(params[:page])
   end
 
   def show
-    
+
   end
 
   def edit
