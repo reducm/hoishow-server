@@ -5,7 +5,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   def index
     params[:page] ||= 1
     @users = User.page(params[:page])
-  end 
+  end
 
   def sign_in
     if params[:mobile] && params[:code]
@@ -32,14 +32,14 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   def verification
     mobile = params[:mobile]
     if !verify_phone?(mobile)
-      return error_json "手机号码格式不对!" 
+      return error_json "手机号码格式不对!"
     end
 
     if Rails.cache.read(cache_key(mobile)).present?
-      return error_json "您操作太过于频繁了!" 
+      return error_json "您操作太过于频繁了!"
     end
 
-    if mobile == "13435858622" 
+    if mobile == "13435858622"
       code = Rails.cache.fetch(cache_key(mobile), expires_in: 5.years) do
         "858622"
       end
@@ -52,7 +52,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       if true #ChinaSMS.to(mobile, "手机验证码为#{code}【单车电影】")[:success]
         render json: {msg: "ok"}, status: 200
       else
-        return error_json "短信发送失败，请再次获取" 
+        return error_json "短信发送失败，请再次获取"
       end
     end
   end
@@ -96,24 +96,26 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def follow_subject
     return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
-    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first 
+    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin
       @user.send("follow_#{params[:subject_type].downcase}", subject)
       render json: {msg: "ok"}, status: 200
-    rescue
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       return error_json("follow fail, #{$@}")
     end
   end
 
   def unfollow_subject
     return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
-    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first 
+    subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin
       @user.send("unfollow_#{params[:subject_type].downcase}", subject)
       render json: {msg: "ok"}, status: 200
-    rescue
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       return error_json("unfollow fail, #{$@}")
     end
   end
@@ -127,7 +129,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       end
       #render json comment's view
     else
-      return error_json("can not find topic by topic_id: #{params[:topic_id]}") 
+      return error_json("can not find topic by topic_id: #{params[:topic_id]}")
     end
   end
 
@@ -137,7 +139,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       @city = City.where(id: params[:city_id]).first
       @user.vote_concert(@concert, @city)
       render json: {msg: "ok"}, status: 200
-    rescue
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       return error_json("vote fail, #{$@}")
     end
   end
@@ -146,7 +149,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     params[:page] ||= 1
     @stars = @user.follow_stars.page(params[:page]).per(12)
   end
-  
+
   def followed_concerts
     params[:page] ||= 1
     @concerts = @user.follow_concerts.page(params[:page]).per(20)
@@ -199,7 +202,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     code = Rails.cache.read(cache_key(mobile))
     if code.blank?
       code = Rails.cache.fetch(cache_key(mobile), expires_in: 1.minutes) do
-        Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456" 
+        Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
       end
     end
     code

@@ -14,13 +14,13 @@
     <% @stars.each do|star|%>
       <tr>
         <td><%= star.name %></td>
-        <td><%= nil %></td>
+        <td><%= %></td>
         <td><%= star.concerts.map{|relation| relation.voters_count}.inject(&:+) %></td>
         <td><%= star.followers_count %></td>
         <td>
           <%= link_to "查看详情", edit_operation_star_path(star)%> 
         </td>
-        <td><%= nil %></td>
+        <td><%= %></td>
       </tr>
     <%end%>
   </tbody>

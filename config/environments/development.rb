@@ -38,5 +38,17 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsd", :compress => true}] 
+  config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsd", :compress => true}]
+
+  config.action_mailer.default_url_options = { :host => 'dan-che.com' }
+
+  ActionMailer::Base.smtp_settings = {
+    :address              => "smtp.exmail.qq.com",
+    :port                 => 25,
+    :domain               => "dan-che.com",
+    :user_name            => "dc-notify@bestapp.us",
+    :password             => "DanChe2014",
+    :authentication       => "plain",
+    :enable_starttls_auto => true
+  } #TODO 更换为hoishow的邮箱
 end

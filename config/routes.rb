@@ -35,11 +35,11 @@ Rails.application.routes.draw do
           get "preorder"
         end
       end
-      resources :topics 
-      resources :comments 
-      resources :cities 
-      resources :stadiums 
-      resources :tickets 
+      resources :topics
+      resources :comments
+      resources :cities
+      resources :stadiums
+      resources :tickets
       resources :orders, only: [:index, :show]
     end
   end
@@ -47,6 +47,9 @@ Rails.application.routes.draw do
   namespace :operation do
     root to: "home#index"
     mount Sidekiq::Web => '/sidekiq'
+    resources :sessions, only: [:new, :create, :destroy]
+    match "/signin" => "sessions#new", via: [:get]
+    match "/signout" => "sessions#destroy", via: [:delete]
     resources :stars
     resources :concerts
     resources :shows

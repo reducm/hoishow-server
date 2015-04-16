@@ -1,0 +1,29 @@
+<style type="text/css" media="screen">
+#admin-list {
+  margin: 0 10px;
+}
+</style>
+
+<div id="admin-list">
+  <h2>系统用户</h2>
+  <div class="content">
+    <table class="table">
+      <thead>
+        <th><%= check_box_tag "check_all" %></td>
+        <th>用户名称</td>
+        <th>用户类型</td>
+        <th>操作</td>
+      </thead>
+      <tbody>
+        <% @admins.each do |admin| %>
+          <tr>
+            <td><%= check_box_tag "check" %></td>
+            <td><%= admin.name %></td>
+            <td><%= admin.type_cn %></td>
+            <td></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

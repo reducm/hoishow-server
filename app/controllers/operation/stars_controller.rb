@@ -8,7 +8,6 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def edit
-  
 
   end
 

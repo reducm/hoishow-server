@@ -14,11 +14,12 @@ class Topic < ActiveRecord::Base
   has_many :likers, through: :user_like_topics, source: :user
 
   paginates_per 20
- 
+
   def subject
      begin
-      Object::const_get(subject_type).where(id: subject_id).first 
-    rescue 
+      Object::const_get(subject_type).where(id: subject_id).first
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
      end
@@ -26,8 +27,9 @@ class Topic < ActiveRecord::Base
 
   def creator
     begin
-      Object::const_get(creator_type).where(id: creator_id).first 
-    rescue 
+      Object::const_get(creator_type).where(id: creator_id).first
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
     end
@@ -50,7 +52,7 @@ class Topic < ActiveRecord::Base
     user_like_topics.count
   end
 
-  private 
+  private
   def check_city_id
     errors[:city_id] << "subject Concert should have city_id!" if subject_type == Concert.name && city_id.blank?
   end

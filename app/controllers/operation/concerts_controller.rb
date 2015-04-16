@@ -17,7 +17,6 @@ class Operation::ConcertsController < Operation::ApplicationController
     attributes = params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
     status_to_en(attributes)
     if @concert.update!(attributes)
-      #redirect_to operation_concert_url(@concert)
       redirect_to operation_concerts_url
     else
       flash[:notice] = @concert.errors.full_messages
