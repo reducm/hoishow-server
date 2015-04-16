@@ -13,7 +13,6 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def update
     @concert = Concert.find(params[:id])
-    #if @concert.update_attributes(params[:concert].symbolize_keys)
     attributes = params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
     status_to_en(attributes)
     if @concert.update!(attributes)
