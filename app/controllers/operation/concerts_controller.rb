@@ -3,7 +3,12 @@ class Operation::ConcertsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @concerts = Concert.page(params[:page])
+    if params[:q]
+      @stars = Star.search(params[:q])
+      @concerts = @stars.map{|star| star.concerts}.flatten
+    else
+      @concerts = Concert.page(params[:page])
+    end
   end
 
   def show
@@ -16,9 +21,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def update
     @concert = Concert.find(params[:id])
-    attributes = params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
-    status_to_en(attributes)
-    if @concert.update!(attributes)
+    if @concert.update!(validate_attributes)
       redirect_to operation_concerts_url
     else
       flash[:notice] = @concert.errors.full_messages
@@ -26,14 +29,8 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
-  def status_to_en(attributes)
-    case attributes["status"]
-    when "投票中"
-      attributes["status"] = "voting"
-    when "投票完结"
-      attributes["status"] = "finished"
+  private
+    def validate_attributes
+      params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
     end
-  end
-
-
 end
