@@ -9,8 +9,8 @@ class Operation::SessionsController < Operation::ApplicationController
       session[:admin_id] = admin.id
       redirect_to operation_root_url, :notice => "Logged in!"
     else
-      flash.now.alert = "Invalid username or password"
-      render new_operation_session_url
+      flash.alert = "Invalid username or password"
+      redirect_to operation_signin_url
     end
   end
 
