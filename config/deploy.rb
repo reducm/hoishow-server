@@ -16,11 +16,12 @@ namespace :deploy do
     on roles(:app) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, "assets:cdn"
+          execute :rake, "assets:publish_assets"
         end
       end
     end
   end
+  after "deploy:assets:precompile", "deploy:compile_assets"
 
   after :finishing, 'deploy:cleanup'
 end
