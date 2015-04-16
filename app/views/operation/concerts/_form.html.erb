@@ -2,7 +2,7 @@
   <%= f.input :name, required: false, label: "演出投票名称" %>
   <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker %>
   <%= f.input :end_date, label: "投票结束时间", as: :datetimepicker %>
-  <%= f.input :status, label: "状态", selected: concert.status_cn, collection: ["投票中", "投票完结"] %>
+  <%= f.input :status, label: "状态", as: :select, default: concert.status_cn, collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
   <%= f.kindeditor :description %>
   <%= f.button :submit, "确认更新" %>
 <%end%>

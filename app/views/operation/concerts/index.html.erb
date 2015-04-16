@@ -27,3 +27,8 @@
     <%end%>
   </tbody>
 </table>
+
+<%= form_tag(operation_concerts_url, method: "get") do %>
+  <%= text_field_tag(:q) %>
+  <%= submit_tag("搜索") %>
+<% end %>

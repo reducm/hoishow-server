@@ -17,7 +17,7 @@ FactoryGirl.define do
     api_token "123"
     api_expires_in 7.days
     #has_set_password false
-    factory :user_with_avatr do 
+    factory :user_with_avatar do 
       avatar { fixture_file_upload(File.join Rails.root, %w(spec fixtures about.png)) }
     end
     
