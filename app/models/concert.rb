@@ -41,6 +41,7 @@ class Concert < ActiveRecord::Base
     end
   end
 
+ 
   def votedate_cn
     "#{ start_date.strfcn_date }~#{ end_date.strfcn_date }"
   end

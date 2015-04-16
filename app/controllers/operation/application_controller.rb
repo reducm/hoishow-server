@@ -5,7 +5,7 @@ class Operation::ApplicationController < ApplicationController
   def check_login!
     unless current_admin
       flash[:notice] = "Please login"
-      redirect_to login_path
+      redirect_to operation_signin_url
     end
   end
 
@@ -13,5 +13,5 @@ class Operation::ApplicationController < ApplicationController
     @current_admin ||= Admin.find_by_id(session[:admin_id]) if session[:admin_id]
   end
 
-  helper_method :current_user
+  helper_method :current_admin
 end

@@ -6,7 +6,7 @@
       <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
         <p><%= message %></p>
       </div>
-    <% end -%>
+    <% end %>
     </div>
     <%= form_for(:session, :url => operation_sessions_path) do |f| %>
       <div class="group wat-cf">
