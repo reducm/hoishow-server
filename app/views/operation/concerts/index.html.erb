@@ -21,7 +21,9 @@
         <td><%= concert.shows.count %></td>
         <td><%= concert.voters_count %></td>
         <td>
-          <%= link_to "编辑", edit_operation_concert_path(concert)%> 
+          <% if can? :update, concert %>
+            <%= link_to "编辑", edit_operation_concert_path(concert)%>
+          <% end %>
         </td>
       </tr>
     <%end%>

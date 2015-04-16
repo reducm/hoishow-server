@@ -4,6 +4,14 @@ class Admin < ActiveRecord::Base
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
 
+  def is_admin?
+    self.admin_type == 0
+  end
+
+  def is_operator?
+    self.admin_type == 1
+  end
+
   def type_cn
     case admin_type
     when 0

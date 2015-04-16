@@ -1,16 +1,18 @@
 class Operation::ConcertsController < Operation::ApplicationController
+  before_filter :check_login!
+  load_and_authorize_resource
+
   def index
     if params[:q]
       @stars = Star.search(params[:q])
       @concerts = @stars.map{|star| star.concerts}.flatten
     else
       @concerts = Concert.page(params[:page])
-
     end
   end
 
   def show
-    
+
   end
 
   def edit
@@ -30,6 +32,5 @@ class Operation::ConcertsController < Operation::ApplicationController
   private
     def validate_attributes
       params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
-      
     end
 end
