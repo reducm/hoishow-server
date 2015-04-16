@@ -18,6 +18,6 @@ class Operation::SessionsController < Operation::ApplicationController
 
   def destroy
     session[:admin_id] = nil
-    redirect_to operation_root_url, :notice => "Logged out!"
+    redirect_to operation_signin_url, :notice => "Logged out!"
   end
 end
