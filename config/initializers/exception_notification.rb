@@ -16,11 +16,11 @@ ExceptionNotification.configure do |config|
   # Notifiers =================================================================
 
   # Email notifier sends notifications by email.
-  config.add_notifier :email, {
-    :email_prefix => "[hoishow_error] ",
-    :sender_address => %{"notifier" <dc-notify@bestapp.us>},
-    :exception_recipients => %w{ xo@bestapp.us tom@bestapp.us karra@bestapp.us jas@bestapp.us}
-  }
+  # config.add_notifier :email, {
+  #   :email_prefix => "[hoishow_error] ",
+  #   :sender_address => %{"notifier" <dc-notify@bestapp.us>},
+  #   :exception_recipients => %w{ xo@bestapp.us tom@bestapp.us karra@bestapp.us jas@bestapp.us}
+  # }
 
   # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
   # config.add_notifier :campfire, {
