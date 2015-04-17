@@ -1,55 +1,50 @@
 # encoding: utf-8
-
+#MAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(320 640 800)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(120x160 224*292 300x423 320 640 800)
 class AvatarUploader < CarrierWave::Uploader::Base
-
-  # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
 
-  # Include the Sprockets helpers for Rails 3.1+ asset pipeline compatibility:
-  # include Sprockets::Helpers::RailsHelper
-  # include Sprockets::Helpers::IsolatedHelper
+  storage :upyun
+  self.upyun_bucket = UpyunSetting["upyun_bucket"]
+  self.upyun_bucket_domain = UpyunSetting["upyun_bucket_domain"]
 
-  # Choose what kind of storage to use for this uploader:
-  storage :file
-  # storage :fog
-
-  # Override the directory where uploaded files will be stored.
-  # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{Rails.env}/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
-  # Provide a default URL as a default if there hasn't been a file uploaded:
-  # def default_url
-  #   # For Rails 3.1+ asset pipeline compatibility:
-  #   # asset_path("fallback/" + [version_name, "default.png"].compact.join('_'))
-  #
-  #   "/images/fallback/" + [version_name, "default.png"].compact.join('_')
-  # end
+  def default_url
+    # 搞一个大一点的默认图片取名 blank.png 用 FTP 传入图片空间，用于作为默认图片
+    # 由于有自动的缩略图处理，小图也不成问题
+    # Setting.upload_url 这个是你的图片空间 URL
+    "#{UpyunSetting["upyun_upload_url"]}/default.gif#{version_name}"
+  end
 
-  # Process files as they are uploaded:
-  # process :scale => [200, 300]
-  #
-  # def scale(width, height)
-  #   # do something
-  # end
+  # 覆盖 url 方法以适应“图片空间”的缩略图命名
+  def url(version_name = "")
+    @url ||= super({})
+    version_name = version_name.to_s
+    return @url if version_name.blank?
+    if not version_name.in?(image_version_name)
+      # 故意在调用了一个没有定义的“缩略图版本名称”的时候抛出异常，以便开发的时候能及时看到调错了
+      raise "ImageUploader version_name:#{version_name} not allow."
+    end
+    [@url,version_name].join("!") # 我这里在图片空间里面选用 ! 作为“间隔标志符”
+  end
 
-  # Create different versions of your uploaded files:
-  # version :thumb do
-  #   process :scale => [50, 50]
-  # end
+  def extension_white_list
+    %w(jpg jpeg gif png)
+  end
 
-  # Add a white list of extensions which are allowed to be uploaded.
-  # For images you might use something like this:
-   def extension_white_list
-     %w(jpg jpeg gif png)
-   end
+  def filename
+    if super.present?
+      model.uploader_secure_token ||= SecureRandom.uuid.gsub("-","")
+      Rails.logger.debug("(BaseUploader.filename) #{model.uploader_secure_token}")
+      "#{model.uploader_secure_token}.#{file.extension.downcase}"
+    end
+  end
 
-  # Override the filename of the uploaded files:
-  # Avoid using model.id or version_name here, see uploader/store.rb for details.
-  # def filename
-  #   "something.jpg" if original_filename
-  # end
-
+  private
+  def image_version_name
+    %(small normal large 320 640 800)
+  end
 end

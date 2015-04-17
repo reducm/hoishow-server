@@ -65,6 +65,8 @@ gem "second_level_cache"
 
 gem 'searchkick'
 
+gem 'cancancan', '~> 1.10'
+
 group :test do
   gem 'faker', "~> 1.4.3"
   gem 'fakeweb'

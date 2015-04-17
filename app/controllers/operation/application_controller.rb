@@ -13,5 +13,9 @@ class Operation::ApplicationController < ApplicationController
     @current_admin ||= Admin.find_by_id(session[:admin_id]) if session[:admin_id]
   end
 
+  def current_ability
+    @current_ability ||= ::Ability.new(current_admin)
+  end
+
   helper_method :current_admin
 end

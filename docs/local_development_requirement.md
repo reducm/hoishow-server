@@ -20,3 +20,7 @@ brew install elasticsearch
 
 ##Sidekiq
 bundle exec sidekiq
+
+##错误邮件账户
+hoishow-error@bestapp.us
+hoishow!@#456

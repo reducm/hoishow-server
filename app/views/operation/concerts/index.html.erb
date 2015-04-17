@@ -1,29 +1,41 @@
-<table id="concerts-table" class="table table-bordered">
-  <caption><h1>演出投票列表</h1></caption>
-  <thead>
-    <tr>
-      <th>演出艺人</th>
-      <th>演出</th>
-      <th>状态</th>
-      <th>投票时间范围</th>
-      <th>Show数量</th>
-      <th>投票数量</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @concerts.each do|concert|%>
+  <div class="nav">
+    <h1 class="pull-left">演出投票列表</h1>
+    <div class="search-star">
+      <%= form_tag(operation_concerts_url, method: "get", class: 'navbar-form') do %>
+        <div class="form-group">
+          <%= text_field_tag(:q, nil, class: 'form-control') %>
+        </div>
+        <%= submit_tag("搜索", class: 'btn btn-default') %>
+      <% end %>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead>
       <tr>
-        <td><%= concert.stars.pluck(:name).join(",") %></td>
-        <td><%= concert.name %></td>
-        <td><%= concert.status_cn %></td>
-        <td><%= concert.votedate_cn %></td>
-        <td><%= concert.shows.count %></td>
-        <td><%= concert.voters_count %></td>
-        <td>
-          <%= link_to "编辑", edit_operation_concert_path(concert)%> 
-        </td>
+        <th>演出艺人</th>
+        <th>演出</th>
+        <th>状态</th>
+        <th>投票时间范围</th>
+        <th>Show数量</th>
+        <th>投票数量</th>
+        <th>操作</th>
       </tr>
-    <%end%>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <% @concerts.each do|concert|%>
+        <tr>
+          <td><%= concert.stars.pluck(:name).join(",") %></td>
+          <td><%= concert.name %></td>
+          <td><%= concert.status_cn %></td>
+          <td><%= concert.votedate_cn %></td>
+          <td><%= concert.shows.count %></td>
+          <td><%= concert.voters_count %></td>
+          <td>
+            <% if can? :update, concert %>
+              <%= link_to "编辑", edit_operation_concert_path(concert)%>
+            <% end %>
+          </td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
