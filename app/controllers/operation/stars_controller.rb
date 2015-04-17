@@ -11,8 +11,10 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def sort
-    params[:star].each_with_index do |id, index|
-      Star.find(id).update(position: index+1)
+    if params[:star].present?
+      params[:star].each_with_index do |id, index|
+        Star.where(id: id).update_all(position: index+1) 
+      end
     end
     render nothing: true
   end
