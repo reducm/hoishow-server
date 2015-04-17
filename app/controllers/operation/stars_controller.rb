@@ -1,10 +1,17 @@
 class Operation::StarsController < Operation::ApplicationController
   def index
-    @stars = Star.page(params[:page])
+    @stars = Star.order("position")
   end
 
   def show
     @star = Star.find(params[:id])
+  end
+
+  def sort
+    params[:star].each_with_index do |id, index|
+      Star.find(id).update(position: index+1)
+    end
+    render nothing: true
   end
 
   def edit
@@ -14,6 +21,4 @@ class Operation::StarsController < Operation::ApplicationController
   def update
 
   end
-
-
 end

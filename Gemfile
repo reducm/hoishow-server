@@ -21,6 +21,7 @@ gem "rest-client"
 gem 'rails_kindeditor'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'bootstrap-sass'
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'simple_form'

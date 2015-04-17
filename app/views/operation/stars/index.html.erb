@@ -10,9 +10,9 @@
       <th>排序</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody data-update-url="<%= sort_operation_stars_url %>">
     <% @stars.each do|star|%>
-      <tr>
+      <%= content_tag_for :tr, star, remote: true do %>
         <td><%= star.name %></td>
         <td><%= %></td>
         <td><%= star.concerts.map{|relation| relation.voters_count}.inject(&:+) %></td>
@@ -20,8 +20,8 @@
         <td>
           <%= link_to "查看详情", edit_operation_star_path(star)%> 
         </td>
-        <td><%= %></td>
-      </tr>
+        <td><%= star.position %></td>
+      <%end%>
     <%end%>
   </tbody>
 </table>
