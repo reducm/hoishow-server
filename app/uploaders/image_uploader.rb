@@ -1,23 +1,25 @@
 # encoding: utf-8
 #MAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(320 640 800)
 IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(120x160 224*292 300x423 320 640 800)
-class AvatarUploader < CarrierWave::Uploader::Base
+class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
   storage :upyun
-  self.upyun_bucket = UpyunSetting["upyun_bucket"]
-  self.upyun_bucket_domain = UpyunSetting["upyun_bucket_domain"]
+  ImgUpyunSetting = UpyunSetting["hoishow-img"]
+
+  self.upyun_bucket = ImgUpyunSetting["upyun_bucket"]
+  self.upyun_bucket_domain = ImgUpyunSetting["upyun_bucket_domain"]
 
   def store_dir
     "#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
-  def default_url
-    # 搞一个大一点的默认图片取名 blank.png 用 FTP 传入图片空间，用于作为默认图片
-    # 由于有自动的缩略图处理，小图也不成问题
-    # Setting.upload_url 这个是你的图片空间 URL
-    "#{UpyunSetting["upyun_upload_url"]}/default.gif#{version_name}"
-  end
+  #def default_url
+  #  # 搞一个大一点的默认图片取名 blank.png 用 FTP 传入图片空间，用于作为默认图片
+  #  # 由于有自动的缩略图处理，小图也不成问题
+  #  # Setting.upload_url 这个是你的图片空间 URL
+  #  "#{UpyunSetting["upyun_upload_url"]}/default.gif#{version_name}"
+  #end
 
   # 覆盖 url 方法以适应“图片空间”的缩略图命名
   def url(version_name = "")

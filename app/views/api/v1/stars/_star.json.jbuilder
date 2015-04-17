@@ -6,7 +6,7 @@ need_topics ||= false
 @followed_stars = user.present? ? user.follow_stars.pluck(:id) : []
 
 json.(star, :id, :name)
-json.avatar star.avatar.url rescue nil 
+json.avatar star.avatar.url || ''
 json.is_followed star.id.in?(@followed_stars) ? true : false
 
 if need_concerts

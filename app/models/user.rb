@@ -17,9 +17,9 @@ class User < ActiveRecord::Base
   has_many :user_like_topics
   has_many :like_topics, through: :user_like_topics, source: :topic
 
-  validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true 
+  validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
 
-  mount_uploader :avatar, AvatarUploader 
+  mount_uploader :avatar, ImageUploader
 
   paginates_per 20
 
@@ -31,7 +31,7 @@ class User < ActiveRecord::Base
 
   def sign_in_api
     return if self.api_token.present? && self.api_expires_in.present?
-    
+
     self.api_token = SecureRandom.hex(16)
     self.api_expires_in = 1.years
     save!

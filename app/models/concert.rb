@@ -26,7 +26,7 @@ class Concert < ActiveRecord::Base
     finished: 1
   }
 
-  mount_uploader :poster, PosterUploader 
+  mount_uploader :poster, ImageUploader
 
   def followers_count
     followers.count
@@ -41,7 +41,7 @@ class Concert < ActiveRecord::Base
     end
   end
 
- 
+
   def votedate_cn
     "#{ start_date.strfcn_date }~#{ end_date.strfcn_date }"
   end

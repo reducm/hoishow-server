@@ -14,20 +14,20 @@ class Star < ActiveRecord::Base
   has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
   #has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
 
-  mount_uploader :avatar, AvatarUploader 
+  mount_uploader :avatar, ImageUploader
 
   paginates_per 20
 
   def hoi_concert(concert)
     star_concert_relations.where(concert: concert).first_or_create!
   end
-  
+
   def followers_count
     followers.count
   end
 
   def shows
-    concert_ids = concerts.pluck(:id)    
+    concert_ids = concerts.pluck(:id)
     Show.where(concert_id: concert_ids)
   end
 
