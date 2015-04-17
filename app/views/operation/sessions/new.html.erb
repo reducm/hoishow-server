@@ -1,35 +1,34 @@
-<div id="block-login" class="block">
-  <h2>Hoishow后台登录</h2>
-  <div class="content login">
-    <div class="flash">
-    <% flash.each do |type, message| -%>
-      <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
-        <p><%= message %></p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <% flash.each do |type, message| -%>
+        <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+          <p><%= message %></p>
+        </div>
+      <% end %>
+      <div class="login-panel panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Hoishow后台登录</h3>
+        </div>
+        <div class="panel-body">
+          <%= form_for(:session, :url => operation_sessions_path) do |f| %>
+            <fieldset>
+              <div class="form-group">
+                <%= f.text_field :username, class: "form-control", placeholder: "Username" %>
+              </div>
+              <div class="form-group">
+                <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                </label>
+              </div>
+              <%= f.submit "登陆", class: 'btn btn-lg btn-success btn-block' %>
+            </fieldset>
+          <% end %>
+        </div>
       </div>
-    <% end %>
     </div>
-    <%= form_for(:session, :url => operation_sessions_path) do |f| %>
-      <div class="group wat-cf">
-        <div class="left">
-          <%= f.label "用户名", :class=>"label right" %>
-        </div>
-        <div class="right">
-          <%= f.text_field :username, :class=>"text_field" %>
-        </div>
-      </div>
-      <div class="group wat-cf">
-        <div class="left">
-          <%= f.label :password, "密码", :class=>"label right" %>
-        </div>
-        <div class="right">
-          <%= f.password_field :password, :class=>"text_field" %>
-        </div>
-      </div>
-      <div class="group navform wat-cf">
-        <div class="right">
-          <%= f.submit "登陆" %>
-        </div>
-      </div>
-    <% end %>
   </div>
 </div>

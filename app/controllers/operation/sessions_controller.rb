@@ -2,7 +2,6 @@ class Operation::SessionsController < Operation::ApplicationController
   before_filter :check_login!, only: [:destroy]
 
   def new
-    render layout: false
   end
 
   def create
