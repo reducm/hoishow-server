@@ -89,4 +89,11 @@ Rails.application.configure do
     :authentication       => "plain",
     :enable_starttls_auto => true
   } #TODO 更换为hoishow的邮箱
+
+  config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[hoishow_error_staging] ",
+      :sender_address => %{"notifier" <dc-notify@bestapp.us>},
+      :exception_recipients => %w{ hoishow-error@bestapp.us }
+    }
 end
