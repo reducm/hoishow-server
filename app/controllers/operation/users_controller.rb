@@ -4,7 +4,7 @@ class Operation::UsersController < Operation::ApplicationController
 
   def index
     if params[:q]
-      @users = User.search(params[:q])
+      @users = User.search(params[:q]).page(params[:page])
     else
       @users = User.page(params[:page])
     end
