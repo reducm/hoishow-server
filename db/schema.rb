@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409125226) do
+ActiveRecord::Schema.define(version: 20150416063958) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(version: 20150409125226) do
     t.string   "avatar",     limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "position",   limit: 4
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
