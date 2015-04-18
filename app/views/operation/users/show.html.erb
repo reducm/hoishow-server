@@ -1,0 +1,40 @@
+  <div class="row">
+    <div class="col-md-4">
+      <div class="nav">
+        <h1><%= @user.show_name %></h1>
+        <%= link_to "发消息", "#", class: 'send-msg' %>
+      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>用户名</td>
+            <td><%= @user.show_name %></td>
+          </tr>
+          <tr>
+            <td>手机号</td>
+            <td><%= @user.mobile %></td>
+          </tr>
+          <tr>
+            <td>注册时间</td>
+            <td><%= get_datetime(@user.created_at) %></td>
+          </tr>
+          <tr>
+            <td>最后登录时间</td>
+            <td><%= get_datetime(@user.last_sign_in_at) %></td>
+          </tr>
+          <tr>
+            <td>性别</td>
+            <td><%= @user.sex %></td>
+          </tr>
+          <tr>
+            <td>生日</td>
+            <td><%= get_date(@user.birthday) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-4 avatar">
+      <%= get_avatar(@user) %>
+      <%= link_to "屏蔽头像(还原为默认头像)" %>
+    </div>
+  </div>

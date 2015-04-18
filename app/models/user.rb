@@ -83,5 +83,9 @@ class User < ActiveRecord::Base
     def find_mobile(mobile="")
       where(mobile: mobile).first_or_create!
     end
+
+    def search(q)
+      where("nickname like ? or mobile like ?", "%#{q}%", "%#{q}%")
+    end
   end
 end
