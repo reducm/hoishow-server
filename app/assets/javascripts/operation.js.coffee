@@ -5,7 +5,8 @@
 #= require kindeditor
 #= require operation/sb-admin-2
 #= require operation/metisMenu/metisMenu
-#= require operation/stars.js
+#= require operation/stars
+#= require operation/concerts
 
 #= require operation/jquery.datetimepicker
 
