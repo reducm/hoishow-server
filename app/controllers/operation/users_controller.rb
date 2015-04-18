@@ -9,4 +9,8 @@ class Operation::UsersController < Operation::ApplicationController
       @users = User.page(params[:page])
     end
   end
+
+  def show
+    @user = User.find(params[:id])
+  end
 end
