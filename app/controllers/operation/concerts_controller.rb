@@ -3,7 +3,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    if params[:q]
+    if params[:q].present?
       @stars = Star.search(params[:q])
       @concerts = @stars.map{|star| star.concerts}.flatten.page(params[:page])
     elsif params[:p].present?

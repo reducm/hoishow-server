@@ -1,0 +1,47 @@
+<div class="nav">
+    <h1 class="pull-left">show列表</h1>
+    <div class="search">
+      <%= form_tag(operation_shows_url, method: "get", class: 'navbar-form') do %>
+        <div class="form-group">
+          <%= text_field_tag(:q, nil, class: 'form-control') %>
+        </div>
+        <%= submit_tag("搜索", class: 'btn btn-default') %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= paginate @shows %>
+  
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>演出艺人</th>
+        <th>演出名称</th>
+        <th>演出地点</th>
+        <th>演出时间</th>
+        <th>售出票数／总票数</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @shows.each do|show|%>
+        <tr>
+          <td><%= show.stars.pluck(:name).join(",") %></td>
+          <td><%= show.name %></td>
+          <td><%= show.stadium.name %></td>
+          <td><%= show.show_time.strfcn_time %></td>
+          <td><%= show.tickets.count %></td>
+          <td>
+            <%= link_to "查看", operation_show_path(show)%>
+            <% if can? :update, show%>
+              <%= link_to "编辑", edit_operation_show_path(show)%>
+            <% end %>
+          </td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+
+  <%= paginate @shows %>
+
+  
