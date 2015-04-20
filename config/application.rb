@@ -27,3 +27,6 @@ module HoishowServer
     Rails.application.config.assets.precompile += %w( operation.css operation.js )
   end
 end
+
+I18n.config.enforce_available_locales = false
+I18n.locale = 'zh-CN'
