@@ -3,7 +3,11 @@ class Operation::StarsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @stars = Star.order("position")
+    if params[:query].present?
+      @stars = Star.search(params[:query]).order("position")
+    else
+      @stars = Star.order("position")
+    end
   end
 
   def show

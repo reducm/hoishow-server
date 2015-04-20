@@ -13,15 +13,32 @@ class Star < ActiveRecord::Base
 
   has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
   #has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
+  attr_accessor :status
 
   mount_uploader :avatar, AvatarUploader 
 
   paginates_per 20
 
+  def vote_count
+    concerts.map{|relation| relation.voters_count}.inject(&:+) || 0
+  end
+
+  def status_cn
+    if concerts.count > 0
+      if shows.count > 0
+        "开售中"
+      else
+        "投票中"
+      end
+    else
+      "无演出"
+    end
+  end
+
   def hoi_concert(concert)
     star_concert_relations.where(concert: concert).first_or_create!
   end
-  
+
   def followers_count
     followers.count
   end
