@@ -5,7 +5,7 @@ class Operation::ShowsController < Operation::ApplicationController
   def index
     if params[:q].present?
       @stars = Star.search(params[:q])
-      @shows = @stars.map{|star| star.shows}.flatten.page(params[:page])
+      @shows = Kaminari.paginate_array( @stars.map{|star| star.shows}.flatten ).page(params[:page])
 
     else
       @shows = Show.page(params[:page])
