@@ -5,7 +5,9 @@ class Operation::ConcertsController < Operation::ApplicationController
   def index
     if params[:q]
       @stars = Star.search(params[:q])
-      @concerts = @stars.map{|star| star.concerts}.flatten
+      @concerts = @stars.map{|star| star.concerts}.flatten.page(params[:page])
+    elsif params[:p].present?
+      @concerts = Concert.where(status: params[:p]).page(params[:page])
     else
       @concerts = Concert.page(params[:page])
     end

@@ -1,6 +1,6 @@
   <div class="nav">
     <h1 class="pull-left">演出投票列表</h1>
-    <div class="search-star">
+    <div class="search">
       <%= form_tag(operation_concerts_url, method: "get", class: 'navbar-form') do %>
         <div class="form-group">
           <%= text_field_tag(:q, nil, class: 'form-control') %>
@@ -9,6 +9,18 @@
       <% end %>
     </div>
   </div>
+
+  <div class="status_select">
+    <%= form_tag(operation_concerts_url, method: "get", class: 'navbar-form') do %>
+      <div class="form-group">
+        <%= select_tag :p, options_for_select([["投票中", 0], ["投票完结", 1]]), prompt: "演出投票状态", class: 'form-control' %>
+      </div>
+      <%= submit_tag("筛选", class: 'btn btn-default') %>
+    <% end %>
+  </div>
+
+  <%= paginate @concerts %>
+  
   <table class="table table-hover">
     <thead>
       <tr>
@@ -39,3 +51,7 @@
       <%end%>
     </tbody>
   </table>
+
+  <%= paginate @concerts %>
+
+  

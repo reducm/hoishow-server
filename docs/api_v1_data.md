@@ -14,7 +14,7 @@ type: `GET`
 ```javascript
   {
     mobile: "13512310293",
-    code: "123456" //短信验证码
+    api_token: "ASDKAJSDKASJDLAKSD"
   }
 ```
 
@@ -61,7 +61,7 @@ type: `GET`
 ```javascript
   {
     mobile: "13512310293",
-    code: "123456" //短信验证码
+    api_token: "ASDKAJSDKASJDLAKSD"
   }
 ```
 
@@ -70,7 +70,7 @@ type: `GET`
   {
     id: "123",
     name: "汪峰",
-    avatar: "http://www.xxx/1.jpg",  
+    avatar: "http://www.xxx/1.jpg",
     is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
     videos: [{参照video对象},...],
     concerts: [{参照concert对象},...],
@@ -90,7 +90,7 @@ type: `GET`
 ```javascript
   {
     mobile: "13512310293",
-    code: "123456" //短信验证码
+    api_token: "ASDKAJSDKASJDLAKSD"
     page: "2" //页码
   }
 ```
@@ -116,7 +116,7 @@ type: `GET`
 ```javascript
   {
     mobile: "13512310293",
-    code: "123456" //短信验证码
+    api_token: "ASDKAJSDKASJDLAKSD"
   }
 ```
 
@@ -203,7 +203,7 @@ type: `GET`
 
 type `GET`
 
-必需参数 
+必需参数
 ```javascript
   //show的id在url里传递
 ```
@@ -217,7 +217,7 @@ type `GET`
       id: area_id,
       name: 区名,
       seats_count: 座位总数,
-      seats_left: 座位剩余,  
+      seats_left: 座位剩余,
       is_sold_out: 是否售完true or false，
       price: 该场show在此区域的售价, float类型,
     }....]
@@ -400,13 +400,13 @@ type: `GET`
 ----
 # 对象查询
 
-##User对象 
+##User对象
 
 ```javascript
   {
-      api_token: api_token, 
-      api_expires_in: "距离当前还有多少秒过期", 
-      mobile: "13632323232", 
+      api_token: api_token,
+      api_expires_in: "距离当前还有多少秒过期",
+      mobile: "13632323232",
       avatar: "http://www.xxx/1.jpg",  //用户头像
       nickname: "李枝江",
       sex: "male", //"male"表示男性， "female"表示女性， "secret"表示保密

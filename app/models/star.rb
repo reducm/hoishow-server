@@ -12,10 +12,8 @@ class Star < ActiveRecord::Base
   validates :name, presence: {message: "姓名不能为空"}
 
   has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
-  #has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
-  attr_accessor :status
 
-  mount_uploader :avatar, AvatarUploader 
+  mount_uploader :avatar, ImageUploader
 
   paginates_per 20
 
@@ -44,7 +42,7 @@ class Star < ActiveRecord::Base
   end
 
   def shows
-    concert_ids = concerts.pluck(:id)    
+    concert_ids = concerts.pluck(:id)
     Show.where(concert_id: concert_ids)
   end
 

@@ -19,7 +19,7 @@ class Show < ActiveRecord::Base
 
   paginates_per 20
 
-  mount_uploader :poster, PosterUploader 
+  mount_uploader :poster, ImageUploader
 
   def topics
     Topic.where(city_id: city.id, subject_type: Concert.name, subject_id: concert.id)
