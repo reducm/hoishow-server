@@ -24,13 +24,13 @@
       </tr>
     </thead>
     <tbody>
-      <% @shows.each do|show|%>
+      <% @shows.each do|show| tickets = show.tickets %>
         <tr>
           <td><%= show.stars.pluck(:name).join(",") %></td>
           <td><%= show.name %></td>
           <td><%= show.stadium.name %></td>
           <td><%= show.show_time.strfcn_time %></td>
-          <td><%= show.tickets.count %></td>
+          <td> <%= tickets.sold_tickets.count %> / <%= tickets.count %> </td>
           <td>
             <%= link_to "查看", operation_show_path(show)%>
             <% if can? :update, show%>
