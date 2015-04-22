@@ -11,6 +11,11 @@ class Operation::AdminsController < Operation::ApplicationController
     @admin = Admin.new
   end
 
+  def edit
+    @admin = Admin.find(params[:id])
+  end
+
+
   def create
     @admin = Admin.new(name: params[:username], admin_type: params[:type].to_i)
     @admin.set_password(params[:password])

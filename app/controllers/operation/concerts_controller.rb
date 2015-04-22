@@ -19,6 +19,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def edit
     @concert = Concert.find(params[:id])
+    @concert_shows = @concert.shows.page(params[:page])
   end
 
   def update
