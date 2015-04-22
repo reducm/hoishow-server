@@ -1,0 +1,53 @@
+      <div id="map"></div>
+      <div id="map_data">
+        <div class="nav">
+          <a data-toggle="modal" data-target="#myModal">添加投票城市</a>
+          <%= link_to "发布演出" %>
+        </div>
+        <div class="map-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>城市</th>
+                <th>投票数</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <% concert.cities.each do |city| %>
+              <tr>
+                <td><%= city.name %></td>
+                <td><%= get_city_voted_count(city) %></td>
+                <td>
+                  <%= link_to '查看互动', get_city_topics_operation_concert_path(concert, city_id: city), remote: true %>
+                  <%= link_to '删除' %>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      </div>
+      <div id="city_topics" class="hidden">
+        <div class="nav">
+          <h2>同城互动</h2>
+          <%= link_to "发布新互动" %>
+        </div>
+        <div class="topics"></div>
+      </div>
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">新增投票城市</h4>
+            </div>
+            <div class="modal-body">
+              <%= form_tag do %>
+                <div class="form-group">
+                  <%= select_tag "city_id", options_from_collection_for_select(get_no_concert_cities(concert), "id", "name"), class: 'form-control' %>
+                </div>
+                <%= submit_tag "提交", class: 'btn btn-primary add_city' %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>

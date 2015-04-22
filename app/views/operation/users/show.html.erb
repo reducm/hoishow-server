@@ -52,11 +52,13 @@
         <div role="tabpanel" class="tab-pane active table" id="orders">
           <table class="table">
             <thead>
-              <th>演出</th>
-              <th>总价</th>
-              <th>状态</th>
-              <th>购票时间</th>
-              <th>操作</th>
+              <tr>
+                <th>演出</th>
+                <th>总价</th>
+                <th>状态</th>
+                <th>购票时间</th>
+                <th>操作</th>
+              </tr>
             </thead>
             <% @orders.each do |order| %>
               <tr>
@@ -73,8 +75,10 @@
         <div role="tabpanel" class="tab-pane" id="topics">
           <table class="table">
             <thead>
-              <th>时间</th>
-              <th>主题</th>
+              <tr>
+                <th>时间</th>
+                <th>主题</th>
+              </tr>
             </thead>
             <% @topics.each do |topic| %>
               <tr>
@@ -87,8 +91,10 @@
         <div role="tabpanel" class="tab-pane" id="comments">
           <table class="table">
             <thead>
-              <th>时间</th>
-              <th>回复</th>
+              <tr>
+                <th>时间</th>
+                <th>回复</th>
+              </tr>
             </thead>
             <% @comments.each do |comment| %>
               <tr>
