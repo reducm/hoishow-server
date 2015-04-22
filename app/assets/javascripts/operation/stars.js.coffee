@@ -1,5 +1,5 @@
 $ ->
-  $('tbody').sortable(
+  $('#stars_list').sortable(
     axis: 'y'
     handle: '.handle'
     update: ->
