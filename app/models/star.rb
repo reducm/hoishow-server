@@ -12,11 +12,26 @@ class Star < ActiveRecord::Base
   validates :name, presence: {message: "姓名不能为空"}
 
   has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
-  #has_many :comments, :class_name => "Comment", :foreign_key => 'subject_id'
 
   mount_uploader :avatar, ImageUploader
 
   paginates_per 20
+
+  def vote_count
+    concerts.map{|relation| relation.voters_count}.inject(&:+) || 0
+  end
+
+  def status_cn
+    if concerts.count > 0
+      if shows.count > 0
+        "开售中"
+      else
+        "投票中"
+      end
+    else
+      "无演出"
+    end
+  end
 
   def hoi_concert(concert)
     star_concert_relations.where(concert: concert).first_or_create!

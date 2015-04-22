@@ -8,6 +8,7 @@ need_topics ||= false
 json.(star, :id, :name)
 json.avatar star.avatar.url || ''
 json.is_followed star.id.in?(@followed_stars) ? true : false
+json.followers_count star.followers_count
 
 if need_concerts
   json.concerts{ json.array! star.concerts, partial: "api/v1/concerts/concert", as: :concert, user: @user }

@@ -8,6 +8,7 @@
 #= require operation/echarts-all
 #= require operation/stars
 #= require operation/concerts
+#= require operation/shows
 
 #= require operation/jquery.datetimepicker
 

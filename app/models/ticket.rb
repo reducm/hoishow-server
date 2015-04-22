@@ -13,6 +13,7 @@ class Ticket < ActiveRecord::Base
     used: 2, #已用
   }
 
+  scope :sold_tickets, ->{ where("status = ?  or status = ?", statuses[:success], statuses[:used]) }
   before_create :set_status
 
   paginates_per 20
