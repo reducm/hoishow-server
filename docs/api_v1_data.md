@@ -423,6 +423,7 @@ type: `GET`
     name: "明星的名字",
     avatar: "明星的头像",
     is_followed: "是否被关注",
+    followers_count: "粉丝数量"
     concerts:{Concert对象},//当need_concerts不为false的时候
     shows:{Show对象},//当need_shows不为false的时候
     topics:{Topic对象},//当need_topics不为false的时候

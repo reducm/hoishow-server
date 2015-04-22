@@ -20,6 +20,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(response.body).to include("name")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
+      expect(response.body).to include("followers_count")
       JSON.parse(response.body).each do|object| 
         expect(object["is_followed"]).to be false
       end
