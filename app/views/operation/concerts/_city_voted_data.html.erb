@@ -2,7 +2,7 @@
       <div id="map_data">
         <div class="nav">
           <a data-toggle="modal" data-target="#myModal">添加投票城市</a>
-          <%= link_to "发布演出" %>
+          <%= link_to "发布演出", operation_shows_path(concert_id: concert), method: :post %>
         </div>
         <div class="map-table">
           <table class="table">

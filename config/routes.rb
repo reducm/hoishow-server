@@ -68,6 +68,7 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
+    resources :topics, only: [:new, :create, :show]
     #TODO api_auth
   end
 end
