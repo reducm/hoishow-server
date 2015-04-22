@@ -45,6 +45,16 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
+  def remove_concert_city
+    relation = @concert.concert_city_relations.where(city_id: params[:city_id]).first
+    if relation
+      relation.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
+  end
+
   def get_city_topics
     @topics = @concert.topics.where(city_id: params[:city_id]).page(params[:page]).per(5)
     respond_to do |format|

@@ -61,6 +61,7 @@ Rails.application.routes.draw do
         get :get_city_voted_data
         post :add_concert_city
         get :refresh_map_data
+        delete :remove_concert_city
       end
     end
     resources :shows

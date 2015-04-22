@@ -1,4 +1,4 @@
-init_map = () ->
+init_map = (concert_id) ->
   myChart = echarts.init(document.getElementById('map'))
   option =
     tooltip:
@@ -213,23 +213,40 @@ init_map = () ->
         "武汉":[114.31,30.52]
         "大庆":[125.03,46.58]
     ]
-  $.get("/operation/concerts/#{$("#concert_id").val()}/get_city_voted_data", (data)->
+  $.get("/operation/concerts/#{concert_id}/get_city_voted_data", (data)->
     if data
       option.series[0].markPoint.data = data
       myChart.setOption(option)
   )
+
+init_map_data = (concert_id) ->
+  $.get("/operation/concerts/#{concert_id}/refresh_map_data", (data)->
+    $("#profile").html(data)
+    init_map(concert_id)
+  )
 $ ->
+  concert_id = $("#concert_id").val()
+
   $("#get_map").on "click", () ->
-    init_map()
+    init_map(concert_id) #初始化地图标注
+
+  $("#profile").on "click", ".del_city", (e) ->
+    e.preventDefault()
+    $this = $(this)
+    if $this.parent().data("count") > "0"
+      alert("该城市已经有用户投票，不能删除")
+    else
+      if confirm("确定要删除吗?")
+        $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
+          if data.success
+            init_map_data(concert_id)
+        )
+
   $("#profile").on "click", ".add_city", (e) ->
     e.preventDefault()
-    concert_id = $("#concert_id").val()
     city_id = $("#city_id").val()
     $.post("/operation/concerts/#{concert_id}/add_concert_city", {city_id: city_id}, (data)->
       if data.success
         $("#myModal, .modal-backdrop").hide()
-        $.get("/operation/concerts/#{concert_id}/refresh_map_data", (data)->
-          $("#profile").html(data)
-          init_map()
-        )
+        init_map_data(concert_id)
     )
