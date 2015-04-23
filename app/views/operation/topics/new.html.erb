@@ -1,1 +1,23 @@
-<%= render partial: "form", locals: {topic: @topic} %>
+<div class="nav">
+  <h2>发布互动</h2>
+  <%= form_tag operation_topics_path, class: 'form-horizontal' do %>
+    <div class="form-group">
+      <%= text_area_tag "topics[content]", nil, rows: 10, cols: 50, placeholder: '互动正文内容(最多140字)' %>
+    </div>
+    <div class="form-group">
+      <%= label_tag :creator, "发布人" %>
+      <%= select_tag :creator, options_for_select([current_admin.name] + @stars.collect{|star| [star.name, star.id]}) %>
+    </div>
+    <div class="form-group">
+      <% if @concert %>
+        <%= hidden_field_tag "topics[subject_id]", @concert.id %>
+        <%= hidden_field_tag "topics[subject_type]", "Concert" %>
+        <%= hidden_field_tag "topics[city_id]", @city_id %>
+      <% elsif @stars %>
+        <%= hidden_field_tag "topics[subject_id]", @stars.first.id %>
+        <%= hidden_field_tag "topics[subject_type]", "Star" %>
+      <% end %>
+      <%= submit_tag "提交", class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
