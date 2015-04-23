@@ -9,6 +9,7 @@
 #= require operation/stars
 #= require operation/concerts
 #= require operation/shows
+#= require operation/topics
 
 #= require operation/jquery.datetimepicker
 

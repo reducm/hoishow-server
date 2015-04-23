@@ -1,0 +1,23 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th>用户名</th>
+      <th>内容</th>
+      <th>回复时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <% comments.each do |comment| %>
+    <tr>
+      <td><%= comment.creator_name %></td>
+      <td><%= comment.content %></td>
+      <td><%= get_datetime(comment.created_at) %></td>
+      <td>
+        <%= link_to "回复" %>
+        <%= link_to "删除" %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= paginate comments, remote: true %>
