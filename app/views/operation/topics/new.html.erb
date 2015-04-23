@@ -2,7 +2,7 @@
   <h2>发布互动</h2>
   <%= form_tag operation_topics_path, class: 'form-horizontal' do %>
     <div class="form-group">
-      <%= text_area_tag "topics[content]", nil, rows: 10, cols: 50, placeholder: '互动正文内容(最多140字)' %>
+      <%= text_area_tag "topic[content]", nil, rows: 10, cols: 50, placeholder: '互动正文内容(最多140字)' %>
     </div>
     <div class="form-group">
       <%= label_tag :creator, "发布人" %>
@@ -10,12 +10,12 @@
     </div>
     <div class="form-group">
       <% if @concert %>
-        <%= hidden_field_tag "topics[subject_id]", @concert.id %>
-        <%= hidden_field_tag "topics[subject_type]", "Concert" %>
-        <%= hidden_field_tag "topics[city_id]", @city_id %>
+        <%= hidden_field_tag "topic[subject_id]", @concert.id %>
+        <%= hidden_field_tag "topic[subject_type]", "Concert" %>
+        <%= hidden_field_tag "topic[city_id]", @city_id %>
       <% elsif @stars %>
-        <%= hidden_field_tag "topics[subject_id]", @stars.first.id %>
-        <%= hidden_field_tag "topics[subject_type]", "Star" %>
+        <%= hidden_field_tag "topic[subject_id]", @stars.first.id %>
+        <%= hidden_field_tag "topic[subject_type]", "Star" %>
       <% end %>
       <%= submit_tag "提交", class: 'btn btn-primary' %>
     </div>

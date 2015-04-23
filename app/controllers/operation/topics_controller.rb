@@ -1,5 +1,6 @@
 class Operation::TopicsController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :get_topic, except: [:new, :create]
   load_and_authorize_resource
 
   def new
@@ -15,7 +16,7 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def create
-    @topic = Topic.new(require_attributes)
+    @topic = Topic.new(topic_params)
     Topic.transaction do
       if params[:creator] == current_admin.name
         @topic.creator_type = 'Admin'
@@ -29,12 +30,60 @@ class Operation::TopicsController < Operation::ApplicationController
     redirect_to operation_root_path
   end
 
-  def show
-    @topic = Topic.find(params[:id])
+  def edit
+    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    @stars = get_stars(@topic)
+  end
+
+  def update
+    Topic.transaction do
+      @topic.update(require_attributes)
+    end
+    redirect_to operation_edit_topic_url(@topic)
+  end
+
+  def add_comment
+    @comment = @topic.comments.new()
+    Comment.transaction do
+      @comment.content = params[:content]
+      if params[:comment_id]
+        @comment.parent_id = params[:comment_id]
+      end
+
+      if params[:creator] == current_admin.name
+        @comment.creator_type = 'Admin'
+        @comment.creator_id = current_admin.id
+      else
+        @comment.creator_type = 'Star'
+        @comment.creator_id = params[:creator]
+      end
+      @comment.save!
+    end
+    render json: {success: true}
+  end
+
+  def refresh_comments
+    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    respond_to do |format|
+      format.js {}
+    end
   end
 
   private
-  def require_attributes
-    params.require(:topics).permit(:content, :subject_id, :subject_type, :city_id)
+  def topic_params
+    params.require(:topic).permit(:content, :subject_id, :subject_type, :city_id)
+  end
+
+  def get_topic
+    @topic = Topic.find(params[:id])
+  end
+
+  def get_stars(topic)
+    case topic.subject_type
+    when "Concert"
+      topic.subject.stars
+    when "Star"
+      Star.where(id: topic.subject_id)
+    end
   end
 end

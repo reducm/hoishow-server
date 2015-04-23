@@ -38,7 +38,7 @@ class Topic < ActiveRecord::Base
   def creator_name
     if creator.is_a?(User)
       creator.show_name
-    elsif creator.is_a?(Star)
+    elsif creator.is_a?(Star) || creator.is_a?(Admin)
       creator.name
     end
   end
@@ -50,6 +50,10 @@ class Topic < ActiveRecord::Base
 
   def like_count
     user_like_topics.count
+  end
+
+  def reply_count
+    comments.count
   end
 
   private
