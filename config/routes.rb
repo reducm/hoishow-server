@@ -73,7 +73,12 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
-    resources :topics, only: [:new, :create, :show]
+    resources :topics, only: [:new, :create, :edit, :update] do
+      member do
+        get :refresh_comments
+        post :add_comment
+      end
+    end
     #TODO api_auth
   end
 end
