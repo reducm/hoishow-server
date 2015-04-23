@@ -4,10 +4,12 @@
   <div class="content">
     <table class="table">
       <thead>
-        <th><%= check_box_tag "check_all" %></td>
-        <th>用户名称</td>
-        <th>用户类型</td>
-        <th>操作</td>
+        <tr>
+          <th><%= check_box_tag "check_all" %></td>
+          <th>用户名称</td>
+          <th>用户类型</td>
+          <th>操作</td>
+        </tr>
       </thead>
       <tbody>
         <% @admins.each do |admin| %>

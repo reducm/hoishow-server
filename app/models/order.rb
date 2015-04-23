@@ -62,6 +62,21 @@ class Order < ActiveRecord::Base
     outdate?
   end
 
+  def status_cn
+    case status
+    when 'pending'
+      '未支付'
+    when 'paid'
+      '已支付'
+    when 'success'
+      '已出票'
+    when 'refund'
+      '已退款'
+    when 'outdate'
+      '已过期'
+    end
+  end
+
   private
   def set_attr_after_create
     generate_out_id

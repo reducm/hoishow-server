@@ -39,9 +39,7 @@ class ImageUploader < CarrierWave::Uploader::Base
 
   def filename
     if super.present?
-      model.uploader_secure_token ||= SecureRandom.uuid.gsub("-","")
-      Rails.logger.debug("(BaseUploader.filename) #{model.uploader_secure_token}")
-      "#{model.uploader_secure_token}.#{file.extension.downcase}"
+      @name ||="#{Digest::MD5.hexdigest(original_filename)}.#{file.extension.downcase}" if original_filename
     end
   end
 

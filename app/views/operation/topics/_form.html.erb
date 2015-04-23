@@ -1,0 +1,9 @@
+<div class="nav">
+  <h2>发布互动</h2>
+  <div>
+    <%= form_for operation_topics_path do |f| %>
+      <%= f.text_area :content, rows: 10, cols: 50, placeholder: '互动正文内容(最多140字)' %>
+      <%= f.submit "提交", class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>

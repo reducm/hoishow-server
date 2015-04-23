@@ -16,7 +16,7 @@
       <tr>
         <td><%= concert.stars.pluck(:name).join(",") %></td>
         <td><%= concert.name %></td>
-        <td><%= concert.status_cn %></td>
+        <td class="concert_status_cn"><%= concert.status_cn %></td>
         <td><%= concert.votedate_cn %></td>
         <td><%= concert.shows.count %></td>
         <td><%= concert.voters_count %></td>

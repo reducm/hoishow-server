@@ -3,7 +3,7 @@
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">
     <li role="presentation" class="active"><a href="#concert_detail" aria-controls="concert_detail" role="tab" data-toggle="tab">Concert详情</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" id="get_map">Profile</a></li>
     <li role="presentation"><a href="#concert_shows" aria-controls="concert_shows" role="tab" data-toggle="tab">concert_shows</a></li>
   </ul>
 
@@ -13,13 +13,14 @@
       <%= render partial: "form", locals: {concert: @concert} %>
     </div>
 
-    <div role="tabpanel" class="tab-pane" id="profile"><h1>Profile</h1></div>
+    <div role="tabpanel" class="tab-pane" id="profile">
+      <%= render partial: "city_voted_data", locals: {concert: @concert} %>
+    </div>
 
     <div role="tabpanel" class="tab-pane" id="concert_shows">
            
         <%= render partial: "operation/shows/table", locals: {shows: @concert_shows} %>
     </div>
   </div>
-
+  <%= hidden_field_tag "concert_id", @concert.id %>
 </div>
-
