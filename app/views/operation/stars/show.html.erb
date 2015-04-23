@@ -15,7 +15,7 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="profile">
-      TOPIC列表 
+      <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
     </div>
     <div role="tabpanel" class="tab-pane" id="concert_shows">
       粉丝列表

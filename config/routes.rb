@@ -54,6 +54,11 @@ Rails.application.routes.draw do
       collection do
         post :sort
       end
+      member do
+        get :top_topic
+        get :no_top_topic
+        get :topic_comments
+      end
     end
     resources :concerts do
       member do
