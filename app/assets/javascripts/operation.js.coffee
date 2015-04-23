@@ -10,6 +10,7 @@
 #= require operation/concerts
 #= require operation/shows
 #= require operation/topics
+#= require dataTables/jquery.dataTables
 
 #= require operation/jquery.datetimepicker
 
