@@ -12,5 +12,8 @@ class Operation::UsersController < Operation::ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @orders = @user.orders.page(params[:page])
+    @topics = @user.topics.page(params[:page])
+    @comments = @user.comments.page(params[:page])
   end
 end

@@ -1,1 +1,36 @@
-
+#profile
+  position: relative
+  #map
+    height: 600px
+    width: 600px
+  #map_data
+    position: absolute
+    top: 5%
+    left: 60%
+    .map-table
+      height: 450px
+      width: 400px
+      table
+        display: flex
+        flex-flow: column
+        height: 100%
+        width: 100%
+        thead
+          flex: 0 0 auto
+          width: calc(100% - 0.9em)
+          display: table
+          table-layout: fixed
+          tr
+            th
+              text-align: center
+        tbody
+          flex: 1 1 auto
+          display: block
+          overflow-y: scroll
+          text-align: center
+          tr
+            width: 100%
+            display: table
+            table-layout: fixed
+            a
+              padding: 0 5px

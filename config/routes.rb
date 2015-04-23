@@ -55,11 +55,20 @@ Rails.application.routes.draw do
         post :sort
       end
     end
-    resources :concerts
+    resources :concerts do
+      member do
+        get :get_city_topics
+        get :get_city_voted_data
+        post :add_concert_city
+        get :refresh_map_data
+        delete :remove_concert_city
+      end
+    end
     resources :shows
     resources :orders
     resources :users
     resources :admins
+    resources :topics, only: [:new, :create, :show]
     #TODO api_auth
   end
 end
