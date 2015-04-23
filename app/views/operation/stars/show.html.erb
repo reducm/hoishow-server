@@ -1,0 +1,28 @@
+<div role="tabpanel">
+
+<h1><%= @star.name %></h1>
+  <!-- Nav tabs -->
+  <ul class="nav nav-pills" role="tablist">
+    <li role="presentation" class="active"><a href="#concert_detail" aria-controls="concert_detail" role="tab" data-toggle="tab">演出活动</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">互动topic</a></li>
+    <li role="presentation"><a href="#concert_shows" aria-controls="concert_shows" role="tab" data-toggle="tab">粉丝（<%= @star.followers.count || 0 %>）个</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="concert_detail">
+      <%= p "concert列表" %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="profile">
+      TOPIC列表 
+    </div>
+    <div role="tabpanel" class="tab-pane" id="concert_shows">
+      粉丝列表
+    </div>
+  </div>
+
+</div>
+
+
+
