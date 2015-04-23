@@ -1,0 +1,46 @@
+<%= paginate orders%>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>演出</th>
+      <th>用户 / 手机号</th>
+      <th>座位</th>
+      <th>订单时间</th>
+      <th>状态</th>
+      <th>总价</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% orders.each do|order|%>
+      <tr>
+        <% show = order.show %>
+        <td><%= link_to order.show_name, operation_show_path(show) %></td>
+        <% user = order.user %>
+        <td><%= link_to (user.nickname + " / " + user.mobile), operation_user_path(user) %></td>
+        <td>
+          <table>
+            <tbody>
+              <% show.areas.each do |area| %>
+              <tr>
+                <% tickets = area.tickets %>
+                <td><%= area.name + " / " + tickets.count.to_s + "张"%></td>
+                <%tickets.each do |ticket| %>
+                  <tr>
+                  <td><%= ticket.code%></td>
+                  </tr>
+                <%end%>
+              </tr>
+              <%end%>
+            </tbody>
+          </table>
+        </td>
+        <td><%= order.created_at.strfcn_date %></td>
+        <td class="order_status_cn"><%= order.status_cn%></td>
+        <td><%= order.amount%></td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>
+
+
+<%= paginate orders %>

@@ -10,6 +10,7 @@
 #= require operation/concerts
 #= require operation/shows
 #= require operation/admins
+#= require operation/orders
 
 #= require operation/jquery.datetimepicker
 

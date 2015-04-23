@@ -14,10 +14,6 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
-  def show
-
-  end
-
   def edit
     @concert_shows = @concert.shows.page(params[:page])
   end
