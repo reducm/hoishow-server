@@ -9,18 +9,13 @@ class Operation::ConcertsController < Operation::ApplicationController
     if params[:q].present?
       @stars = Star.search(params[:q])
       @concerts = Kaminari.paginate_array( @stars.map{|star| star.concerts}.flatten ).page(params[:page])
-    elsif params[:p].present?
-      @concerts = Concert.where(status: params[:p]).page(params[:page])
-    else
+   else
       @concerts = Concert.page(params[:page])
     end
   end
 
-  def show
-
-  end
-
   def edit
+    @concert_shows = @concert.shows.page(params[:page])
   end
 
   def update

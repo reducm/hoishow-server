@@ -1,5 +1,6 @@
 <div class="nav">
   <h2>系统用户</h2>
+  <p><button type="button" class="btn btn-default" ><%= link_to "创建新用户", new_operation_admin_path%></button></p>
   <div class="content">
     <table class="table">
       <thead>
@@ -16,7 +17,11 @@
             <td><%= check_box_tag "check" %></td>
             <td><%= admin.name %></td>
             <td><%= admin.type_cn %></td>
-            <td></td>
+            <td>
+              <% if can? :update, admin %>
+                <%= link_to "修改密码", edit_operation_admin_path(admin)%>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>

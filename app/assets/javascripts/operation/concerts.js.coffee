@@ -250,3 +250,20 @@ $ ->
         $("#myModal, .modal-backdrop").hide()
         init_map_data(concert_id)
     )
+#datetimepicker---concert edit
+  $('input.datetimepicker').datetimepicker({
+    timepicker: false,
+    format: 'd M Y',
+    startDate: new Date(),
+    value: new Date(),
+    lang: 'zh'
+    })
+#concert index select status
+  $("#concert_status_select").change ->
+    $(".concert_status_cn").parent().show()
+    cs = $("#concert_status_select").val()
+    if cs == "演出投票状态"
+      location.reload()
+    else
+      $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()
+
