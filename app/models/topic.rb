@@ -1,5 +1,8 @@
 #encoding: UTF-8
 class Topic < ActiveRecord::Base
+  SUBJECT_CONCERT = 'Concert'
+  SUBJECT_STAR = 'Star'
+
   belongs_to :city
   validates :creator_id, presence: true
   validates :creator_type, presence: true
@@ -7,9 +10,8 @@ class Topic < ActiveRecord::Base
   validates :content, presence: true
   validates :subject_id, presence: true
   validate :check_city_id
+
   has_many :comments
-
-
   has_many :user_like_topics
   has_many :likers, through: :user_like_topics, source: :user
 
@@ -54,6 +56,14 @@ class Topic < ActiveRecord::Base
 
   def reply_count
     comments.count
+  end
+
+  def last_reply_time
+    if comments.any?
+      comments.order('updated_at desc').last.updated_at
+    else
+      self.created_at
+    end
   end
 
   private

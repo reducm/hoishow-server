@@ -1,6 +1,7 @@
 json.(comment, :id, :topic_id, :content, :parent_id)
-json.user  do
-  json.id comment.user.id
-  json.nickname comment.user.nickname
-  json.avatar comment.user.avatar.url || ''
+json.creator do
+  json.id comment.creator_id
+  json.name comment.creator_name
+  json.avatar comment.creator.avatar.url || ''
+  json.is_admin comment.creator.is_a?(Admin) ? true : false
 end
