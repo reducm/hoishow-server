@@ -11,7 +11,7 @@ class Star < ActiveRecord::Base
 
   validates :name, presence: {message: "姓名不能为空"}
 
-  has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
+  has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
   mount_uploader :avatar, ImageUploader
 

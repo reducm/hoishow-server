@@ -27,11 +27,11 @@ class Operation::TopicsController < Operation::ApplicationController
       end
       @topic.save!
     end
-    redirect_to operation_root_path
+    redirect_to params[:return_url]
   end
 
   def edit
-    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(10)
     @stars = get_stars(@topic)
   end
 
@@ -40,6 +40,15 @@ class Operation::TopicsController < Operation::ApplicationController
       @topic.update(topic_params)
     end
     redirect_to edit_operation_topic_url(@topic)
+  end
+
+  def set_topic_top
+    @topic.update(is_top: params[:is_top])
+    if @topic.subject_type == SUBJECT_CONCERT
+      @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id, city_id: params[:city_id]).page(params[:page]).per(10)
+    elsif @topic.subject_type == SUBJECT_STAR
+      @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
+    end
   end
 
   def add_comment
@@ -73,7 +82,7 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def refresh_comments
-    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(10)
     @stars = get_stars(@topic)
     respond_to do |format|
       format.js {}
@@ -91,9 +100,9 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def get_stars(topic)
     case topic.subject_type
-    when "Concert"
+    when SUBJECT_CONCERT
       topic.subject.stars
-    when "Star"
+    when SUBJECT_STAR
       Star.where(id: topic.subject_id)
     end
   end

@@ -240,7 +240,7 @@ $ ->
         $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
           if data.success
             init_map_data(concert_id)
-        )
+        ) #删除投票城市
 
   $("#profile").on "click", ".add_city", (e) ->
     e.preventDefault()
@@ -249,7 +249,8 @@ $ ->
       if data.success
         $("#myModal, .modal-backdrop").hide()
         init_map_data(concert_id)
-    )
+    ) #添加投票城市
+
 #datetimepicker---concert edit
   $('input.datetimepicker').datetimepicker({
     timepicker: false,
@@ -266,4 +267,3 @@ $ ->
       location.reload()
     else
       $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()
-
