@@ -14,3 +14,6 @@ $ ->
       location.reload()
     else
       $(".status_cn:not(:contains('" + vtxt + "'))").parent().hide()
+
+  $('#topics').dataTable()
+  $('#stars').dataTable()
