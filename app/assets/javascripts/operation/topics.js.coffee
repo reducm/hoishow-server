@@ -12,7 +12,7 @@ $ ->
       if data.success
         $("#newModal, .modal-backdrop").hide()
         refresh_comments_list(topic_id)
-    )
+    ) # 新建comment
 
   $(".comments_list").on "click", ".reply_btn", ()->
     $("#replyModal").modal('show')
@@ -23,4 +23,11 @@ $ ->
         if data.success
           $("#replyModal, .modal-backdrop").hide()
           refresh_comments_list(topic_id)
-      )
+      )  # 回复comment
+
+  $(".comments_list").on "click", ".del_comment", ()->
+    if confirm("确定要删除?")
+      $.post("/operation/topics/#{topic_id}/destroy_comment", {_method: 'delete', comment_id: $(this).parent().data("id")}, (data)->
+        if data.success
+          refresh_comments_list(topic_id)
+      )  # 删除comment

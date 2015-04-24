@@ -62,6 +62,16 @@ class Operation::TopicsController < Operation::ApplicationController
     render json: {success: true}
   end
 
+  def destroy_comment
+    @comment = Comment.where(id: params[:comment_id]).first
+    if @comment
+      @comment.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
+  end
+
   def refresh_comments
     @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
     @stars = get_stars(@topic)
