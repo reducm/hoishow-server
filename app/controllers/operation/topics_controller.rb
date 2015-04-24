@@ -37,17 +37,17 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def update
     Topic.transaction do
-      @topic.update(require_attributes)
+      @topic.update(topic_params)
     end
-    redirect_to operation_edit_topic_url(@topic)
+    redirect_to edit_operation_topic_url(@topic)
   end
 
   def add_comment
     @comment = @topic.comments.new()
     Comment.transaction do
       @comment.content = params[:content]
-      if params[:comment_id]
-        @comment.parent_id = params[:comment_id]
+      if params[:parent_id]
+        @comment.parent_id = params[:parent_id]
       end
 
       if params[:creator] == current_admin.name
@@ -62,8 +62,19 @@ class Operation::TopicsController < Operation::ApplicationController
     render json: {success: true}
   end
 
+  def destroy_comment
+    @comment = Comment.where(id: params[:comment_id]).first
+    if @comment
+      @comment.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
+  end
+
   def refresh_comments
     @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    @stars = get_stars(@topic)
     respond_to do |format|
       format.js {}
     end

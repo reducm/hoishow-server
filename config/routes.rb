@@ -77,6 +77,7 @@ Rails.application.routes.draw do
       member do
         get :refresh_comments
         post :add_comment
+        delete :destroy_comment
       end
     end
     #TODO api_auth
