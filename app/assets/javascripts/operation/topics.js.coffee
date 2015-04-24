@@ -3,7 +3,8 @@ refresh_comments_list = (topic_id) ->
 
 $ ->
   topic_id = $("#topic_id").val()
-  refresh_comments_list(topic_id)
+  if topic_id
+    refresh_comments_list(topic_id)
 
   $("#commentModal").on "click", ".add_comment", (e) ->
     e.preventDefault()
