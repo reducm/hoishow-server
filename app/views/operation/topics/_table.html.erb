@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" id="topics">
   <thead>
     <tr>
       <th>发布用户</th>
@@ -11,14 +11,19 @@
   </thead>
   <% topics.each do |topic| %>
     <tr>
-      <td><%= %></td>
+      <td><%= topic.creator_name %></td>
       <td><%= topic.content %></td>
-      <td><%= %></td>
+      <td><%= topic.like_count %>/<%= topic.comments.count %>/<%= 0 %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.updated_at) %></td>
-      <td></td>
+      <td>
+        <% if !topic.is_top %>
+          <%= link_to '置顶', top_topic_operation_star_path(@star), remote: true, id: 'top_topic' %>
+        <% else %>
+          <%= link_to '取消置顶', no_top_topic_operation_star_path(@star), remote: true, id: 'no_top_topic' %>
+        <% end %>  
+        <%= link_to '回复', topic_comments_operation_star_path(@star) %>
+      </td>
     </tr>
   <% end %>
 </table>
-
-<%= paginate topics, :remote => true %>
