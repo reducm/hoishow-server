@@ -46,8 +46,8 @@ class Operation::TopicsController < Operation::ApplicationController
     @comment = @topic.comments.new()
     Comment.transaction do
       @comment.content = params[:content]
-      if params[:comment_id]
-        @comment.parent_id = params[:comment_id]
+      if params[:parent_id]
+        @comment.parent_id = params[:parent_id]
       end
 
       if params[:creator] == current_admin.name
@@ -64,6 +64,7 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def refresh_comments
     @comments = @topic.comments.order("created_at desc").page(params[:page]).per(5)
+    @stars = get_stars(@topic)
     respond_to do |format|
       format.js {}
     end

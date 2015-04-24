@@ -19,6 +19,10 @@ class Comment < ActiveRecord::Base
     end
   end
 
+  def parent
+    Comment.where(id: parent_id).first
+  end
+
   def creator_name
     if creator.is_a?(User)
       creator.show_name
