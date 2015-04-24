@@ -10,7 +10,7 @@ $ ->
     e.preventDefault()
     $.post("/operation/topics/#{topic_id}/add_comment", {content: $("#comment_content").val(), creator: $("#creator").val()}, (data)->
       if data.success
-        $("#commentModal, .modal-backdrop").hide()
+        $("#newModal, .modal-backdrop").hide()
         refresh_comments_list(topic_id)
     )
 

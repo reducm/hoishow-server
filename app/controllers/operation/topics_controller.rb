@@ -37,9 +37,9 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def update
     Topic.transaction do
-      @topic.update(require_attributes)
+      @topic.update(topic_params)
     end
-    redirect_to operation_edit_topic_url(@topic)
+    redirect_to edit_operation_topic_url(@topic)
   end
 
   def add_comment
