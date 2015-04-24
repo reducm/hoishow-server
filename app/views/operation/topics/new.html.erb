@@ -11,11 +11,13 @@
     <div class="form-group">
       <% if @concert %>
         <%= hidden_field_tag "topic[subject_id]", @concert.id %>
-        <%= hidden_field_tag "topic[subject_type]", "Concert" %>
+        <%= hidden_field_tag "topic[subject_type]", Topic::SUBJECT_CONCERT %>
         <%= hidden_field_tag "topic[city_id]", @city_id %>
+        <%= hidden_field_tag "return_url", edit_operation_concert_path(@concert) %>
       <% elsif @stars %>
         <%= hidden_field_tag "topic[subject_id]", @stars.first.id %>
-        <%= hidden_field_tag "topic[subject_type]", "Star" %>
+        <%= hidden_field_tag "topic[subject_type]", Topic::SUBJECT_STAR %>
+        <%= hidden_field_tag "return_url", edit_operation_star_path(@star) %>
       <% end %>
       <%= submit_tag "提交", class: 'btn btn-primary' %>
     </div>

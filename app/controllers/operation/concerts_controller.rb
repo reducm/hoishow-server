@@ -51,10 +51,9 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def get_city_topics
-    @topics = @concert.topics.where(city_id: params[:city_id]).page(params[:page]).per(5)
-    respond_to do |format|
-      format.js
-    end
+    @city = City.find(params[:city_id])
+    @topics = Topic.where(subject_type: Topic::SUBJECT_CONCERT, city_id: @city.id).page(params[:page]).per(5)
+    @subject_type = Topic::SUBJECT_CONCERT
   end
 
   def get_city_voted_data

@@ -520,7 +520,12 @@ type: `GET`
   topic_id: Topic的id,
   parent_id: 如果是回复，parent_id代表被回复Comment的id,
   content: "评论",
-  user: {:id, :nickname, :avatar},
+  creator:  {
+    id: ID
+    name: "名称",
+    avatar: "头像url",
+    is_admin: "true or false" //是否由运营人员创建
+  }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
 }
 ```
 

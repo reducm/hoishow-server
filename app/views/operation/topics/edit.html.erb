@@ -36,13 +36,14 @@
   </div>
   <div class="col-md-12">
     <h2>回复列表</h2>
-    <a data-toggle="modal" data-target="#commentModal">新建回复</a>
+    <a data-toggle="modal" data-target="#newModal">新建回复</a>
     <div class="comments_list">
-    <%= render partial: 'operation/comments/table', locals: {comments: @comments} %>
+      <%= render partial: 'operation/comments/table', locals: {comments: @comments} %>
+    </div>
   </div>
   <%= hidden_field_tag "topic_id", @topic.id %>
 </div>
-<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

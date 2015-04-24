@@ -54,11 +54,6 @@ Rails.application.routes.draw do
       collection do
         post :sort
       end
-      member do
-        get :top_topic
-        get :no_top_topic
-        get :topic_comments
-      end
     end
     resources :concerts do
       member do
@@ -77,6 +72,8 @@ Rails.application.routes.draw do
       member do
         get :refresh_comments
         post :add_comment
+        delete :destroy_comment
+        post :set_topic_top
       end
     end
     #TODO api_auth
