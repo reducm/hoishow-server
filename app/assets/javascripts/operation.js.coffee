@@ -11,6 +11,7 @@
 #= require operation/shows
 #= require operation/admins
 #= require operation/orders
+#= require operation/topics
 
 #= require operation/jquery.datetimepicker
 

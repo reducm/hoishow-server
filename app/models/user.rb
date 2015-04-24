@@ -1,7 +1,8 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
   has_many :orders
-  has_many :comments
+  has_many :comments, :class_name => "Comment", :foreign_key => 'creator_id'
+
 
   has_many :topics, :class_name => "Topic", :foreign_key => 'creator_id'
 
