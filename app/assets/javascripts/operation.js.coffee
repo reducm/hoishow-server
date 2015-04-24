@@ -9,15 +9,11 @@
 #= require operation/stars
 #= require operation/concerts
 #= require operation/shows
+#= require operation/admins
+#= require operation/orders
 #= require operation/topics
 #= require dataTables/jquery.dataTables
 
 #= require operation/jquery.datetimepicker
 
-$ -> $('input.datetimepicker').datetimepicker({
-  timepicker: false,
-  format: 'd M Y',
-  startDate: new Date(),
-  value: new Date(),
-  lang: 'zh'
-});
+

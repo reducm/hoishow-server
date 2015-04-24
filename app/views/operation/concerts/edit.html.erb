@@ -18,35 +18,8 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="concert_shows">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>演出名称</th>
-            <th>演出地点</th>
-            <th>演出时间</th>
-            <th>售出票数</th>
-            <th>操作</th>
-            <th>排序</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @concert.shows.each do|show|%>
-            <tr>
-              <td><%= show.name %></td>
-              <td><%= show.city.name %></td>
-              <td><%= show.show_time %></td>
-              <td><%= show.tickets.count %></td>
-              <td>
-                  <%= link_to "查看", operation_show_path(show)%>
-                <% if can? :update, show %>
-                  <%= link_to "编辑", edit_operation_show_path(show)%>
-                <% end %>
-              </td>
-              <td><%= %></td>
-            </tr>
-          <%end%>
-        </tbody>
-      </table>
+           
+        <%= render partial: "operation/shows/table", locals: {shows: @concert_shows} %>
     </div>
   </div>
   <%= hidden_field_tag "concert_id", @concert.id %>

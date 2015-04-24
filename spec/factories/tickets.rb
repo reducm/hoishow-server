@@ -6,7 +6,7 @@ FactoryGirl.define do
     show_id 1
     price 9.99
     order_id 1
-    code "MyString"
+    code "MyString" + Random.rand(1...999).to_s
     code_valid_time Time.now
     association :area
     association :show
