@@ -51,7 +51,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def get_city_topics
-    @topics = @concert.topics.where(city_id: params[:city_id]).page(params[:page]).per(5)
+    @city = City.find(params[:city_id])
+    @topics = @concert.topics.where(city_id: @city.id).page(params[:page]).per(5)
     respond_to do |format|
       format.js
     end

@@ -27,7 +27,7 @@ class Operation::TopicsController < Operation::ApplicationController
       end
       @topic.save!
     end
-    redirect_to operation_root_path
+    redirect_to params[:return_url]
   end
 
   def edit
