@@ -1,3 +1,3 @@
-$(".topics").html("<%= j(render partial: 'operation/topics/table', locals: {topics: @topics})%>")
+$(".topics").html("<%= j(render partial: 'operation/topics/table', locals: {topics: @topics, subject_type: @subject_type})%>")
 $("#city_topics").removeClass('hidden')
 $(".add_topic").attr("href", "<%= raw(new_operation_topic_path(concert_id: @concert.id, city_id: @city.id)) %>")

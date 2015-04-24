@@ -1,6 +1,6 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_topic, except: [:index]
+  before_action :get_star, except: [:index]
   load_and_authorize_resource
 
   def index
@@ -8,34 +8,18 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def show
-    @star = Star.find(params[:id])
-    @topics = Topic.where(subject_type: "Star", subject_id: @star.id).page(params[:page])
+    @concerts = @star.concerts.page(params[:page])
+    @topics = @star.topics.page(params[:page])
+    @users = @star.followers.page(params[:page])
   end
 
   def sort
     if params[:star].present?
       params[:star].each_with_index do |id, index|
-        Star.where(id: id).update_all(position: index+1) 
+        Star.where(id: id).update_all(position: index+1)
       end
     end
     render nothing: true
-  end
-
-  def top_topic 
-    @topic.update(is_top: true)
-    @topic.save
-    redirect_to operation_star_url(@star)
-  end
-
-  def no_top_topic 
-    @topic.update(is_top: false)
-    @topic.save
-    redirect_to operation_star_url(@star)
-  end
-
-  def topic_comments 
-    @comments = @topic.comments
-    render 'ok'
   end
 
   def edit
@@ -47,8 +31,8 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   private
-  def get_topic
-    @topic = Topic.find(params[:id])
+  def get_star
+    @star = Star.find(params[:id])
   end
 
 end

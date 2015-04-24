@@ -16,8 +16,7 @@ class Concert < ActiveRecord::Base
 
   validates :name, presence: {message: "演唱会名不能为空"}
 
-  has_many :topics, :class_name => "Topic", :foreign_key => 'subject_id'
-
+  has_many :topics, -> { where subject_type: Topic::SUBJECT_CONCERT }, :foreign_key => 'subject_id'
 
   paginates_per 20
 

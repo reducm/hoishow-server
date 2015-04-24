@@ -15,14 +15,14 @@
       <td><%= topic.content %></td>
       <td><%= topic.like_count %>/<%= topic.comments.count %>/<%= 0 %></td>
       <td><%= get_datetime(topic.created_at) %></td>
-      <td><%= get_datetime(topic.updated_at) %></td>
+      <td><%= get_datetime(topic.last_reply_time) %></td>
       <td>
-        <% if !topic.is_top %>
-          <%= link_to '置顶', top_topic_operation_star_path(@star), remote: true, id: 'top_topic' %>
+        <% if topic.is_top %>
+          <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0, subject_type: subject_type, city_id: topic.city_id), method: :post, remote: true %>
         <% else %>
-          <%= link_to '取消置顶', no_top_topic_operation_star_path(@star), remote: true, id: 'no_top_topic' %>
+          <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1, subject_type: subject_type, city_id: topic.city_id), method: :post , remote: true %>
         <% end %>
-        <%= link_to '回复', topic_comments_operation_star_path(@star) %>
+        <%= link_to '回复', "javascript:void(0)" %>
       </td>
     </tr>
   <% end %>
