@@ -4,14 +4,12 @@
     <%= form_tag(operation_stars_url, method: "get", class: 'navbar-form') do %>
       <div class="form-group">
         <%= select_tag "status_select", options_for_select(%w(开售中 投票中 无演出 全部), "全部"), class: 'form-control' %>
-        <%= text_field_tag :query, params[:query], placeholder: "输入艺人名字进行搜索", class: 'form-control' %>
       </div>
-      <%= submit_tag("搜索", class: 'btn btn-default') %>
     <% end %>
   </div>
 </div>
 
-<table class="table table-hover">
+<table class="table table-hover" id="stars">
   <thead>
     <tr>
       <th>艺人名称</th>
@@ -24,14 +22,14 @@
   <tbody id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
     <% @stars.each do|star|%>
       <%= content_tag_for :tr, star, remote: true do %>
-        <td title="上下拖动可排序">
+        <td>
           <span class="handle">[拉我排序] </span><%= star.name %>
         </td>
         <td class="status_cn"><%= star.status_cn %></td>
         <td><%= star.vote_count %></td>
         <td><%= star.followers_count %></td>
         <td>
-          <%= link_to "查看详情", edit_operation_star_path(star)%> 
+          <%= link_to "查看详情", operation_star_path(star)%> 
         </td>
       <%end%>
     <%end%>
