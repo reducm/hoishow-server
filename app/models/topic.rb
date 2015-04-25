@@ -3,6 +3,10 @@ class Topic < ActiveRecord::Base
   SUBJECT_CONCERT = 'Concert'
   SUBJECT_STAR = 'Star'
 
+  CREATOR_USER = 'User'
+  CREATOR_STAR = 'Star'
+  CREATOR_ADMIN = 'Admin'
+
   belongs_to :city
   validates :creator_id, presence: true
   validates :creator_type, presence: true

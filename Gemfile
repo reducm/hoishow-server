@@ -64,7 +64,7 @@ gem "second_level_cache"
 #gem "elasticsearch-model"
 #gem 'searchkick'
 
-gem 'searchkick'
+#gem 'searchkick'
 
 gem 'cancancan', '~> 1.10'
 
