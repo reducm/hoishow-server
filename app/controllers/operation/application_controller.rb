@@ -1,6 +1,7 @@
 class Operation::ApplicationController < ApplicationController
   layout "operation"
 
+  before_filter :check_login!
   protected
   def check_login!
     unless current_admin

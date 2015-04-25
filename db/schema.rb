@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150423074437) do
+ActiveRecord::Schema.define(version: 20150425065049) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -40,6 +40,19 @@ ActiveRecord::Schema.define(version: 20150423074437) do
   end
 
   add_index "areas", ["stadium_id"], name: "index_areas_on_stadium_id", using: :btree
+
+  create_table "banners", force: :cascade do |t|
+    t.integer  "admin_id",     limit: 4
+    t.string   "poster",       limit: 255
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.text     "description",  limit: 65535
+    t.string   "slogan",       limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "banners", ["admin_id"], name: "index_banners_on_admin_id", using: :btree
 
   create_table "cities", force: :cascade do |t|
     t.string   "pinyin",     limit: 255

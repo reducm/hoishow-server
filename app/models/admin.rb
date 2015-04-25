@@ -4,6 +4,8 @@ class Admin < ActiveRecord::Base
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
 
+  has_many :banners
+
   def is_admin?
     self.admin_type == 0
   end
