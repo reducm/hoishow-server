@@ -5,9 +5,9 @@ class Ability
     if user.blank?
       cannot :manage, :all
     elsif user.class.to_s == "Admin"
-      if user.is_admin?
+      if user.admin?
         can :manage, :all
-      elsif user.is_operator?
+      elsif user.operator?
         # Star
         can :create, Star
         can :update, Star

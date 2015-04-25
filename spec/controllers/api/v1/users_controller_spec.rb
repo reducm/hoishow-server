@@ -15,7 +15,7 @@ describe Api::V1::UsersController do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
@@ -37,7 +37,7 @@ describe Api::V1::UsersController do
     it "with page params" do
       get :index, with_key(page: 2, format: :json)
       users_mobile = User.pluck(:mobile)
-      expect(JSON.parse(response.body).first["mobile"]).to eq users_mobile[20] #第二页第一个 
+      expect(JSON.parse(response.body).first["mobile"]).to eq users_mobile[20] #第二页第一个
     end
   end
 
@@ -74,7 +74,7 @@ describe Api::V1::UsersController do
 
       post :sign_in, with_key(mobile: mobile, code: code, format: :json)
       expect(assigns(:user).valid?).to be_truthy
-      expect(assigns(:user).mobile).to eq mobile  
+      expect(assigns(:user).mobile).to eq mobile
       expect(assigns(:user).api_token.present?).to eq true
       expect(Rails.cache.read(controller.send("cache_key", mobile)).blank?).to eq true
       expect(response.status).to eq 200
@@ -160,7 +160,7 @@ describe Api::V1::UsersController do
       time = "1426844347962"
       post :update_user, with_key( api_token: @user.api_token, mobile: @user.mobile, type: "birthday", birthday: time, format: :json )
       expect(response.status).to eq 200
-      expect((JSON.parse response.body)["birthday"].blank?).to be false  
+      expect((JSON.parse response.body)["birthday"].blank?).to be false
       @user.reload
       expect(@user.birthday.strftime("%Y-%m-%d")).to eq Time.from_ms(time).strftime("%Y-%m-%d")
     end
@@ -190,29 +190,29 @@ describe Api::V1::UsersController do
   end
 
   context "#follow_subject" do
-    it "should follow star success" do 
+    it "should follow star success" do
       @star = create(:star)
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: @star.id, format: :json )
       @user.reload
       expect(@user.follow_stars.size > 0).to be true
     end
 
-    it "should follow concert success" do 
+    it "should follow concert success" do
       @concert = create(:concert)
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, format: :json )
       @user.reload
       expect(@user.follow_concerts.size > 0).to be true
     end
 
-    it "wrong subject_type should return 403" do 
+    it "wrong subject_type should return 403" do
       @star = create :star
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "star", subject_id: @star.id, format: :json )
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
     end
 
-    it "wrong subject_id should return 403" do 
+    it "wrong subject_id should return 403" do
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
     end
   end
 
@@ -238,15 +238,15 @@ describe Api::V1::UsersController do
       expect(@user.follow_concerts.size ).to eq 0
     end
 
-    it "wrong subject_type should return 403" do 
+    it "wrong subject_type should return 403" do
       @star = create :star
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "star", subject_id: @star.id, format: :json )
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
     end
 
-    it "wrong subject_id should return 403" do 
+    it "wrong subject_id should return 403" do
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
     end
   end
 
@@ -259,10 +259,10 @@ describe Api::V1::UsersController do
       expect(response.status).to eq 200
       expect(assigns(:comment).parent_id).to eq @comment.id
       expect(response.body).to include("topic_id")
-      expect(response.body).to include("user")
+      expect(response.body).to include("creator")
       expect(response.body).to include("content")
       expect(response.body).to include("parent_id")
-      #ap JSON.parse(response.body) 
+      #ap JSON.parse(response.body)
     end
   end
 
@@ -289,7 +289,7 @@ describe Api::V1::UsersController do
     it "should have 12 stars(base on controller per)" do
       post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 12 
+      expect(JSON.parse(response.body).size).to eq 12
     end
 
     it "should has attributes" do
@@ -298,8 +298,8 @@ describe Api::V1::UsersController do
       expect(response.body).to include("name")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
-      JSON.parse(response.body).each do|object| 
-        expect(object["is_followed"]).to be true 
+      JSON.parse(response.body).each do|object|
+        expect(object["is_followed"]).to be true
       end
     end
 
@@ -329,8 +329,8 @@ describe Api::V1::UsersController do
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
-      JSON.parse(response.body).each do|object| 
-        expect(object["is_followed"]).to be true 
+      JSON.parse(response.body).each do|object|
+        expect(object["is_followed"]).to be true
       end
     end
   end
@@ -341,7 +341,7 @@ describe Api::V1::UsersController do
       @city = create :city
       post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", city_id: @city.id, format: :json)
       expect(assigns(:topic).valid?).to be true
-    end   
+    end
 
     it "create wrong when argument miss" do
       @concert = create :concert
@@ -408,7 +408,7 @@ describe Api::V1::UsersController do
         @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
       end
       @areas = Area.all.to_a
-    end  
+    end
 
     it "create_order should success" do
       post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
@@ -436,7 +436,7 @@ describe Api::V1::UsersController do
           @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
         end
         @areas = Area.all.to_a
-      end  
+      end
 
       it "should raise errors if order is sold out" do
         2.times do
