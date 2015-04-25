@@ -3,7 +3,8 @@
 FactoryGirl.define do
   factory :comment do
     content "fuck you"
-    association :user
+    creator_type "Star"
+    creator_id 1
     association :topic
   end
 end
