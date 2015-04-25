@@ -1,5 +1,15 @@
-<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal' }) do |f| %>
-  <%= f.input :name, label: "艺人名称" %>
-  <%= f.input :avatar, label: "艺人头像" %>
-  <%= f.button :submit %>
+<%= simple_form_for([:operation, star ], html: { class: 'form-inline' }) do |f| %>
+  <div class="form-group">
+    <%= f.input :name, label: "艺人名称" %>
+  </div>
+  <br />
+  <br />
+  <div class="form-group">
+    <%= f.input :avatar, label: "艺人头像" %>
+  </div>
+  <br />
+  <br />
+  <div class="form-group">
+    <%= f.button :submit %>
+  </div>
 <% end %>

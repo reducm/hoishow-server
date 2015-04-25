@@ -9,10 +9,13 @@
   </div>
 </div>
 
+<%= link_to "新增艺人", new_operation_star_url, class: 'btn btn-primary' %>
+
 <div class="stars_list">
   <table class="table table-hover" id="stars">
   <thead>
     <tr>
+      <th>艺人头像</th>
       <th>艺人名称</th>
       <th>演出状态</th>
       <th>总投票数量</th>
@@ -23,6 +26,7 @@
   <tbody id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
     <% @stars.each do|star|%>
       <%= content_tag_for :tr, star, remote: true do %>
+        <td><%= star.avatar %></td>
         <td>
           <span class="handle">[拉我排序] </span><%= star.name %>
         </td>
