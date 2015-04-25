@@ -3,16 +3,13 @@
     <div class="search">
       <%= form_tag(operation_concerts_url, method: "get", class: 'navbar-form') do %>
         <%= select_tag "concert_status_select", options_for_select(%w(演出投票状态 投票中 投票完结), "演出投票状态"), class: 'form-control' %>
-        <div class="form-group">
-          <%= text_field_tag(:q, nil, class: 'form-control') %>
-        </div>
-        <%= submit_tag("搜索", class: 'btn btn-default') %>
       <% end %>
     </div>
   </div>
 
-      
-  <%= render partial: "table", locals: {concerts: @concerts} %>
+  <div class="concerts_list">
+    <%= render partial: "table", locals: {concerts: @concerts} %>
+  </div>
 
 
-  
+
