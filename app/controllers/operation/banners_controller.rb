@@ -13,6 +13,11 @@ class Operation::BannersController < Operation::ApplicationController
 
   def create
     @banner = current_admin.banners.create(banner_params)
+    if @banner.errors.any?
+      render :new
+    else
+      redirect_to action: :index
+    end
   end
 
   def edit
@@ -24,7 +29,9 @@ class Operation::BannersController < Operation::ApplicationController
   end
 
   def destroy
-    
+    @banner = Banner.find(params[:id])   
+    @banner.destroy
+    redirect_to action: :index
   end
 
   protected

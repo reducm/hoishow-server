@@ -8,6 +8,6 @@ module Operation::ApplicationHelper
   end
 
   def subject_show_url(subject_type, id)
-    Rails.application.routes.url_helpers.send("opeeration_#{subject_type.downcase}_url", id) 
+    Rails.application.routes.url_helpers.send("operation_#{subject_type.downcase}_path", id ) 
   end
 end

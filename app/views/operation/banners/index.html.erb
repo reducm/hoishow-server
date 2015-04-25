@@ -20,9 +20,9 @@
       <tr>
         <td><%= banner.id %></td>
         <td><%= banner.subject_type %></td>
-        <td><%= link_to subject.name, subject_show_url(banner.subject_type, banner.subject_id) %> </td>
-        <td><%= image_tag banner.poster.small.url %></td>
-        <td><%= banner.poster %></td>
+        <td><%= link_to banner.subject.name, subject_show_url(banner.subject_type, banner.subject_id) %> </td>
+        <td><img src='<%= banner.poster.url rescue nil %>' /></td>
+        <td><%= banner.description.html_safe %></td>
         <td><%= banner.slogan %></td>
         <td><%= banner.updated_at %></td>
         <td>

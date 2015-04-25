@@ -1,8 +1,15 @@
-
-<%= simple_form_for [:operation, banner], html: { class: 'form-horizontal'  } do|f| %>
-  <%= f.input :subject_type %>
-  <%= f.input :subject_id %>
-  <%= f.input :description %>
+<%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
+  <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}  %>
+  <%= f.input :subject_id, as: :select,  input_html: {id: "subject_id_select"} %>
+  <%= f.kindeditor :description %>
   <%= f.input :slogan %>
   <%= f.input :poster %>
+  <%= f.submit %>
+<%end%>
+
+<%= content_tag :div, id: "hoishow", data: {
+  stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
+  concerts: ( Concert.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
+  shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } )
+} do%>
 <%end%>
