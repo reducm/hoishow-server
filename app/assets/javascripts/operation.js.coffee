@@ -12,6 +12,7 @@
 #= require operation/admins
 #= require operation/orders
 #= require operation/topics
+#= require operation/users
 #= require dataTables/jquery.dataTables
 
 #= require operation/jquery.datetimepicker

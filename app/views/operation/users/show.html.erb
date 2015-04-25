@@ -42,14 +42,14 @@
     <div role="tabpanel" class="col-md-8">
       <!-- Nav tabs -->
       <ul class="nav nav-pills" role="tablist">
-        <li role="presentation" class="active"><a href="#orders" aria-controls="orders" role="tab" data-toggle="tab">购票记录<span class="badge"><%= @orders.count %></span></a></li>
-        <li role="presentation"><a href="#topics" aria-controls="topics" role="tab" data-toggle="tab">互动记录<span class="badge"><%= @topics.count %></span></a></li>
-        <li role="presentation"><a href="#comments" aria-controls="comments" role="tab" data-toggle="tab">评论记录<span class="badge"><%= @comments.count %></span></a></li>
+        <li role="presentation" class="active"><a href="#user_orders" aria-controls="orders" role="tab" data-toggle="tab">购票记录<span class="badge"><%= @orders.count %></span></a></li>
+        <li role="presentation"><a href="#user_topics" aria-controls="topics" role="tab" data-toggle="tab">互动记录<span class="badge"><%= @topics.count %></span></a></li>
+        <li role="presentation"><a href="#user_comments" aria-controls="comments" role="tab" data-toggle="tab">评论记录<span class="badge"><%= @comments.count %></span></a></li>
       </ul>
 
       <!-- Tab panes -->
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active table" id="orders">
+        <div role="tabpanel" class="tab-pane active table" id="user_orders">
           <table class="table">
             <thead>
               <tr>
@@ -72,7 +72,7 @@
           </table>
           <%= paginate @orders %>
         </div>
-        <div role="tabpanel" class="tab-pane" id="topics">
+        <div role="tabpanel" class="tab-pane" id="user_topics">
           <table class="table">
             <thead>
               <tr>
@@ -88,7 +88,7 @@
             <% end %>
           </table>
         </div>
-        <div role="tabpanel" class="tab-pane" id="comments">
+        <div role="tabpanel" class="tab-pane" id="user_comments">
           <table class="table">
             <thead>
               <tr>

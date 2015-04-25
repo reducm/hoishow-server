@@ -1,6 +1,6 @@
 <div class="nav">
-    <h1>订单列表</h1>
-    <div class="navbar-form form-group">
+    <h1 class="pull-left">订单列表</h1>
+    <div class="navbar-form form-group search">
       <%= select_tag "order_status_select", options_for_select(%w(全部 未支付 已支付 已出票 已退款 已过期), "全部"), class: 'form-control' %>
     </div>
 

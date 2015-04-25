@@ -1,5 +1,4 @@
-<%= paginate orders%>
-<table class="table table-hover">
+<table class="table table-hover orders">
   <thead>
     <tr>
       <th>演出</th>
@@ -11,36 +10,25 @@
     </tr>
   </thead>
   <tbody>
-    <% orders.each do|order|%>
+    <% orders.each do|order| %>
       <tr>
-        <% show = order.show %>
-        <td><%= link_to order.show_name, operation_show_path(show) %></td>
         <% user = order.user %>
-        <td><%= link_to (user.nickname + " / " + user.mobile), operation_user_path(user) %></td>
+        <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
+        <td><%= link_to user_name(user), operation_user_path(user) %></td>
         <td>
           <table>
-            <tbody>
-              <% show.areas.each do |area| %>
+            <% get_areas(order).each do |area| %>
+            <% tickets = order.tickets.where(area_id: area.id) %>
               <tr>
-                <% tickets = area.tickets %>
-                <td><%= area.name + " / " + tickets.count.to_s + "张"%></td>
-                <%tickets.each do |ticket| %>
-                  <tr>
-                  <td><%= ticket.code%></td>
-                  </tr>
-                <%end%>
+                <td><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></td>
               </tr>
-              <%end%>
-            </tbody>
+            <% end %>
           </table>
         </td>
         <td><%= order.created_at.strfcn_date %></td>
-        <td class="order_status_cn"><%= order.status_cn%></td>
-        <td><%= order.amount%></td>
+        <td class="order_status_cn"><%= order.status_cn %></td>
+        <td><%= order.amount %></td>
       </tr>
-    <%end%>
+    <% end %>
   </tbody>
 </table>
-
-
-<%= paginate orders %>

@@ -7,6 +7,8 @@ class ImageUploader < CarrierWave::Uploader::Base
   storage :upyun
   ImgUpyunSetting = UpyunSetting["hoishow-img"]
 
+  self.upyun_username = ImgUpyunSetting["upyun_username"]
+  self.upyun_password = ImgUpyunSetting["upyun_password"]
   self.upyun_bucket = ImgUpyunSetting["upyun_bucket"]
   self.upyun_bucket_domain = ImgUpyunSetting["upyun_bucket_domain"]
 

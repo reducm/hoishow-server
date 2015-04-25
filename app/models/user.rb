@@ -1,10 +1,9 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
   has_many :orders
-  has_many :comments, :class_name => "Comment", :foreign_key => 'creator_id'
 
-
-  has_many :topics, :class_name => "Topic", :foreign_key => 'creator_id'
+  has_many :comments, -> { where creator_type: Comment::CREATOR_USER }, :foreign_key => 'creator_id'
+  has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'
 
   has_many :user_follow_stars
   has_many :follow_stars, through: :user_follow_stars, source: :star
@@ -59,7 +58,7 @@ class User < ActiveRecord::Base
   end
 
   def create_comment(topic, parent_id = nil, content)
-    comments.create(topic_id: topic.id, parent_id: parent_id, content: content)
+    comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
   end
 
   def vote_concert(concert, city)
