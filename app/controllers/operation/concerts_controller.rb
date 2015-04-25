@@ -6,12 +6,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   skip_authorize_resource :only => [:get_city_voted_data]
 
   def index
-    if params[:q].present?
-      @stars = Star.search(params[:q])
-      @concerts = Kaminari.paginate_array( @stars.map{|star| star.concerts}.flatten ).page(params[:page])
-   else
-      @concerts = Concert.page(params[:page])
-    end
+    @concerts = Concert.page(params[:page])
   end
 
   def edit
