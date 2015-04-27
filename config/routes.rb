@@ -20,6 +20,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :banners
+
       resources :stars do
         collection do
           get "search"
@@ -50,6 +52,9 @@ Rails.application.routes.draw do
     resources :sessions, only: [:new, :create, :destroy]
     match "/signin" => "sessions#new", via: [:get]
     match "/signout" => "sessions#destroy", via: [:delete]
+
+    resources :banners
+
     resources :stars do
       collection do
         post :sort
