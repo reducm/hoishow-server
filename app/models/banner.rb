@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Banner < ActiveRecord::Base
   belongs_to :admin
   mount_uploader :poster, ImageUploader
@@ -10,6 +11,10 @@ class Banner < ActiveRecord::Base
       Rails.logger.fatal("subject wrong, banner_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
      end
+  end
+
+  def subject_name
+    subject.name rescue "图文主体"
   end
 
   def is_article?
