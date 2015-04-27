@@ -36,7 +36,7 @@ class Topic < ActiveRecord::Base
       Object::const_get(creator_type).where(id: creator_id).first
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
-      Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
+      Rails.logger.fatal("creator wrong, topic_id: #{ id }, creator_type: #{creator_type}, creator_id: #{creator_id}")
       nil
     end
   end
