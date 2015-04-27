@@ -565,6 +565,18 @@ type: `GET`
 
 ## Ticket对象
 
+```javascript
+{
+  area_id: 11, //区域id
+  show_id: 22, //演出id
+  price: 99.00, //价格
+  code: “二维码”
+  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用 
+  created_at: "201504102140270000",
+  updated_at: "201504102140270000"
+}
+```
+
 ## Banner对象
 
 ```javascript
