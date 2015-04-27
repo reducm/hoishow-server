@@ -19,10 +19,10 @@ RSpec.describe Api::V1::BannersController, :type => :controller do
      end
 
      it "article banner sould has no subject" do
-       Concert.destroy_all
-       create :article_banner, concert: @concert
+       Banner.destroy_all
+       banner = create :article_banner
        get :index, with_key(format: :json)
-       expect(JSON.parse(response.body)[0]["subject"].keys.count).to eq 0
+       expect(JSON.parse(response.body)[0]["subject"].blank?).to be true
      end
   end
 end
