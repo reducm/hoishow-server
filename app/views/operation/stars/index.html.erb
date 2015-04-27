@@ -26,7 +26,7 @@
   <tbody id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
     <% @stars.each do|star|%>
       <%= content_tag_for :tr, star, remote: true do %>
-        <td><%= star.avatar %></td>
+        <td><img src='<%= star.avatar.url("avatar") if star.avatar.url.present? %>'></td>
         <td>
           <span class="handle">[拉我排序] </span><%= star.name %>
         </td>

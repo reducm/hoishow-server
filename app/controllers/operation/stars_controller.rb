@@ -1,6 +1,6 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_star, except: [:index, :new, :create]
+  before_action :get_star, except: [:index, :sort, :new, :create]
   load_and_authorize_resource
 
   def index
@@ -22,12 +22,16 @@ class Operation::StarsController < Operation::ApplicationController
     render nothing: true
   end
 
+  def new
+    @star = Star.new
+  end
+
   def create
     @star = Star.new(star_params)
     if !@star.save
       render action: :new
     else
-      redirect_to @star, notice: "新增艺人成功。"
+      redirect_to operation_stars_url, notice: "新增艺人成功。"
     end
   end
 
