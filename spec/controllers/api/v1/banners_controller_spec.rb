@@ -7,7 +7,6 @@ RSpec.describe Api::V1::BannersController, :type => :controller do
     5.times do
       create :banner, subject_type: "Concert", subject_id: @concert.id
     end
-    @article_banner = create :article_banner
   end
 
   context "#index" do
@@ -15,6 +14,15 @@ RSpec.describe Api::V1::BannersController, :type => :controller do
        get :index, with_key(format: :json)
        expect(response.status).to eq 200
        expect(JSON.parse(response.body).count).to eq 5
+       #"subject" 要有东西
+       expect(JSON.parse(response.body)[0]["subject"].keys.count > 0).to be true
+     end
+
+     it "article banner sould has no subject" do
+       Banner.destroy_all
+       banner = create :article_banner
+       get :index, with_key(format: :json)
+       expect(JSON.parse(response.body)[0]["subject"].blank?).to be true
      end
   end
 end
