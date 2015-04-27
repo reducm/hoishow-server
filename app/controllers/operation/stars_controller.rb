@@ -1,6 +1,7 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, except: [:index, :sort, :new, :create]
+  before_action :get_star, except: [:index, :sort]
   load_and_authorize_resource
 
   def index

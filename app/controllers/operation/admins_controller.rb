@@ -27,7 +27,11 @@ class Operation::AdminsController < Operation::ApplicationController
     end
   end
 
-   def update
-
-   end
+  def update
+    @admin = Admin.find(params[:id])
+    @admin.set_password(params[:pw1])
+    if @admin.save!
+      redirect_to operation_admins_url
+    end
+  end
 end

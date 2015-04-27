@@ -209,3 +209,14 @@ zh-CN:
       long: "%Y年%b%d日 %H:%M"
       short: "%b%d日 %H:%M"
     pm: 下午
+  activerecord:
+    models:
+      admin: 管理员
+    attributes:
+      banner:
+        poster: 海报
+        subject_type: 主体类型
+        subject_id: 主体
+        description: 图文内容
+        slogan: 标语  
+

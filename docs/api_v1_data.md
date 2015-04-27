@@ -586,7 +586,7 @@ type: `GET`
   subject_type: "Star or Show or Concert or Article",
   subject_id: "subject的id", //
   subject: {Star or Show or Concert对象},
-  description: "当subject_type是Article的时候, description是图文链接的url".
+  description: "当subject_type是Article的时候, description是图文链接的url",
   slogan: "标语"
 }
 ```
