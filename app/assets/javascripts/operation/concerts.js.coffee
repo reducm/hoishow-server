@@ -227,29 +227,47 @@ init_map_data = (concert_id) ->
 $ ->
   concert_id = $("#concert_id").val()
 
-  $("#get_map").on "click", () ->
-    init_map(concert_id) #初始化地图标注
+  if concert_id
+    $("#get_map").on "click", () ->
+      init_map(concert_id) #初始化地图标注
 
-  $("#profile").on "click", ".del_city", (e) ->
-    e.preventDefault()
-    $this = $(this)
-    if $this.parent().data("count") > "0"
-      alert("该城市已经有用户投票，不能删除")
-    else
-      if confirm("确定要删除吗?")
-        $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
-          if data.success
-            init_map_data(concert_id)
-        ) #删除投票城市
+    $("#profile").on "click", ".del_city", (e) ->
+      e.preventDefault()
+      $this = $(this)
+      if $this.parent().data("count") > "0"
+        alert("该城市已经有用户投票，不能删除")
+      else
+        if confirm("确定要删除吗?")
+          $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
+            if data.success
+              init_map_data(concert_id)
+          ) #删除投票城市
 
-  $("#profile").on "click", ".add_city", (e) ->
-    e.preventDefault()
-    city_id = $("#city_id").val()
-    $.post("/operation/concerts/#{concert_id}/add_concert_city", {city_id: city_id}, (data)->
-      if data.success
-        $("#myModal, .modal-backdrop").hide()
-        init_map_data(concert_id)
-    ) #添加投票城市
+    $("#profile").on "click", ".add_city", (e) ->
+      e.preventDefault()
+      city_id = $("#city_id").val()
+      $.post("/operation/concerts/#{concert_id}/add_concert_city", {city_id: city_id}, (data)->
+        if data.success
+          $("#myModal, .modal-backdrop").hide()
+          init_map_data(concert_id)
+      ) #添加投票城市
+
+    $("#city_name").autocomplete({
+      mustMatch: true
+      source: (request, response)->
+        $.get("/operation/concerts/#{concert_id}/get_cities", {term: request.term}, (data)->
+          response(data)
+        )
+      select: (event, ui)->
+        $("#city_name").val(ui.item.label)
+        $("#city_id").val(ui.item.value)
+        return false
+      response: (event, ui)->
+        if ui.content.length < 1
+          $("#city_id").val("")
+    })
+
+    $("#city_name").autocomplete("option", "appendTo", "#myModal")
 
 #datetimepicker---concert edit
   $('div.datetimepicker input').datetimepicker({

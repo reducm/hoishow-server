@@ -58,7 +58,12 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def get_cities
     cities = get_no_concert_cities(@concert)
-    render json: cities
+
+    if params[:term]
+      cities = cities.where("name LIKE ? or pinyin LIKE ?", "%#{params[:term]}%", "%#{params[:term]}%")
+    end
+
+    render json: cities.map{|city| {value: city.id, label: city.name}}
   end
 
   private

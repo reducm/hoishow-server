@@ -5,6 +5,6 @@ module Operation::ConcertsHelper
 
   def get_no_concert_cities(concert)
     ids = concert.concert_city_relations.map(&:city_id).compact.uniq
-    ids.empty? ? City.all : City.where("id not in (?)", ids).map{|city| [city.id, city.name]}
+    ids.empty? ? City.all : City.where("id not in (?)", ids)
   end
 end
