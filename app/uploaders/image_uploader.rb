@@ -4,7 +4,13 @@ IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(120x160 224*292 300x423 320 640 800
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  storage :upyun
+  if Rails.env.production? || Rails.env.staging?
+    storage :upyun
+  else
+    storage :file
+  end
+
+
   ImgUpyunSetting = UpyunSetting["hoishow-img"]
 
   self.upyun_username = ImgUpyunSetting["upyun_username"]
@@ -13,7 +19,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   self.upyun_bucket_domain = ImgUpyunSetting["upyun_bucket_domain"]
 
   def store_dir
-    "#{model.class.to_s.underscore}/#{mounted_as}"
+    "/uploads/#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
   #def default_url
