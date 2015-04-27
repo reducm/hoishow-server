@@ -2,7 +2,7 @@
 
 <%= link_to "创建Banner", new_operation_banner_path, class: "btn btn-primary" %> 
 
-<table class="table table-striped">
+<table class="table table-striped" id="banner-table">
   <thead>
     <tr>
       <th>#id</th>
@@ -21,8 +21,8 @@
         <td><%= banner.id %></td>
         <td><%= banner.subject_type %></td>
         <td><%= link_to banner.subject.name, subject_show_url(banner.subject_type, banner.subject_id) %> </td>
-        <td><img src='<%= banner.poster.url rescue nil %>' /></td>
-        <td><%= banner.description.html_safe %></td>
+        <td><img src='<%= banner.poster.url rescue nil %>' class="preview-pic" /></td>
+        <td><%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %> </td>
         <td><%= banner.slogan %></td>
         <td><%= banner.updated_at %></td>
         <td>

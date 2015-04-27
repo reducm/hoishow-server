@@ -1,3 +1,4 @@
+#encoding: UTF-8
 require 'sidekiq/web'
 Rails.application.routes.draw do
   namespace :api do
@@ -83,4 +84,6 @@ Rails.application.routes.draw do
     end
     #TODO api_auth
   end
+
+  get "description", to: "description#show"
 end

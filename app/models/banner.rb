@@ -11,4 +11,8 @@ class Banner < ActiveRecord::Base
       nil
      end
   end
+
+  def is_article?
+    subject_type == "Article"
+  end
 end
