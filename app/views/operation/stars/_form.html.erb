@@ -1,14 +1,13 @@
-<%= simple_form_for([:operation, star ], html: { class: 'form-inline' }) do |f| %>
+<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal' }) do |f| %>
   <div class="form-group">
     <%= f.input :name, label: "艺人名称" %>
   </div>
-  <br />
-  <br />
   <div class="form-group">
+    <img src='<%= star.avatar_url %>'>
     <%= f.input :avatar, label: "艺人头像" %>
+    <%= video_tag @star.videos.first.url %>
+    <%= f.association :videos, as: :file %>
   </div>
-  <br />
-  <br />
   <div class="form-group">
     <%= f.button :submit %>
   </div>

@@ -15,4 +15,6 @@ $ ->
     else
       $(".status_cn:not(:contains('" + vtxt + "'))").parent().hide()
 
-  
+  $('#stars').dataTable(
+    paging: false
+  )  

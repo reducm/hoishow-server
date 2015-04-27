@@ -1,6 +1,10 @@
 <div role="tabpanel">
+  
+  <%= link_to "编辑资料", edit_operation_star_path, class: 'btn btn-default' %>
+  <%= link_to "发布新互动", new_operation_topic_path, class: 'btn btn-default' %>
+  <%= link_to "发布新演出", new_operation_concert_path, class: 'btn btn-default' %>
 
-<h1><%= @star.name %></h1>
+  <h1><%= @star.name %></h1>
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">
     <li role="presentation" class="active"><a href="#star_concerts" aria-controls="star_concerts" role="tab" data-toggle="tab">演出活动</a></li>
