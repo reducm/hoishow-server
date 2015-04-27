@@ -252,7 +252,7 @@ $ ->
     ) #添加投票城市
 
 #datetimepicker---concert edit
-  $('input.datetimepicker').datetimepicker({
+  $('div.datetimepicker input').datetimepicker({
     timepicker: false,
     format: 'd M Y',
     startDate: new Date(),
