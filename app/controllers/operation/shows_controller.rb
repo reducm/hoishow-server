@@ -7,6 +7,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def show
+    @show = Show.find(params[:id])
   end
 
 end
