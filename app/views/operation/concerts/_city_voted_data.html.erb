@@ -2,7 +2,7 @@
       <div id="map_data">
         <div class="nav">
           <a data-toggle="modal" data-target="#myModal">添加投票城市</a>
-          <%= link_to "发布演出", operation_shows_path(concert_id: concert), method: :post %>
+          <%= link_to "发布演出", new_operation_show_path(concert_id: concert) %>
         </div>
         <div class="map-table">
           <table class="table">
@@ -19,7 +19,7 @@
                 <td><%= get_city_voted_count(city) %></td>
                 <td data-count="<%= get_city_voted_count(city) %>" data-id="<%= city.id %>">
                   <%= link_to '查看互动', get_city_topics_operation_concert_path(concert, city_id: city), remote: true %>
-                  <%= link_to '删除', nil, class: "del_city" %>
+                  <%= link_to '删除', 'javascript:void(0);', class: "del_city" %>
                 </td>
               </tr>
             <% end %>
@@ -43,7 +43,8 @@
             <div class="modal-body">
               <%= form_tag do %>
                 <div class="form-group">
-                  <%= select_tag "city_id", options_from_collection_for_select(get_no_concert_cities(concert), "id", "name"), class: 'form-control' %>
+                  <%= text_field_tag 'city_name', nil, class: 'form-control', placeholder: '请输入城市名称' %>
+                  <%= hidden_field_tag "city_id" %>
                 </div>
                 <%= submit_tag "提交", class: 'btn btn-primary add_city' %>
               <% end %>

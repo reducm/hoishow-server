@@ -4,7 +4,7 @@ module Operation::ConcertsHelper
   end
 
   def get_no_concert_cities(concert)
-    ids = concert.concert_city_relations.map(&:city_id)
-    City.where("id not in (?)", ids)
+    ids = concert.concert_city_relations.map(&:city_id).compact.uniq
+    City.where("id not in (?)", ids).map {|city| [city.id, city.name]}
   end
 end

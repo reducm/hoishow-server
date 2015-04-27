@@ -1,9 +1,9 @@
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
-  before_action :check_login!, except: [:get_city_voted_data]
+  before_action :check_login!, except: [:get_city_voted_data, :get_cities]
   before_action :get_concert, except: [:index]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:get_city_voted_data]
+  skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
     @concerts = Concert.page(params[:page])
@@ -54,6 +54,11 @@ class Operation::ConcertsController < Operation::ApplicationController
   def get_city_voted_data
     data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(city)}}
     render json: data
+  end
+
+  def get_cities
+    cities = get_no_concert_cities(@concert)
+    render json: cities
   end
 
   private
