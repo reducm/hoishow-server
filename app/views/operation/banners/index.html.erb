@@ -20,7 +20,13 @@
       <tr>
         <td><%= banner.id %></td>
         <td><%= banner.subject_type %></td>
-        <td><%= link_to banner.subject.name, subject_show_url(banner.subject_type, banner.subject_id) %> </td>
+        <td>
+          <% if !banner.is_article? %>
+            <%= link_to banner.subject_name, subject_show_url(banner.subject_type, banner.subject_id)  %> 
+          <%else%>
+            图文主体
+          <%end%>
+        </td>
         <td><img src='<%= banner.poster.url rescue nil %>' class="preview-pic" /></td>
         <td><%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %> </td>
         <td><%= banner.slogan %></td>
