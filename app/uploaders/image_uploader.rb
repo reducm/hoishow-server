@@ -19,7 +19,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   self.upyun_bucket_domain = ImgUpyunSetting["upyun_bucket_domain"]
 
   def store_dir
-    "/uploads/#{model.class.to_s.underscore}/#{mounted_as}"
+    "uploads/#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
   #def default_url
