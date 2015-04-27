@@ -1,0 +1,36 @@
+<h1>Banner列表</h1>
+
+<%= link_to "创建Banner", new_operation_banner_path, class: "btn btn-primary" %> 
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#id</th>
+      <th>主体类型</th>
+      <th>主体</th>
+      <th>海报</th>
+      <th>图文介绍</th>
+      <th>slogan标语</th>
+      <th>创建日期</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @banners.each do|banner|%>
+      <tr>
+        <td><%= banner.id %></td>
+        <td><%= banner.subject_type %></td>
+        <td><%= link_to banner.subject.name, subject_show_url(banner.subject_type, banner.subject_id) %> </td>
+        <td><img src='<%= banner.poster.url rescue nil %>' /></td>
+        <td><%= banner.description.html_safe %></td>
+        <td><%= banner.slogan %></td>
+        <td><%= banner.updated_at %></td>
+        <td>
+          <%= link_to "查看", operation_banner_path(banner) %> / 
+          <%= link_to "编辑", edit_operation_banner_path(banner) %> / 
+          <%= link_to "删除", operation_banner_path(banner), method: "delete", confirm: true %>
+        </td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>

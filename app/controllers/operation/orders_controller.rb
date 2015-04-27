@@ -5,6 +5,4 @@ class Operation::OrdersController < Operation::ApplicationController
   def index
     @orders = Order.page(params[:page])
   end
-
-
 end

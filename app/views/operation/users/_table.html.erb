@@ -1,0 +1,30 @@
+  <table class="table table-hover users">
+    <thead>
+      <tr>
+        <th class="text-center">用户名</th>
+        <th class="text-center">手机号</th>
+        <th class="text-center">订单数量</th>
+        <th class="text-center">互动主题数</th>
+        <th class="text-center">互动评论数</th>
+        <th class="text-center">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.each do|user|%>
+        <tr>
+          <td class="text-center">
+            <%= image_tag user.avatar.url %>
+            <%= user.show_name %>
+          </t class="text-center"d>
+          <td class="text-center"><%= user.mobile %></td>
+          <td class="text-center"><%= user.orders.count %></td>
+          <td class="text-center"><%= user.topics.count %></td>
+          <td class="text-center"><%= user.comments.count %></td>
+          <td class="text-center">
+            <%= link_to "查看", operation_user_path(user)%>
+            <%= link_to "屏蔽", "#" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>

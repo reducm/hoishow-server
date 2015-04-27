@@ -5,6 +5,19 @@
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
 --------
+
+## Banner列表
+[/api/v1/banners]()
+
+type: `GET`
+
+成功时返回:
+```javascript
+  [banner对象列表] //参考Banner对象
+```
+
+--------
+
 ## 明星列表
 [/api/v1/stars]()
 
@@ -551,3 +564,17 @@ type: `GET`
 ```
 
 ## Ticket对象
+
+## Banner对象
+
+```javascript
+{
+  id: 1, 
+  poster: "poster_url",
+  subject_type: "Star or Show or Concert or Article",
+  subject_id: "subject的id", //
+  subject: {Star or Show or Concert对象},
+  description: "当subject_type是Article的时候, description是图文链接的url",
+  slogan: "标语"
+}
+```

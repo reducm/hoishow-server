@@ -9,11 +9,11 @@ $ ->
 
   $('#status_select').change ->
     $(".status_cn").parent().show()
-    vtxt = $('#status_select').val() 
+    vtxt = $('#status_select').val()
     if vtxt == "全部"
       location.reload()
     else
       $(".status_cn:not(:contains('" + vtxt + "'))").parent().hide()
 
-  $('#topics').dataTable()
-  $('#stars').dataTable()
+  if $(".stars_list")
+    $('#stars').dataTable()

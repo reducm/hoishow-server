@@ -4,13 +4,12 @@ class Admin < ActiveRecord::Base
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
 
-  def is_admin?
-    self.admin_type == 0
-  end
+  has_many :banners
 
-  def is_operator?
-    self.admin_type == 1
-  end
+  enum admin_type: {
+    admin: 0,
+    operator: 1
+  }
 
   def type_cn
     case admin_type
@@ -25,7 +24,7 @@ class Admin < ActiveRecord::Base
     self.encrypted_password = PasswordHash.createHash(password)
   end
 
-  def passwd_valid?(password)
+  def password_valid?(password)
     PasswordHash.validatePassword(password, self.encrypted_password)
   end
 end
