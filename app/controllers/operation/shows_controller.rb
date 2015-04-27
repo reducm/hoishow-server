@@ -6,4 +6,7 @@ class Operation::ShowsController < Operation::ApplicationController
     @shows = Show.page(params[:page])
   end
 
+  def show
+  end
+
 end

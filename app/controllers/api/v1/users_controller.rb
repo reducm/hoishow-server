@@ -176,7 +176,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @show = Show.find(params[:show_id])
     @relation = ShowAreaRelation.where(show_id: @show.id, area_id: params[:area_id]).first
 
-    if @show.area_seats_left(@relation.area) - params[:quantity] < 0
+    if @show.area_seats_left(@relation.area) - params[:quantity].to_i < 0
       return error_json("购买票数大于该区剩余票数!")
     end
 
