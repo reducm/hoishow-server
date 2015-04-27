@@ -14,6 +14,7 @@ class Operation::BannersController < Operation::ApplicationController
   def create
     @banner = current_admin.banners.create(banner_params)
     if @banner.errors.any?
+      flash[:notice] = @banner.errors.full_messages
       render :new
     else
       redirect_to action: :index
@@ -21,11 +22,17 @@ class Operation::BannersController < Operation::ApplicationController
   end
 
   def edit
-    
+    @banner = Banner.find(params[:id])   
   end
 
   def update
-    
+    @banner = Banner.find(params[:id])   
+    if @banner.update_attributes(banner_params)
+      redirect_to action: :index
+    else
+      flash[:notice] = @banner.errors.full_messages
+      render :edit
+    end
   end
 
   def destroy
