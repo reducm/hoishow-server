@@ -24,6 +24,20 @@ RSpec.describe Api::V1::CommentsController, :type => :controller do
     end
   end
 
+  context "#index with topic_id" do
+    before('each') do
+      @topic =  create :topic
+      30.times do 
+        create(:comment, topic_id: @topic.id)
+      end
+    end
+
+    it "should has comments with specified topic_id" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse( response.body )[0]["topic_id"]).to eq @topic.id 
+    end
+  end
+
   context "#index paginate test" do
     before('each') do
       100.times {create :comment}
