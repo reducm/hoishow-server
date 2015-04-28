@@ -9,3 +9,5 @@ $ ->
 
   if $(".orders_list")
     $(".orders").dataTable()
+#票码弹出
+  $("[data-toggle='popover']").popover({html : true})

@@ -18,10 +18,26 @@
         <td>
           <table>
             <% get_areas(order).each do |area| %>
-            <% tickets = order.tickets.where(area_id: area.id) %>
+              <% tickets = order.tickets.where(area_id: area.id) %>
               <tr>
                 <td><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></td>
               </tr>
+              <% ticket_code = "<table>" %>
+              <% tickets.each do |ticket| %>
+              <% ticket_code += "<tr><td>" + ticket.code + "</td></tr>" %>
+              <%end%>
+              <% ticket_code = "</table>" %>
+              <tr>
+                <td>
+                  <button type="button" class="btn btn-info"  
+                    data-container="body" data-toggle="popover" data-placement="top" 
+                    data-content=<%= ticket_code %>>
+                    票码列表
+                  </button>
+
+                </td>
+              </tr>
+
             <% end %>
           </table>
         </td>
