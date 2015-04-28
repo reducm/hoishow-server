@@ -43,6 +43,7 @@ Rails.application.routes.draw do
       resources :cities
       resources :stadiums
       resources :tickets
+      resources :areas
       resources :orders, only: [:index, :show]
     end
   end

@@ -1,5 +1,6 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :get_star, except: [:index, :sort, :new, :create]
   before_action :get_star, except: [:index, :sort]
   load_and_authorize_resource
 
@@ -22,6 +23,19 @@ class Operation::StarsController < Operation::ApplicationController
     render nothing: true
   end
 
+  def new
+    @star = Star.new
+  end
+
+  def create
+    @star = Star.new(star_params)
+    if !@star.save
+      render action: :new
+    else
+      redirect_to operation_stars_url, notice: "新增艺人成功。"
+    end
+  end
+
   def edit
 
   end
@@ -31,6 +45,11 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   private
+
+  def star_params
+    params.require(:star).permit(:name, :avatar)
+  end
+
   def get_star
     @star = Star.find(params[:id])
   end

@@ -17,6 +17,18 @@ class Star < ActiveRecord::Base
 
   paginates_per 20
 
+  def avatar_url
+    if avatar.url.present?
+      if Rails.env.production?      
+        avatar.url("avatar")
+      else
+        avatar.url
+      end
+    else
+      nil
+    end
+  end
+
   def vote_count
     concerts.map{|relation| relation.voters_count}.inject(&:+) || 0
   end
