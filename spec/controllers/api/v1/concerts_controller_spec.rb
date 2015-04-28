@@ -24,6 +24,8 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
+      binding.pry
+      expect(response.body).to include("voted_city")
       JSON.parse(response.body).each do|object| 
         expect(object["is_followed"]).to be false
         expect(object["is_voted"]).to be false
