@@ -1,6 +1,6 @@
 module Operation::ConcertsHelper
-  def get_city_voted_count(city)
-    UserVoteConcert.where(city_id: city.id).count
+  def get_city_voted_count(concert, city)
+    concert.user_vote_concerts.where(city_id: city.id).count
   end
 
   def get_no_concert_cities(concert)

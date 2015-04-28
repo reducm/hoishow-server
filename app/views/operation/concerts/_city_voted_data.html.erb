@@ -16,8 +16,8 @@
             <% concert.cities.each do |city| %>
               <tr>
                 <td><%= city.name %></td>
-                <td><%= get_city_voted_count(city) %></td>
-                <td data-count="<%= get_city_voted_count(city) %>" data-id="<%= city.id %>">
+                <td><%= get_city_voted_count(concert, city) %></td>
+                <td data-count="<%= get_city_voted_count(concert, city) %>" data-id="<%= city.id %>">
                   <%= link_to '查看互动', get_city_topics_operation_concert_path(concert, city_id: city), remote: true %>
                   <%= link_to '删除', 'javascript:void(0);', class: "del_city" %>
                 </td>

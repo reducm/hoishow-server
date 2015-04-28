@@ -52,7 +52,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def get_city_voted_data
-    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(city)}}
+    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(@concert, city)}}
     render json: data
   end
 
