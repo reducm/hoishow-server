@@ -181,7 +181,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
 
     relations ||= []
-    params[:quantity].times{relations.push @relation}
+    params[:quantity].to_i.times{relations.push @relation}
 
     @relation.with_lock do
       if @relation.is_sold_out

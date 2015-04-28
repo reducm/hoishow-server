@@ -1,5 +1,34 @@
 <div class="nav">
-  <h1 class="pull-left">show详情</h1>
+  <div> 
+    <h1 class="pull-left">show详情</h1>
+  </div>
+  <div>
+    <h3><%= @show.name %></h3>
+    <p>
+    <% if can? :update, @show%>
+      <%= link_to "编辑", edit_operation_show_path(@show) %>
+    <%end%>
+    </p>
+    <p><%= link_to "添加到首页幻灯片", "?" %></p>
+
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td>演出时间</td>
+        <td><%= @show.show_time.strfcn_time%></td>
+      </tr>
+      <tr>
+        <td>演出城市</td>
+        <td><%= @show.city.name%></td>
+      </tr>
+      <tr>
+        <td>演出场馆</td>
+        <td><%= @show.stadium.name %></td>
+      </tr>
+    </tbody>
+  </table>
+
 </div>
 
 <div role="tabpanel">
@@ -13,11 +42,14 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
+      <% @orders = @show.orders %>
+      <%= render partial: 'operation/orders/table', locals: {orders: @orders} %>
     </div>
 
     <div role="tabpanel" class="tab-pane" id="shows_show_topics">
+      <% @topics= @show.topics %>
+      <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
     </div>
 
-    </div>
-  <%= hidden_field_tag "concert_id", "asdfasd"%>
+  </div>
 </div>

@@ -6,3 +6,6 @@ $ ->
       location.reload()
     else
       $(".order_status_cn:not(:contains('" + vtxt + "'))").parent().hide()
+#票码弹出
+  $("[data-toggle='popover']").popover({html : true})
+
