@@ -348,7 +348,6 @@ describe Api::V1::UsersController do
       expect(response.body).to include("poster")
       expect(response.body).to include("description")
       expect(response.body).to include("is_followed")
-      binding.pry
       JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be true
       end
