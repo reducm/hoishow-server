@@ -61,6 +61,9 @@ Rails.application.routes.draw do
       collection do
         post :sort
       end
+      member do
+        get :get_topics
+      end
     end
     resources :concerts do
       member do
@@ -76,7 +79,7 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
-    resources :topics, only: [:new, :create, :edit, :update] do
+    resources :topics, only: [:create, :edit, :update] do
       member do
         get :refresh_comments
         post :add_comment
