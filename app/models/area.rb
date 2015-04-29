@@ -6,4 +6,6 @@ class Area < ActiveRecord::Base
   has_many :tickets
 
   validates :stadium, presence: {message: "Stadium不能为空"}
+
+  paginates_per 20
 end

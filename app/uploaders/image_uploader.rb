@@ -1,6 +1,6 @@
 # encoding: utf-8
 #MAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(320 640 800)
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(120x160 224*292 300x423 320 640 800)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar 120x160 224x292 300x423 320 640 800)
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -47,12 +47,12 @@ class ImageUploader < CarrierWave::Uploader::Base
 
   def filename
     if super.present?
-      @name ||="#{Digest::MD5.hexdigest(original_filename)}.#{file.extension.downcase}" if original_filename
+      @name ||="#{Digest::MD5.hexdigest(original_filename + Time.now.to_ms.to_s)}.#{file.extension.downcase}" if original_filename
     end
   end
 
   private
   def image_version_name
-    %(small normal large 320 640 800)
+    %(avatar 120x160 224x292 300x423 320 640 800)
   end
 end

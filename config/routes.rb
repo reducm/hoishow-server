@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       resources :cities
       resources :stadiums
       resources :tickets
+      resources :areas
       resources :orders, only: [:index, :show]
     end
   end
@@ -56,6 +57,7 @@ Rails.application.routes.draw do
     match "/signout" => "sessions#destroy", via: [:delete]
 
     resources :banners
+    resources :videos
 
     resources :stars do
       collection do

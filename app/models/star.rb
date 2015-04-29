@@ -3,6 +3,7 @@ class Star < ActiveRecord::Base
   #searchkick Searchable::WORD_TYPE.map{|k| Hash[k, [:name]] }.inject(&:merge)
 
   has_many :videos
+  accepts_nested_attributes_for :videos, allow_destroy: true
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
 
@@ -16,6 +17,18 @@ class Star < ActiveRecord::Base
   mount_uploader :avatar, ImageUploader
 
   paginates_per 20
+
+  def avatar_url
+    if avatar.url.present?
+      if Rails.env.production?      
+        avatar.url("avatar")
+      else
+        avatar.url
+      end
+    else
+      nil
+    end
+  end
 
   def vote_count
     concerts.map{|relation| relation.voters_count}.inject(&:+) || 0
