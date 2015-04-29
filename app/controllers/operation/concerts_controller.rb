@@ -48,7 +48,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   def get_city_topics
     @city = City.find(params[:city_id])
     @topics = Topic.where(subject_type: Topic::SUBJECT_CONCERT, city_id: @city.id).page(params[:page]).per(5)
-    @subject_type = Topic::SUBJECT_CONCERT
+
+    render partial: 'operation/topics/table', locals: {topics: @topics}
   end
 
   def get_city_voted_data

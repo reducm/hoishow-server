@@ -27,7 +27,7 @@ class Operation::TopicsController < Operation::ApplicationController
       end
       @topic.save!
     end
-    redirect_to params[:return_url]
+    render json: {success: true}
   end
 
   def edit
