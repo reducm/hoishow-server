@@ -3,6 +3,7 @@ class Star < ActiveRecord::Base
   #searchkick Searchable::WORD_TYPE.map{|k| Hash[k, [:name]] }.inject(&:merge)
 
   has_many :videos
+  accepts_nested_attributes_for :videos, allow_destroy: true
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
 

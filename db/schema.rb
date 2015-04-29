@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425065049) do
+ActiveRecord::Schema.define(version: 20150429085140) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -199,6 +199,7 @@ ActiveRecord::Schema.define(version: 20150425065049) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "position",   limit: 4
+    t.string   "video",      limit: 255
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
@@ -289,6 +290,8 @@ ActiveRecord::Schema.define(version: 20150425065049) do
     t.integer  "concert_id", limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.boolean  "is_main",    limit: 1
+    t.string   "source",     limit: 255
   end
 
   add_index "videos", ["concert_id"], name: "index_videos_on_concert_id", using: :btree
