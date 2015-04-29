@@ -1,0 +1,15 @@
+
+  <%= form_for [:operation, stadium], class: 'form-horizontal' do |f| %>
+    <div class="form-group">
+      <%= f.label :name, '场馆名' %>
+      <%= f.text_field :name %>
+    </div>
+    <div class="form-group">
+      <%= f.label :address, '场馆地址' %>
+      <%= f.text_field :address %>
+    </div>
+    <div class="form-group">
+      <%= f.label :name, '场馆坐标' %>
+      <%= f.text_field :name %>
+    </div>
+  <% end %>

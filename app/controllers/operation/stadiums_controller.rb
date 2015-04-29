@@ -1,6 +1,6 @@
 class Operation::StadiumsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_stadium, except: [:index]
+  before_action :get_stadium, except: [:index, :new, :create]
   load_and_authorize_resource
 
   def index
@@ -9,6 +9,7 @@ class Operation::StadiumsController < Operation::ApplicationController
   end
 
   def new
+    @stadium = Stadium.new
   end
 
   def create

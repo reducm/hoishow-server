@@ -1,5 +1,3 @@
-require 'passwordhash'
-
 class Admin < ActiveRecord::Base
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
