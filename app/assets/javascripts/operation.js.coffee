@@ -16,6 +16,7 @@
 #= require operation/topics
 #= require operation/users
 #= require operation/cities
+#= require operation/stadiums
 #= require dataTables/jquery.dataTables
 
 #= require operation/jquery.datetimepicker

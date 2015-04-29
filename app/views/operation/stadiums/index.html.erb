@@ -1,0 +1,22 @@
+  <div class="nav">
+    <h1 class="pull-left"><%= @city.name %>市 <small>场馆列表</small></h1>
+  </div>
+
+  <div class="stadiums_list">
+    <table class="stadiums table">
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>地址</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <% @stadiums.each do |stadium| %>
+        <tr>
+          <td><%= stadium.name %></td>
+          <td><%= stadium.address %></td>
+          <td><%= link_to '查看', operation_stadium_path(stadium) %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
