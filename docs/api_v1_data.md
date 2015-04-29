@@ -289,6 +289,7 @@ type: `GET`
 可选参数
 ```javascript
   {
+    topic_id: 2, //返回指定topic的comments
     page: "2" //页码
   }
 ```
@@ -560,6 +561,19 @@ type: `GET`
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
   valid_time: "201504102140270000"
+}
+```
+
+## Area对象
+
+```javascript
+{
+  name: "A区",
+  seats_count: 11,
+  stadium_id: 22, //场馆id
+  stadium: {stadium对象},
+  created_at: "201504102140270000",
+  updated_at: "201504102140270000"
 }
 ```
 
