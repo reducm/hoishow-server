@@ -204,6 +204,13 @@ describe Api::V1::UsersController do
       expect(@user.follow_concerts.size > 0).to be true
     end
 
+    it "should follow show success" do
+      @show = create(:show)
+      post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Show", subject_id: @show.id, format: :json )
+      @user.reload
+      expect(@user.follow_shows.size > 0).to be true
+    end
+
     it "wrong subject_type should return 403" do
       @star = create :star
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "star", subject_id: @star.id, format: :json )
@@ -214,14 +221,17 @@ describe Api::V1::UsersController do
       post :follow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Star", subject_id: "abc", format: :json )
       expect(response.status).to eq 403
     end
+
   end
 
   context "#unfollow_subject" do
     before('each') do
       @star = create(:star)
       @concert = create(:concert)
+      @show = create(:show)
       @user.follow_star(@star)
       @user.follow_concert(@concert)
+      @user.follow_show(@show)
     end
 
     it "should unfollow star success" do
@@ -237,6 +247,14 @@ describe Api::V1::UsersController do
       expect(response.status).to eq 200
       expect(@user.follow_concerts.size ).to eq 0
     end
+
+     it "should unfollow concert success" do
+      post :unfollow_subject, with_key( api_token: @user.api_token, mobile: @user.mobile, subject_type: "Show", subject_id: @show.id, format: :json )
+      @user.reload
+      expect(response.status).to eq 200
+      expect(@user.follow_shows.size ).to eq 0
+    end
+
 
     it "wrong subject_type should return 403" do
       @star = create :star
@@ -262,7 +280,6 @@ describe Api::V1::UsersController do
       expect(response.body).to include("creator")
       expect(response.body).to include("content")
       expect(response.body).to include("parent_id")
-      #ap JSON.parse(response.body)
     end
   end
 
@@ -298,6 +315,40 @@ describe Api::V1::UsersController do
       expect(response.body).to include("name")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
+      JSON.parse(response.body).each do|object|
+        expect(object["is_followed"]).to be true
+      end
+    end
+  end
+
+  context "#followed_shows" do
+    before('each') do
+      30.times {create :show}
+      Show.limit(25).each do |show|
+        @user.follow_show(show)
+      end
+    end
+
+    it "should have 10 shows(base on controller per)" do
+      post :followed_shows, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body).is_a? Array).to be true
+      expect(JSON.parse(response.body).size).to eq 10
+    end
+
+    it "should has attributes" do
+      post :followed_shows, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("min_price")
+      expect(response.body).to include("max_price")
+      expect(response.body).to include("concert_id")
+      expect(response.body).to include("city_id")
+      expect(response.body).to include("stadium_id")
+      expect(response.body).to include("show_time")
+      expect(response.body).to include("poster")
+      expect(response.body).to include("description")
+      expect(response.body).to include("is_followed")
+      binding.pry
       JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be true
       end

@@ -459,7 +459,9 @@ type: `GET`
   voters_count: "投票人数",
   is_followed: "是否被关注",
   is_voted: "是否被投票",
+  voted_city: {City对象},//被投票的城市
   stars: {Star对象},//当need_stars不为false的时候
+  topics: {Topic对象},//当need_topics不为false的时候
   shows: {Show对象}//当need_shows不为false的时候
 }
 ```
@@ -476,8 +478,10 @@ type: `GET`
   stadium_id: "stadium_id",
   show_time: "开show时间",
   poster: "海报url",
+  description: "介绍",
+  is_followed: "是否被关注",
   concert: {concert对象},
-  city: {city对象}
+  city: {city对象},
   stadium: {stadium对象}
 }
 ```

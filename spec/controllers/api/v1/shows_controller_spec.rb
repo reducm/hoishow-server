@@ -25,6 +25,8 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       expect(response.body).to include("stadium_id")
       expect(response.body).to include("show_time")
       expect(response.body).to include("poster")
+      expect(response.body).to include("description")
+      expect(response.body).to include("is_followed")
     end
   end
 
@@ -65,7 +67,6 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
 
     it "response should has something" do
       get :preorder, with_key(id: @show.id, format: :json)
-      #ap JSON.parse(response.body)["stadium"]["areas"]
       expect(response.body).to include("stadium")
       expect(response.body).to include("areas")
       expect(response.body).to include("is_sold_out")

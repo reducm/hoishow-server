@@ -13,13 +13,7 @@ json.end_date concert.end_date.to_ms
 json.poster concert.poster.url || ''
 json.is_followed concert.id.in?(@followed_concerts) ? true : false
 json.is_voted @voted_concert ? true : false
-json.voted_city do
-  if @voted_concert
-    json.partial! "api/v1/cities/city", city: City.find(@voted_concert.city_id)
-  else
-    nil
-  end
-end
+json.voted_city @voted_concert ? ( json.partial! "api/v1/cities/city", city: City.find(@voted_concert.city_id)  ): ""
 if need_stars
   json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
 end

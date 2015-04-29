@@ -43,10 +43,14 @@
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
       <% @orders = @show.orders %>
-      <% @show.areas.each do |area| %>
-        <% tickets = @show.tickets.where(area_id: area.id) %>
-      <%end%>
-      <div id="pie_cake" sold_count="44" left_count="66" style="height:200px"></div>
+
+      <div id="pie_cake" >
+        <% @show.areas.each do |area| %>
+          <% tickets = @show.tickets.where(area_id: area.id) %>
+          <% sold_tickets_count = tickets.sold_tickets.count %>
+          <div class="pull-left" area_name=<%= area.name%> sold_count=<%= rand(1..55).to_s %> left_count= <%= rand(1..55).to_s %> id=<%= area.name %> style="height:200px; width:300px"></div>
+        <%end%>
+      </div>
       <%= render partial: 'operation/orders/table', locals: {orders: @orders} %>
     </div>
 
