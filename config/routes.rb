@@ -87,6 +87,8 @@ Rails.application.routes.draw do
         post :set_topic_top
       end
     end
+    resources :cities, only: [:index] do
+    end
     #TODO api_auth
   end
 

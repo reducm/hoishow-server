@@ -19,4 +19,8 @@ class City < ActiveRecord::Base
   def hold_concert(concert)
     concert_city_relations.where(concert: concert).first_or_create!
   end
+
+  def stadiums_count
+    stadiums.count
+  end
 end
