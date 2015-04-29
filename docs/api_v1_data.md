@@ -289,6 +289,7 @@ type: `GET`
 可选参数
 ```javascript
   {
+    topic_id: 2, //返回指定topic的comments
     page: "2" //页码
   }
 ```
@@ -563,7 +564,33 @@ type: `GET`
 }
 ```
 
+## Area对象
+
+```javascript
+{
+  name: "A区",
+  seats_count: 11,
+  stadium_id: 22, //场馆id
+  stadium: {stadium对象},
+  created_at: "201504102140270000",
+  updated_at: "201504102140270000"
+}
+```
+
 ## Ticket对象
+
+```javascript
+{
+  area: {Area对象},
+  area_id: 11, //区域id
+  show_id: 22, //演出id
+  price: 99.00, //价格
+  code: “二维码”
+  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用 
+  created_at: "201504102140270000",
+  updated_at: "201504102140270000"
+}
+```
 
 ## Banner对象
 

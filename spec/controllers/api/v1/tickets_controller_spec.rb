@@ -4,7 +4,7 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
   render_views
 
   before('each') do
-   60.times do |i| 
+    60.times do |i| 
       create(:ticket, code: i)
     end 
   end
@@ -18,6 +18,7 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
 
     it "should has attributes" do
       get :index, with_key(format: :json)
+      expect(response.body).to include("area")
       expect(response.body).to include("area_id")
       expect(response.body).to include("show_id")
       expect(response.body).to include("price")
@@ -25,6 +26,13 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
       expect(response.body).to include("status")
       expect(response.body).to include("created_at")
       expect(response.body).to include("updated_at")
+    end
+  end
+
+  it "area should has something" do
+    get :index, with_key(format: :json)
+    20.times do |n|
+      expect(JSON.parse( response.body )[n-1]["area"].size > 0 ).to be true
     end
   end
 
