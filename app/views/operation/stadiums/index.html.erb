@@ -4,7 +4,7 @@
 
   <div class="stadiums_list">
     <div class='form-group'>
-      <%= link_to '新建场馆', new_operation_stadium_path, class: 'btn btn-primary' %>
+      <%= link_to '新建场馆', new_operation_stadium_path(city_id: @city.id), class: 'btn btn-primary' %>
     </div>
     <table class="stadiums table">
       <thead>
