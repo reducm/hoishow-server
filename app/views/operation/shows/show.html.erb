@@ -48,7 +48,7 @@
         <% @show.areas.each do |area| %>
           <% tickets = @show.tickets.where(area_id: area.id) %>
           <% sold_tickets_count = tickets.sold_tickets.count %>
-          <div class="pull-left" area_name=<%= area.name%> sold_count=<%= rand(1..55).to_s %> left_count= <%= rand(1..55).to_s %> id=<%= area.name %> style="height:200px; width:300px"></div>
+          <div class="pull-left" total_tickets=<%= tickets.count.to_s%> sold_count=<%= rand(1..55).to_s %> left_count= <%= rand(1..55).to_s %> id=<%= area.name %> style="height:200px; width:300px"></div>
         <%end%>
       </div>
       <%= render partial: 'operation/orders/table', locals: {orders: @orders} %>
