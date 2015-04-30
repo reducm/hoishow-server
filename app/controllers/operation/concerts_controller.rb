@@ -1,7 +1,7 @@
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
   before_action :check_login!, except: [:get_city_voted_data]
-  before_action :get_concert, except: [:index]
+  before_action :get_concert, except: [:index, :new, :create]
   load_and_authorize_resource
   skip_authorize_resource :only => [:get_city_voted_data]
 
