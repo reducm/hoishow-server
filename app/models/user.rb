@@ -11,6 +11,9 @@ class User < ActiveRecord::Base
   has_many :user_follow_concerts
   has_many :follow_concerts, through: :user_follow_concerts, source: :concert
 
+  has_many :user_follow_shows
+  has_many :follow_shows, through: :user_follow_shows, source: :show
+
   has_many :user_vote_concerts
   has_many :vote_concerts, through: :user_vote_concerts, source: :concert
 
@@ -43,6 +46,16 @@ class User < ActiveRecord::Base
 
   def follow_concert(concert)
     user_follow_concerts.where(concert_id: concert.id).first_or_create!
+  end
+
+  def follow_show(show)
+    user_follow_shows.where(show_id: show.id).first_or_create!
+  end
+
+  def unfollow_show(show)
+    if destroy_show = user_follow_shows.where(show_id: show.id).first
+      destroy_show.destroy!
+    end
   end
 
   def unfollow_star(star)

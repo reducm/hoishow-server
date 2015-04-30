@@ -154,16 +154,17 @@ ActiveRecord::Schema.define(version: 20150429085140) do
   add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
-    t.decimal  "min_price",              precision: 10, scale: 2
-    t.decimal  "max_price",              precision: 10, scale: 2
-    t.string   "poster",     limit: 255
-    t.string   "name",       limit: 255
+    t.decimal  "min_price",                 precision: 10, scale: 2
+    t.decimal  "max_price",                 precision: 10, scale: 2
+    t.string   "poster",      limit: 255
+    t.string   "name",        limit: 255
     t.datetime "show_time"
-    t.integer  "concert_id", limit: 4
-    t.integer  "city_id",    limit: 4
-    t.integer  "stadium_id", limit: 4
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.integer  "concert_id",  limit: 4
+    t.integer  "city_id",     limit: 4
+    t.integer  "stadium_id",  limit: 4
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.text     "description", limit: 65535
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
@@ -241,6 +242,16 @@ ActiveRecord::Schema.define(version: 20150429085140) do
 
   add_index "user_follow_concerts", ["concert_id"], name: "index_user_follow_concerts_on_concert_id", using: :btree
   add_index "user_follow_concerts", ["user_id"], name: "index_user_follow_concerts_on_user_id", using: :btree
+
+  create_table "user_follow_shows", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "show_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "user_follow_shows", ["show_id"], name: "index_user_follow_shows_on_show_id", using: :btree
+  add_index "user_follow_shows", ["user_id"], name: "index_user_follow_shows_on_user_id", using: :btree
 
   create_table "user_follow_stars", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
