@@ -13,6 +13,7 @@ Rails.application.routes.draw do
           post "unfollow_subject" => "users#unfollow_subject"
           post "vote_concert" => "users#vote_concert"
           post "followed_stars" => "users#followed_stars"
+          post "followed_shows" => "users#followed_shows"
           post "followed_concerts" => "users#followed_concerts"
           post "create_topic" => "users#create_topic"
           post "like_topic" => "users#like_topic"
@@ -56,6 +57,7 @@ Rails.application.routes.draw do
     match "/signout" => "sessions#destroy", via: [:delete]
 
     resources :banners
+    resources :videos
 
     resources :stars do
       collection do

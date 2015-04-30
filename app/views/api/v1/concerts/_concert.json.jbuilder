@@ -4,7 +4,7 @@ need_shows ||= false
 user ||= nil
 
 @followed_concerts = user.present? ? user.follow_concerts.pluck(:id) : []
-@voted_concerts = user.present? ? user.vote_concerts.pluck(:id) : []
+@voted_concert = user.present? ? user.user_vote_concerts.where(concert_id: concert.id).first : nil
 
 json.(concert, :id, :name, :description, :status, :followers_count, :shows_count, :voters_count)
 
@@ -12,7 +12,8 @@ json.start_date concert.start_date.to_ms
 json.end_date concert.end_date.to_ms
 json.poster concert.poster.url || ''
 json.is_followed concert.id.in?(@followed_concerts) ? true : false
-json.is_voted concert.id.in?(@voted_concerts) ? true : false
+json.is_voted @voted_concert ? true : false
+json.voted_city @voted_concert ? ( json.partial! "api/v1/cities/city", city: City.find(@voted_concert.city_id)  ): ""
 if need_stars
   json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
 end

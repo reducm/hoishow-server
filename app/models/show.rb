@@ -3,6 +3,9 @@ class Show < ActiveRecord::Base
   belongs_to :city
   belongs_to :stadium
 
+  has_many :user_follow_shows
+  has_many :show_followers, through: :user_follow_shows, source: :user
+
   has_many :show_area_relations
   has_many :areas, through: :show_area_relations
   has_many :orders

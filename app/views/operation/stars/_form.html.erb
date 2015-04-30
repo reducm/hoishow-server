@@ -1,13 +1,29 @@
-<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal' }) do |f| %>
+<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', multipart: :true }) do |f| %>
   <div class="form-group">
     <%= f.input :name, label: "艺人名称" %>
   </div>
+
   <div class="form-group">
-    <img src='<%= star.avatar_url %>'>
+    <%= image_tag(star.avatar_url) if star.avatar? %>
     <%= f.input :avatar, label: "艺人头像" %>
-    <%= video_tag @star.videos.first.url %>
-    <%= f.association :videos, as: :file %>
   </div>
+
+  <div class="form-group">
+    <%= fields_for :videos do |video| %>
+      <%= video.label :source, "选择要上传的视频" %>
+      <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
+     <% end %>
+  </div>
+
+  <% if @star.videos.first %>
+    <% @star.videos.each do |video| %>
+      <video src="<%= video.source.url.to_s rescue nil %>" controls>
+        Your browser does not support the <code>video</code> element.
+      </video>
+      <%= link_to "删除", operation_video_path(video), method: :delete, confirm: :true %>
+    <% end %>
+  <% end %>
+
   <div class="form-group">
     <%= f.button :submit %>
   </div>

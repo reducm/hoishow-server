@@ -28,6 +28,13 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
+  def new
+    @concert = Concert.new
+  end
+
+  def create
+  end
+
   def refresh_map_data
     render partial: "city_voted_data", locals: {concert: @concert}
   end

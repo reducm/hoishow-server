@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_shows, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order]
 
   def index
     params[:page] ||= 1
@@ -95,7 +95,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def follow_subject
-    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
+    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert Show)
     subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin
@@ -108,7 +108,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def unfollow_subject
-    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert)
+    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert Show)
     subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin
@@ -143,6 +143,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       return error_json("vote fail, #{$@}")
     end
+  end
+
+  def followed_shows
+    params[:page] ||= 1
+    @shows = @user.follow_shows.page(params[:page]).per(10)
   end
 
   def followed_stars
