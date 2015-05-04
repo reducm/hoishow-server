@@ -9,8 +9,8 @@
   <%= f.kindeditor :description %>
   <%= f.input :city_id, collection: cities, input_html: {id: "show_city_select"}, disabled: ( params[:action] == 'edit' ? true : false )   %>
   <%= f.input :stadium_id, as: :select,  input_html: {id: "show_stadium_select"}, disabled: ( params[:action] == "edit" ? true :false ) %>
-
+  <%= f.hidden_field :concert_id, value: @concert.id%>
   <%= f.button :submit, "保存" %>
 <%end%>
 
-
+<img id="stadium_pic" class="preview-pic">

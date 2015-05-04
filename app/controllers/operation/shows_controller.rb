@@ -13,8 +13,18 @@ class Operation::ShowsController < Operation::ApplicationController
   def edit
     @show = Show.find(params[:id])
   end
+
+  def update
+
+  end
   
   def create
+    @show = Show.new(show_params)
+    if @show.save
+      redirect_to action: :index
+    else
+      redirect_to new_operation_show_url(concert_id: params[:show][:concert_id])
+    end
   end
 
   def new
@@ -27,6 +37,11 @@ class Operation::ShowsController < Operation::ApplicationController
   def get_city_stadiums
     data = City.find(params[:city_id]).stadiums.select(:name, :id).map {|stadium| {name: stadium.name, id: stadium.id}}
     render json: data
+  end
+
+  protected
+  def show_params
+    params.require(:show).permit(:name, :show_time, :city_id, :stadium_id, :description, :concert_id)
   end
 
 end
