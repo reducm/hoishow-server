@@ -25,7 +25,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def get_city_stadiums
-    data = City.find(params[:city_id]).stadiums(:name, :id).map {|stadium| {name: stadium.name, id: stadium.id}}
+    data = City.find(params[:city_id]).stadiums.select(:name, :id).map {|stadium| {name: stadium.name, id: stadium.id}}
     render json: data
   end
 

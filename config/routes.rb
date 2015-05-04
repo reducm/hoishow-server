@@ -63,11 +63,15 @@ Rails.application.routes.draw do
       collection do
         post :sort
       end
+      member do
+        get :get_topics
+      end
     end
     resources :concerts do
       member do
         get :get_city_topics
         get :get_city_voted_data
+        get :get_cities
         post :add_concert_city
         get :refresh_map_data
         delete :remove_concert_city
@@ -81,7 +85,7 @@ Rails.application.routes.draw do
     resources :orders
     resources :users
     resources :admins
-    resources :topics, only: [:new, :create, :edit, :update] do
+    resources :topics, only: [:create, :edit, :update] do
       member do
         get :refresh_comments
         post :add_comment
@@ -89,6 +93,8 @@ Rails.application.routes.draw do
         post :set_topic_top
       end
     end
+    resources :cities, only: [:index]
+    resources :stadiums, except: [:destroy]
     #TODO api_auth
   end
 

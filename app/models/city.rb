@@ -1,5 +1,5 @@
 class City < ActiveRecord::Base
-  has_many :districts
+  has_many :stadiums
   has_many :shows
 
   has_many :concert_city_relations
@@ -11,12 +11,11 @@ class City < ActiveRecord::Base
 
   paginates_per 20
 
-  def stadiums
-    district_ids = districts.pluck(:id)
-    Stadium.where(district_id: district_ids)
-  end
-
   def hold_concert(concert)
     concert_city_relations.where(concert: concert).first_or_create!
+  end
+
+  def stadiums_count
+    stadiums.count
   end
 end

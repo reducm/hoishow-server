@@ -1,3 +1,8 @@
+refresh_topic_list = (star_id)->
+  $.get("/operation/stars/#{star_id}/get_topics", (data)->
+    $("#star_topics").html(data)
+  )
+# 刷新topic列表
 $ ->
   $('#stars_list').sortable(
     axis: 'y'
@@ -17,4 +22,38 @@ $ ->
 
   $('#stars').dataTable(
     paging: false
-  )  
+  )
+
+  star_id = $("#star_id").val()
+  if star_id
+    $(".add_topic").on "click", ()->
+      $("#topicModal").modal('show')
+      $("#topicModal .create_topic").on "click", (e)->
+        e.preventDefault()
+        content = $("#topic_content").val()
+        if content.length < 1
+          alert("不能发空互动")
+        else
+          $.post("/operation/topics", {topic: {content: content, subject_id: star_id, subject_type: 'Star'}, creator: $('#topic_creator').val()}, (data)->
+            if data.success
+              location.reload()
+          )
+    # 创建topic
+
+    $("#star_topics").on "click", ".reply_btn", ()->
+      $("#replyModal").modal('show')
+      topic_id = $(this).parent().data("id")
+      $("#replyModal .add_comment").on "click", (e) ->
+        e.preventDefault()
+        content = $("#reply_content").val()
+        if content.length < 1
+          alert("不能发空回复")
+        else
+          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
+            if data.success
+              $("#replyModal").modal('toggle')
+              $('body').removeClass('modal-open')
+              $('.modal-backdrop').remove()
+              refresh_topic_list(star_id)
+          )
+    # 回复comment

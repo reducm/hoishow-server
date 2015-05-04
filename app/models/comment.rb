@@ -9,16 +9,12 @@ class Comment < ActiveRecord::Base
 
   paginates_per 20
 
-  def self.create_comment(subject, content)
-    create!(subject_type: subject.class.name, subject_id: subject.id, content: content)
-  end
-
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
-      Rails.logger.fatal("subject wrong, comment_id: #{ id }, subject_type: #{topic.subject_type}, subject_id: #{topic.subject_id}")
+      Rails.logger.fatal("creator wrong, comment_id: #{id}, creator_type: #{creator_type}, creator_id: #{creator_id}")
       nil
     end
   end
