@@ -7,12 +7,6 @@ class Operation::StarsController < Operation::ApplicationController
     @stars = Star.order("position")
   end
 
-  def show
-    @concerts = @star.concerts.page(params[:page])
-    @topics = @star.topics.page(params[:page])
-    @users = @star.followers.page(params[:page])
-  end
-
   def sort
     if params[:star].present?
       params[:star].each_with_index do |id, index|
@@ -37,11 +31,21 @@ class Operation::StarsController < Operation::ApplicationController
       else
         format.html { render action: 'new' }
       end
-    end 
+    end
+  end
+
+  def show
+    @concerts = @star.concerts.page(params[:page])
+    @topics = @star.topics.page(params[:page])
+    @users = @star.followers.page(params[:page])
   end
 
   def edit
+  end
 
+  def get_topics
+    @topics = @star.topics.page(params[:page])
+    render partial: 'operation/topics/table', locals: {topics: @topics}
   end
 
   def update
@@ -62,7 +66,7 @@ class Operation::StarsController < Operation::ApplicationController
           format.html { render action: 'update' }
         end
       end
-    end    
+    end
   end
 
   private

@@ -16,14 +16,38 @@
       <td><%= topic.like_count %>/<%= topic.comments.count %>/<%= 0 %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.last_reply_time) %></td>
-      <td>
+      <td data-id="<%= topic.id %>">
+        <%= link_to '查看', edit_operation_topic_path(topic) %>
         <% if topic.is_top %>
           <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0, city_id: topic.city_id), method: :post, remote: true %>
         <% else %>
           <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1, city_id: topic.city_id), method: :post , remote: true %>
         <% end %>
-        <%= link_to '回复', "javascript:void(0)" %>
+        <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
       </td>
     </tr>
   <% end %>
 </table>
+
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">回复</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <div class="form-group">
+            <%= text_area_tag "reply_content", nil, class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "reply_creator", "回复人" %>
+            <%= select_tag "reply_creator", options_for_select([current_admin.name]) %>
+          </div>
+          <%= submit_tag "提交", class: 'btn btn-primary add_comment' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

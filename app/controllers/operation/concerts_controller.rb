@@ -1,12 +1,18 @@
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
-  before_action :check_login!, except: [:get_city_voted_data]
+  before_action :check_login!, except: [:get_city_voted_data, :get_cities]
   before_action :get_concert, except: [:index, :new, :create]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:get_city_voted_data]
+  skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
     @concerts = Concert.page(params[:page])
+  end
+
+  def new
+  end
+
+  def create
   end
 
   def edit
@@ -22,7 +28,7 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
-  def new 
+  def new
     @concert = Concert.new
   end
 
@@ -55,12 +61,23 @@ class Operation::ConcertsController < Operation::ApplicationController
   def get_city_topics
     @city = City.find(params[:city_id])
     @topics = Topic.where(subject_type: Topic::SUBJECT_CONCERT, city_id: @city.id).page(params[:page]).per(5)
-    @subject_type = Topic::SUBJECT_CONCERT
+
+    render partial: 'operation/topics/table', locals: {topics: @topics}
   end
 
   def get_city_voted_data
-    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(city)}}
+    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(@concert, city)}}
     render json: data
+  end
+
+  def get_cities
+    cities = get_no_concert_cities(@concert)
+
+    if params[:term]
+      cities = cities.where("name LIKE ? or pinyin LIKE ?", "%#{params[:term]}%", "%#{params[:term]}%")
+    end
+
+    render json: cities.map{|city| {value: city.id, label: city.name}}
   end
 
   private
