@@ -19,7 +19,14 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def new
     @show = Show.new
-    @concert = Concert.find(params[:concert_id])
+    if params[:concert_id]
+      @concert = Concert.find(params[:concert_id])
+    end
+  end
+
+  def get_city_stadiums
+    data = City.find(params[:city_id]).stadiums(:name, :id).map {|stadium| {name: stadium.name, id: stadium.id}}
+    render json: data
   end
 
 end

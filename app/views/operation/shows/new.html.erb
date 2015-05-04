@@ -1,2 +1,16 @@
+<div class="nav">
+  <h1 class="pull-left">新建show</h1>
+</div>
+<% if @concert %>
+  <div class="form-group">
+    <%= label_tag(:name, "concert名称", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @concert.name, class: "form-control-static")%>
+    </div>
+  </div>
+
+<%end%>
+
+
 <%= render partial: "form", locals: {show: @show, concert: @concert} %>
 

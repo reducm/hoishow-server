@@ -34,7 +34,7 @@
         <td>
           <%= link_to "查看", operation_banner_path(banner) %> / 
           <%= link_to "编辑", edit_operation_banner_path(banner) %> / 
-          <%= link_to "删除", operation_banner_path(banner), method: "delete", confirm: true %>
+          <%= link_to "删除", operation_banner_path(banner), method: "delete", data: {confirm: "确定删除吗？"} %>
         </td>
       </tr>
     <%end%>

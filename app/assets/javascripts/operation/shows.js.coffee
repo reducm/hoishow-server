@@ -27,3 +27,19 @@ $ ->
     area_name = $(this).attr("id")
     tickets_count = $(this).attr("total_tickets")
     set_pie_cake(left_count, sold_count, area_name, tickets_count))
+
+#show new form
+  $("#show_city_select").attr("data-live-search", true)
+  $("#show_city_select").selectpicker("refresh")
+  $("#show_city_select").on "change", (e) ->
+    select = $(e.currentTarget)
+    selected_option = select.find("option:selected")
+    city_id = selected_option.val()
+    $.get("/operation/shows/get_city_stadiums", {city_id: city_id}, (data)->
+      result = ""
+      for stadium in data
+        result += "<option value='#{stadium.id}'>#{stadium.name}</option>"
+      $("#show_stadium_select").html(result)
+      $("#show_stadium_select").attr("data-live-search", true)
+      $("#show_stadium_select").selectpicker("refresh")
+    )
