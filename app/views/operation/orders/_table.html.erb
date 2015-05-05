@@ -26,18 +26,16 @@
               <% tickets.each do |ticket| %>
               <% ticket_code += "<tr><td>" + ticket.code + "</td></tr>" %>
               <%end%>
-              <% ticket_code = "</table>" %>
+              <% ticket_code += "</table>" %>
               <tr>
                 <td>
                   <button type="button" class="btn btn-info"  
                     data-container="body" data-toggle="popover" data-placement="top" 
                     data-content=<%= ticket_code %>>
-                    票码列表
+                    查看票码
                   </button>
-
                 </td>
               </tr>
-
             <% end %>
           </table>
         </td>

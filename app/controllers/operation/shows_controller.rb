@@ -10,4 +10,16 @@ class Operation::ShowsController < Operation::ApplicationController
     @show = Show.find(params[:id])
   end
 
+  def edit
+    @show = Show.find(params[:id])
+  end
+  
+  def create
+  end
+
+  def new
+    @show = Show.new
+    @concert = Concert.find(params[:concert_id])
+  end
+
 end

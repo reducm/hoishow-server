@@ -1,17 +1,10 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, except: [:index, :sort, :new, :create]
-  before_action :get_star, except: [:index, :sort]
   load_and_authorize_resource
 
   def index
     @stars = Star.order("position")
-  end
-
-  def show
-    @concerts = @star.concerts.page(params[:page])
-    @topics = @star.topics.page(params[:page])
-    @users = @star.followers.page(params[:page])
   end
 
   def sort
@@ -29,29 +22,64 @@ class Operation::StarsController < Operation::ApplicationController
 
   def create
     @star = Star.new(star_params)
-    if !@star.save
-      render action: :new
-    else
-      redirect_to operation_stars_url, notice: "新增艺人成功。"
+    respond_to do |format|
+      if @star.save
+        params[:videos]['source'].each do |source|
+          @video = @star.videos.create!(:source => source, :star_id => @star.id)
+        end
+        format.html { redirect_to operation_star_url(@star), notice: 'Star was successfully created.' }
+      else
+        format.html { render action: 'new' }
+      end
     end
   end
 
-  def edit
+  def show
+    @concerts = @star.concerts.page(params[:page])
+    @topics = @star.topics.page(params[:page])
+    @users = @star.followers.page(params[:page])
+  end
 
+  def edit
+  end
+
+  def get_topics
+    @topics = @star.topics.page(params[:page])
+    render partial: 'operation/topics/table', locals: {topics: @topics}
   end
 
   def update
-
+    respond_to do |format|
+      if params[:videos]
+        if @star.update(star_params)
+          params[:videos]['source'].each do |source|
+            @video = @star.videos.create!(:source => source, :star_id => @star.id)
+          end
+          format.html { redirect_to operation_star_url(@star), notice: 'Star was successfully updated.' }
+        else
+          format.html { render action: 'update' }
+        end
+      else
+        if @star.update(star_params_without_videos)
+          format.html { redirect_to operation_star_url(@star), notice: 'Star was successfully updated.' }
+        else
+          format.html { render action: 'update' }
+        end
+      end
+    end
   end
 
   private
 
   def star_params
+    params.require(:star).permit(:name, :avatar, videos_attributes: [:id, :star_id, :source])
+  end
+
+  def star_params_without_videos
     params.require(:star).permit(:name, :avatar)
   end
 
   def get_star
     @star = Star.find(params[:id])
   end
-
 end
