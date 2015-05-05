@@ -3,7 +3,7 @@ class Operation::ShowsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @shows = Show.page(params[:page])
+    @shows = Show.all
   end
 
   def show
@@ -35,7 +35,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def get_city_stadiums
-    data = City.find(params[:city_id]).stadiums.select(:name, :id).map {|stadium| {name: stadium.name, id: stadium.id}}
+    data = City.find(params[:city_id]).stadiums.select(:name, :id, :pic).map {|stadium| {name: stadium.name, id: stadium.id, pic: stadium.pic.url}}
     render json: data
   end
 

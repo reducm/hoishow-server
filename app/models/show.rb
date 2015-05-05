@@ -20,7 +20,7 @@ class Show < ActiveRecord::Base
 
   delegate :stars, to: :concert
 
-  paginates_per 20
+#  paginates_per 20
 
   mount_uploader :poster, ImageUploader
 
