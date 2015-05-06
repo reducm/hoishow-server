@@ -90,7 +90,13 @@ Rails.application.routes.draw do
       end
     end
     resources :cities, only: [:index]
-    resources :stadiums, except: [:destroy]
+    resources :stadiums, except: [:show, :destroy] do
+      member do
+        get :refresh_areas
+        post :submit_area
+        delete :del_area
+      end
+    end
     #TODO api_auth
   end
 
