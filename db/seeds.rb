@@ -55,3 +55,13 @@ admin = Admin.create(name: 'admin', admin_type: 0)
 admin.set_password('123')
 admin.save
 
+# user, order, ticket
+concert = Concert.first
+show = Show.first
+
+(1..5).each do |i|
+  user = User.create(mobile: "1380982735#{i}")
+  order = Order.create(user_id: user.id, city_id: city.id, city_name: city.name, stadium_id: stadium.id, stadium_name: stadium.name,
+  concert_id: concert.id, concert_name: concert.name, show_id: show.id, show_name: show.name, amount: i + 100)
+  Ticket.create(area_id: Area.first.id, show_id: show.id, order_id: order.id, price: i + 10, code: SecureRandom.hex(6))
+end
