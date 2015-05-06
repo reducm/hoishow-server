@@ -22,13 +22,42 @@ class Operation::StadiumsController < Operation::ApplicationController
     end
   end
 
-  def show
-  end
-
   def edit
   end
 
   def update
+    if @stadium.update(stadium_params)
+      redirect_to operation_stadiums_url(city_id: @stadium.city_id)
+    else
+      render :edit
+    end
+  end
+
+  def refresh_areas
+    render partial: 'operation/areas/stadium_areas_table', locals: {stadium: @stadium, areas: @stadium.areas}
+  end
+
+  def submit_area
+    if params[:area_id].present?
+      @area = @stadium.areas.where(id: params[:area_id]).first
+      @area.name = params[:area_name]
+    else
+      @area = @stadium.areas.new(name: params[:area_name])
+    end
+    if @area.save
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
+  end
+
+  def del_area
+    @area = @stadium.areas.where(id: params[:area_id]).first
+    if @area.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
   end
 
   private
@@ -37,6 +66,6 @@ class Operation::StadiumsController < Operation::ApplicationController
   end
 
   def stadium_params
-    params.require(:stadium).permit(:name, :address, :longitude, :latitude, :city_id, :pic)
+    params.require(:stadium).permit(:name, :address, :longitude, :latitude, :city_id, :pic, :pic_cache)
   end
 end
