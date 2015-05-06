@@ -23,11 +23,18 @@ class Show < ActiveRecord::Base
   delegate :stars, to: :concert
   
   enum status: {
-    hidden: 0, #隐藏不显示的show
-    voted_users: 1, #只给有投票的用户购买
-    all_users: 2, #全部用户都可以购买
+    voted_users: 0, #只给有投票的用户购买
+    all_users: 1, #全部用户都可以购买
   }
 
+  def status_cn
+    case status
+    when "voted_users"
+      "只有参与投票的用户才能买"
+    when "all_users"
+      "全部用户都能购买"
+    end
+  end
 
   paginates_per 20
 
