@@ -10,6 +10,11 @@
   </div>
 
 <%end%>
+<% flash.each do |type, message| -%>
+  <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+    <p><%= message %></p>
+  </div>
+<% end %>
 
 
 <%= render partial: "form", locals: {show: @show, concert: @concert} %>

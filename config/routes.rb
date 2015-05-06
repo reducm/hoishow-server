@@ -81,6 +81,9 @@ Rails.application.routes.draw do
       collection do
         get "get_city_stadiums"
       end
+      member do
+        post "update_area_data"
+      end
     end
     resources :orders
     resources :users
