@@ -455,7 +455,6 @@ type: `GET`
   poster: "海报url",
   status: "voting(众筹中) or finished(众筹结束)"
   followers_count: "关注数",
-  comments_count: "评论数",
   shows_count: "演唱会数目",
   voters_count: "投票人数",
   is_followed: "是否被关注",
@@ -481,6 +480,8 @@ type: `GET`
   poster: "海报url",
   description: "介绍",
   is_followed: "是否被关注",
+  is_voted: "是否被投票"
+  status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
   concert: {concert对象},
   city: {city对象},
   stadium: {stadium对象}
