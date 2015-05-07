@@ -77,7 +77,14 @@ Rails.application.routes.draw do
         delete :remove_concert_city
       end
     end
-    resources :shows
+    resources :shows do
+      collection do
+        get "get_city_stadiums"
+      end
+      member do
+        post "update_area_data"
+      end
+    end
     resources :orders
     resources :users
     resources :admins

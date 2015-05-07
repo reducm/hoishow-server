@@ -11,10 +11,6 @@ class City < ActiveRecord::Base
 
   paginates_per 20
 
-  def stadiums
-    Stadium.where(city_id: self.id)
-  end
-
   def hold_concert(concert)
     concert_city_relations.where(concert: concert).first_or_create!
   end

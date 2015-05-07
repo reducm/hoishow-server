@@ -1,0 +1,32 @@
+<% flash.each do |type, message| -%>
+  <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+    <p><%= message %></p>
+  </div>
+<% end %>
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th>场馆区域</th>
+        <th>票价</th>
+        <th>座位数(座位数不能少于已售出数量)</th>
+        <th>当前区域售出票数</th>
+        <th>操作</th>
+      </tr>
+      <tbody>
+        <% @show.areas.each do |area| %>
+          <% sold_tickets_count = @show.tickets.where(area_id: area.id).sold_tickets.count%>
+          <tr>
+            <td><%= area.name%></td>
+            <% relation = ShowAreaRelation.where(show_id: @show.id, area_id: area.id).first%>
+            <td id="td_price_<%= area.id%>"><%= relation.price%></td>
+            <td id="td_seats_count_<%= area.id%>"><%= relation.seats_count%></td>
+            <td id="sold_tickets_<%= area.id%>"><%= sold_tickets_count%></td>
+            <td class="submit_td"><button class="change_show_area_data" data-area-id="<%= area.id %>">修改</button></td>
+          </tr>
+        <%end%>
+      </tbody>
+    </thead>
+  </table>
+

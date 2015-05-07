@@ -1,5 +1,17 @@
-<%= simple_form_for [:operation, show] do |f| %>
-  <%= f.input :name, required: false, label: "演出投票名称" %>
-  <%= f.button :submit, "确认更新" %>
+<% if @concert %>
+<% cities = @concert.cities %>
+<%else%>
+<% cities = City.all%>
 <%end%>
+<%= simple_form_for [:operation, show] do |f| %>
+  <%= f.input :name, required: false, label: "show名称" %>
+  <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
+  <%= f.kindeditor :description %>
+  <%= f.input :city_id, collection: cities, input_html: {id: "show_city_select"}, disabled: ( params[:action] == 'edit' ? true : false )   %>
+  <%= f.input :stadium_id, as: :select,  input_html: {id: "show_stadium_select"}, disabled: ( params[:action] == "edit" ? true :false ) %>
+  <%= f.hidden_field :concert_id, value: @show.id ? @show.concert_id : @concert.id%>
+  <%= f.button :submit, "保存" %>
+<%end%>
+
+<img id="stadium_pic"  class="preview-pic">
 
