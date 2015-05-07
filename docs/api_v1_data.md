@@ -112,7 +112,7 @@ type: `GET`
 ```javascript
   [
     {
-      参照concert对象参数
+      参照concert对象参数 //此处concert对象的is_show属性全为0（1则表示此concert被隐藏）
       is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
       is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
     }
@@ -459,6 +459,7 @@ type: `GET`
   voters_count: "投票人数",
   is_followed: "是否被关注",
   is_voted: "是否被投票",
+  is_show: "是否显示"
   voted_city: {City对象},//被投票的城市
   stars: {Star对象},//当need_stars不为false的时候
   topics: {Topic对象},//当need_topics不为false的时候
