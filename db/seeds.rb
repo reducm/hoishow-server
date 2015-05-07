@@ -26,28 +26,28 @@ ensure
 end
 
 city = City.first
-stadium = Stadium.create(name: '首都体育馆', address: '北京市海淀区中关村南大街56号', city_id: city.id)
+stadium = Stadium.where(name: '首都体育馆', address: '北京市海淀区中关村南大街56号', city_id: city.id).first_or_create
 
 stars = ['Coldplay', 'Eminem', 'Jay-z', 'Maroon 5', 'Linkin Park']
-img_url = 'coldplay.png'
+img_url = 'default_avatar.png'
 
 # star, concert, star_concert_relation, show
 stars.each do |star|
-  star = Star.create(name: star, avatar: img_url)
+  star = Star.where(name: star, avatar: img_url).first_or_create
 
-  concert = Concert.create(name: "#{star.name}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0)
-  StarConcertRelation.create(star_id: star.id, concert_id: concert.id)
+  concert = Concert.where(name: "#{star.name}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0).first_or_create
+  StarConcertRelation.where(star_id: star.id, concert_id: concert.id).first_or_create
 
-  Show.create(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id)
+  Show.where(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id).first_or_create
 
-  Topic.create(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id)
+  Topic.where(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id).first_or_create
 end
 
 # area, show_area_relation
 ('a'..'e').to_a.each_with_index do |n, idx|
-  area = Area.create(name: n, seats_count: 100, stadium_id: stadium.id)
+  area = Area.where(name: n, seats_count: 100, stadium_id: stadium.id).first_or_create
 
-  ShowAreaRelation.create(show_id: 1, area_id: area.id, price: idx + 100, seats_count: 100)
+  ShowAreaRelation.where(show_id: Show.first.id, area_id: area.id, price: idx + 100, seats_count: 100).first_or_create
 end
 
 # admin

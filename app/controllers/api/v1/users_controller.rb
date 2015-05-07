@@ -16,8 +16,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         elsif code == params[:code]
           #TODO method and view jbuild
           @user = User.find_mobile(params[:mobile])
-          @user.sign_in_api
-          Rails.cache.delete(cache_key(params[:mobile])) if @user.mobile != "13435858622"
+          if verify_block?(@user)
+            return error_json "暂时无法登陆"
+          else
+            @user.sign_in_api
+            Rails.cache.delete(cache_key(params[:mobile])) if @user.mobile != "13435858622"
+          end
         else
           return error_json "验证码错误"
         end

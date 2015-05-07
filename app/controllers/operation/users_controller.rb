@@ -13,6 +13,12 @@ class Operation::UsersController < Operation::ApplicationController
     @comments = @user.comments.page(params[:page])
   end
 
+  def block_user
+    @user.update(is_block: params[:is_block])
+
+    redirect_to operation_users_url
+  end
+
   def remove_avatar
     @user.remove_avatar!
     @user.save
