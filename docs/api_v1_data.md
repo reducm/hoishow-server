@@ -537,8 +537,10 @@ type: `GET`
 ```javascript
 {
   id: comment_id,
-  topic_id: Topic的id,
-  parent_id: 如果是回复，parent_id代表被回复Comment的id,
+  topic_id: "话题的id",
+  parent_id: "如果有回复的话，此为被回复comment的id",
+  topic: 参照topic对象,
+  parent_comment: 参照comment对象,
   content: "评论",
   creator:  {
     id: ID
@@ -554,6 +556,10 @@ type: `GET`
 {
   out_id: 123,
   amount: 99.9,
+  show: Show对象,
+  concert: Concert对象,
+  stadium: Stadium对象,
+  city: City对象,
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -588,6 +594,7 @@ type: `GET`
 ```javascript
 {
   area: {Area对象},
+  show: {Show对象},
   area_id: 11, //区域id
   show_id: 22, //演出id
   price: 99.00, //价格

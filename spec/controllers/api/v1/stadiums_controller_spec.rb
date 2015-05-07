@@ -21,6 +21,7 @@ RSpec.describe Api::V1::StadiumsController, :type => :controller do
       expect(response.body).to include("address")
       expect(response.body).to include("longitude")
       expect(response.body).to include("latitude")
+      expect(response.body).to include("pic")
     end
   end
 

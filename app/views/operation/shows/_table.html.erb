@@ -22,6 +22,7 @@
           <%= link_to "查看", operation_show_path(show)%>
           <% if can? :update, show%>
             <%= link_to "编辑", edit_operation_show_path(show)%>
+            <%= link_to "图文描述", description_path(subject_type: "Show", subject_id: show.id), target: "blank" %>
           <% end %>
         </td>
       </tr>
