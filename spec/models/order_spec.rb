@@ -4,9 +4,8 @@ describe Order do
   before :each  do
     @user = create :user
     @city = create :city
-    @district = create :district, city: @city
     @concert = create :concert
-    @stadium = create(:stadium, district: @district)
+    @stadium = create(:stadium, city: @city)
     @show = create :show, concert: @concert, stadium: @stadium
     3.times do|n|
       area =  create :area, stadium: @stadium
@@ -18,7 +17,7 @@ describe Order do
 
   context "create order" do
     it ":city, :concert, :stadium, :star, :show should be presence" do
-      order = Order.new 
+      order = Order.new
       expect(order.valid?).to be_falsey
       Order::ASSOCIATION_ATTRS.each do|sym|
         expect(order).to have(1).error_on(sym.to_s + "_name")
@@ -35,7 +34,7 @@ describe Order do
 
 
     it "order should create success" do
-      expect(@order.valid?).to be_truthy 
+      expect(@order.valid?).to be_truthy
     end
 
     it "order amount" do
@@ -73,13 +72,13 @@ describe Order do
         @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
       end
       @user = create :user
-    end  
+    end
 
     #it "is_sold_out should be lock with multiple threads" do
       #threads = []
       #@area = Area.first
       #@relation = ShowAreaRelation.where(show_id: @show.id, area_id: @area.id).first
-      #10.times do|i| 
+      #10.times do|i|
         #ap i
         #threads << Thread.new do
           #relations = [@relation, @relation]
@@ -104,6 +103,6 @@ describe Order do
       #threads.each {|t|t.join}
       #expect(Order.count).to eq 1
     #end
-    
+
   end
 end

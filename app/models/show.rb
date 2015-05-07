@@ -21,7 +21,7 @@ class Show < ActiveRecord::Base
   after_create :set_status_after_create
 
   delegate :stars, to: :concert
-  
+
   enum status: {
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
@@ -46,13 +46,20 @@ class Show < ActiveRecord::Base
 
   def area_seats_left(area)
     valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
-    relation = show_area_relations.where(area_id: area.id).first
-    count = relation.seats_count - valid_tickets.count
+    count = area_seats_count(area) - valid_tickets.count
     count > 0 ? count : 0
   end
 
   def area_is_sold_out(area)
     show_area_relations.where(area_id: area.id).first.is_sold_out
+  end
+
+  def total_seats_count
+    areas.sum(:seats_count)
+  end
+
+  def area_seats_count(area)
+    show_area_relations.where(area_id: area.id).first.seats_count
   end
 
   private
