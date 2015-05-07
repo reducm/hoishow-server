@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     resources :orders
     resources :users, only: [:index, :show] do
       member do
+        post :block_user
         post :remove_avatar
       end
     end
