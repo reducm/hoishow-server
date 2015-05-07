@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150507033230) do
+ActiveRecord::Schema.define(version: 20150507082256) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -292,10 +292,11 @@ ActiveRecord::Schema.define(version: 20150507033230) do
     t.datetime "birthday"
     t.string   "salt",               limit: 255
     t.boolean  "has_set_password",   limit: 1
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "api_token",          limit: 255
     t.integer  "api_expires_in",     limit: 4
+    t.boolean  "is_block",           limit: 1,   default: false
   end
 
   create_table "videos", force: :cascade do |t|
