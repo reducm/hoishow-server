@@ -17,7 +17,7 @@
         <td><%= show.name %></td>
         <td><%= show.stadium.try(:name) %></td>
         <td><%= show.show_time.strfcn_time %></td>
-        <td><%= tickets.sold_tickets.count %> / <%= tickets.count %> </td>
+        <td><%= tickets.sold_tickets.count %> / <%= tickets.count %></td>
         <td>
           <%= link_to "查看", operation_show_path(show)%>
           <% if can? :update, show%>

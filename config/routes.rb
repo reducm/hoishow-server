@@ -88,7 +88,11 @@ Rails.application.routes.draw do
       end
     end
     resources :orders
-    resources :users
+    resources :users, only: [:index, :show] do
+      member do
+        post :remove_avatar
+      end
+    end
     resources :admins
     resources :topics, only: [:create, :edit, :update] do
       member do

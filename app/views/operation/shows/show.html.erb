@@ -1,24 +1,20 @@
 <div class="nav">
-  <div> 
-    <h1 class="pull-left">show详情</h1>
+  <h2>
+    演出详情
+    <% if can? :update, @show %>
+      <small><%= link_to "编辑", edit_operation_show_path(@show) %></small>
+    <% end %>
+  </h2>
+  <h3><%= @show.name %></h3>
+  <div class="form-group">
+    <%= label_tag(:name, "show状态", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @show.status_cn, class: "form-control-static")%>
+    </div>
   </div>
   <div>
-    <h3><%= @show.name %></h3>
-    <p>
-    <% if can? :update, @show%>
-      <%= link_to "编辑", edit_operation_show_path(@show) %>
-    <%end%>
-    </p>
-    <div>
-<div class="form-group">
-  <%= label_tag(:name, "show状态", class: "col-sm-2 control-label")%>
-  <div class="col-sm-10">
-    <%= label_tag(:name, @show.status_cn, class: "form-control-static")%>
-  </div>
-</div>
-      <%= link_to "开放参与投票的用户购买", update_status_operation_show_path(@show, status: 0), method: "post", class: "btn btn-success"%>
-      <%= link_to "开放所有用户购买", update_status_operation_show_path(@show, status: 1), method: "post", class: "btn btn-success"%>
-    </div>
+    <%= link_to "开放参与投票的用户购买", update_status_operation_show_path(@show, status: 0), method: "post", class: "btn btn-default" %>
+    <%= link_to "开放所有用户购买", update_status_operation_show_path(@show, status: 1), method: "post", class: "btn btn-default" %>
   </div>
   <table class="table">
     <tbody>
@@ -36,7 +32,6 @@
       </tr>
     </tbody>
   </table>
-
 </div>
 
 <div role="tabpanel">
@@ -50,22 +45,19 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
-      <% @orders = @show.orders %>
-
       <div id="pie_cake" >
         <% @show.areas.each do |area| %>
           <% tickets = @show.tickets.where(area_id: area.id) %>
           <% total_count = tickets.count%>
           <% sold_tickets_count = tickets.sold_tickets.count %>
           <div class="pull-left" total_tickets=<%= total_count.to_s%> sold_count=<%= sold_tickets_count.to_s %> left_count= <%= (total_count - sold_tickets_count).to_s %> id=<%= area.name %> style="height:300px; width:300px"></div>
-        <%end%>
+        <% end %>
       </div>
-      <%= render partial: 'operation/orders/table', locals: {orders: @orders} %>
+      <%= render partial: 'operation/orders/table', locals: {orders: @show.orders} %>
     </div>
 
     <div role="tabpanel" class="tab-pane" id="shows_show_topics">
-      <% @topics= @show.topics %>
-      <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
+      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics} %>
     </div>
 
   </div>

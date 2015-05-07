@@ -333,5 +333,5 @@ $ ->
     else
       $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()
 
-  if $(".concerts_list")
+  if $(".concerts_list").length > 0
     $(".concerts").dataTable()

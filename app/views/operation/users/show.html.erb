@@ -35,7 +35,7 @@
     </div>
     <div class="col-md-4 avatar">
       <%= get_avatar(@user) %>
-      <%= link_to "屏蔽头像(还原为默认头像)" %>
+      <p><%= link_to "屏蔽头像(还原为默认头像)", remove_avatar_operation_user_path(@user), method: 'post' %></p>
     </div>
   </div>
   <div class="row">

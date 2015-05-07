@@ -15,10 +15,10 @@ set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
         ]
       ]
     myChart = echarts.init(document.getElementById(area_name))
-    myChart.setOption(option) 
+    myChart.setOption(option)
 
 $ ->
-  if $(".shows_list")
+  if $(".shows_list").length > 0
     $(".shows").dataTable()
 
   $("#pie_cake div").each(() ->
@@ -45,7 +45,7 @@ $ ->
       $("#show_stadium_select").html(result)
       $("#show_stadium_select").attr("data-live-search", true)
       $("#show_stadium_select").selectpicker("refresh")
-      $("#stadium_pic").attr("src", data[0]["pic"]) 
+      $("#stadium_pic").attr("src", data[0]["pic"])
     )
 
   #change stadium pic
@@ -54,7 +54,7 @@ $ ->
     selected_option = select.find("option:selected")
     stadium_id = selected_option.val()
     $("#stadium_pic").attr("src", PICS[stadium_id])
-  
+
   #change area data
   $("#show_area").on "click", ".change_show_area_data", (e) ->
     area_id = $(this).data("area-id")
@@ -63,7 +63,7 @@ $ ->
     price = $("#td_price_#{area_id}").text()
     $("#td_price_#{area_id}").html("<input type='text' class='form-control' value='#{price}' id='price_#{area_id}'>")
     $(this).parent().html("<button  data-area-id='#{area_id}' class='change_submit'>确定</button>")
-    
+
   $("#show_area").on "click", ".change_submit", (e) ->
     area_id = $(this).data("area-id")
     seats_count = $("input#seats_count_#{area_id}").val()
@@ -79,6 +79,6 @@ $ ->
     if parseInt( seats_count ) < parseInt( sold_tickets )
       alert("座位数不能少于售出票数")
     else
-      $.post("/operation/shows/#{show_id}/update_area_data", {show_id: show_id, area_id: area_id, seats_count: seats_count, price: price}, (data)->
+      $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, seats_count: seats_count, price: price}, (data)->
         $("#show_area").html(data)
       )
