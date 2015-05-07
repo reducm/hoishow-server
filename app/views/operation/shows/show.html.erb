@@ -1,17 +1,11 @@
 <div class="nav">
-  <div> 
-    <h1 class="pull-left">show详情</h1>
-  </div>
-  <div>
-    <h3><%= @show.name %></h3>
-    <p>
-    <% if can? :update, @show%>
-      <%= link_to "编辑", edit_operation_show_path(@show) %>
-    <%end%>
-    </p>
-    <p><%= link_to "添加到首页幻灯片", "?" %></p>
-
-  </div>
+  <h2>
+    演出详情
+    <% if can? :update, @show %>
+      <small><%= link_to "编辑", edit_operation_show_path(@show) %></small>
+    <% end %>
+  </h2>
+  <h3><%= @show.name %></h3>
   <table class="table">
     <tbody>
       <tr>
@@ -28,7 +22,6 @@
       </tr>
     </tbody>
   </table>
-
 </div>
 
 <div role="tabpanel">
@@ -42,22 +35,19 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
-      <% @orders = @show.orders %>
-
       <div id="pie_cake" >
         <% @show.areas.each do |area| %>
           <% tickets = @show.tickets.where(area_id: area.id) %>
           <% total_count = tickets.count%>
           <% sold_tickets_count = tickets.sold_tickets.count %>
           <div class="pull-left" total_tickets=<%= total_count.to_s%> sold_count=<%= sold_tickets_count.to_s %> left_count= <%= (total_count - sold_tickets_count).to_s %> id=<%= area.name %> style="height:300px; width:300px"></div>
-        <%end%>
+        <% end %>
       </div>
-      <%= render partial: 'operation/orders/table', locals: {orders: @orders} %>
+      <%= render partial: 'operation/orders/table', locals: {orders: @show.orders} %>
     </div>
 
     <div role="tabpanel" class="tab-pane" id="shows_show_topics">
-      <% @topics= @show.topics %>
-      <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
+      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics} %>
     </div>
 
   </div>
