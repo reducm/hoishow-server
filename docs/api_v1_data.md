@@ -449,7 +449,7 @@ type: `GET`
 {
   id: concert_id,
   name: "Concert名称",
-  description: "介绍",
+  description: "图文描述的url",
   start_date: "众筹开始时间",
   end_date: "众筹结束时间"
   poster: "海报url",
@@ -479,7 +479,7 @@ type: `GET`
   stadium_id: "stadium_id",
   show_time: "开show时间",
   poster: "海报url",
-  description: "介绍",
+  description: "图文介绍的url",
   is_followed: "是否被关注",
   is_voted: "是否被投票"
   status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
@@ -507,7 +507,8 @@ type: `GET`
   address: "场馆地址",
   longitude: "经度",
   latitude: "维度",
-  city: {City对象}
+  city: {City对象},
+  pic: "场馆的图片"
 }
 ```
 
