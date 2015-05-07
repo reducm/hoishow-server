@@ -1,0 +1,2 @@
+module Operation::StadiumsHelper
+end

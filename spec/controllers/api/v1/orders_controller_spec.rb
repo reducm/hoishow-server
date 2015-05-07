@@ -11,7 +11,6 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
     it "index should get 10 orders" do
       get :index, with_key(mobile: @user.mobile, api_token: @user.api_token, format: :json)
       expect(response.status).to eq 200
-      #ap JSON.parse response.body 
     end
   end
 

@@ -102,22 +102,22 @@ type: `POST`
   }
 ```
 --------
-## 关注明星或演唱会
+## 关注明星或演唱会或演出
 [/api/v1/users/follow_subject]()
 
 type: `POST`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert, 注意大写", subject_id: "star_id或concert_id"}`
+必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert或Show, 注意大写", subject_id: "star_id或concert_id或show_id"}`
 
 成功时返回{msg: "ok"}, 状态200
 
 --------
-## 取消关注明星或演唱会
+## 取消关注明星或演唱会或演出
 [/api/v1/users/unfollow_subject]()
 
 type: `POST`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert, 注意大写", subject_id: "star_id或concert_id"}`
+必需参数 `{api_token: "users_token", mobile: "users mobile", subject_type: "Star或Concert或Show, 注意大写", subject_id: "star_id或concert_id或show_id"}`
 
 成功时返回{msg: "ok"}, 状态200
 
@@ -187,6 +187,27 @@ type: `POST`
 ```
 
 ----------
+## 用户关注的演出
+[/api/v1/users/followed_shows]()
+
+type: `POST`
+
+必需参数 `{api_token: "users_token", mobile: "users mobile"}`
+
+成功时返回：
+```javascript
+  {
+    shows: [
+      {
+        is_followed: true
+        参照show对象参数
+      }
+    ]
+  }
+```
+
+----------
+
 ## 用户创建互动Topic, 包括明星Star互动、Concert演唱会互动
 [/api/v1/users/create_topic]()
 

@@ -1,6 +1,6 @@
 <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
   <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}, disabled: ( params[:action] == 'edit' ? true : false )   %>
-  <%= f.input :subject_id, as: :select,  input_html: {id: "subject_id_select"} %>
+  <%= f.input :subject_id, as: :select,  input_html: {id: "subject_id_select"}, disabled: ( params[:action] == 'edit' ? true : false ) %>
   <%= f.kindeditor :description %>
   <%= f.input :slogan %>
   <%= f.input :poster %>

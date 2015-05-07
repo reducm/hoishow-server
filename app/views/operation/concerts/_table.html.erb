@@ -22,6 +22,7 @@
         <td>
           <% if can? :update, concert %>
             <%= link_to "编辑", edit_operation_concert_path(concert)%>
+            <%= link_to "图文描述", description_path(subject_type: "Concert", subject_id: concert.id), target: "blank" %>
           <% end %>
         </td>
       </tr>

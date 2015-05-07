@@ -13,6 +13,7 @@ Rails.application.routes.draw do
           post "unfollow_subject" => "users#unfollow_subject"
           post "vote_concert" => "users#vote_concert"
           post "followed_stars" => "users#followed_stars"
+          post "followed_shows" => "users#followed_shows"
           post "followed_concerts" => "users#followed_concerts"
           post "create_topic" => "users#create_topic"
           post "like_topic" => "users#like_topic"
@@ -65,26 +66,51 @@ Rails.application.routes.draw do
       collection do
         post :sort
       end
+      member do
+        get :get_topics
+      end
     end
     resources :concerts do
       member do
         get :get_city_topics
         get :get_city_voted_data
+        get :get_cities
         post :add_concert_city
         get :refresh_map_data
         delete :remove_concert_city
+        post "update_is_show"
       end
     end
-    resources :shows
+    resources :shows do
+      collection do
+        get "get_city_stadiums"
+      end
+      member do
+        post "update_area_data"
+        post "update_status"
+      end
+    end
     resources :orders
-    resources :users
+    resources :users, only: [:index, :show] do
+      member do
+        post :remove_avatar
+      end
+    end
     resources :admins
-    resources :topics, only: [:new, :create, :edit, :update] do
+    resources :topics, only: [:create, :edit, :update] do
       member do
         get :refresh_comments
         post :add_comment
         delete :destroy_comment
         post :set_topic_top
+      end
+    end
+    resources :cities, only: [:index]
+    resources :stadiums, except: [:show, :destroy] do
+      member do
+        get :refresh_areas
+        post :submit_area
+        delete :del_area
       end
     end
     #TODO api_auth

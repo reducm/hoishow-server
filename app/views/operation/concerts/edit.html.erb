@@ -1,10 +1,27 @@
+<div>
+  <div class="form-group">
+    <%= label_tag(:name, "concert状态", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @concert.is_show_cn, class: "form-control-static")%>
+    </div>
+  </div>
+  <%= link_to "显示concert", update_is_show_operation_concert_path(@concert, is_show: 0), method: "post", class: "btn btn-success"%>
+  <%= link_to "隐藏concert", update_is_show_operation_concert_path(@concert, is_show: 1), method: "post", class: "btn btn-success"%>
+</div>
+
+<% flash.each do |type, message| -%>
+  <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+    <p><%= message %></p>
+  </div>
+<% end %>
+
 <div role="tabpanel">
 
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">
     <li role="presentation" class="active"><a href="#concert_detail" aria-controls="concert_detail" role="tab" data-toggle="tab">Concert详情</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" id="get_map">Profile</a></li>
-    <li role="presentation"><a href="#concert_shows" aria-controls="concert_shows" role="tab" data-toggle="tab">concert_shows</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" id="get_map">投票详情与设置</a></li>
+    <li role="presentation"><a href="#concert_shows" aria-controls="concert_shows" role="tab" data-toggle="tab">演出</a></li>
   </ul>
 
   <!-- Tab panes -->
@@ -18,8 +35,7 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="concert_shows">
-           
-        <%= render partial: "operation/shows/table", locals: {shows: @concert_shows} %>
+      <%= render partial: "operation/shows/table", locals: {shows: @concert_shows} %>
     </div>
   </div>
   <%= hidden_field_tag "concert_id", @concert.id %>

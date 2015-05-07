@@ -3,6 +3,9 @@ class Show < ActiveRecord::Base
   belongs_to :city
   belongs_to :stadium
 
+  has_many :user_follow_shows
+  has_many :show_followers, through: :user_follow_shows, source: :user
+
   has_many :show_area_relations
   has_many :areas, through: :show_area_relations
   has_many :orders
@@ -11,11 +14,27 @@ class Show < ActiveRecord::Base
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}
   validates :stadium, presence: {message: "Stadium不能为空"}
-  validate :valids_price
+  #validate :valids_price
 
   before_create :set_city
 
+  after_create :set_status_after_create
+
   delegate :stars, to: :concert
+  
+  enum status: {
+    voted_users: 0, #只给有投票的用户购买
+    all_users: 1, #全部用户都可以购买
+  }
+
+  def status_cn
+    case status
+    when "voted_users"
+      "只有参与投票的用户才能买"
+    when "all_users"
+      "全部用户都能购买"
+    end
+  end
 
   paginates_per 20
 
@@ -46,4 +65,10 @@ class Show < ActiveRecord::Base
   def set_city
     city = stadium.city
   end
+
+  def set_status_after_create
+    self.status = :voted_users if self.status.blank?
+    save!
+  end
+
 end

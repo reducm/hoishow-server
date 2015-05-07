@@ -24,6 +24,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
+      expect(response.body).to include("voted_city")
       JSON.parse(response.body).each do|object| 
         expect(object["is_followed"]).to be false
         expect(object["is_voted"]).to be false
@@ -128,10 +129,11 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       @city2 = create :city
       @user1 = create :user
       @user2 = create :user
+      @user3 = create :user
       @city1.hold_concert(@concert)
       @city2.hold_concert(@concert)
       @user1.vote_concert(@concert, @city1)
-      @user1.vote_concert(@concert, @city2)
+      @user3.vote_concert(@concert, @city2)
       @user2.vote_concert(@concert, @city2)
     end
     

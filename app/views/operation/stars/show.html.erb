@@ -6,7 +6,7 @@
   <% end %>
 
   <%= link_to "编辑资料", edit_operation_star_path, class: 'btn btn-default' %>
-  <%= link_to "发布新互动", new_operation_topic_path, class: 'btn btn-default' %>
+  <%= link_to "发布新互动", 'javascript:void(0)', class: 'btn btn-default add_topic' %>
   <%= link_to "发布新演出", new_operation_concert_path, class: 'btn btn-default' %>
 
   <h1><%= @star.name %></h1>
@@ -24,7 +24,9 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="star_topics">
-      <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
+      <div class='topics'>
+        <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
+      </div>
     </div>
     <div role="tabpanel" class="tab-pane" id="star_shows">
       粉丝列表
@@ -33,5 +35,27 @@
 
 </div>
 
-
+<div class="modal fade" id="topicModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="topicModalLabel">发布新互动</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <div class="form-group">
+             <%= text_area_tag "topic_content", nil, class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "topic_creator", "创建人" %>
+            <%= select_tag "topic_creator", options_for_select([[@star.name, @star.id], [current_admin.name]]) %>
+          </div>
+          <%= hidden_field_tag "star_id", @star.id %>
+          <%= submit_tag "提交", class: 'btn btn-primary create_topic' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
 

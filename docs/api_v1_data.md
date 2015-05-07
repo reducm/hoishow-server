@@ -105,7 +105,7 @@ type: `GET`
 ```javascript
   [
     {
-      参照concert对象参数
+      参照concert对象参数 //此处concert对象的is_show属性全为0（1则表示此concert被隐藏）
       is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
       is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
     }
@@ -444,18 +444,20 @@ type: `GET`
 {
   id: concert_id,
   name: "Concert名称",
-  description: "介绍",
+  description: "图文描述的url",
   start_date: "众筹开始时间",
   end_date: "众筹结束时间"
   poster: "海报url",
   status: "voting(众筹中) or finished(众筹结束)"
   followers_count: "关注数",
-  comments_count: "评论数",
   shows_count: "演唱会数目",
   voters_count: "投票人数",
   is_followed: "是否被关注",
   is_voted: "是否被投票",
+  is_show: "是否显示"
+  voted_city: {City对象},//被投票的城市
   stars: {Star对象},//当need_stars不为false的时候
+  topics: {Topic对象},//当need_topics不为false的时候
   shows: {Show对象}//当need_shows不为false的时候
 }
 ```
@@ -472,8 +474,12 @@ type: `GET`
   stadium_id: "stadium_id",
   show_time: "开show时间",
   poster: "海报url",
+  description: "图文介绍的url",
+  is_followed: "是否被关注",
+  is_voted: "是否被投票"
+  status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
   concert: {concert对象},
-  city: {city对象}
+  city: {city对象},
   stadium: {stadium对象}
 }
 ```
@@ -496,7 +502,8 @@ type: `GET`
   address: "场馆地址",
   longitude: "经度",
   latitude: "维度",
-  city: {City对象}
+  city: {City对象},
+  pic: "场馆的图片"
 }
 ```
 
@@ -526,8 +533,10 @@ type: `GET`
 ```javascript
 {
   id: comment_id,
-  topic_id: Topic的id,
-  parent_id: 如果是回复，parent_id代表被回复Comment的id,
+  topic_id: "话题的id",
+  parent_id: "如果有回复的话，此为被回复comment的id",
+  topic: 参照topic对象,
+  parent_comment: 参照comment对象,
   content: "评论",
   creator:  {
     id: ID
@@ -543,6 +552,10 @@ type: `GET`
 {
   out_id: 123,
   amount: 99.9,
+  show: Show对象,
+  concert: Concert对象,
+  stadium: Stadium对象,
+  city: City对象,
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -577,6 +590,7 @@ type: `GET`
 ```javascript
 {
   area: {Area对象},
+  show: {Show对象},
   area_id: 11, //区域id
   show_id: 22, //演出id
   price: 99.00, //价格

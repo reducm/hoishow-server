@@ -3,6 +3,6 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @orders = Order.page(params[:page])
+    @orders = Order.all
   end
 end

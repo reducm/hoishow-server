@@ -1,12 +1,12 @@
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
-  before_action :check_login!, except: [:get_city_voted_data]
-  before_action :get_concert, except: [:index]
+  before_action :check_login!, except: [:get_city_voted_data, :get_cities]
+  before_action :get_concert, except: [:index, :new, :create]
   load_and_authorize_resource
-  skip_authorize_resource :only => [:get_city_voted_data]
+  skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
-    @concerts = Concert.page(params[:page])
+    @concerts = Concert.all
   end
 
   def edit
@@ -17,9 +17,21 @@ class Operation::ConcertsController < Operation::ApplicationController
     if @concert.update!(validate_attributes)
       redirect_to operation_concerts_url
     else
-      flash[:notice] = @concert.errors.full_messages
+      flash[:error] = @concert.errors.full_messages
       render :edit
     end
+  end
+
+  def new
+    @concert = Concert.new
+  end
+
+  def create
+  end
+
+  def update_is_show
+    @concert.update(is_show: params[:is_show].to_i)
+    redirect_to edit_operation_concert_url(@concert)
   end
 
   def refresh_map_data
@@ -48,12 +60,23 @@ class Operation::ConcertsController < Operation::ApplicationController
   def get_city_topics
     @city = City.find(params[:city_id])
     @topics = Topic.where(subject_type: Topic::SUBJECT_CONCERT, city_id: @city.id).page(params[:page]).per(5)
-    @subject_type = Topic::SUBJECT_CONCERT
+
+    render partial: 'operation/topics/table', locals: {topics: @topics}
   end
 
   def get_city_voted_data
-    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(city)}}
+    data = @concert.cities.map{|city| {name: city.name, value: get_city_voted_count(@concert, city)}}
     render json: data
+  end
+
+  def get_cities
+    cities = get_no_concert_cities(@concert)
+
+    if params[:term]
+      cities = cities.where("name LIKE ? or pinyin LIKE ?", "%#{params[:term]}%", "%#{params[:term]}%")
+    end
+
+    render json: cities.map{|city| {value: city.id, label: city.name}}
   end
 
   private

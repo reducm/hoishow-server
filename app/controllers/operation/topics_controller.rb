@@ -1,19 +1,7 @@
 class Operation::TopicsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_topic, except: [:new, :create]
+  before_action :get_topic, except: [:create]
   load_and_authorize_resource
-
-  def new
-    @topic = Topic.new
-    @concert = Concert.find_by_id(params[:concert_id])
-    @stars = []
-    if params[:star_id]
-     @stars = Star.where(id: params[:star_id])
-    elsif @concert
-     @stars = @concert.stars
-     @city_id = params[:city_id]
-    end
-  end
 
   def create
     @topic = Topic.new(topic_params)
@@ -27,7 +15,7 @@ class Operation::TopicsController < Operation::ApplicationController
       end
       @topic.save!
     end
-    redirect_to params[:return_url]
+    render json: {success: true}
   end
 
   def edit

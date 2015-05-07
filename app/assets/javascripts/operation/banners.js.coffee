@@ -4,7 +4,7 @@ $ ()->
   generate_options = (subjects = [])->
     result = ""
     for subject in subjects
-      result += "<option value='#{subject.id}'>#{subject.name}<option/>"
+      result += "<option value='#{subject.id}'>#{subject.name}</option>"
     result
     
   $("#subject_type_select").on "change", (e)->
