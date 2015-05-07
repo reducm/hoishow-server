@@ -15,10 +15,10 @@ set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
         ]
       ]
     myChart = echarts.init(document.getElementById(area_name))
-    myChart.setOption(option) 
+    myChart.setOption(option)
 
 $ ->
-  if $(".shows_list")
+  if $(".shows_list").length > 0
     $(".shows").dataTable()
 
   $("#pie_cake div").each(() ->

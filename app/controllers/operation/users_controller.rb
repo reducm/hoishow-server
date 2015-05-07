@@ -1,10 +1,10 @@
 class Operation::UsersController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_user, except: [:show, :remove_avatar]
+  before_action :get_user, except: [:index]
   load_and_authorize_resource
 
   def index
-    @users = User.page(params[:page])
+    @users = User.all
   end
 
   def show

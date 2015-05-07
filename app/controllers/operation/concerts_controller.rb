@@ -6,7 +6,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
-    @concerts = Concert.page(params[:page])
+    @concerts = Concert.all
   end
 
   def new

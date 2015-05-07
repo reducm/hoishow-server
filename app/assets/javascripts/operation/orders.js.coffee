@@ -7,7 +7,7 @@ $ ->
     else
       $(".order_status_cn:not(:contains('" + vtxt + "'))").parent().hide()
 
-  if $(".orders_list")
+  if $(".orders_list").length > 0
     $(".orders").dataTable()
 
 #票码弹出

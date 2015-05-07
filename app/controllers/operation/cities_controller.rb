@@ -4,7 +4,7 @@ class Operation::CitiesController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @cities = City.order('is_hot desc')
+    @cities = City.all
   end
 
   def stadiums_list

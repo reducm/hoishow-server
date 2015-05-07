@@ -19,7 +19,7 @@
     <div class="form-group">
       <p><%= f.label :pic, "场馆平面图" %>
       <%= f.file_field :pic %></p>
-      <%= image_tag(@stadium.pic_url, class: 'stadium-pic') if @stadium.pic %>
+      <%= image_tag(@stadium.pic_url, class: 'stadium-pic') if @stadium.pic_url %>
       <%= f.hidden_field :pic_cache %>
     </div>
     <%= f.hidden_field :city_id, value: city.id %>

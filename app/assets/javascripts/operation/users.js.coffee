@@ -1,3 +1,3 @@
 $ ->
-  if $(".users_list")
+  if $(".users_list").length > 0
     $(".users").dataTable()
