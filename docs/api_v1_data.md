@@ -449,7 +449,7 @@ type: `GET`
 {
   id: concert_id,
   name: "Concert名称",
-  description: "介绍",
+  description: "图文描述的url",
   start_date: "众筹开始时间",
   end_date: "众筹结束时间"
   poster: "海报url",
@@ -479,7 +479,7 @@ type: `GET`
   stadium_id: "stadium_id",
   show_time: "开show时间",
   poster: "海报url",
-  description: "介绍",
+  description: "图文介绍的url",
   is_followed: "是否被关注",
   is_voted: "是否被投票"
   status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
@@ -507,7 +507,8 @@ type: `GET`
   address: "场馆地址",
   longitude: "经度",
   latitude: "维度",
-  city: {City对象}
+  city: {City对象},
+  pic: "场馆的图片"
 }
 ```
 
@@ -537,8 +538,10 @@ type: `GET`
 ```javascript
 {
   id: comment_id,
-  topic_id: Topic的id,
-  parent_id: 如果是回复，parent_id代表被回复Comment的id,
+  topic_id: "话题的id",
+  parent_id: "如果有回复的话，此为被回复comment的id",
+  topic: 参照topic对象,
+  parent_comment: 参照comment对象,
   content: "评论",
   creator:  {
     id: ID
@@ -554,6 +557,10 @@ type: `GET`
 {
   out_id: 123,
   amount: 99.9,
+  show: Show对象,
+  concert: Concert对象,
+  stadium: Stadium对象,
+  city: City对象,
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -588,6 +595,7 @@ type: `GET`
 ```javascript
 {
   area: {Area对象},
+  show: {Show对象},
   area_id: 11, //区域id
   show_id: 22, //演出id
   price: 99.00, //价格

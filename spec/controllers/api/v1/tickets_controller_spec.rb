@@ -19,6 +19,7 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
     it "should has attributes" do
       get :index, with_key(format: :json)
       expect(response.body).to include("area")
+      expect(response.body).to include("show")
       expect(response.body).to include("area_id")
       expect(response.body).to include("show_id")
       expect(response.body).to include("price")

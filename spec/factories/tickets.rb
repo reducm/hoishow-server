@@ -11,12 +11,5 @@ FactoryGirl.define do
     association :area
     association :show
     association :order
-    factory :success_ticket do
-      status Ticket.statuses[:success]
-    end
-    factory :used_ticket do
-      status Ticket.statuses[:used]
-    end
-
   end
 end
