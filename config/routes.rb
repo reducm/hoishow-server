@@ -56,8 +56,11 @@ Rails.application.routes.draw do
     match "/signout" => "sessions#destroy", via: [:delete]
 
     resources :banners
-    resources :videos
-
+    resources :videos do
+      member do
+        patch :set_main
+      end
+    end
     resources :stars do
       collection do
         post :sort

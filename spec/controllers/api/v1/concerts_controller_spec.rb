@@ -89,7 +89,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
       expect(response.body).to include("topics")
-      #ap JSON.parse response.body
     end
 
     it "status should going string" do
@@ -97,7 +96,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse(response.body)["status"]).to eq "voting"
     end
 
-    #TODO stars, shows 
     it "stars should has something" do
       @star = create :star
       @star.hoi_concert(@concert)
@@ -140,7 +138,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
     it "should has something" do
       get :city_rank, with_key(id: @concert.id, format: :json)
       expect(response.body).to include("vote_count")
-      #ap JSON.parse(response.body)
     end
   end
 end
