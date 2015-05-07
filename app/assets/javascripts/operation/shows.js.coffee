@@ -1,7 +1,7 @@
 set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
     option =
       title:
-        text: area_name+"区(共"+tickets_count+"张)"
+        text: area_name + "区(共" + tickets_count + "张)"
         x: "center"
       tooltip:
         show: true

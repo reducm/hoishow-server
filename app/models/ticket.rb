@@ -18,6 +18,10 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 20
 
+  def self.sold_tickets_count
+    sold_tickets.count
+  end
+
   protected
   def set_status
     self.status = :pending
