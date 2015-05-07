@@ -70,10 +70,10 @@ $ ->
     sold_tickets = $("#sold_tickets_#{area_id}").text()
     show_id = $("#show_id").val()
     price = $("input#price_#{area_id}").val()
-    if not (parseInt(price) > 0)
+    if (parseInt(price) <= 0)
       alert("价格必须全为数字")
       return false
-    if not (parseInt(seats_count) > 0)
+    if (parseInt(seats_count) <= 0)
       alert("座位数必须全为数字")
       return false
     if parseInt( seats_count ) < parseInt( sold_tickets )

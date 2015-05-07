@@ -55,6 +55,12 @@ class Operation::ShowsController < Operation::ApplicationController
     render partial: "area_table", locals:{show: @show}
   end
 
+  def update_status
+    @show = Show.find(params[:id])
+    @show.update(status: params[:status].to_i)
+    redirect_to operation_show_url(@show)
+  end
+
   protected
   def show_params
     params.require(:show).permit(:name, :show_time, :city_id, :stadium_id, :description, :concert_id)

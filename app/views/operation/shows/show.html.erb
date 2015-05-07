@@ -9,8 +9,16 @@
       <%= link_to "编辑", edit_operation_show_path(@show) %>
     <%end%>
     </p>
-    <p><%= link_to "添加到首页幻灯片", "?" %></p>
-
+    <div>
+<div class="form-group">
+  <%= label_tag(:name, "show状态", class: "col-sm-2 control-label")%>
+  <div class="col-sm-10">
+    <%= label_tag(:name, @show.status_cn, class: "form-control-static")%>
+  </div>
+</div>
+      <%= link_to "开放参与投票的用户购买", update_status_operation_show_path(@show, status: 0), method: "post", class: "btn btn-success"%>
+      <%= link_to "开放所有用户购买", update_status_operation_show_path(@show, status: 1), method: "post", class: "btn btn-success"%>
+    </div>
   </div>
   <table class="table">
     <tbody>
