@@ -18,9 +18,25 @@ class Show < ActiveRecord::Base
 
   before_create :set_city
 
-  delegate :stars, to: :concert
+  after_create :set_status_after_create
 
-#  paginates_per 20
+  delegate :stars, to: :concert
+  
+  enum status: {
+    voted_users: 0, #只给有投票的用户购买
+    all_users: 1, #全部用户都可以购买
+  }
+
+  def status_cn
+    case status
+    when "voted_users"
+      "只有参与投票的用户才能买"
+    when "all_users"
+      "全部用户都能购买"
+    end
+  end
+
+  paginates_per 20
 
   mount_uploader :poster, ImageUploader
 
@@ -49,4 +65,10 @@ class Show < ActiveRecord::Base
   def set_city
     city = stadium.city
   end
+
+  def set_status_after_create
+    self.status = :voted_users if self.status.blank?
+    save!
+  end
+
 end

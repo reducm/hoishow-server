@@ -17,7 +17,7 @@ class Operation::ConcertsController < Operation::ApplicationController
     if @concert.update!(validate_attributes)
       redirect_to operation_concerts_url
     else
-      flash[:notice] = @concert.errors.full_messages
+      flash[:error] = @concert.errors.full_messages
       render :edit
     end
   end
@@ -27,6 +27,11 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def create
+  end
+
+  def update_is_show
+    @concert.update(is_show: params[:is_show].to_i)
+    redirect_to edit_operation_concert_url(@concert)
   end
 
   def refresh_map_data

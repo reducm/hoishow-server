@@ -6,6 +6,16 @@
     <% end %>
   </h2>
   <h3><%= @show.name %></h3>
+  <div class="form-group">
+    <%= label_tag(:name, "show状态", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @show.status_cn, class: "form-control-static")%>
+    </div>
+  </div>
+  <div>
+    <%= link_to "开放参与投票的用户购买", update_status_operation_show_path(@show, status: 0), method: "post", class: "btn btn-default" %>
+    <%= link_to "开放所有用户购买", update_status_operation_show_path(@show, status: 1), method: "post", class: "btn btn-default" %>
+  </div>
   <table class="table">
     <tbody>
       <tr>

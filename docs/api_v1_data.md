@@ -112,7 +112,7 @@ type: `GET`
 ```javascript
   [
     {
-      参照concert对象参数
+      参照concert对象参数 //此处concert对象的is_show属性全为0（1则表示此concert被隐藏）
       is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
       is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
     }
@@ -455,11 +455,11 @@ type: `GET`
   poster: "海报url",
   status: "voting(众筹中) or finished(众筹结束)"
   followers_count: "关注数",
-  comments_count: "评论数",
   shows_count: "演唱会数目",
   voters_count: "投票人数",
   is_followed: "是否被关注",
   is_voted: "是否被投票",
+  is_show: "是否显示"
   voted_city: {City对象},//被投票的城市
   stars: {Star对象},//当need_stars不为false的时候
   topics: {Topic对象},//当need_topics不为false的时候
@@ -481,6 +481,8 @@ type: `GET`
   poster: "海报url",
   description: "介绍",
   is_followed: "是否被关注",
+  is_voted: "是否被投票"
+  status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
   concert: {concert对象},
   city: {city对象},
   stadium: {stadium对象}
