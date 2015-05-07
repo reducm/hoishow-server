@@ -1,9 +1,9 @@
 module Operation::UsersHelper
   def get_avatar(user)
-    if user.avatar.url
-      image_tag(user.avatar.url, class: 'img-responsive')
+    if user.avatar_url
+      image_tag(user.avatar_url)
     else
-      image_tag("/coldplay.png", class: 'img-responsive')
+      image_tag("/default_avatar.png")
     end
   end
 end

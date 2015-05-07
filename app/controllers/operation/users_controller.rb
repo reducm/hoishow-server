@@ -1,5 +1,6 @@
 class Operation::UsersController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :get_user, except: [:show, :remove_avatar]
   load_and_authorize_resource
 
   def index
@@ -7,9 +8,20 @@ class Operation::UsersController < Operation::ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
     @orders = @user.orders.page(params[:page])
     @topics = @user.topics.page(params[:page])
     @comments = @user.comments.page(params[:page])
+  end
+
+  def remove_avatar
+    @user.remove_avatar!
+    @user.save
+
+    redirect_to operation_user_url(@user)
+  end
+
+  private
+  def get_user
+    @user = User.find(params[:id])
   end
 end
