@@ -59,7 +59,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def get_city_topics
     @topics = Topic.where(subject_type: Topic::SUBJECT_CONCERT).page(params[:page]).per(5)
-    @topics = @topics.where(city_id: params[:city_id])
+    @topics = @topics.where(city_id: params[:city_id]) if params[:city_id]
 
     render partial: 'operation/topics/table', locals: {topics: @topics}
   end
