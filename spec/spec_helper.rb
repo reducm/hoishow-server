@@ -27,6 +27,7 @@ RSpec.configure do |config|
   # config.mock_with :rr
   config.include FactoryGirl::Syntax::Methods
   config.include ApiAuthHelper
+  config.include SpecTestHelper
   config.color = true
   config.tty = true
   config.order = "random"
