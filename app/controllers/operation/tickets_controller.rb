@@ -3,7 +3,6 @@ class Operation::TicketsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    params[:page] ||= 1
-    @tickets = Ticket.page(params[:page])
+    @tickets = Ticket.all
   end
 end
