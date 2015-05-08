@@ -110,6 +110,7 @@ Rails.application.routes.draw do
         post :set_topic_top
       end
     end
+    resources :tickets
     resources :cities, only: [:index]
     resources :stadiums, except: [:show, :destroy] do
       member do

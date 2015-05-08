@@ -2,6 +2,7 @@ class Ticket < ActiveRecord::Base
   belongs_to :area
   belongs_to :show
   belongs_to :order
+  belongs_to :admin
 
   validates :area, presence: true
   validates :show, presence: true
