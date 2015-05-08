@@ -17,7 +17,7 @@ class Admin < ActiveRecord::Base
       '管理员'
     when 'operator'
       '运营'
-    when 2
+    when 'ticket_checker'
       '验票员'
     end
   end

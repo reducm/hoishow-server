@@ -26,10 +26,12 @@
           </table>
         </div>
       </div>
-      <div id="city_topics" class="hidden">
-        <h2>同城互动</h2>
+      <div id="city_topics">
+        <h2>互动列表</h2>
         <%= link_to "发布新互动", "javascript:void(0);", class: "add_topic" %>
-        <div class="topics"></div>
+        <div class="topics">
+          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics}%>
+        </div>
       </div>
 
       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

@@ -13,7 +13,6 @@ class Topic < ActiveRecord::Base
   validates :subject_type, presence: true
   validates :content, presence: true
   validates :subject_id, presence: true
-  validate :check_city_id
 
   has_many :comments
   has_many :user_like_topics
@@ -68,10 +67,5 @@ class Topic < ActiveRecord::Base
     else
       self.created_at
     end
-  end
-
-  private
-  def check_city_id
-    errors[:city_id] << "subject Concert should have city_id!" if subject_type == Concert.name && city_id.blank?
   end
 end

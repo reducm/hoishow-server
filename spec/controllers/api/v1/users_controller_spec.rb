@@ -400,11 +400,10 @@ describe Api::V1::UsersController do
       expect(assigns(:topic)).to have(1).error_on(:subject_id)
     end
 
-    it "create wrong when miss city_id" do
+    it "create success when no city_id" do
       @concert = create :concert
-      @city = create :city
       post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: "fuck tom", format: :json)
-      expect(assigns(:topic)).to have(1).error_on(:city_id)
+      expect(assigns(:topic).valid?).to be true
     end
 
     it "create should has attributes" do
