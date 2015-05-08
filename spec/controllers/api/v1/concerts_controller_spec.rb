@@ -97,7 +97,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse(response.body)["status"]).to eq "voting"
     end
 
-    #TODO stars, shows 
     it "stars should has something" do
       @star = create :star
       @star.hoi_concert(@concert)
