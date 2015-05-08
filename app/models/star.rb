@@ -1,7 +1,4 @@
 class Star < ActiveRecord::Base
-  #include Searchable
-  #searchkick Searchable::WORD_TYPE.map{|k| Hash[k, [:name]] }.inject(&:merge)
-
   has_many :videos
   accepts_nested_attributes_for :videos, allow_destroy: true
   has_many :user_follow_stars
@@ -11,10 +8,14 @@ class Star < ActiveRecord::Base
   has_many :concerts, through: :star_concert_relations
 
   validates :name, presence: {message: "姓名不能为空"}
+  validates_associated :videos
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
+  scope :is_display, -> { where(is_display: true)  }
+
   mount_uploader :avatar, ImageUploader
+  mount_uploader :poster, ImageUploader
 
   paginates_per 20
 
@@ -24,6 +25,18 @@ class Star < ActiveRecord::Base
         avatar.url("avatar")
       else
         avatar.url
+      end
+    else
+      nil
+    end
+  end
+
+  def poster_url
+    if poster.url.present?
+      if Rails.env.production?      
+        poster.url("800")
+      else
+        poster.url
       end
     else
       nil
@@ -43,6 +56,14 @@ class Star < ActiveRecord::Base
       end
     else
       "无演出"
+    end
+  end
+
+  def is_display_cn
+    if is_display
+      "显示"
+    else
+      "不显示"
     end
   end
 

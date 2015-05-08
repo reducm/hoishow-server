@@ -4,7 +4,7 @@
 1. 所有api请求时，url后需要带`.json`
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
---------
+----
 
 ## Banner列表
 [/api/v1/banners]()
@@ -37,6 +37,7 @@ type: `GET`
     id: "123",
     name: "汪峰",
     avatar: "http://www.xxx/1.jpg",
+    position: 8, //明星的排序
     is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
   }...]
 ```
@@ -60,6 +61,7 @@ type: `GET`
     id: "123",
     name: "汪峰",
     avatar: "http://www.xxx/1.jpg",
+    position: 8 //明星的排序
   }...]
 ```
 
@@ -80,16 +82,7 @@ type: `GET`
 
 成功时返回：
 ```javascript
-  {
-    id: "123",
-    name: "汪峰",
-    avatar: "http://www.xxx/1.jpg",
-    is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
-    videos: [{参照video对象},...],
-    concerts: [{参照concert对象},...],
-    shows: [{参照show对象},...],
-    comments: [{参照comment对象},...],
-  }
+  {star对象}
 ```
 
 -------------
@@ -433,14 +426,16 @@ type: `GET`
 
 ```javascript
   {
-    id:star_id,
-    name: "明星的名字",
-    avatar: "明星的头像",
-    is_followed: "是否被关注",
-    followers_count: "粉丝数量"
-    concerts:{Concert对象},//当need_concerts不为false的时候
-    shows:{Show对象},//当need_shows不为false的时候
-    topics:{Topic对象},//当need_topics不为false的时候
+    id: 2,
+    name: "小汪",
+    avatar: "明星的头像地址",
+    position: 8, //明星的排序
+    is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
+    followers_count: 123, //粉丝数量
+    concerts: [{Concert对象},...],//当need_concerts不为false的时候
+    shows: [{Show对象},...],//当need_shows不为false的时候
+    topics: [{Topic对象},...],//当need_topics不为false的时候
+    video: {Video对象}, //明星没有主视频时返回{}
   }
 ```
 
@@ -617,5 +612,14 @@ type: `GET`
   subject: {Star or Show or Concert对象},
   description: "当subject_type是Article的时候, description是图文链接的url",
   slogan: "标语"
+}
+```
+
+## Video对象
+
+```javascript
+{
+  source: "视频url",
+  snapshot: "截图url",
 }
 ```

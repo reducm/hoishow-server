@@ -18,6 +18,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
+      expect(response.body).to include("position")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
       expect(response.body).to include("followers_count")
@@ -62,21 +63,29 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     end
 
   end
-  
+
   context "#show without user" do
     before('each') do
-     @star = create :star     
+      @star = create :star     
     end
 
     it "should has attributes" do
       get :show, with_key(id: @star.id, format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
+      expect(response.body).to include("position")
       expect(response.body).to include("avatar")
+      expect(response.body).to include("poster")
       expect(response.body).to include("is_followed")
       expect(response.body).to include("concerts")
-      expect(response.body).to include("videos")
+      expect(response.body).to include("video")
       expect(response.body).to include("shows")
+    end
+
+    it "video sholud has something real if star has main video" do
+      create(:video, star_id: @star.id, is_main: true)
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"].size > 0 ).to be true
     end
 
     it "concerts sholud has something real" do
@@ -138,9 +147,9 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#search" do
     before('each') do
-      3.times {|n|Star.create name: "tom#{n}"}     
-      4.times {|n|Star.create name: "xo#{n}"}     
-      2.times {|n|Star.create name: "芙蓉#{n}"}     
+      3.times {|n|create(:star, name: "tom#{n}")}     
+      4.times {|n|create(:star, name: "xo#{n}")}     
+      2.times {|n|create(:star, name: "芙蓉#{n}")}     
     end
 
     it "search should has results" do

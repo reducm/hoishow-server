@@ -1,4 +1,4 @@
-class Api::V1::TopicsController < ApplicationController
+class Api::V1::TopicsController < Api::V1::ApplicationController
   def index
     params[:page] ||= 1
     if params[:subject_type].present? && params[:subject_id].present? 
