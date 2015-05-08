@@ -3,10 +3,12 @@ class Admin < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   has_many :banners
+  has_many :tickets
 
   enum admin_type: {
     admin: 0,
-    operator: 1
+    operator: 1,
+    ticket_checker: 2
   }
 
   def type_cn
@@ -15,6 +17,8 @@ class Admin < ActiveRecord::Base
       '管理员'
     when 1
       '运营'
+    when 2
+      '验票员'
     end
   end
 

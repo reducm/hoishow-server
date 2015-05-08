@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150507082256) do
+ActiveRecord::Schema.define(version: 20150508053004) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -218,6 +218,8 @@ ActiveRecord::Schema.define(version: 20150507082256) do
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.integer  "status",          limit: 4
+    t.integer  "admin_id",        limit: 4
+    t.datetime "checked_at"
   end
 
   add_index "tickets", ["area_id"], name: "index_tickets_on_area_id", using: :btree
