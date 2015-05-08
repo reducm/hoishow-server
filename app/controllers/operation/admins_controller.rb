@@ -1,5 +1,6 @@
 class Operation::AdminsController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :find_admin, except: [:index, :new, :create]
   load_and_authorize_resource
 
   def index
@@ -11,11 +12,6 @@ class Operation::AdminsController < Operation::ApplicationController
     @admin = Admin.new
   end
 
-  def edit
-    @admin = Admin.find(params[:id])
-  end
-
-
   def create
     @admin = Admin.new(name: params[:username], admin_type: params[:type].to_i)
     @admin.set_password(params[:password])
@@ -23,15 +19,31 @@ class Operation::AdminsController < Operation::ApplicationController
     if @admin.save
       redirect_to operation_admins_url
     else
-      render "new"
+      render :new
     end
   end
 
+  def edit
+  end
+
   def update
-    @admin = Admin.find(params[:id])
     @admin.set_password(params[:pw1])
     if @admin.save!
       redirect_to operation_admins_url
     end
   end
+
+  def block_admin
+    @admin.update(is_block: params[:block])
+    @admin.save!
+
+    redirect_to operation_admins_url
+  end
+
+  private
+
+  def find_admin
+    @admin = Admin.find params[:id]
+  end
+
 end
