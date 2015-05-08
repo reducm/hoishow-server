@@ -64,4 +64,30 @@ RSpec.describe Operation::VideosController, :type => :controller do
     end
   end
 
+  describe 'PATCH #set_main' do 
+    before :each do
+      admin = create :admin
+      session[:admin_id] = admin.id
+      @video = create(:video)
+      @star = @video.star
+    end
+
+    context "set video's is_main to true" do
+      it "locates the requested @video" do
+        patch :set_main, id: @video, video: attributes_for(:video, is_main: true)
+        expect(assigns(:video)).to eq(@video)
+      end  
+
+      it "changes @video's attributes" do 
+        patch :set_main, id: @video, video: attributes_for(:video, is_main: true)
+        @video.reload
+        expect(@video.is_main).to be true
+      end
+
+      it "redirects to the star's edit page" do
+        patch :set_main, id: @video, video: attributes_for(:video, is_main: true)
+        expect(response).to redirect_to edit_operation_star_url(@star) 
+      end 
+    end
+  end
 end

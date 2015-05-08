@@ -32,16 +32,6 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def edit
-    respond_to do |format|
-      if @star.save
-        params[:videos]['source'].each do |source|
-          @video = @star.videos.create!(:source => source, :star_id => @star.id)
-        end
-        format.html { redirect_to operation_star_url(@star), notice: 'Star was successfully created.' }
-      else
-        format.html { render action: 'new' }
-      end
-    end
   end
 
   def show
