@@ -11,9 +11,9 @@ class Admin < ActiveRecord::Base
 
   def type_cn
     case admin_type
-    when 0
+    when 'admin'
       '管理员'
-    when 1
+    when 'operator'
       '运营'
     end
   end
