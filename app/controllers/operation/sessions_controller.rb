@@ -6,13 +6,16 @@ class Operation::SessionsController < Operation::ApplicationController
 
   def create
     admin = Admin.find_by_name(params[:session][:username])
-    if admin && admin.password_valid?(params[:session][:password])
+    if verify_block?(admin)
+      flash[:error] = "账户被锁定，请联系管理员"
+      redirect_to operation_signin_url
+    elsif admin && admin.password_valid?(params[:session][:password])
       admin.update(last_sign_in_at: DateTime.now)
       session[:admin_id] = admin.id
 
       redirect_to operation_root_url
     else
-      flash[:error] = "Invalid username or password"
+      flash[:error] = "账号或密码错误"
       redirect_to operation_signin_url
     end
   end

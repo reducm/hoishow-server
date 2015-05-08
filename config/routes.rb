@@ -97,7 +97,11 @@ Rails.application.routes.draw do
         post :remove_avatar
       end
     end
-    resources :admins
+    resources :admins, except: [:destroy] do
+      member do
+        post :block_admin
+      end
+    end
     resources :topics, only: [:create, :edit, :update] do
       member do
         get :refresh_comments
