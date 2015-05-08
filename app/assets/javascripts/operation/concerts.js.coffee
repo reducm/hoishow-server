@@ -228,7 +228,7 @@ init_map_data = (concert_id) ->
 
 refresh_topic_list = (concert_id, city_id) ->
   $.get("/operation/concerts/#{concert_id}/get_city_topics", {city_id: city_id}, (data)->
-    $("#city_topics").removeClass('hidden').attr('data-id', city_id)
+    $("#city_topics").data('id', city_id)
     $(".topics").html(data)
   )
 # 刷新topic列表
@@ -256,7 +256,9 @@ $ ->
       city_id = $("#city_id").val()
       $.post("/operation/concerts/#{concert_id}/add_concert_city", {city_id: city_id}, (data)->
         if data.success
-          $("#myModal").modal('hide')
+          $("#myModal").modal('toggle')
+          $('body').removeClass('modal-open')
+          $('.modal-backdrop').remove()
           init_map_data(concert_id)
       ) #添加投票城市
 
@@ -282,7 +284,7 @@ $ ->
       refresh_topic_list(concert_id, city_id)
     #查看互动
 
-    $("#city_topics").on "click", ".add_topic", (e)->
+    $("#profile").on "click", ".add_topic", (e)->
       e.preventDefault()
       $("#topicModal").modal('show')
       city_id = $("#city_topics").data("id")
@@ -311,7 +313,9 @@ $ ->
         else
           $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
             if data.success
-              $("#replyModal").modal('hide')
+              $("#replyModal").modal('toggle')
+              $('body').removeClass('modal-open')
+              $('.modal-backdrop').remove()
               refresh_topic_list(concert_id, city_id)
           )
     # 回复comment

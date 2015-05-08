@@ -32,11 +32,9 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def set_topic_top
     @topic.update(is_top: params[:is_top])
-    if @topic.subject_type == Topic::SUBJECT_CONCERT
-      @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id, city_id: params[:city_id]).page(params[:page]).per(10)
-    elsif @topic.subject_type == Topic::SUBJECT_STAR
-      @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
-    end
+    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
+
+    @topics = params[:city_id] ? @topics.where(city_id: params[:city_id]) : @topics
   end
 
   def add_comment

@@ -7,7 +7,7 @@
 # 用户信息相关API
 
 ## 手机验证接口
-[/api/v1/users/verification]() 
+[/api/v1/users/verification]()
 
 type: `POST`
 
@@ -21,7 +21,7 @@ type: `POST`
   }
 ```
 
-成功时返回: `{msg: "ok"}` 返回状态码200或201 
+成功时返回: `{msg: "ok"}` 返回状态码200或201
 
 
 -----
@@ -67,7 +67,7 @@ type: `POST`
   }
 ```
 
-成功时返回:   
+成功时返回:
 
 ```javascript
   {
@@ -84,18 +84,18 @@ type: `POST`
 
 必需参数 `{api_token: "users_token", mobile: "users mobile", type: "有avatar, nickname, sex, birthday4种取值""}`
 
-选择参数 
+选择参数
 
-当type是avatar时, 必须有{avatar: 头像文件} 
+当type是avatar时, 必须有{avatar: 头像文件}
 
-当type是nickname时, 必须有{nickname: "用户名称"} 
+当type是nickname时, 必须有{nickname: "用户名称"}
 
-当type是sex时, 必须有{sex: "性别类型, 取值male femalef secret"与返回数据统一} 
+当type是sex时, 必须有{sex: "性别类型, 取值male femalef secret"与返回数据统一}
 
-当type是birthday时, 必须有{birthday: "时间戳"} 
+当type是birthday时, 必须有{birthday: "时间戳"}
 
 
-成功时返回 
+成功时返回
 ```javascript
   {
   参考“用户对象”
@@ -130,7 +130,7 @@ type: `POST`
 
 可选参数 `{parent_id: "comment.parent_id"//对某一个评论所作出的评论，默认为nil}`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile", topic_id: Topic的id, content: "评论的内容"}` 
+必需参数 `{api_token: "users_token", mobile: "users mobile", topic_id: Topic的id, content: "评论的内容"}`
 
 成功时返回{Comment对象}, 状态200
 
@@ -142,7 +142,7 @@ type: `POST`
 
 type: `POST`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile", concert_id: "Concertid", city_id: "Cityid"}` 
+必需参数 `{api_token: "users_token", mobile: "users mobile", concert_id: "Concertid", city_id: "Cityid"}`
 
 成功时返回{msg: "ok"}, 状态200
 
@@ -153,7 +153,7 @@ type: `POST`
 
 type: `POST`
 
-必需参数 `{api_token: "users_token", mobile: "users mobile"}` 
+必需参数 `{api_token: "users_token", mobile: "users mobile"}`
 
 成功时返回：
 ```javascript
@@ -213,15 +213,15 @@ type: `POST`
 
 type `POST`
 
-必需参数 
+必需参数
 ```javascript
   {
     api_token: "users_token",
     mobile: "users mobile",
     subject_type: "Star or Concert", //创建互动的是明星或演唱会
     subject_id: "star_id or concert_id", //具体的明星id或者演唱会id
-    content: "内容", 
-    city_id: "" //当subject_type是Concert时，必须传city_id
+    content: "内容",
+    city_id: "" //当subject_type是Concert时，可以传city_id
   }
 ```
 
@@ -236,13 +236,13 @@ type `POST`
 
 type `POST`
 
-必需参数 
+必需参数
 ```javascript
   {
     api_token: "users_token",
     mobile: "users mobile",
     show_id: "Show的id",
-    area_id: area的id, 
+    area_id: area的id,
     quantity: 3 //购买数量
   }
 ```
@@ -259,7 +259,7 @@ type `POST`
 
 type `GET`
 
-必需参数 
+必需参数
 ```javascript
   {
     api_token: "users_token",
@@ -288,7 +288,7 @@ type `GET`
 
 type `GET`
 
-必需参数 
+必需参数
 ```javascript
   url携带order out_id参数
   {

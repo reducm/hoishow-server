@@ -40,7 +40,8 @@ stars.each do |star|
 
   Show.where(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id).first_or_create
 
-  Topic.where(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id).first_or_create
+  Topic.where(creator_type: 'Star', creator_id: star.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id).first_or_create
+  Topic.where(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '演唱会真好看', subject_type: 'Concert', subject_id: concert.id).first_or_create
 end
 
 # area, show_area_relation

@@ -8,12 +8,11 @@ RSpec.describe Topic, :type => :model do
        expect(topic.valid?).to be true
      end
 
-     it "concert's topic without city_id should be invalid" do
-       concert=  create :concert
-       topic = build :topic, subject_type: Concert.name, subject_id: concert.id
-       expect(topic.valid?).to be false
-       expect(topic).to have(1).error_on(:city_id)
-     end
-
+     #it "concert's topic without city_id should be invalid" do
+     #  concert=  create :concert
+     #  topic = build :topic, subject_type: Concert.name, subject_id: concert.id
+     #  expect(topic.valid?).to be false
+     #  expect(topic).to have(1).error_on(:city_id)
+     #end
   end
 end
