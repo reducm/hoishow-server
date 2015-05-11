@@ -25,7 +25,7 @@ class Ticket < ActiveRecord::Base
 
   protected
   def set_status
-    self.status = :pending
+    self.status = :pending if self.status.blank?
   end
 
   def generate_code

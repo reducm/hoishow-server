@@ -82,7 +82,6 @@ Rails.application.routes.draw do
         post :add_concert_city
         get :refresh_map_data
         delete :remove_concert_city
-        post "update_is_show"
       end
     end
     resources :shows do

@@ -2,7 +2,8 @@
   <%= f.input :name, required: false, label: "演出投票名称" %>
   <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker %>
   <%= f.input :end_date, label: "投票结束时间", as: :datetimepicker %>
-  <%= f.input :status, label: "状态", as: :select, default: concert.status_cn, collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
+  <%= f.input :status, label: "投票状态", as: :select, default: ( params[:action] == 'edit' ? concert.status_cn : "投票中" ), collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
+  <%= f.input :is_show, label: "显示状态", as: :select, default: ( params[:action] == 'edit' ? concert.is_show_cn : "显示中" ), collection: [["显示中", "showing"], ["隐藏中", "hidden"]] %>
   <%= f.kindeditor :description %>
   <%= f.button :submit, "确认更新" %>
 <%end%>
