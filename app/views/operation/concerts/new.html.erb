@@ -1,0 +1,9 @@
+<% flash.each do |type, message| -%>
+  <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
+    <p><%= message %></p>
+  </div>
+<% end %>
+
+<div>
+  <%= render partial: "form", locals: {concert: @concert} %>
+</div>

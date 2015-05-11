@@ -20,7 +20,7 @@
           <% user = order.user %>
           <td><%= ticket.admin.name %></td>
           <td><%= order.show_name %></td>
-          <td><%= user.show_name%> / <%= user.mobile %></td>
+          <td><%= user_name( user )%></td>
           <td><%= ticket.code %></td>
           <td><%= ticket.checked_at.strfcn_time%></td>
         </tr>
