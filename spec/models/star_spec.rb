@@ -14,6 +14,13 @@ describe Star do
       expect(video.valid?).to be_falsey
       expect(video).to have(1).error_on(:source)
     end
+
+    it "position should be unique" do
+      create :star, position: 1
+      star = Star.new(name: "2", position: 1) 
+      expect(star.valid?).to be_falsey
+      expect(star).to have(1).error_on(:position)
+    end
   end
 
   context "scope" do
