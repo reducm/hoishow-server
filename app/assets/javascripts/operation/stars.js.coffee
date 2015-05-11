@@ -19,6 +19,8 @@ $ ->
       location.reload()
     else
       $(".status_cn:not(:contains('" + vtxt + "'))").parent().hide()
+      $( '#stars_list'  ).sortable( "disable"  )
+      $('.handle').hide()
 
   $('#stars').dataTable(
     paging: false

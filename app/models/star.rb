@@ -8,6 +8,7 @@ class Star < ActiveRecord::Base
   has_many :concerts, through: :star_concert_relations
 
   validates :name, presence: {message: "姓名不能为空"}
+  validates :position, uniqueness: true 
   validates_associated :videos
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
