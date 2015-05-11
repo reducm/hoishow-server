@@ -3,7 +3,8 @@
     <tr>
       <th>演出艺人</th>
       <th>演出</th>
-      <th>状态</th>
+      <th>投票状态</th>
+      <th>显示状态</th>
       <th>投票时间范围</th>
       <th>Show数量</th>
       <th>投票数量</th>
@@ -16,6 +17,7 @@
         <td><%= concert.stars.pluck(:name).join(",") %></td>
         <td><%= concert.name %></td>
         <td class="concert_status_cn"><%= concert.status_cn %></td>
+        <td><%= concert.is_show_cn %></td>
         <td><%= concert.votedate_cn %></td>
         <td><%= concert.shows.count %></td>
         <td><%= concert.voters_count %></td>

@@ -2,7 +2,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
   before_action :check_login!, except: [:get_city_voted_data, :get_cities]
   before_action :get_concert, except: [:index, :new, :create]
-  load_and_authorize_resource
+  #load_and_authorize_resource except: [:create]
+  load_and_authorize_resource param_method: :concert_attributes
   skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
@@ -14,7 +15,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def update
-    if @concert.update!(validate_attributes)
+    if @concert.update!(concert_attributes)
       redirect_to operation_concerts_url
     else
       flash[:error] = @concert.errors.full_messages
@@ -27,11 +28,13 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def create
-  end
-
-  def update_is_show
-    @concert.update(is_show: params[:is_show].to_i)
-    redirect_to edit_operation_concert_url(@concert)
+    @concert = Concert.new(concert_attributes)
+    if @concert.save!
+      redirect_to action: :index
+    else
+      flash[:error] = @concert.errors.full_messages
+      render :new
+    end
   end
 
   def refresh_map_data
@@ -80,8 +83,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   private
-    def validate_attributes
-      params.require(:concert).permit(:name, :status, :start_date, :end_date, :description)
+    def concert_attributes
+      params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description)
     end
 
     def get_concert
