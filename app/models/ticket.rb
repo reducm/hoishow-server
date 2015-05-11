@@ -27,4 +27,20 @@ class Ticket < ActiveRecord::Base
   def set_status
     self.status = :pending
   end
+
+  def generate_code
+    if self.code.blank?
+      loop do
+        random_num = Time.now.to_ms
+        code = id.to_s(16) + random_num.to_s(16)
+        if Coupon.where(code: code).blank?
+          self.update_attributes({
+            code: code
+          })
+          break
+        end
+      end
+    end
+    self.code
+  end
 end
