@@ -568,7 +568,6 @@ type: `GET`
 ```javascript
 {
   area: {Area对象},
-  show: {Show对象},
   area_id: 11, //区域id
   show_id: 22, //演出id
   price: 99.00, //价格
