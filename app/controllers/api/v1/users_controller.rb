@@ -17,7 +17,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
           #TODO method and view jbuild
           @user = User.find_mobile(params[:mobile])
           if verify_block?(@user)
-            return error_json "暂时无法登陆"
+            return error_json "您的账户由于安全问题暂时不能登录，请稍后再试"
           else
             @user.sign_in_api
             Rails.cache.delete(cache_key(params[:mobile])) if @user.mobile != "13435858622"
@@ -165,7 +165,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_topic
-    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: params[:content], city_id: params[:city_id])
+    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: params[:content])
+    @topic.city_id = params[:city_id] if params[:city_id]
     if !@topic.save
       return error_json(@topic.errors.full_messages)
     end
