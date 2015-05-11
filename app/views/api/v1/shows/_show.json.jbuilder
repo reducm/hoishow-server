@@ -10,6 +10,9 @@ json.poster show.poster.url || ''
 json.is_followed show.id.in?(@followed_shows) ? true : false
 json.is_voted @voted_show ? true : false
 
-json.concert { json.partial! "api/v1/concerts/concert", {concert: show.concert}  }
-json.city { json.partial! "api/v1/cities/city", {city: show.city}  }
-json.stadium { json.partial! "api/v1/stadiums/stadium", {stadium: show.stadium}  }
+show_concert = show.concert
+show_concert ? ( json.concert { json.partial!("api/v1/concerts/concert", {concert: show.concert}) } ) : (json.concert "")
+show_city = show.city
+show_city ? ( json.city { json.partial!("api/v1/cities/city", {city: show.city}) } ) : (json.city "")
+show_stadium = show.stadium
+show_stadium ? ( json.stadium { json.partial!("api/v1/stadiums/stadium", {stadium: show.stadium})  } ) : (json.stadium "")
