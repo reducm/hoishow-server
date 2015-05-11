@@ -24,7 +24,7 @@
               </tr>
               <% ticket_code = "<table>" %>
               <% tickets.each do |ticket| %>
-              <% ticket_code += "<tr><td>" + ticket.code + "</td></tr>" %>
+              <% ticket_code += "<tr><td>#{ ticket.try(:code)}</td></tr>" %>
               <%end%>
               <% ticket_code += "</table>" %>
               <tr>

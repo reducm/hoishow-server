@@ -3,6 +3,6 @@ class Operation::TicketsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @tickets = Ticket.all
+    @tickets = Ticket.where(status: 2)
   end
 end
