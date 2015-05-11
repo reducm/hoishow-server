@@ -77,6 +77,19 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def payment_body
+    "#{stadium_name}-#{show_name}-#{show_time_format}-#{tickets_count}张"
+  end
+
+  def show_time_format
+    return nil if self.show_time.nil?
+    show_time.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def show_time
+    show.show_time
+  end
+
   private
   def set_attr_after_create
     generate_out_id

@@ -45,7 +45,11 @@ Rails.application.routes.draw do
       resources :stadiums
       resources :tickets
       resources :areas
-      resources :orders, only: [:index, :show]
+      resources :orders, only: [:index, :show] do
+        member do
+          post :pay
+        end
+      end
     end
   end
 
