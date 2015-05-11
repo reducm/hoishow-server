@@ -22,12 +22,23 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def create
-    @star = Star.new(star_params)
-    if @star.save
-      create_video  
-      redirect_to operation_star_url(@star), notice: '艺人创建成功。'
-    else
-      render action: 'new'
+    if params[:videos]
+      @star = Star.new(star_params)
+      set_position_for_new_record
+      if @star.save
+        create_video  
+        redirect_to operation_stars_url(@star), notice: '艺人创建成功。'
+      else
+        render action: 'new'
+      end
+    else  
+      @star = Star.new(star_params_without_videos)
+      set_position_for_new_record
+      if @star.save
+        redirect_to operation_star_url(@star), notice: '艺人创建成功。'
+      else
+        render action: 'new'
+      end
     end
   end
 
@@ -63,13 +74,20 @@ class Operation::StarsController < Operation::ApplicationController
   end    
 
   private
-
   def star_params
-    params.require(:star).permit(:name, :is_display, :avatar, :poster, videos_attributes: [:id, :star_id, :source])
+    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, videos_attributes: [:id, :star_id, :source])
   end
 
   def star_params_without_videos
-    params.require(:star).permit(:name, :is_display, :avatar, :poster)
+    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position)
+  end
+
+  def set_position_for_new_record 
+    if Star.any?
+      @star.position = Star.maximum("position") + 1
+    else
+      @star.position = 0
+    end
   end
 
   def create_video
