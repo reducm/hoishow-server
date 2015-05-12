@@ -1,3 +1,4 @@
 json.(stadium, :id, :name, :address, :longitude, :latitude)
-json.city { json.partial! "api/v1/cities/city", {city: stadium.city}  }
+stadium_city = stadium.city
+stadium_city ? ( json.city { json.partial!("api/v1/cities/city", {city: stadium_city})  } ) : (json.city "")
 json.pic stadium.pic.url || ""
