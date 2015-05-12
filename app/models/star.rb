@@ -15,10 +15,16 @@ class Star < ActiveRecord::Base
 
   scope :is_display, -> { where(is_display: true)  }
 
+  before_create :set_position_for_new_record 
+
   mount_uploader :avatar, ImageUploader
   mount_uploader :poster, ImageUploader
 
   paginates_per 20
+
+  def set_position_for_new_record 
+    self.position = Star.maximum("position").to_i + 1
+  end
 
   def avatar_url
     if avatar.url.present?
