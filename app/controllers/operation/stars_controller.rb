@@ -24,9 +24,10 @@ class Operation::StarsController < Operation::ApplicationController
   def create
     @star = Star.new(star_params)
     if @star.save
-      create_video  
+      create_video if params[:videos]
       redirect_to operation_star_url(@star), notice: '艺人创建成功。'
     else
+      flash[:alert] = @star.errors.full_messages.first 
       render action: 'new'
     end
   end
@@ -46,30 +47,17 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def update
-    if params[:videos]
-      if @star.update!(star_params)
-        create_video 
-        redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-      else
-        render action: 'edit'
-      end
+    if @star.update!(star_params)
+      create_video if params[:videos]
+      redirect_to operation_star_url(@star), notice: '艺人更新成功。'
     else
-      if @star.update(star_params_without_videos)
-        redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-      else
-        render action: 'edit'
-      end
+      render action: 'edit'
     end
   end    
 
   private
-
   def star_params
-    params.require(:star).permit(:name, :is_display, :avatar, :poster, videos_attributes: [:id, :star_id, :source])
-  end
-
-  def star_params_without_videos
-    params.require(:star).permit(:name, :is_display, :avatar, :poster)
+    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, videos_attributes: [:id, :star_id, :source])
   end
 
   def create_video

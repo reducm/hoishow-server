@@ -15,7 +15,7 @@
               controls preload="auto" 
               width="300" 
               height="200" 
-              poster="<%= video.snapshot.url if video.snapshot? %>">
+              poster="<%= video.snapshot.url if video.snapshot_url %>">
               <source src="<%= video.source.url.to_s rescue nil %>" />
               Your browser does not support the <code>video</code> element.
             </video>

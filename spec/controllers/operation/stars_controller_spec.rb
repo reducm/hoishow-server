@@ -84,4 +84,93 @@ RSpec.describe Operation::StarsController, :type => :controller do
       end
     end
   end
+
+  describe 'GET #new' do
+    before :each do
+      admin = create :admin
+      session[:admin_id] = admin.id
+    end
+
+    it "assigns a new Star to @star" do
+      get :new
+      expect(assigns(:star)).to be_a_new(Star) 
+    end
+
+    it "renders the :new template" do 
+      get :new
+      expect(response).to render_template :new 
+    end
+  end
+
+  describe 'GET #edit' do
+    before :each do
+      admin = create :admin
+      session[:admin_id] = admin.id
+    end
+
+    it "assigns the requested star to @star" do 
+      star = create(:star)
+      get :edit, id: star 
+      expect(assigns(:star)).to eq star
+    end
+
+    it "renders the :edit template" do
+      star = create(:star)
+      get :edit, id: star 
+      expect(response).to render_template :edit
+    end 
+  end
+
+  describe 'POST #create' do
+    before :each do
+      admin = create :admin
+      session[:admin_id] = admin.id
+      @video = attributes_for(:video)
+    end
+
+    context "with invalid attributes" do
+      it "does not save the new star in the database" do
+        expect{
+          post :create, star: attributes_for(:invalid_star)
+        }.to_not change(Star, :count)
+      end
+
+      it "re-renders the :new template" do 
+        post :create, star: attributes_for(:invalid_star)
+        expect(response).to render_template :new
+      end 
+    end
+
+    context "with valid attributes" do
+      it "saves the new star in the database" do
+        expect{
+          post :create, star: attributes_for(:star, video: @video)
+        }.to change(Star, :count).by(1)
+      end
+
+      it "redirects to stars#show" do
+        post :create, star: attributes_for(:star, video: @video)
+        expect(response).to redirect_to operation_star_path(assigns[:star])
+      end 
+    end
+  end
+
+  describe "PATCH sort" do 
+    before :each do
+      @star1 = create(:star) 
+      @star2 = create(:star) 
+      admin = create :admin
+      session[:admin_id] = admin.id
+    end
+
+    it "set star's position" do
+      patch :sort, star: [@star2.id, @star1.id] 
+      expect @star2.reload.position < @star1.reload.position
+    end
+
+    it "render nothing" do
+      patch :sort, star: [@star2.id, @star1.id] 
+      expect(response.status).to eq 200
+    end 
+  end
 end
