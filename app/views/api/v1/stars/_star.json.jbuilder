@@ -5,7 +5,8 @@ need_topics ||= false
 
 @followed_stars = user.present? ? user.follow_stars.pluck(:id) : []
 
-json.(star, :id, :name, :position)
+json.(star, :id, :name, :position, :status_cn)
+json.description description_path(subject_id: star.id, subject_type: "Star")
 json.avatar star.avatar_url || ''
 json.poster star.poster_url || ''
 json.is_followed star.id.in?(@followed_stars) ? true : false
