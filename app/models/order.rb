@@ -1,8 +1,13 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
+  ORDER_STATUS_PENDING = "PENDING" #待支付
+  ORDER_STATUS_PAID = "PAID" #已支付
+  ORDER_STATUS_SUCCESS = "SUCCESS" #成功出票
+  ORDER_STATUS_REFUND = "REFUND" #退款
+  ORDER_STATUS_OUTDATE = "OUTDATE"
+
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
-  #
   belongs_to :show
   has_many :tickets
 
@@ -60,6 +65,10 @@ class Order < ActiveRecord::Base
       outdate!
     end
     outdate?
+  end
+
+  def already_paid?
+    paid? || success? || refund?
   end
 
   def status_cn

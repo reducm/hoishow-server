@@ -1,0 +1,20 @@
+development: &DEFAULT
+  app:
+    mch_id: "10067688"
+    app_id: "wxda8a21cdffd0d0ab"
+    app_secret: "f1a34ed3a4e15726a696afb3135a38ab"
+    app_key: "2UJkY0u5oVLdalmCw4vxUIM60rEPSkG38FAUEPd4K5vaTHlMQ0Ebbflbeer201SKW4fKWRpFqBpOjFUqKeJumsCFLfhp9LiKOkXp47DXSrlOCiTJiiekiyxjshmZnopr"
+    pay_api_key: "f9f260ba2244d5729dad326cebfe10b1"
+    partner_id: "1231629801"
+    partner_key: "826277c0f9f1a5cb87adbcfadba869db"
+
+test:
+  <<: *DEFAULT
+
+production:
+  <<: *DEFAULT
+
+danche:
+  <<: *DEFAULT
+
+

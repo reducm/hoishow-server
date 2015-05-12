@@ -3,6 +3,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
+      get "wxpay/notify" => "wxpay#notify"
       resources :users do
         collection do
           post "verification"
