@@ -21,12 +21,12 @@
 
   <div class="form-group">
     <%= f.input :avatar, label: "艺人头像" %>
-    <%= image_tag(star.avatar_url, size: "80x80") if star.avatar? %>
+    <%= image_tag(star.avatar_url, size: "80x80") if star.avatar_url %>
   </div>
 
   <div class="form-group">
     <%= f.input :poster, label: "艺人海报" %>
-    <%= image_tag(star.poster_url, size: "700x500") if star.poster? %>
+    <%= image_tag(star.poster_url, size: "700x500") if star.poster_url %>
   </div>
 
   <div class="form-group">
