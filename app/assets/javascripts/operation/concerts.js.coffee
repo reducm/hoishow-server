@@ -326,7 +326,8 @@ $ ->
     format: 'd M Y',
     startDate: new Date(),
     value: new Date(),
-    lang: 'zh'
+    lang: 'zh',
+    scrollInput: false
     })
 #concert index select status
   $("#concert_status_select").change ->
