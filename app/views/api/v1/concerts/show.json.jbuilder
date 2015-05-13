@@ -5,5 +5,5 @@ json.cities do
   end
 end
 json.city_rank do
-  json.partial! "city_vote_rank", { cities: @concert.cities.to_a, concert: @concert }
+  json.partial! "city_vote_rank", { cities: @concert.cities, concert: @concert }
 end
