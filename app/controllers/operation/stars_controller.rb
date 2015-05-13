@@ -57,7 +57,7 @@ class Operation::StarsController < Operation::ApplicationController
 
   private
   def star_params
-    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, videos_attributes: [:id, :star_id, :source])
+    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, :description, videos_attributes: [:id, :star_id, :source])
   end
 
   def create_video

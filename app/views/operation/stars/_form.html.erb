@@ -18,6 +18,11 @@
   </div>
 
   <div class="form-group">
+    <%= label_tag "图文编辑" %>
+    <%= f.kindeditor :description %>
+  </div>
+
+  <div class="form-group">
     <%= fields_for :videos do |video| %>
       <%= video.label :source, "艺人视频" %>
       <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
