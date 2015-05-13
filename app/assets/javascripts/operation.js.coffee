@@ -19,6 +19,7 @@
 #= require operation/tickets
 #= require operation/stadiums
 #= require dataTables/jquery.dataTables
+#= require operation/notify
 
 #= require operation/jquery.datetimepicker
 

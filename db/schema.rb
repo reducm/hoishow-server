@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150511034941) do
+ActiveRecord::Schema.define(version: 20150513071242) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -199,14 +199,15 @@ ActiveRecord::Schema.define(version: 20150511034941) do
   add_index "star_concert_relations", ["star_id"], name: "index_star_concert_relations_on_star_id", using: :btree
 
   create_table "stars", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.string   "avatar",     limit: 255
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.integer  "position",   limit: 4
-    t.string   "video",      limit: 255
-    t.boolean  "is_display", limit: 1,   default: true
-    t.string   "poster",     limit: 255
+    t.string   "name",        limit: 255
+    t.string   "avatar",      limit: 255
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "position",    limit: 4
+    t.string   "video",       limit: 255
+    t.boolean  "is_display",  limit: 1,     default: true
+    t.string   "poster",      limit: 255
+    t.text     "description", limit: 65535
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree

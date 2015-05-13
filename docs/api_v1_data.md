@@ -430,7 +430,7 @@ type: `GET`
     name: "小汪",
     avatar: "明星的头像地址",
     position: 8, //明星的排序
-    status_cn: "明星的演出状态"
+    status_cn: "开售中" or "投票中" or "无演出"
     description: "图文描述URL"
     is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
     followers_count: 123, //粉丝数量

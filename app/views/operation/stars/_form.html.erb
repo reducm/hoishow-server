@@ -1,15 +1,3 @@
-<% if flash[:alert] %>
-  <div class="alert alert-danger alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><%= flash[:alert] %>
-  </div>
-<% end %>
-
-<% if flash[:notice] %>
-  <div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><%= flash[:notice] %>
-  </div>
-<% end %>
-
 <%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', multipart: :true }) do |f| %>
   <div class="form-group">
     <%= f.input :is_display, label: "是否显示" %>
@@ -27,6 +15,11 @@
   <div class="form-group">
     <%= f.input :poster, label: "艺人海报" %>
     <%= image_tag(star.poster_url, size: "700x500") if star.poster_url %>
+  </div>
+
+  <div class="form-group">
+    <%= label_tag "图文编辑" %>
+    <%= f.kindeditor :description %>
   </div>
 
   <div class="form-group">
