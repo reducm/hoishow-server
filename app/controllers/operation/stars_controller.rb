@@ -1,7 +1,7 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, only: [:show]
-  before_action :get_videos, only: [:edit]
+  before_action :get_videos, only: [:edit, :update]
   load_and_authorize_resource
 
   def index
@@ -47,7 +47,7 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def update
-    if @star.update!(star_params)
+    if @star.update(star_params)
       create_video if params[:videos]
       redirect_to operation_star_url(@star), notice: '艺人更新成功。'
     else
