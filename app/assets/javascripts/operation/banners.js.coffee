@@ -10,6 +10,10 @@ $ ()->
   $("#subject_type_select").on "change", (e)->
     select = $(e.currentTarget)
     selected_option = select.find("option:selected")
+    if selected_option.val() == "Article"
+      $('#editor').show()
+    else
+      $('#editor').hide()
     key = selected_option.val().toLowerCase() + "s"
     subjects = data[key]
     options = generate_options(subjects)

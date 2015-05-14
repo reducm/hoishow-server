@@ -10,7 +10,6 @@
       <th>主体</th>
       <th>海报</th>
       <th>图文介绍</th>
-      <th>slogan标语</th>
       <th>创建日期</th>
       <th>操作</th>
     </tr>
@@ -29,10 +28,8 @@
         </td>
         <td><img src='<%= banner.poster.url rescue nil %>' class="preview-pic" /></td>
         <td><%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %> </td>
-        <td><%= banner.slogan %></td>
         <td><%= banner.updated_at %></td>
         <td>
-          <%= link_to "查看", operation_banner_path(banner) %> / 
           <%= link_to "编辑", edit_operation_banner_path(banner) %> / 
           <%= link_to "删除", operation_banner_path(banner), method: "delete", data: {confirm: "确定删除吗？"} %>
         </td>

@@ -14,7 +14,8 @@ class Show < ActiveRecord::Base
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}
   validates :stadium, presence: {message: "Stadium不能为空"}
-  #validate :valids_price
+
+  scope :is_display, -> { where(is_display: true)  }
 
   before_create :set_city
 
@@ -26,6 +27,28 @@ class Show < ActiveRecord::Base
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
   }
+
+  mount_uploader :poster, ImageUploader
+
+  def poster_url
+    if poster.url.present?
+      if Rails.env.production?      
+        poster.url("800")
+      else
+        poster.url
+      end
+    else
+      nil
+    end
+  end
+
+  def is_display_cn
+    if is_display
+      "显示"
+    else
+      "不显示"
+    end
+  end
 
   def status_cn
     case status
