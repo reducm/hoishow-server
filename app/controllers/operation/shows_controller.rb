@@ -61,7 +61,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:name, :show_time, :city_id, :stadium_id, :description, :concert_id)
+    params.require(:show).permit(:name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id)
   end
 
   def get_show

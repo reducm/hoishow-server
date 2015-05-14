@@ -232,6 +232,24 @@ refresh_topic_list = (concert_id, city_id) ->
     $(".topics").html(data)
   )
 # 刷新topic列表
+
+autocomplete_city_name = (concert_id) ->
+  $("#city_name").autocomplete({
+    mustMatch: true
+    source: (request, response)->
+      $.get("/operation/concerts/#{concert_id}/get_cities", {term: request.term}, (data)->
+        response(data)
+      )
+    select: (event, ui)->
+      $("#city_name").val(ui.item.label)
+      $("#city_id").val(ui.item.value)
+      return false
+    response: (event, ui)->
+      if ui.content.length < 1
+        $("#city_id").val("")
+  }) #城市名自动补全
+
+  $("#city_name").autocomplete("option", "appendTo", "#myModal")
 $ ->
   concert_id = $("#concert_id").val()
 
@@ -251,6 +269,9 @@ $ ->
               init_map_data(concert_id)
           ) #删除投票城市
 
+    $("#profile").on "click", ".add_vote_city", (e)->
+      autocomplete_city_name(concert_id)
+
     $("#profile").on "click", ".add_city", (e) ->
       e.preventDefault()
       city_id = $("#city_id").val()
@@ -261,23 +282,6 @@ $ ->
           $('.modal-backdrop').remove()
           init_map_data(concert_id)
       ) #添加投票城市
-
-    $("#city_name").autocomplete({
-      mustMatch: true
-      source: (request, response)->
-        $.get("/operation/concerts/#{concert_id}/get_cities", {term: request.term}, (data)->
-          response(data)
-        )
-      select: (event, ui)->
-        $("#city_name").val(ui.item.label)
-        $("#city_id").val(ui.item.value)
-        return false
-      response: (event, ui)->
-        if ui.content.length < 1
-          $("#city_id").val("")
-    }) #城市名自动补全
-
-    $("#city_name").autocomplete("option", "appendTo", "#myModal")
 
     $("#profile").on "click", ".get_topics", ()->
       city_id = $(this).parent().data("id")

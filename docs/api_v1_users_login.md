@@ -254,6 +254,46 @@ type `POST`
 
 -----------
 
+## 支付订单
+[/api/v1/orders/:out_id/pay]()
+
+type `POST`
+
+必需参数
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    payment_type: "alipay/wxpay"
+  }
+```
+
+成功时返回
+```javascript
+  {
+    order: {order对象}
+    payment: 'alipay',             #支付类型
+    query_string: 'query_string'   #支付宝签名
+  }
+
+  {
+    order: {order对象},
+    payment: 'wxpay',              #支付类型
+    sign: {
+      "appid": "wxda8a21cdffd0d0ab",
+      "noncestr": "1428047547",
+      "package": "Sign=WXpay",
+      "partnerid": "1231629801",
+      "prepayid": "12010000001504039efa4a89df23e72a",
+      "timestamp": "1428047547",
+      "sign": "7039090da18606333d3458a0c3746360ed6ba048"
+    }
+  }
+```
+
+
+-----------
+
 ## 查看我的订单列表
 [/api/v1/orders]()
 

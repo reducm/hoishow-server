@@ -362,28 +362,6 @@ type: `GET`
 
 ------------
 
-## 订单列表
-
-[/api/v1/orders/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    orders: [{参照order对象},...]
-  }
-```
-
-------------
-
 ## 门票列表
 
 [/api/v1/tickets/]()
@@ -430,7 +408,7 @@ type: `GET`
     name: "小汪",
     avatar: "明星的头像地址",
     position: 8, //明星的排序
-    status_cn: "明星的演出状态"
+    status_cn: "开售中" or "投票中" or "无演出"
     description: "图文描述URL"
     is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
     followers_count: 123, //粉丝数量
@@ -596,7 +574,7 @@ type: `GET`
   show_id: 22, //演出id
   price: 99.00, //价格
   code: “二维码”
-  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用 
+  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用
   created_at: "201504102140270000",
   updated_at: "201504102140270000"
 }
@@ -606,13 +584,12 @@ type: `GET`
 
 ```javascript
 {
-  id: 1, 
+  id: 1,
   poster: "poster_url",
   subject_type: "Star or Show or Concert or Article",
   subject_id: "subject的id", //
   subject: {Star or Show or Concert对象},
-  description: "当subject_type是Article的时候, description是图文链接的url",
-  slogan: "标语"
+  description: "当subject_type是Article的时候, description是图文链接的url"
 }
 ```
 

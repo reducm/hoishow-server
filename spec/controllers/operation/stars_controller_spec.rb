@@ -144,7 +144,7 @@ RSpec.describe Operation::StarsController, :type => :controller do
     context "with valid attributes" do
       it "saves the new star in the database" do
         expect{
-          post :create, star: attributes_for(:star, video: @video)
+          post :create, star: attributes_for(:star, video: @video, description: "THE LAST OF US")
         }.to change(Star, :count).by(1)
       end
 
