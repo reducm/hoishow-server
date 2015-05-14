@@ -84,7 +84,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   private
     def concert_attributes
-      params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description)
+      params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description, :poster)
     end
 
     def get_concert
