@@ -7,6 +7,22 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
+
+<script type="text/javascript">
+  $(function(){
+    var notice = "<%= flash[:notice] || flash[:alert] %>"
+    <% if flash[:notice] %>
+      $.notify(notice, { 
+        globalPosition:"top center",
+        className: 'success',} );
+    <% elsif flash[:alert] %>
+      $.notify(notice, { 
+        globalPosition:"top center",
+        className: 'error'  } );
+    <% end %>
+    })
+</script>
+
   <% if current_admin %>
     <%= render partial: "layouts/sidebar" %>
   <% else %>

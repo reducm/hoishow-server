@@ -2,12 +2,6 @@
   <h1 class="pull-left">新建演出</h1>
 </div>
 
-<% flash.each do |type, message| -%>
-  <div class="message <%= type.to_s=='alert' ? 'error' : type %>">
-    <p><%= message %></p>
-  </div>
-<% end %>
-
 <% if @concert %>
   <div class="form-group">
     <%= label_tag(:name, "concert名称", class: "col-sm-2 control-label")%>

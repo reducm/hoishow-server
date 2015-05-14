@@ -15,7 +15,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def update
-    if @concert.update!(concert_attributes)
+    if @concert.update(concert_attributes)
       redirect_to operation_concerts_url
     else
       flash[:error] = @concert.errors.full_messages
@@ -29,7 +29,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def create
     @concert = Concert.new(concert_attributes)
-    if @concert.save!
+    if @concert.save
       redirect_to action: :index
     else
       flash[:error] = @concert.errors.full_messages
