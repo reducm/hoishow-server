@@ -198,7 +198,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         return error_json("你所买的区域暂时不能买票, 请稍后再试")
       else
         @order = @user.orders.init_from_show(@show)
-        @order.set_price(relations)
+        @order.set_tickets_and_price(relations)
         @relation.reload
         if @show.area_seats_left(@relation.area) == 0
           @relation.update_attributes(is_sold_out: true)

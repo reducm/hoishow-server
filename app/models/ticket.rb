@@ -23,11 +23,6 @@ class Ticket < ActiveRecord::Base
     sold_tickets.count
   end
 
-  protected
-  def set_status
-    self.status = :pending if self.status.blank?
-  end
-
   def generate_code
     if self.code.blank?
       loop do
@@ -42,5 +37,10 @@ class Ticket < ActiveRecord::Base
       end
     end
     self.code
+  end
+
+  protected
+  def set_status
+    self.status = :pending if self.status.blank?
   end
 end

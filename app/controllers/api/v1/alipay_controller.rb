@@ -38,7 +38,7 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
           pay_at: Time.now
         })
         if @order.paid?
-          @order.set_tickets
+          @order.set_tickets_code
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end

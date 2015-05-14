@@ -21,7 +21,7 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
         end
 
         if @order.paid?
-          @order.set_tickets
+          @order.set_tickets_code
         end
 
         wp_print("after order: #{@order}, #{@order.attributes}")
