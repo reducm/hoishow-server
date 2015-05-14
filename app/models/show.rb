@@ -14,7 +14,8 @@ class Show < ActiveRecord::Base
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}
   validates :stadium, presence: {message: "Stadium不能为空"}
-  #validate :valids_price
+
+  scope :is_display, -> { where(is_display: true)  }
 
   before_create :set_city
 
