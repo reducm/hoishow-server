@@ -1,5 +1,5 @@
 json.(banner, :id, :subject_type, :subject_id)
-json.poster banner.poster.url rescue nil
+json.poster banner.poster.url || '' 
 
 if !banner.is_article?
   subject_downcase = banner.subject_type.downcase
