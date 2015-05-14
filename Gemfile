@@ -101,3 +101,6 @@ end
 
 # error notify
 gem 'exception_notification'
+
+# 日志处理
+gem "yell-rails"

@@ -362,28 +362,6 @@ type: `GET`
 
 ------------
 
-## 订单列表
-
-[/api/v1/orders/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    orders: [{参照order对象},...]
-  }
-```
-
-------------
-
 ## 门票列表
 
 [/api/v1/tickets/]()
@@ -596,7 +574,7 @@ type: `GET`
   show_id: 22, //演出id
   price: 99.00, //价格
   code: “二维码”
-  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用 
+  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用
   created_at: "201504102140270000",
   updated_at: "201504102140270000"
 }
@@ -606,7 +584,7 @@ type: `GET`
 
 ```javascript
 {
-  id: 1, 
+  id: 1,
   poster: "poster_url",
   subject_type: "Star or Show or Concert or Article",
   subject_id: "subject的id", //

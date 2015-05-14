@@ -40,6 +40,14 @@ class User < ActiveRecord::Base
     save!
   end
 
+  def display_orders
+    orders.where("status != ?", Order::ORDER_STATUS_OUTDATE).order('created_at DESC')
+  end
+
+  def page_orders(page = 1, per = 10)
+    display_orders.page(page).per(per)
+  end
+
   def follow_star(star)
     user_follow_stars.where(star_id: star.id).first_or_create!
   end

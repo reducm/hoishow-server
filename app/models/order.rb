@@ -1,10 +1,16 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
+  ORDER_STATUS_PENDING = "PENDING" #待支付
+  ORDER_STATUS_PAID = "PAID" #已支付
+  ORDER_STATUS_SUCCESS = "SUCCESS" #成功出票
+  ORDER_STATUS_REFUND = "REFUND" #退款
+  ORDER_STATUS_OUTDATE = "OUTDATE"
+
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
-  #
   belongs_to :show
   has_many :tickets
+  has_many :payments, -> { where purchase_type: 'Order' }, :foreign_key => 'purchase_id'
 
   validates :user, presence: {message: "User不能为空"}
 
@@ -51,6 +57,13 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def set_tickets_code
+    tickets.each do |ticket|
+      ticket.generate_code
+      ticket.save!
+    end
+  end
+
   def tickets_count
     tickets.count
   end
@@ -60,6 +73,10 @@ class Order < ActiveRecord::Base
       outdate!
     end
     outdate?
+  end
+
+  def already_paid?
+    paid? || success? || refund?
   end
 
   def status_cn
@@ -75,6 +92,39 @@ class Order < ActiveRecord::Base
     when 'outdate'
       '已过期'
     end
+  end
+
+  def payment_body
+    "#{stadium_name}-#{show_name}-#{show_time_format}-#{tickets_count}张"
+  end
+
+  def show_time_format
+    return nil if self.show_time.nil?
+    show_time.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def show_time
+    show.show_time
+  end
+
+  def alipay_pay
+    query_options = {
+      purchase_type: self.class.name,
+      purchase_id:   self.id,
+      payment_type:  "alipay"
+    }
+
+    payment = payments.where(query_options).first
+  end
+
+  def wxpay_pay
+    query_options = {
+      purchase_type: self.class.name,
+      purchase_id:   self.id,
+      payment_type:  "wxpay"
+    }
+
+    payment = payments.where(query_options).first
   end
 
   private
