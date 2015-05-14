@@ -28,6 +28,14 @@ class Show < ActiveRecord::Base
     all_users: 1, #全部用户都可以购买
   }
 
+  def is_display_cn
+    if is_display
+      "显示"
+    else
+      "不显示"
+    end
+  end
+
   def status_cn
     case status
     when "voted_users"
