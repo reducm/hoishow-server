@@ -6,7 +6,7 @@ user ||= nil
 json.(show, :id, :name, :min_price, :max_price, :concert_id, :city_id, :stadium_id, :status)
 json.description description_path(subject_id: show.id, subject_type: "Show")
 json.show_time show.show_time.to_ms
-json.poster show.poster.url || ''
+json.poster show.poster_url 
 json.is_followed show.id.in?(@followed_shows) ? true : false
 json.is_voted @voted_show ? true : false
 

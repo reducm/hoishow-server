@@ -28,6 +28,20 @@ class Show < ActiveRecord::Base
     all_users: 1, #全部用户都可以购买
   }
 
+  mount_uploader :poster, ImageUploader
+
+  def poster_url
+    if poster.url.present?
+      if Rails.env.production?      
+        poster.url("800")
+      else
+        poster.url
+      end
+    else
+      nil
+    end
+  end
+
   def is_display_cn
     if is_display
       "显示"
