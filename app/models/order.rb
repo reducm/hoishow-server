@@ -99,6 +99,26 @@ class Order < ActiveRecord::Base
     show.show_time
   end
 
+  def alipay_pay
+    query_options = {
+      purchase_type: self.class.name,
+      purchase_id:   self.id,
+      payment_type:  "alipay"
+    }
+
+    payment = payments.where(query_options).first
+  end
+
+  def wxpay_pay
+    query_options = {
+      purchase_type: self.class.name,
+      purchase_id:   self.id,
+      payment_type:  "wxpay"
+    }
+
+    payment = payments.where(query_options).first
+  end
+
   private
   def set_attr_after_create
     generate_out_id

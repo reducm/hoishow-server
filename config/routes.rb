@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       get "wxpay/notify" => "wxpay#notify"
+      get "alipay/notify" => "alipay#notify"
+
       resources :users do
         collection do
           post "verification"

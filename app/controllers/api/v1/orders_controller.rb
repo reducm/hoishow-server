@@ -22,18 +22,34 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
       payment_type:  params[:payment_type]
     }
     @payment = Payment.where(payment_options).first_or_initialize
-    @payment.update_attributes(amount: @order.amount, paid_origin: 'ios')
+    @payment.update_attributes(amount: @order.amount, paid_origin: @auth.app_platform)
     @payment_type = params[:payment_type]
 
     case @payment_type  #传入一个支付类型
     when 'alipay'
-      #TODO @sign = Alipay::Sign.rsa_sign(params[:sign_string], Alipay::Sign.pri_app_key_file)
+      if @auth.app_platform == "android"
+        options = {
+          partner:         AlipaySetting["pid"],
+          seller_id:       AlipaySetting["email"],
+          out_trade_no:    @order.out_id,
+          subject:         @order.payment_body,
+          total_fee:       @order.amount.to_s,
+          notify_url:      api_v1_alpay_notify_url,
+          service:         "mobile.securitypay.pay",
+          payment_type:    "1",
+          _input_charset:  "utf-8",
+          it_b_pay:        "10m"
+        }
+      end
+      sign_string = Alipay::Utils.app_hash_to_string(options)
+      options.merge!(sign: CGI.escape(Alipay::Sign.rsa_sign(sign_string, Alipay::Sign.pri_app_key_file)), sign_type: "RSA")
+      @query_string = Alipay::Utils.app_hash_to_string(options)
     when 'wxpay'
       options = {
         body:             @order.payment_body,
         out_trade_no:     @order.out_id,
         total_fee:        @order.amount.to_s,
-        notify_url:       api_v1_notify_url,
+        notify_url:       api_v1_wxpay_notify_url,
         spbill_create_ip: request.remote_ip,
         time_start:       @order.created_at.strftime('%Y%m%d%H%M%S'),
         time_expire:      @order.valid_time.strftime('%Y%m%d%H%M%S'),

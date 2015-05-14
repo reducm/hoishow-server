@@ -14,7 +14,7 @@ test:
 production:
   <<: *DEFAULT
 
-danche:
+staging:
   <<: *DEFAULT
 
 
