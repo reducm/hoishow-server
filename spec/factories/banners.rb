@@ -7,7 +7,6 @@ FactoryGirl.define do
     subject_type "Star"
     subject_id 1
     description "MyText"
-    slogan "MyString"
     factory :article_banner do
       subject_type "Article"
       description "http://www.163.com"
