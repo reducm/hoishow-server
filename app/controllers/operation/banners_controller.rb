@@ -27,7 +27,7 @@ class Operation::BannersController < Operation::ApplicationController
 
   def update
     @banner = Banner.find(params[:id])   
-    if @banner.update_attributes(params.require(:banner).permit(:poster, :description, :slogan))
+    if @banner.update_attributes(params.require(:banner).permit(:poster, :description))
       redirect_to action: :index
     else
       flash[:notice] = @banner.errors.full_messages
@@ -43,6 +43,6 @@ class Operation::BannersController < Operation::ApplicationController
 
   protected
   def banner_params
-    params.require(:banner).permit(:subject_type, :subject_id, :poster, :description, :slogan)
+    params.require(:banner).permit(:subject_type, :subject_id, :poster, :description)
   end
 end

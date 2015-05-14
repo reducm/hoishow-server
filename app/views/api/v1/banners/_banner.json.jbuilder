@@ -1,4 +1,4 @@
-json.(banner, :id, :subject_type, :subject_id, :slogan)
+json.(banner, :id, :subject_type, :subject_id)
 json.poster banner.poster.url rescue nil
 
 if !banner.is_article?
