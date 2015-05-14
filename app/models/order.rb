@@ -48,9 +48,12 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def set_tickets_and_price(show_area_relations=[])
+  def set_price(show_area_relations=[])
     self.amount = show_area_relations.map{|relation| relation.price}.inject(&:+)
     save!
+  end
+
+  def set_tickets(show_area_relations=[])
     show_area_relations.each do |relation|
       tickets.create(area_id: relation.area_id, show_id: relation.show_id, price: relation.price)
     end

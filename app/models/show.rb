@@ -10,6 +10,7 @@ class Show < ActiveRecord::Base
   has_many :areas, through: :show_area_relations
   has_many :orders
   has_many :tickets
+  has_many :payments, :conditions => {purchase_type: "Order"}, :class_name => "Payment", :foreign_key => 'purchase_id'
 
   validates :name, presence: {message: "Show名不能为空"}
   validates :concert, presence: {message: "Concert不能为空"}

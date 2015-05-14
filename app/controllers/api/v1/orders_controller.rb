@@ -1,8 +1,7 @@
 class Api::V1::OrdersController < Api::V1::ApplicationController
   before_action :check_login!
   def index
-    params[:page] ||= 1
-    @orders = @user.orders.page(params[:page])
+    @orders = @user.page_orders
   end
 
   def show

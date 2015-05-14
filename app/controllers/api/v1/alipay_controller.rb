@@ -38,7 +38,7 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
           pay_at: Time.now
         })
         if @order.paid?
-          #TODO @order.pay_order_to_service
+          @order.set_tickets
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end

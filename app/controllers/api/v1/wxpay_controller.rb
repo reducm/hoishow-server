@@ -3,7 +3,7 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
   def notify
     query_params = params.except(*request.path_parameters.keys)
     post_params = query_params.delete("xml")
-
+    wp_print("wxpay_params: #{query_params}")
     if Wxpay::Notify.verify?(query_params, post_params)
       @order = Order.where(out_id: query_params["out_trade_no"]).lock(true).first
       return render text: "success" if @order.already_paid?
@@ -20,12 +20,21 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
           )
         end
 
-        #TODO @order.pay_order_to_service
+        if @order.paid?
+          @order.set_tickets
+        end
+
+        wp_print("after order: #{@order}, #{@order.attributes}")
       end
       render text: "success"
     else
       render text: "fail"
     end
+  end
+
+  private
+  def wp_print(str)
+    Rails.logger.info(str)
   end
 end
 
