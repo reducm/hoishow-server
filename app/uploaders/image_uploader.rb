@@ -10,7 +10,6 @@ class ImageUploader < CarrierWave::Uploader::Base
     storage :file
   end
 
-
   ImgUpyunSetting = UpyunSetting["hoishow-img"]
 
   self.upyun_username = ImgUpyunSetting["upyun_username"]

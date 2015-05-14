@@ -10,6 +10,7 @@ class Order < ActiveRecord::Base
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
   belongs_to :show
   has_many :tickets
+  has_many :payments, -> { where purchase_type: 'Order' }, :foreign_key => 'purchase_id'
 
   validates :user, presence: {message: "User不能为空"}
 
