@@ -29,7 +29,7 @@
     <% @stars.each do|star|%>
       <%= content_tag_for :tr, star, remote: true do %>
         <td><%= star.position %></td>
-        <td><%= image_tag(star.avatar_url, size: "80x80") if star.avatar_url %></td>
+        <td><%= image_tag(star.avatar_url) if star.avatar_url %></td>
         <td><%= star.name %></td>
         <td><%= star.is_display_cn %></td>
         <td class="status_cn"><%= star.status_cn %></td>
