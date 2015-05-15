@@ -1,0 +1,6 @@
+<%= simple_form_for [:operation, message] do |f| %>
+  <%= f.input :creator_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["全部用户", "All"]], required: false, input_html: {id: "message_creator_type_select"}, label: "推送用户" %>
+  <%= f.button :submit, "保存" %>
+<%end%>
+
+

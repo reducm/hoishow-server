@@ -117,6 +117,7 @@ Rails.application.routes.draw do
       end
     end
     resources :tickets
+    resources :messages
     resources :cities, only: [:index]
     resources :stadiums, except: [:show, :destroy] do
       member do
