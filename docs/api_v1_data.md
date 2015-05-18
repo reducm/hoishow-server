@@ -296,28 +296,6 @@ type: `GET`
 
 ------------
 
-## 用户列表
-
-[/api/v1/users/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    users: [{参照user对象},...]
-  }
-```
-
-------------
-
 ## 城市列表
 
 [/api/v1/cities/]()
@@ -335,50 +313,6 @@ type: `GET`
 ```javascript
   {
     cities: [{参照city对象},...]
-  }
-```
-
-------------
-
-## 场馆列表
-
-[/api/v1/stadiums/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    stadiums: [{参照stadium对象},...]
-  }
-```
-
-------------
-
-## 门票列表
-
-[/api/v1/tickets/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    tickets: [{参照ticket对象},...]
   }
 ```
 
