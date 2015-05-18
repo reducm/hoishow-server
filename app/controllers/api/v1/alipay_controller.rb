@@ -1,5 +1,6 @@
 # coding: utf-8
 class Api::V1::AlipayController < Api::V1::ApplicationController
+  skip_before_filter :api_verify
   include AlipayApi
 
   def notify
@@ -31,14 +32,14 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
     if Alipay::Notify.app_verity?(alipay_params) && @order.amount.to_f == alipay_params[:total_fee].to_f
       if alipay_params["trade_status"] == "TRADE_SUCCESS"
         wp_print("into params_valid?")
-        @order.update_attributes(status: Order::ORDER_STATUS_PAID, pay_at: Time.now)
+        @order.update_attributes(status: Order::ORDER_STATUS_PAID)
         @payment.update_attributes({
           trade_id: alipay_params["trade_no"],
           status: Payment::STATUS_SUCCESS,
           pay_at: Time.now
         })
         if @order.paid?
-          @order.set_tickets_code
+          @order.set_tickets
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end

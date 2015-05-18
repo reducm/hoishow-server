@@ -28,7 +28,7 @@ class Ticket < ActiveRecord::Base
       loop do
         random_num = Time.now.to_ms
         code = id.to_s(16) + random_num.to_s(16)
-        if Coupon.where(code: code).blank?
+        if Ticket.where(code: code).blank?
           self.update_attributes({
             code: code
           })
