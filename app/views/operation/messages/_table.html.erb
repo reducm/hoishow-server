@@ -15,15 +15,15 @@
   <tbody>
     <% messages.each do|message| %>
       <tr>
-        <td>message.type</td>
-        <td>message.creator_type_cn</td>
-        <td>message.notification_text</td>
-        <td>message.title</td>
-        <td>message.content</td>
-        <td></td>
-        <td></td>
-        <td>message.created_at.strfcn_time</td>
-        <td></td>
+        <td><%= message.send_type_cn %></td>
+        <td><%= message.creator_type_cn %></td>
+        <td><%= message.notification_text %></td>
+        <td><%= message.title %></td>
+        <td><%= message.content %></td>
+        <td><%=%></td>
+        <td><%=%></td>
+        <td><%= message.created_at.strfcn_time %></td>
+        <td><%= message.subject.name %></td>
       </tr>
     <% end %>
   </tbody>

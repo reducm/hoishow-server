@@ -219,12 +219,4 @@ zh-CN:
         subject_id: 主体
         description: 图文内容
         slogan: 标语  
-      message:
-        type:
-          new_show: 开放众筹用户购买
-          all_users_buy: 开放所有用户购买
-          new_concert: 新演出通知
-          comment_reply: comment回复
-          topic_reply: topic回复
-          manual: 手动推送
 
