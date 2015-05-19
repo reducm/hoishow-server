@@ -32,6 +32,18 @@ class User < ActiveRecord::Base
     secret: 2
   }
 
+  def avatar_url
+    if avatar.url.present?
+      if Rails.env.production?
+        avatar.url("avatar")
+      else
+        avatar.url
+      end
+    else
+      nil
+    end
+  end
+
   def sign_in_api
     return if self.api_token.present? && self.api_expires_in.present?
 

@@ -1,5 +1,6 @@
 # coding: utf-8
 class Api::V1::AlipayController < Api::V1::ApplicationController
+  skip_before_filter :api_verify
   include AlipayApi
 
   def notify
@@ -11,9 +12,24 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
     end
   end
 
-  def test_alipay_notify
+  def wireless_refund_notify
     alipay_params = params.except(*request.path_parameters.keys)
-    if params_valid?(alipay_params)
+    if Alipay::Notify.wireless_refund_verify?(alipay_params)
+      result_details = alipay_params[:result_details].split("#")
+      result_details.each do |result|
+        details = result.split("^")
+        if ["SUCCESS", "TRADE_HAS_CLOSED"].include?(details.last)
+          payment = Payment.where(trade_id: details.first).first
+          order = payment.purchase
+          if order.present? and !order.refund?
+            payment.update(status: Payment::STATUS_REFUND, refund_amount: details[1].to_f, refund_at: Time.now)
+            order.refund_tickets
+            order.update(status: Order::ORDER_STATUS_REFUND)
+          end
+        #TODO 退款返回不成功的处理
+        end
+      end
+      wp_print("alipay_params: #{alipay_params}")
       render text: "success"
     else
       render text: "fail"
@@ -31,14 +47,15 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
     if Alipay::Notify.app_verity?(alipay_params) && @order.amount.to_f == alipay_params[:total_fee].to_f
       if alipay_params["trade_status"] == "TRADE_SUCCESS"
         wp_print("into params_valid?")
-        @order.update_attributes(status: Order::ORDER_STATUS_PAID, pay_at: Time.now)
-        @payment.update_attributes({
+        @order.update(status: Order::ORDER_STATUS_PAID)
+        @payment.update(
           trade_id: alipay_params["trade_no"],
           status: Payment::STATUS_SUCCESS,
           pay_at: Time.now
-        })
+        )
         if @order.paid?
-          @order.set_tickets_code
+          @order.set_tickets
+          @order.update(status: Order::ORDER_STATUS_SUCCESS)
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end

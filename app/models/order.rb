@@ -57,11 +57,16 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def set_tickets_code
+  def set_tickets
     tickets.each do |ticket|
       ticket.generate_code
+      ticket.status = :success
       ticket.save!
     end
+  end
+
+  def refund_tickets
+    tickets.update_all(status: Ticket::STATUS_REFUND)
   end
 
   def tickets_count
