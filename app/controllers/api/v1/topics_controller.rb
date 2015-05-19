@@ -1,4 +1,5 @@
 class Api::V1::TopicsController < Api::V1::ApplicationController
+  before_action :check_has_user
   def index
     params[:page] ||= 1
     if params[:subject_type].present? && params[:subject_id].present? 
