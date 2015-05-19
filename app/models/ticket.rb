@@ -1,4 +1,9 @@
 class Ticket < ActiveRecord::Base
+  STATUS_PENDING = 0
+  STATUS_SUCCESS = 1
+  STATUS_USED = 2
+  STATUS_REFUND = 3
+
   belongs_to :area
   belongs_to :show
   belongs_to :order
@@ -12,6 +17,7 @@ class Ticket < ActiveRecord::Base
     pending: 0, #未支付时没有code
     success: 1, #可用
     used: 2, #已用
+    refund: 3 #退款
   }
 
   scope :sold_tickets, ->{ where("status != ?", statuses[:pending] ) }

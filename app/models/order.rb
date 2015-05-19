@@ -65,6 +65,10 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def refund_tickets
+    tickets.update_all(status: Ticket::STATUS_REFUND)
+  end
+
   def tickets_count
     tickets.count
   end
