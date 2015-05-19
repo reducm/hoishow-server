@@ -7,9 +7,22 @@
     <%= label_tag(:name, @show.name, class: "form-control-static")%>
   </div>
   <%= hidden_field_tag "show_id", @show.id %>
-  <%= render partial: "form", locals: {show: @show, concert: @concert, cities: @concert.cities} %>
+  <%= simple_form_for [:operation, @show] do |f| %>
+    <%= f.input :is_display, label: "是否显示" %>
+    <%= f.input :name, required: false, label: "演出名称" %>
+    <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
+    <%= f.input :poster, label: "演出海报" %>
+    <%= image_tag(show.poster_url, size: "700x500") if @show.poster_url %>
+    <%= f.kindeditor :description %>
+    <%= f.association :city, label_method: :name, value_method: :id, disabled: true %>
+    <%= f.association :stadium, label_method: :name, value_method: :id, disabled: true %>
+    <%= f.hidden_field :concert_id, value: @concert.id %>
+    <%= f.button :submit, "保存" %>
+  <% end %>
+
+  <%= image_tag(@show.stadium.pic_url, size: "700x500") if @show.stadium.pic_url %>
 </div>
 
 <div id="show_area">
-  <%= render partial: "area_table", locals: {show: @show} %>
+  <%= render partial: "area_table", locals: {show: @show, stadium: @show.stadium} %>
 </div>
