@@ -39,7 +39,7 @@ module Alipay
       data = options.delete(:data)
       reason = options.delete(:reason)
       detail_data = data.map do |item|
-        "#{item.trade_id}^#{item.refund_amount}^#{reason}"
+        "#{item.trade_id}^#{item.amount}^#{reason}"
       end.join('#')
       puts detail_data
       options = {
@@ -64,7 +64,7 @@ module Alipay
       data = options.delete(:data)
       reason = options.delete(:reason)
       detail_data = data.map do |item|
-        "#{item.trade_id}^#{item.refund_amount}^#{reason}"
+        "#{item.trade_id}^#{item.amount}^#{reason}"
       end.join('#')
       puts detail_data
       options = {

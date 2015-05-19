@@ -13,9 +13,9 @@
       <% users.each do|user|%>
         <tr>
           <td class="text-center">
-            <%= image_tag user.avatar.url %>
+            <%= image_tag user.avatar_url if user.avatar_url %>
             <%= user.show_name %>
-          </t class="text-center"d>
+          </td class="text-center">
           <td class="text-center"><%= user.mobile %></td>
           <td class="text-center"><%= user.orders.count %></td>
           <td class="text-center"><%= user.topics.count %></td>

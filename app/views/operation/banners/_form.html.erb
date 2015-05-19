@@ -3,12 +3,12 @@
   <%= f.input :subject_id, as: :select,  input_html: {id: "subject_id_select"}, disabled: ( params[:action] == 'edit' ? true : false ) %>
   <div id="editor"><%= f.kindeditor :description %></div>
   <%= f.input :poster %>
-  <%= f.submit %>
-<%end%>
+  <%= f.submit class: 'btn btn-primary' %>
+<% end %>
 
 <%= content_tag :div, id: "hoishow", data: {
   stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
   concerts: ( Concert.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
   shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } )
-} do%>
-<%end%>
+} do %>
+<% end %>
