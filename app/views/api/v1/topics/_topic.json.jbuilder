@@ -1,4 +1,4 @@
-user ||= nil
+user ||= nil 
 json.(topic, :id, :content, :is_top, :like_count, :subject_type, :subject_id)
 json.created_at topic.created_at.to_ms
 topic_city = topic.city

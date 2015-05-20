@@ -27,6 +27,14 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       expect(response.body).to include("comments_count")
       expect(response.body).to include("is_like")
     end
+
+    it "should is_like true if user like topic" do
+      @topic = create :topic
+      @user = create :user
+      @user.like_topic(@topic)
+      get :index, with_key(api_token: @user.api_token, mobile: @user.mobile, page: 2, format: :json)
+      expect(JSON.parse(response.body).last["is_like"]).to be true
+    end
   end
 
 
@@ -115,6 +123,15 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       expect(response.body).to include("content")
       expect(response.body).to include("comments")
       expect(response.body).to include("comments_count")
+      expect(response.body).to include("is_like")
+    end
+
+    it "should is_like true if user like topic" do
+      @topic = create :topic
+      @user = create :user
+      @user.like_topic(@topic)
+      get :show, with_key(id: @topic.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body)["is_like"]).to be true
     end
   end
 

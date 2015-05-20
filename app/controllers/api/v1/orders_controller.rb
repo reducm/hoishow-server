@@ -33,7 +33,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
           out_trade_no:    @order.out_id,
           subject:         @order.payment_body,
           total_fee:       @order.amount.to_s,
-          notify_url:      api_v1_alpay_notify_url,
+          notify_url:      api_v1_alipay_notify_url,
           service:         "mobile.securitypay.pay",
           payment_type:    "1",
           _input_charset:  "utf-8",

@@ -8,22 +8,19 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
       @order = Order.where(out_id: query_params["out_trade_no"]).lock(true).first
       return render text: "success" if @order.already_paid?
       if query_params["trade_state"].to_s == "0"
-        @order.update_attributes!(status: Order::ORDER_STATUS_PAID, pay_at: Time.now) if @order.pending?
-
+        @order.update(status: Order::ORDER_STATUS_PAID) if @order.pending?
         @payment = @order.wxpay_pay
-
         unless @payment.nil?
-          @payment.update_attributes(
+          @payment.update(
             trade_id: query_params["transaction_id"],
             status:   Payment::STATUS_SUCCESS,
             pay_at:   Time.now
           )
         end
-
         if @order.paid?
-          @order.set_tickets_code
+          @order.set_tickets
+          @order.update(status: Order::ORDER_STATUS_SUCCESS)
         end
-
         wp_print("after order: #{@order}, #{@order.attributes}")
       end
       render text: "success"

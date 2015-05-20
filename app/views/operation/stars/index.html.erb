@@ -1,4 +1,4 @@
-<div class="nav">
+<div class="nav stars_list">
   <h1 class="pull-left">艺人列表</h1>
   <div class="search">
     <%= form_tag(operation_stars_url, method: "get", class: 'navbar-form') do %>
@@ -7,41 +7,39 @@
       </div>
     <% end %>
   </div>
-</div>
 
-<%= link_to "新增艺人", new_operation_star_url, class: 'btn btn-default' %>
+  <%= link_to "新增艺人", new_operation_star_url, class: 'btn btn-default add-star' %>
 
-<div class="stars_list">
   <table class="table table-hover" id="stars">
-  <thead>
-    <tr>
-      <th>排序</th>
-      <th>艺人头像</th>
-      <th>艺人名称</th>
-      <th>是否显示</th>
-      <th>演出状态</th>
-      <th>总投票数量</th>
-      <th>粉丝数</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <tbody id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
-    <% @stars.each do|star|%>
-      <%= content_tag_for :tr, star, remote: true do %>
-        <td><%= star.position %></td>
-        <td><%= image_tag(star.avatar_url, size: "80x80") if star.avatar_url %></td>
-        <td><%= star.name %></td>
-        <td><%= star.is_display_cn %></td>
-        <td class="status_cn"><%= star.status_cn %></td>
-        <td><%= star.vote_count %></td>
-        <td><%= star.followers_count %></td>
-        <td>
-          <span class="handle">[拉我排序] </span>
-          <%= link_to "查看", operation_star_path(star)%>
-          <%= link_to "图文描述", description_path(subject_type: "Star", subject_id: star.id), target: "blank" %>
-        </td>
-      <%end%>
-    <%end%>
-  </tbody>
-</table>
+    <thead>
+      <tr>
+        <th>排序</th>
+        <th>艺人头像</th>
+        <th>艺人名称</th>
+        <th>是否显示</th>
+        <th>演出状态</th>
+        <th>总投票数量</th>
+        <th>粉丝数</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
+      <% @stars.each do|star|%>
+        <%= content_tag_for :tr, star, remote: true do %>
+          <td><%= star.position %></td>
+          <td><%= image_tag(star.avatar_url) if star.avatar_url %></td>
+          <td><%= star.name %></td>
+          <td><%= star.is_display_cn %></td>
+          <td class="status_cn"><%= star.status_cn %></td>
+          <td><%= star.vote_count %></td>
+          <td><%= star.followers_count %></td>
+          <td>
+            <span class="handle">[拉我排序] </span>
+            <%= link_to "查看", operation_star_path(star)%>
+            <%= link_to "图文描述", description_path(subject_type: "Star", subject_id: star.id), target: "blank" %>
+          </td>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
 </div>
