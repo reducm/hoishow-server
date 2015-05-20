@@ -1,3 +1,4 @@
+include UmengMessage
 class Message < ActiveRecord::Base
   has_many :user_message_relation
   has_many :target_users, through: :user_message_relation, source: :user
@@ -47,6 +48,9 @@ class Message < ActiveRecord::Base
      end
   end
 
+  def send_umeng_message(content, message)
+    android_send_message(content, message.notification_text, message.title, message.content)
+  end
 
   def creator_type_cn
     case creator_type

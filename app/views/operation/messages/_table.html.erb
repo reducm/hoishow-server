@@ -10,6 +10,7 @@
       <th>推送查看数</th>
       <th>发送时间</th>
       <th>跳转目的地</th>
+      <th>查询id</th>
     </tr>
   </thead>
   <tbody>
@@ -24,6 +25,7 @@
         <td><%=%></td>
         <td><%= message.created_at.strfcn_time %></td>
         <td><%= message.subject.name %></td>
+        <td><%= message.task_id %></td>
       </tr>
     <% end %>
   </tbody>
