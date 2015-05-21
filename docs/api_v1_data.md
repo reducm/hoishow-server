@@ -310,13 +310,17 @@ type: `GET`
   id:  //show_id,
   name:  //Show名称,
   concert_id:  //concert_id,
+  concert_name:  //concert名称,
   city_id:  //city_id,
+  city_name: //city名称,
   stadium_id:  //stadium_id,
+  stadium_name: //stadium名称,
   show_time:  //开show时间,
   poster:  //海报url,
   description:  //图文介绍的url,
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
+  voters_count: //投票数,
   status:  // voted_users(投票用户购买)/all_users(所有用户购买)
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
