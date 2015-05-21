@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Api::V1::TopicsController, :type => :controller do
   render_views
 
+  before('each') do
+    @user = create :user
+  end
+
   context "#index without subject" do
     before('each') do
       30.times {create :topic}
@@ -12,7 +16,7 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
@@ -47,10 +51,10 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
     end
 
     it "should get 20 topics" do
-      get :index, with_key(subject_type: @concert.name, subject_id: @concert.id, format: :json) 
+      get :index, with_key(subject_type: @concert.name, subject_id: @concert.id, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "should has attributes" do
       get :index, with_key(subject_type: @concert.name, subject_id: @concert.id, format: :json)
@@ -80,7 +84,7 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       get :index, with_key(subject_type: @star.name, subject_id: @star.id, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "should has attributes" do
       get :index, with_key(subject_type: @star.name, subject_id: @star.id, format: :json)

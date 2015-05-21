@@ -1,4 +1,5 @@
 class Api::V1::ShowsController < Api::V1::ApplicationController
+  before_action :check_has_user
   def index
     params[:page] ||= 1
     @shows = Show.is_display.page(params[:page])
@@ -11,7 +12,5 @@ class Api::V1::ShowsController < Api::V1::ApplicationController
   def preorder
     @show = Show.find(params[:id])
     @stadium = @show.stadium
-    @areas = @stadium.areas
-    @relations = @show.show_area_relations.to_a
   end
 end

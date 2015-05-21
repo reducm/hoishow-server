@@ -1,5 +1,1 @@
-json.array! @shows do |show|
-  json.partial! "api/v1/shows/show", locals: {show: show, user: @user}
-end
-
-
+json.array! @shows, partial: "api/v1/shows/show", as: :show

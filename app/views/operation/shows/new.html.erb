@@ -1,14 +1,25 @@
-<div class="nav">
+<div class="nav new_show">
   <h1 class="pull-left">新建演出</h1>
-</div>
+  <% if @concert %>
+    <div class="form-group">
+      <%= label_tag(:name, "concert名称", class: "col-sm-2 control-label")%>
+      <div class="col-sm-10">
+        <%= label_tag(:name, @concert.name, class: "form-control-static")%>
+      </div>
+      <%= simple_form_for [:operation, @show] do |f| %>
+        <%= f.input :is_display, label: "是否显示" %>
+        <%= f.input :name, label: "演出名称" %>
+        <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
+        <%= f.input :poster, label: "演出海报" %>
+        <%= f.kindeditor :description %>
+        <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
+        <%= f.input :stadium_id, as: :select, input_html: {id: "show_stadium_select"} %>
+        <%= f.hidden_field :concert_id, value: @concert.id %>
+        <%= f.button :submit, "保存" %>
+      <% end %>
 
-<% if @concert %>
-  <div class="form-group">
-    <%= label_tag(:name, "concert名称", class: "col-sm-2 control-label")%>
-    <div class="col-sm-10">
-      <%= label_tag(:name, @concert.name, class: "form-control-static")%>
+      <img id="stadium_pic"  class="preview-pic">
     </div>
-    <%= render partial: "form", locals: {show: @show, concert: @concert, cities: @concert.cities} %>
-  </div>
-<%end%>
+  <% end %>
+</div>
 

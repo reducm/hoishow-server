@@ -4,6 +4,8 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
   render_views
   before('each') do
     @user = create :user
+    @concert = create :concert
+    @show = create :show
     10.times {create :order, user: @user}
   end
 

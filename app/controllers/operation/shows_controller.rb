@@ -46,11 +46,10 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def update_area_data
-    if ShowAreaRelation.where(show_id: params[:show_id], area_id: params[:area_id]).first.update!(price: params[:price], seats_count: params[:seats_count])
-    else
-      flash[:error] = "更新区域数据失败！！！"
-    end
-    render partial: "area_table", locals:{show: @show}
+    relation = ShowAreaRelation.where(show_id: params[:id], area_id: params[:area_id]).first_or_create
+    relation.update(price: params[:price], seats_count: params[:seats_count])
+
+    render partial: "area_table", locals:{show: @show, stadium: @show.stadium}
   end
 
   def update_status

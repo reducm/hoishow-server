@@ -1,5 +1,1 @@
-json.array! @topics do |topic|
-  json.partial! "api/v1/topics/topic", locals: {topic: topic, user: @user}
-end
-
-
+json.array! @topics, partial: "topic", as: :topic

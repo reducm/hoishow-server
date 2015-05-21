@@ -157,12 +157,7 @@ type: `POST`
 
 成功时返回：
 ```javascript
-  [{
-    id: "123",
-    name: "汪峰",
-    avatar: "http://www.xxx/1.jpg",
-    is_followed: true
-  }...]
+  [star对象列表]
 ```
 
 -------
@@ -175,15 +170,7 @@ type: `POST`
 
 成功时返回：
 ```javascript
-  {
-    concerts: [
-      {
-        is_followed: true
-        is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
-        参照concert对象参数
-      }
-    ]
-  }
+   [concert对象列表]
 ```
 
 ----------
@@ -196,14 +183,7 @@ type: `POST`
 
 成功时返回：
 ```javascript
-  {
-    shows: [
-      {
-        is_followed: true
-        参照show对象参数
-      }
-    ]
-  }
+  [show对象列表]
 ```
 
 ----------
@@ -317,7 +297,7 @@ type `GET`
 
 成功时返回
 ```javascript
-  Order对象数组
+   [order对象列表]
 ```
 
 
