@@ -22,6 +22,9 @@ class Admin < ActiveRecord::Base
     end
   end
 
+  def avatar_url
+  end
+
   def set_password(password)
     self.createHash(password)
   end

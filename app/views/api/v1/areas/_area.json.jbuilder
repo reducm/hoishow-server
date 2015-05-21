@@ -1,5 +1,11 @@
-json.(area, :name, :seats_count, :stadium_id)
+json.(area, :name, :stadium_id)
+json.seats_count area.seats_count.to_i
 json.created_at area.created_at.to_ms
 json.updated_at area.updated_at.to_ms
-area_stadium = area.stadium
-area.stadium ? ( json.stadium { json.partial!("api/v1/stadiums/stadium", {stadium: area.stadium}) } ) : (json.stadium nil)
+
+relations = show.show_area_relations.to_a
+if show && relations.any?
+  json.price relations.select{|r| r.area_id == area.id}.first.price.to_f
+  json.seats_left show.area_seats_left(area)
+  json.is_sold_out show.area_is_sold_out(area)
+end

@@ -304,8 +304,6 @@ describe Api::V1::UsersController do
       post :followed_shows, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
-      expect(response.body).to include("min_price")
-      expect(response.body).to include("max_price")
       expect(response.body).to include("concert_id")
       expect(response.body).to include("city_id")
       expect(response.body).to include("stadium_id")
@@ -456,7 +454,6 @@ describe Api::V1::UsersController do
         2.times do
           post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
         end
-        ap JSON.parse response.body
         expect(response.body).to eq "{\"errors\":\"购买票数大于该区剩余票数!\"}"
       end
     end

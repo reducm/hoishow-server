@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
   end
 
   def create_comment(topic, parent_id = nil, content)
-    comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
+    comments.create(topic_id: topic.id, parent_id: parent_id, content: content)
   end
 
   def vote_concert(concert, city)

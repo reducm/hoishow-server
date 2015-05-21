@@ -1,5 +1,6 @@
 class Api::V1::OrdersController < Api::V1::ApplicationController
   before_action :check_login!
+
   def index
     @orders = @user.page_orders
   end
