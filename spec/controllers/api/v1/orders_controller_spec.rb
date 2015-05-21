@@ -23,4 +23,19 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
       expect(assigns(:order)).to eq @order
     end
   end
+
+  context "#show_to_ticket_checker" do
+    it "show should return tickets" do
+      @order = Order.first
+      3.times { create(:show_area_relation) }
+      @order.set_tickets_and_price(ShowAreaRelation.all)
+      @order.set_tickets
+      
+      get :show_to_ticket_checker, out_id: @order.out_id, format: :json
+      expect(assigns(:order)).to eq @order
+      expect(response.body).to include("tickets") 
+      expect(JSON.parse(response.body)["tickets"].count > 0).to be true
+    end
+  end
+
 end
