@@ -18,8 +18,6 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
-      expect(response.body).to include("min_price")
-      expect(response.body).to include("max_price")
       expect(response.body).to include("concert_id")
       expect(response.body).to include("city_id")
       expect(response.body).to include("stadium_id")

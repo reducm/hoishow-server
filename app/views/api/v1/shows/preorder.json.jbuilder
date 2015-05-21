@@ -1,14 +1,6 @@
 json.stadium do
-  json.partial! "api/v1/stadiums/stadium", stadium: @stadium
-  json.areas do
-    json.array! @areas do|area|
-      json.(area, :id, :name, :seats_count)
-      json.price @relations.select{|r| r.area_id == area.id}.first.price.to_f
-      json.seats_left @show.area_seats_left(area)
-      json.is_sold_out  @show.area_is_sold_out(area)
-    end
-  end
+  json.partial! "api/v1/stadiums/stadium", stadium: @stadium, show: @show, need_areas: true, need_city: true
 end
 json.show do
-  json.partial! "api/v1/shows/show", show: @show
+  json.partial! "api/v1/shows/show", show: @show, need_concert: true
 end
