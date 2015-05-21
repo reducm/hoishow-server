@@ -1,6 +1,6 @@
 include UmengMessage
 class Message < ActiveRecord::Base
-  has_many :user_message_relation
+  has_many :user_message_relations
   has_many :target_users, through: :user_message_relation, source: :user
 
   validates :creator_type, presence: true
@@ -38,20 +38,6 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def subject
-     begin
-      Object::const_get(subject_type).where(id: subject_id).first
-    rescue => e
-      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
-      Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
-      nil
-     end
-  end
-
-  def send_umeng_message(content, message)
-    android_send_message(content, message.notification_text, message.title, message.content)
-  end
-
   def creator_type_cn
     case creator_type
     when 'All'
@@ -63,6 +49,50 @@ class Message < ActiveRecord::Base
     when 'Star'
       '关注star的用户'
     end
+  end
+
+  def subject
+     begin
+      Object::const_get(subject_type).where(id: subject_id).first
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
+      Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
+      nil
+     end
+  end
+
+  def creator
+    begin
+      Object::const_get(creator_type).where(id: creator_id).first
+    rescue => e
+      ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
+      Rails.logger.fatal("creator wrong, topic_id: #{ id }, creator_type: #{creator_type}, creator_id: #{creator_id}")
+      nil
+    end
+  end
+
+  def send_umeng_message(users_array, message, get_task_id_fail: "task_id获取失败，消息创建成功，推送发送失败", none_follower: "关注用户数为0，消息创建失败")
+    if ( users_array.count > 0 ) &&  message.save!
+      content = message.create_relation_with_users(users_array)
+      task_id = message.android_send_message(content, message.notification_text, message.title, message.content)
+      if task_id
+        message.update!(task_id: task_id)
+        s = "success"
+      else
+        get_task_id_fail 
+      end
+    else
+      none_follower
+    end
+  end
+
+  def create_relation_with_users(users_array)
+    content = ""
+    users_array.each do |user|
+      user_message_relations.where(user: user).first_or_create!
+      content = content + user.mobile + "\n"
+    end
+    content
   end
 
 end

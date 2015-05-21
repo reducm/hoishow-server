@@ -96,7 +96,8 @@ module UmengMessage
           ticker: notification_text, 
           title: title,
           text: text,
-          after_open:"go_app"
+          after_open:"go_activity",
+          activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
         }
       }
     }
@@ -130,7 +131,8 @@ module UmengMessage
           ticker:"推送测试", 
           title: title,
           text: text,
-          after_open:"go_app"
+          after_open:"go_activity",
+          activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
         }
       }
     }
