@@ -100,6 +100,7 @@ class User < ActiveRecord::Base
     end
 
     user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!
+    user_follow_concerts.where(concert_id: concert.id).first_or_create!
   end
 
   def like_topic(topic)
