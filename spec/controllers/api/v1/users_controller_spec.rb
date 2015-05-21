@@ -249,14 +249,23 @@ describe Api::V1::UsersController do
   end
 
   context "#vote_concert" do
-    it "should vote concert success" do
+    before('each') do
       @concert = create(:concert)
       @city = create(:city)
+    end
+
+    it "should vote concert success" do
       post :vote_concert, with_key( api_token: @user.api_token, mobile: @user.mobile, concert_id: @concert.id, city_id: @city.id, format: :json )
       @user.reload
       expect(response.status).to eq 200
       expect(@user.vote_concerts.size > 0).to be true
       expect(@user.user_vote_concerts.first.city.present?).to be true
+    end
+
+    it "city has show should return 403" do
+      @show = create :show, concert: @concert, city: @city
+      post :vote_concert, with_key( api_token: @user.api_token, mobile: @user.mobile, concert_id: @concert.id, city_id: @city.id, format: :json )
+      expect(response.status).to eq 403
     end
   end
 

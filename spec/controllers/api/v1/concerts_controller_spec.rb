@@ -12,7 +12,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
@@ -25,7 +25,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
       expect(response.body).to include("voted_city")
-      JSON.parse(response.body).each do|object| 
+      JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
         expect(object["is_voted"]).to be false
       end
@@ -41,7 +41,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
+    end
 
     it "with page params" do
       get :index, with_key(page: 2, format: :json)
@@ -56,7 +56,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       @user = create :user
       city = create :city
       Concert.limit(5).each do |concert|
-        @user.follow_concert(concert) 
+        @user.follow_concert(concert)
       end
       Concert.limit(3).each do |concert|
         @user.vote_concert(concert, city)
@@ -77,7 +77,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
   context "#show without user" do
     before('each') do
-      @concert = create :concert     
+      @concert = create :concert
     end
 
     it "should has attributes" do
@@ -108,7 +108,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
   context "#show with user" do
     before('each') do
-      3.times {create :concert}     
+      3.times {create :concert}
       @user = create :user
       Concert.limit(3).each do |concert|
         @user.follow_concert(concert)
@@ -136,10 +136,17 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       @user3.vote_concert(@concert, @city2)
       @user2.vote_concert(@concert, @city2)
     end
-    
+
     it "should has something" do
       get :city_rank, with_key(id: @concert.id, format: :json)
       expect(response.body).to include("vote_count")
+    end
+
+    it "city does not display when has show" do
+      show = create :show, concert: @concert, city: @city1
+      get :city_rank, with_key(id: @concert.id, format: :json)
+      expect(JSON.parse(response.body).size).to eq 1
+      expect(JSON.parse(response.body).first["id"]).to_not eq @city1.id
     end
   end
 end
