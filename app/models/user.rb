@@ -95,6 +95,10 @@ class User < ActiveRecord::Base
   end
 
   def vote_concert(concert, city)
+    if vote_concert = user_vote_concerts.where(concert_id: concert.id).first
+      vote_concert.destroy!
+    end
+
     user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!
   end
 
