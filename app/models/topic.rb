@@ -2,6 +2,7 @@
 class Topic < ActiveRecord::Base
   SUBJECT_CONCERT = 'Concert'
   SUBJECT_STAR = 'Star'
+  SUBJECT_SHOW = 'Show'
 
   CREATOR_USER = 'User'
   CREATOR_STAR = 'Star'
