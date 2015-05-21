@@ -8,6 +8,13 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
+      resources :admins do
+        collection do
+          post "sign_in"
+          patch "check_ticket"
+        end
+      end
+
       resources :users do
         collection do
           post "verification"
