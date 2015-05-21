@@ -35,7 +35,7 @@ describe Api::V1::AdminsController do
     end
   end
 
-  context "#check_ticket" do
+  context "#check_tickets" do
     it "should success if information correct and intact" do
       5.times do
         create :ticket
@@ -46,7 +46,7 @@ describe Api::V1::AdminsController do
       admin.set_password("123456")
       admin.save
 
-      patch :check_ticket, codes: codes, admin_id: admin.id, format: :json 
+      patch :check_tickets, codes: codes, admin_id: admin.id, format: :json 
       expect(response.status).to eq 200 
       expect(response.body).to include "ok"
     end
@@ -63,7 +63,7 @@ describe Api::V1::AdminsController do
       admin.set_password("123456")
       admin.save
 
-      patch :check_ticket, codes: codes, admin_id: admin.id, format: :json 
+      patch :check_tickets, codes: codes, admin_id: admin.id, format: :json 
       expect(response.status).to eq 403 
       expect(response.body).to include "门票已使用或已过期"
     end
@@ -75,7 +75,7 @@ describe Api::V1::AdminsController do
       tickets = Ticket.all
       codes = tickets.pluck(:code)
 
-      patch :check_ticket, codes: codes, admin_id: 2, format: :json 
+      patch :check_tickets, codes: codes, admin_id: 2, format: :json 
       expect(response.status).to eq 403 
       expect(response.body).to include "获取验票员信息异常，请重新登陆"
     end

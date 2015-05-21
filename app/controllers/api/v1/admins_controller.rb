@@ -1,5 +1,5 @@
 class Api::V1::AdminsController < Api::V1::ApplicationController
-  skip_before_filter :api_verify, only: [:sign_in, :check_ticket]
+  skip_before_filter :api_verify
 
   def sign_in 
     admin = Admin.find_by_name(params[:name])
@@ -17,7 +17,7 @@ class Api::V1::AdminsController < Api::V1::ApplicationController
     end
   end
 
-  def check_ticket
+  def check_tickets
     @codes = params[:codes]
     @admin_id = params[:admin_id]
     if (Admin.find(@admin_id) rescue nil) 
