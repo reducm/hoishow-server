@@ -45,4 +45,23 @@ class Api::V1::ApplicationController < ApplicationController
     render json: {errors: str}, status: 403
     return false
   end
+
+  def get_admin_from_params(name)
+    admin = Admin.where(name: name).first
+  end
+
+  def check_admin_validness!
+    if params[:name].blank?
+      return error_json "获取验票员信息异常，请重新登陆"
+    end
+    @admin = get_admin_from_params(params[:name])
+    return error_json "账户不存在" if @admin.blank?
+
+    if verify_block?(@admin)
+      return error_json "账户被锁定，请联系管理员"
+    elsif @admin.admin_type != "ticket_checker" 
+      return error_json "账户无验票权限"
+    end
+  end
+
 end

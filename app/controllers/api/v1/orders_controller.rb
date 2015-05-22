@@ -1,5 +1,6 @@
 class Api::V1::OrdersController < Api::V1::ApplicationController
   before_action :check_login!, except: [:show_to_ticket_checker]
+  before_action :check_admin_validness!, only: [:show_to_ticket_checker]
   skip_before_filter :api_verify, only: [:show_to_ticket_checker]
 
   def index
@@ -11,13 +12,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
   end
 
   def show_to_ticket_checker
-    if admin = Admin.find(params[:admin_id]) rescue nil
-      if admin.admin_type != "ticket_checker" 
-        error_json "账户无验票权限"
-      else
-        @order = Order.where(out_id: params[:out_id]).first
-      end
-    end
+    @order = Order.where(out_id: params[:out_id]).first
   end
 
   def pay

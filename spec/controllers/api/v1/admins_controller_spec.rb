@@ -19,9 +19,19 @@ describe Api::V1::AdminsController do
     end
 
     it "wrong name/password combination should be forbit"do
-      post :sign_in, name: "ooo", password: "xxx", format: :json
+      admin = Admin.new(name: "ooxx", admin_type: 2)
+      admin.set_password("123456")
+      admin.save
+
+      post :sign_in, name: "ooxx", password: "xxx", format: :json
       expect(response.status).to eq 403
-      expect(response.body).to include("账号或密码错误")
+      expect(response.body).to include("账户或密码错误")
+    end
+
+    it "should fail if no such name in Admin"do
+      post :sign_in, name: "xxx", password: "xxx", format: :json
+      expect(response.status).to eq 403
+      expect(response.body).to include("账户不存在")
     end
 
     it "wrong admin_type should be forbit" do
@@ -46,7 +56,7 @@ describe Api::V1::AdminsController do
       admin.set_password("123456")
       admin.save
 
-      patch :check_tickets, codes: codes, admin_id: admin.id, format: :json 
+      patch :check_tickets, codes: codes, name: admin.name, format: :json 
       expect(response.status).to eq 200 
       expect(response.body).to include "ok"
     end
@@ -63,7 +73,7 @@ describe Api::V1::AdminsController do
       admin.set_password("123456")
       admin.save
 
-      patch :check_tickets, codes: codes, admin_id: admin.id, format: :json 
+      patch :check_tickets, codes: codes, name: admin.name, format: :json 
       expect(response.status).to eq 403 
       expect(response.body).to include "门票已使用或已过期"
     end
@@ -75,7 +85,7 @@ describe Api::V1::AdminsController do
       tickets = Ticket.all
       codes = tickets.pluck(:code)
 
-      patch :check_tickets, codes: codes, admin_id: 2, format: :json 
+      patch :check_tickets, codes: codes, format: :json 
       expect(response.status).to eq 403 
       expect(response.body).to include "获取验票员信息异常，请重新登陆"
     end

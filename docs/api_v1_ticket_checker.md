@@ -13,7 +13,7 @@ type: `POST`
 
 ```javascript
   {
-    name: "吴彦祖",
+    name: "吴彦祖", //验票员账户
     password: "123456"
   }
 ```
@@ -41,7 +41,7 @@ type: `GET`
 
 ```javascript
   {
-    admin_id: "2", //验票员id
+    name: "吴彦祖", //验票员账户
   }
 
 ```
@@ -63,7 +63,7 @@ type: `PATCH`
 ```javascript
   {
     codes: ["票码",...], //勾选门票或人工输入票码 
-    admin_id: "2", //验票员id
+    name: "吴彦祖", //验票员账户
   }
 ```
 
