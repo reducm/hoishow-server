@@ -15,7 +15,6 @@ $ ()->
     else
       $('#message_creator_id').show()
     key = selected_option.val().toLowerCase() + "s"
-    console.log key
     subjects = data[key]
     options = generate_options(subjects)
     $("#message_creator_id_select").html(options)

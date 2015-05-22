@@ -14,7 +14,7 @@ RSpec.describe Operation::ShowsController, :type => :controller do
       end
     end
 
-    it "should get 5 messages" do
+    it "should get 5 shows" do
       get :index
       expect(assigns(:shows).size).to eq 5
       expect(response).to render_template :index

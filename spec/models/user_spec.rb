@@ -94,13 +94,13 @@ describe User do
     it "should create message success " do
       comment = create :comment
       @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
-      expect(@user.user_messages.count).to eq 2
+      expect(@user.messages.count).to eq 2
     end
 
     it "should create message success " do
       comment = create :comment
       @user.create_comment(create(:topic), nil, "fuck jassssssssss")     
-      expect(@user.user_messages.count).to eq 1
+      expect(@user.messages.count).to eq 1
     end
   end
 

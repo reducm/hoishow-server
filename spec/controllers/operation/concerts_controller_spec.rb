@@ -14,7 +14,7 @@ RSpec.describe Operation::ConcertsController, :type => :controller do
       end
     end
 
-    it "should get 5 messages" do
+    it "should get 5 concerts" do
       get :index
       expect(assigns(:concerts).size).to eq 5
       expect(response).to render_template :index

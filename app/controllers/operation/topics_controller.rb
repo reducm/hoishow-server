@@ -41,12 +41,7 @@ class Operation::TopicsController < Operation::ApplicationController
     @comment = @topic.comments.new()
     Comment.transaction do
       @comment.content = params[:content]
-      if params[:parent_id]
-        @comment.parent_id = params[:parent_id]
-        #回覆评论
-        Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: @comment.parent_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
-      end
-
+      
       if params[:creator] == current_admin.name
         @comment.creator_type = 'Admin'
         @comment.creator_id = current_admin.id
@@ -54,7 +49,21 @@ class Operation::TopicsController < Operation::ApplicationController
         @comment.creator_type = 'Star'
         @comment.creator_id = params[:creator]
       end
-      Message.create(send_type: "topic_reply", creator_type: "Topic", creator_id: @topic.id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
+
+      if params[:parent_id]
+        @comment.parent_id = params[:parent_id]
+        #回覆评论
+        message = Message.create(send_type: "comment_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
+        comment = Comment.find(params[:parent_id])
+        if comment.creator_type == "User"
+          message.user_message_relations.where(user: comment.creator).first_or_create!
+        end
+      end
+
+      message = Message.create(send_type: "topic_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
+        if @topic.creator_type == "User"
+          message.user_message_relations.where(user: @topic.creator).first_or_create!
+        end
       @comment.save!
     end
     render json: {success: true}

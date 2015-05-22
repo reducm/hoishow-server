@@ -1,7 +1,7 @@
 include UmengMessage
 class Message < ActiveRecord::Base
   has_many :user_message_relations
-  has_many :target_users, through: :user_message_relations, source: :user
+  has_many :users, through: :user_message_relations, source: :user
 
   validates :creator_type, presence: true
   validates :subject_type, presence: true
@@ -37,15 +37,9 @@ class Message < ActiveRecord::Base
 
   def subject_show_name
     case subject_type
-    when 'Concert'
+    when 'Concert' || 'Show' || 'Star'
       subject.name
-    when 'Show'
-      subject.name
-    when 'Star'
-      subject.name
-    when 'Topic'
-      subject.content
-    when 'Comment'
+    when 'Topic' || 'Comment'
       subject.content
     end
   end

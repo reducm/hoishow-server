@@ -13,7 +13,7 @@
     </div>
   </div>
   <div>
-    <% if @show.status == "voted_users" %>
+    <% if @show.voted_users? %>
       <%= link_to "开放所有关注过演出的用户购买", update_status_operation_show_path(@show, status: 1), method: "post", data: {confirm: "确定开放所有用户购买吗？点击确定后会给所有关注过演出的用户发送消息推送"}, class: "btn btn-default" %>
     <% end %>
 
