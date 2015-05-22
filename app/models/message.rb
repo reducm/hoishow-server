@@ -1,7 +1,7 @@
 include UmengMessage
 class Message < ActiveRecord::Base
   has_many :user_message_relations
-  has_many :target_users, through: :user_message_relation, source: :user
+  has_many :target_users, through: :user_message_relations, source: :user
 
   validates :creator_type, presence: true
   validates :subject_type, presence: true
@@ -69,13 +69,13 @@ class Message < ActiveRecord::Base
   end
 
   def subject
-     begin
+    begin
       Object::const_get(subject_type).where(id: subject_id).first
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       Rails.logger.fatal("subject wrong, topic_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
-     end
+    end
   end
 
   def creator
@@ -90,16 +90,18 @@ class Message < ActiveRecord::Base
 
   def send_umeng_message(users_array, message, get_task_id_fail: "task_id获取失败，消息创建成功，推送发送失败", none_follower: "关注用户数为0，消息创建失败")
     if ( users_array.count > 0 ) &&  message.save!
-      content = message.create_relation_with_users(users_array)
-      task_id = message.android_send_message(content, message.notification_text, message.title, message.content)
-      if task_id
-        message.update!(task_id: task_id)
-        s = "success"
+      if !Rails.env.test?
+        content = message.create_relation_with_users(users_array)
+        task_id = message.android_send_message(content, message.notification_text, message.title, message.content)
+        if task_id
+          message.update!(task_id: task_id)
+          s = "success"
+        else
+          get_task_id_fail 
+        end
       else
-        get_task_id_fail 
+        none_follower
       end
-    else
-      none_follower
     end
   end
 

@@ -27,7 +27,7 @@ class Operation::ShowsController < Operation::ApplicationController
       end
       redirect_to action: :index
     else
-      flash[:error] = @show.errors.full_messages
+      flash[:alert] = @show.errors.full_messages
       redirect_to new_operation_show_url(concert_id: params[:show][:concert_id])
     end
   end
@@ -43,7 +43,7 @@ class Operation::ShowsController < Operation::ApplicationController
     if @show.update!(show_params)
       redirect_to operation_shows_url
     else
-      flash[:error] = @show.errors.full_messages
+      flash[:alert] = @show.errors.full_messages
       render :edit
     end
   end

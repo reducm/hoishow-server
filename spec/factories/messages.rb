@@ -2,12 +2,14 @@
 
 FactoryGirl.define do
   factory :message do
-    type 1
+    send_type "new_concert"
+    notification_text "hahaha"
     title "MyString"
     content "MyText"
     subject_type "MyString"
     subject_id 1
     creator_type "MyString"
     creator_id 1
+    task_id "akfwhehfasdnkhnsdf"
   end
 end

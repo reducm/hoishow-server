@@ -118,7 +118,6 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       @topic = create :topic
       @user.like_topic(@topic)
       get :show, with_key(user: @user, id: @topic.id, format: :json)
-      binding.pry
       expect(response.body).to include("creator")
       expect(response.body).to include("content")
       expect(response.body).to include("comments")

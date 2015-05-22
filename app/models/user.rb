@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   has_many :like_topics, through: :user_like_topics, source: :topic
 
   has_many :user_message_relations
-  has_many :user_messages, through: :user_message_relation, source: :message
+  has_many :user_messages, through: :user_message_relations, source: :message
 
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
 
@@ -94,12 +94,19 @@ class User < ActiveRecord::Base
   end
 
   def create_comment(topic, parent_id = nil, content)
-    comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
+    comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
     if parent_id 
       #回覆评论
-      Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: parent_id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
+      message = Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: parent_id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
+      create_relation_with_messages(message)
     end
-    Message.create(send_type: "topic_reply", creator_type: "Topic", creator_id: topic.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
+    create_relation_with_messages(message)
+    message = Message.create(send_type: "topic_reply", creator_type: "Topic", creator_id: topic.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
+    comment
+  end
+
+  def create_relation_with_messages(message)
+    user_message_relations.where(message: message).first_or_create!
   end
 
   def vote_concert(concert, city)
