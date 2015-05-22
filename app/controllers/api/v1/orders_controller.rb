@@ -1,7 +1,7 @@
 class Api::V1::OrdersController < Api::V1::ApplicationController
-  before_action :check_login!, except: [:show_to_ticket_checker]
-  before_action :check_admin_validness!, only: [:show_to_ticket_checker]
-  skip_before_filter :api_verify, only: [:show_to_ticket_checker]
+  before_action :check_login!, except: [:show_for_qr_scan]
+  before_action :check_admin_validness!, only: [:show_for_qr_scan]
+  skip_before_filter :api_verify, only: [:show_for_qr_scan]
 
   def index
     @orders = @user.page_orders
@@ -11,7 +11,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
     @order = @user.orders.where(out_id: params[:id]).first
   end
 
-  def show_to_ticket_checker
+  def show_for_qr_scan
     @order = Order.where(out_id: params[:out_id]).first
   end
 

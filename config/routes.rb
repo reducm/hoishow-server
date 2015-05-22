@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
-      get 'orders/:out_id', :to => 'orders#show_to_ticket_checker'
+      get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
 
       resources :admins do
         collection do
