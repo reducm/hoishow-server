@@ -95,6 +95,11 @@ class User < ActiveRecord::Base
 
   def create_comment(topic, parent_id = nil, content)
     comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
+    if parent_id 
+      #回覆评论
+      Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: parent_id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
+    end
+    Message.create(send_type: "topic_reply", creator_type: "Topic", creator_id: topic.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
   end
 
   def vote_concert(concert, city)

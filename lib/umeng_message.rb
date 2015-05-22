@@ -112,7 +112,7 @@ module UmengMessage
     end
   end
 
-      #alias: "18633038302, 13538945670",
+      #alias: "18633038302, 13538945670, 14718070850",
       #alias: "13929555038, 17243576689",
   #TODO alias_str
   def send_message(alias_str = "18633038302,", title = "hoishow_test", text = "test_text")

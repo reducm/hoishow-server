@@ -43,6 +43,8 @@ class Operation::TopicsController < Operation::ApplicationController
       @comment.content = params[:content]
       if params[:parent_id]
         @comment.parent_id = params[:parent_id]
+        #回覆评论
+        Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: @comment.parent_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
       end
 
       if params[:creator] == current_admin.name
@@ -52,6 +54,7 @@ class Operation::TopicsController < Operation::ApplicationController
         @comment.creator_type = 'Star'
         @comment.creator_id = params[:creator]
       end
+      Message.create(send_type: "topic_reply", creator_type: "Topic", creator_id: @topic.id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
       @comment.save!
     end
     render json: {success: true}

@@ -5,9 +5,6 @@ class Message < ActiveRecord::Base
 
   validates :creator_type, presence: true
   validates :subject_type, presence: true
-  validates :content, presence: true
-  validates :title, presence: true
-  validates :notification_text, presence: true
   validates :send_type, presence: true
 
   paginates_per 20
@@ -38,6 +35,22 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def subject_show_name
+    case subject_type
+    when 'Concert'
+      subject.name
+    when 'Show'
+      subject.name
+    when 'Star'
+      subject.name
+    when 'Topic'
+      subject.content
+    when 'Comment'
+      subject.content
+    end
+  end
+
+  #creator_type作用是显示头像
   def creator_type_cn
     case creator_type
     when 'All'
@@ -48,6 +61,10 @@ class Message < ActiveRecord::Base
       '关注show的用户'
     when 'Star'
       '关注star的用户'
+    when 'Topic'
+      '回覆topic的用户'
+    when 'Comment'
+      '回覆comment的用户'
     end
   end
 
