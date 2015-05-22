@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe User do
   before('each') do
-    @user = create(:user) 
+    @user = create(:user)
   end
 
   context "test sex enum" do
@@ -55,14 +55,22 @@ describe User do
   end
 
   context "#vote_concert" do
+    before('each') do
+      @concert = create :concert
+      @city = create :city
+    end
+
     it "concert/city should be presence" do
-      user = create(:user)
-      concert = create :concert
-      city = create :city
-      user.vote_concert(concert, city)
-      expect(user.user_vote_concerts.size > 0).to be true
-      expect(user.user_vote_concerts.first.city.present?).to be true
-      expect(user.user_vote_concerts.first.concert.present?).to be true
+      @user.vote_concert(@concert, @city)
+      expect(@user.user_vote_concerts.size > 0).to be true
+      expect(@user.user_vote_concerts.last.city.present?).to be true
+      expect(@user.user_vote_concerts.last.concert.present?).to be true
+    end
+
+    it "should follow concert after vote" do
+      @user.vote_concert(@concert, @city)
+      expect(@user.user_follow_concerts.size > 0).to be true
+      expect(@user.user_follow_concerts.last.concert).to eq @concert
     end
   end
 
@@ -70,7 +78,7 @@ describe User do
     it "like_topic should be ok" do
       user = create(:user)
       topic = create(:topic)
-      user.like_topic(topic) 
+      user.like_topic(topic)
       expect(topic.like_count).to eq 1
       expect(user.like_topics.count).to eq 1
     end
@@ -79,7 +87,7 @@ describe User do
   context "#create_comment" do
     it "should create comment success " do
       comment = create :comment
-      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
+      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")
       expect(@user.comments.count).to eq 1
     end
 
@@ -99,7 +107,7 @@ describe User do
   context "avatar" do
     it "user's avatar should save ok!" do
       file = fixture_file_upload("/about.png", "image/png")
-      @user.avatar = file     
+      @user.avatar = file
       @user.save!
       expect(@user.valid?).to be true
       expect(@user.avatar.url.present?).to be true

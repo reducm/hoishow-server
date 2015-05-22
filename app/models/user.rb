@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   end
 
   def create_comment(topic, parent_id = nil, content)
-    comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: content, creator_type: User.name)
+    comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: content)
     if parent_id 
       #回覆评论
       message = Message.create(send_type: "comment_reply", creator_type: "Comment", creator_id: parent_id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
@@ -110,7 +110,12 @@ class User < ActiveRecord::Base
   end
 
   def vote_concert(concert, city)
+    if vote_concert = user_vote_concerts.where(concert_id: concert.id).first
+      vote_concert.destroy!
+    end
+
     user_vote_concerts.where(concert_id: concert.id, city_id: city.id).first_or_create!
+    user_follow_concerts.where(concert_id: concert.id).first_or_create!
   end
 
   def like_topic(topic)

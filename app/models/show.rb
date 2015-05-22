@@ -33,7 +33,7 @@ class Show < ActiveRecord::Base
 
   def poster_url
     if poster.url.present?
-      if Rails.env.production?      
+      if Rails.env.production?
         poster.url("800")
       else
         poster.url
@@ -65,7 +65,7 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
 
   def topics
-    Topic.where(city_id: city.id, subject_type: Concert.name, subject_id: concert.id)
+    Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
   end
 
   def area_seats_left(area)

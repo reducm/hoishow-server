@@ -11,6 +11,8 @@
 
 type: `GET`
 
+description: 推荐页面banner展示
+
 成功时返回:
 ```javascript
   [banner对象列表] //参考Banner对象
@@ -23,23 +25,11 @@ type: `GET`
 
 type: `GET`
 
-可选参数
-```javascript
-  {
-    mobile: "13512310293",
-    api_token: "ASDKAJSDKASJDLAKSD"
-  }
-```
+description: 推荐页面star列表
 
 成功时返回：
 ```javascript
-  [{
-    id: "123",
-    name: "汪峰",
-    avatar: "http://www.xxx/1.jpg",
-    position: 8, //明星的排序
-    is_followed: false //如果传用户信息，将会返回用户是否关注该明星，否则统一为false
-  }...]
+  [star对象列表] //参考Star对象
 ```
 
 --------
@@ -47,6 +37,8 @@ type: `GET`
 [/api/v1/stars/search]()
 
 type: `GET`
+
+description: star搜索
 
 必选参数
 ```javascript
@@ -57,12 +49,7 @@ type: `GET`
 
 成功时返回：
 ```javascript
-  [{
-    id: "123",
-    name: "汪峰",
-    avatar: "http://www.xxx/1.jpg",
-    position: 8 //明星的排序
-  }...]
+  [star对象列表] //参考Star对象
 ```
 
 ----
@@ -72,11 +59,13 @@ type: `GET`
 
 type: `GET`
 
+description: star详情
+
 可选参数
 ```javascript
   {
     mobile: "13512310293",
-    api_token: "ASDKAJSDKASJDLAKSD"
+    api_token: "ASDKAJSDKASJDLAKSD"   //判断用户是否关注该明星
   }
 ```
 
@@ -92,24 +81,18 @@ type: `GET`
 
 type: `GET`
 
+description: 演出页面众筹列表
+
 可选参数
 ```javascript
   {
-    mobile: "13512310293",
-    api_token: "ASDKAJSDKASJDLAKSD"
     page: "2" //页码
   }
 ```
 
 成功时返回：
 ```javascript
-  [
-    {
-      参照concert对象参数 //此处concert对象的is_show属性全为0（1则表示此concert被隐藏）
-      is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
-      is_vote: false //如果传用户信息，将会返回用户是否投票了该演唱会，否则统一为false
-    }
-  ]
+  [concert对象列表] //参考Concert对象
 ```
 
 ----
@@ -118,27 +101,19 @@ type: `GET`
 
 type: `GET`
 
+description: concert详情
+
 可选参数
 ```javascript
   {
     mobile: "13512310293",
-    api_token: "ASDKAJSDKASJDLAKSD"
+    api_token: "ASDKAJSDKASJDLAKSD"  //判断用户是否关注或者投票
   }
 ```
 
 成功时返回：
 ```javascript
-  {
-    id: "123",
-    name: "汪峰",
-    is_followed: false //如果传用户信息，将会返回用户是否关注该演唱会，否则统一为false
-    is_voted: false //如果传用户信息，将会返回用户是否投票该演唱会，否则统一为false
-    cities: [{参照city对象}],
-    stars: [{参照star对象}],
-    shows: [{参照show对象},...],
-    topics: [{参照topic对象},...],
-    city_rank: [{参照city_rank接口返回的结构}]
-  }
+  {concert对象}
 ```
 
 -----------
@@ -147,12 +122,13 @@ type: `GET`
 
 type: `GET`
 
+description: concert详情里面查看城市投票排名
+
 成功时返回：
 ```javascript
   //按照投票数的由高到低排序
   [{
-    City对象,
-    vote_count: 投票数
+    City对象
   }]
 ```
 
@@ -163,17 +139,18 @@ type: `GET`
 
 type: `GET`
 
-成功时返回
+descrption: 演出页面开show列表
+
+可选参数
 ```javascript
   {
-    shows: [
-      {
-        参照show对象参数
-      }
-    ]
+    page: "2" //页码
   }
-```
 
+成功时返回
+```javascript
+  {{show对象列表}}  // 参考Show对象
+```
 
 
 ----
@@ -182,23 +159,11 @@ type: `GET`
 
 type: `GET`
 
+descrption: show详情
+
 成功时返回：
 ```javascript
-  {
-    id: "123"
-    name: "演出名称"
-    min_price: "100"
-    max_price: "1000"
-    concert_id: "123", //从属演唱会id
-    city_id: "123", //从属城市id
-    stadium_id: "123", //从属场馆id
-    show_time: "201504081428370800"
-    poster: "http://xx.jpg"
-    concert: {参考concert对象}
-    city: {参考city对象}
-    stadium: {参考stadium对象}
-    topics: [ {参考topic对象} ]
-  }
+  {show对象}
 ```
 
 ----
@@ -209,25 +174,12 @@ type: `GET`
 
 type `GET`
 
-必需参数
-```javascript
-  //show的id在url里传递
-```
+descrption: 点击购票后选区
 
 成功时返回
 ```javascript
 {
-  stadium: {
-    Stadium对象Key/Value,
-    areas: [{ //Area价格由低到高排序
-      id: area_id,
-      name: 区名,
-      seats_count: 座位总数,
-      seats_left: 座位剩余,
-      is_sold_out: 是否售完true or false，
-      price: 该场show在此区域的售价, float类型,
-    }....]
-  },
+  stadium: {stadium对象}
   show: {Show对象}
 }
 ```
@@ -240,20 +192,20 @@ type `GET`
 
 type: `GET`
 
+description: star/concert/show任一详情页面的互动列表
+
 可选参数
 ```javascript
   {
     page: "2" //页码, 默认是1
-    subject_type: "star's name" or "concert's name" //若不指定subject默认返回全部topic
+    subject_type: 'Star/Concert/Show' //若不指定subject默认返回全部topic
     subject_id: star's id or concert's id //若不指定subject默认返回全部topic
   }
 ```
 
 成功时返回
 ```javascript
-  {
-    topics: [{参照topic对象},...]
-  }
+  {[topic对象列表]}
 ```
 
 ----
@@ -263,40 +215,16 @@ type: `GET`
 
 type: `GET`
 
+description: 互动详情以及评论列表
+
 成功时返回：
 ```javascript
-  {
-    参考Topic对象的key/value
-    comments: [{参照comment对象},...],
-  }
+  {topic对象}
 ```
 
 ------------
 
-## 评论列表
-
-[/api/v1/comments/]()
-
-type: `GET`
-
-可选参数
-```javascript
-  {
-    topic_id: 2, //返回指定topic的comments
-    page: "2" //页码
-  }
-```
-
-成功时返回
-```javascript
-  {
-    comments: [{参照comment对象},...]
-  }
-```
-
-------------
-
-## 城市列表
+## 城市列表(暂时不用)
 
 [/api/v1/cities/]()
 
@@ -339,8 +267,9 @@ type: `GET`
 ```javascript
   {
     id: 2,
-    name: "小汪",
-    avatar: "明星的头像地址",
+    name:  //Star名称,
+    avatar:  //明星的头像地址,
+    poster:  //海报url,
     position: 8, //明星的排序
     status_cn: "开售中" or "投票中" or "无演出"
     description: "图文描述URL"
@@ -349,7 +278,7 @@ type: `GET`
     concerts: [{Concert对象},...],//当need_concerts不为false的时候
     shows: [{Show对象},...],//当need_shows不为false的时候
     topics: [{Topic对象},...],//当need_topics不为false的时候
-    video: {Video对象}, //明星没有主视频时返回{}
+    video: {Video对象}, //明星没有主视频时返回null
   }
 ```
 
@@ -357,44 +286,46 @@ type: `GET`
 ```javascript
 {
   id: concert_id,
-  name: "Concert名称",
-  description: "图文描述的url",
-  start_date: "众筹开始时间",
-  end_date: "众筹结束时间"
-  poster: "海报url",
-  status: "voting(众筹中) or finished(众筹结束)"
-  followers_count: "关注数",
-  shows_count: "演唱会数目",
-  voters_count: "投票人数",
-  is_followed: "是否被关注",
-  is_voted: "是否被投票",
-  is_show: "是否显示"
-  voted_city: {City对象},//被投票的城市
-  stars: {Star对象},//当need_stars不为false的时候
-  topics: {Topic对象},//当need_topics不为false的时候
-  shows: {Show对象}//当need_shows不为false的时候
+  name: //Concert名称,
+  description: //图文描述的url,
+  start_date: //众筹开始时间,
+  end_date:  //众筹结束时间,
+  poster: //海报url,
+  status: //voting(众筹中)/finished(众筹结束),
+  followers_count:  //关注数,
+  shows_count:  //演唱会数目,
+  voters_count: //投票人数,
+  is_followed: //是否被关注,
+  is_voted: //是否被投票,
+  voted_city: {City对象}, //用户登录时对本concert投过票的城市
+  stars: [Star对象列表], //当need_stars不为false的时候
+  topics: [Topic对象列表], //当need_topics不为false的时候
+  shows: [Show对象列表]  //当need_shows不为false的时候
 }
 ```
 
 ## Show对象
 ```javascript
 {
-  id: show_id,
-  name: "Show名称",
-  min_price: "最小价格",
-  max_price: "最高价格",
-  concert_id: "concert_id",
-  city_id: "city_id",
-  stadium_id: "stadium_id",
-  show_time: "开show时间",
-  poster: "海报url",
-  description: "图文介绍的url",
-  is_followed: "是否被关注",
-  is_voted: "是否被投票"
-  status: "show的状态，开放给所有用户购买或者只开放给参与里投票的用户购买"
-  concert: {concert对象},
-  city: {city对象},
-  stadium: {stadium对象}
+  id:  //show_id,
+  name:  //Show名称,
+  concert_id:  //concert_id,
+  concert_name:  //concert名称,
+  city_id:  //city_id,
+  city_name: //city名称,
+  stadium_id:  //stadium_id,
+  stadium_name: //stadium名称,
+  show_time:  //开show时间,
+  poster:  //海报url,
+  description:  //图文介绍的url,
+  is_followed:  //是否被关注,
+  is_voted:  //是否被投票,
+  voters_count: //投票数,
+  status:  // voted_users(投票用户购买)/all_users(所有用户购买)
+  concert: {concert对象},  //当need_concert不为false的时候
+  city: {city对象},  //当need_city不为false的时候
+  stadium: {stadium对象},  //当need_stadium不为false的时候
+  topics: [topic对象列表]  //当need_topics不为false的时候
 }
 ```
 
@@ -405,6 +336,7 @@ type: `GET`
   pinyin: "城市名称的拼音",
   name: "城市名字",
   code: "城市代码",
+  vote_count: 0   //请求城市排名的时候才有
 }
 ```
 
@@ -416,8 +348,9 @@ type: `GET`
   address: "场馆地址",
   longitude: "经度",
   latitude: "维度",
-  city: {City对象},
+  city: {City对象}, //当need_city不为false的时候
   pic: "场馆的图片"
+  area: [area对象列表] //当need_areas不为false的时候
 }
 ```
 
@@ -431,6 +364,7 @@ type: `GET`
   subject_type: "Star or Concert", //话题的主体
   subject_id: "star_id or concert_id", //话题的主体id
   creator:  {
+    id: ID
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
@@ -440,6 +374,7 @@ type: `GET`
   created_at: "话题创建时间",
   is_top: "true or false", //是否置顶
   is_liked: "true or false"//是否点赞过
+  comments: [comment对象列表]
 }
 ```
 
@@ -449,7 +384,6 @@ type: `GET`
   id: comment_id,
   topic_id: "话题的id",
   parent_id: "如果有回复的话，此为被回复comment的id",
-  topic: 参照topic对象,
   parent_comment: 参照comment对象,
   content: "评论",
   creator:  {
@@ -466,10 +400,10 @@ type: `GET`
 {
   out_id: 123,
   amount: 99.9,
-  show: Show对象,
-  concert: Concert对象,
-  stadium: Stadium对象,
-  city: City对象,
+  show: Show对象,  //当need_show不为false时
+  concert: Concert对象, //当need_concert不为false时
+  stadium: Stadium对象, //当need_stadium不为false时
+  city: City对象,  //当need_city不为false时
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -479,10 +413,10 @@ type: `GET`
   city_name: "城市名字",
   city_id: 123, //城市id
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
-  tickets: [{Ticket对象1},{Ticket对象2}...],
+  tickets: [tickets对象列表],
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
-  valid_time: "201504102140270000"
+  valid_time: "201504102140270000"  //15分钟过期
 }
 ```
 
@@ -491,11 +425,13 @@ type: `GET`
 ```javascript
 {
   name: "A区",
-  seats_count: 11,
+  seats_count: 11, //座位数
   stadium_id: 22, //场馆id
-  stadium: {stadium对象},
   created_at: "201504102140270000",
-  updated_at: "201504102140270000"
+  updated_at: "201504102140270000",
+  price: 1,  //票价
+  seats_left: 10,  //剩余票数
+  is_sold_out: false   //是否卖完
 }
 ```
 
@@ -507,8 +443,8 @@ type: `GET`
   area_id: 11, //区域id
   show_id: 22, //演出id
   price: 99.00, //价格
-  code: “二维码”
-  status: "pending" or "success" or "used", //"pending": 未支付，没有二维码, "success": 可用, "used": 已用
+  code: 'xsdadasdxxdasd'  //票码
+  status: "pending" or "success" or "used", //"pending": 未支付，没有code, "success": 可用, "used": 已用
   created_at: "201504102140270000",
   updated_at: "201504102140270000"
 }
@@ -520,10 +456,10 @@ type: `GET`
 {
   id: 1,
   poster: "poster_url",
-  subject_type: "Star or Show or Concert or Article",
-  subject_id: "subject的id", //
+  subject_type:  //Star or Show or Concert or Article,
+  subject_id:  //当subject_type是Article的时候为null
   subject: {Star or Show or Concert对象},
-  description: "当subject_type是Article的时候, description是图文链接的url"
+  description:  //当subject_type是Article的时候才有, description是图文链接的url
 }
 ```
 

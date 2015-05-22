@@ -136,8 +136,12 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     begin
       @concert = Concert.where(id: params[:concert_id]).first
       @city = City.where(id: params[:city_id]).first
-      @user.vote_concert(@concert, @city)
-      render json: {msg: "ok"}, status: 200
+      if Show.where(concert_id: @concert.id, city_id: @city.id).first
+        return error_json("已经开show的城市不能投票")
+      else
+        @user.vote_concert(@concert, @city)
+        render json: {msg: "ok"}, status: 200
+      end
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
       return error_json("vote fail, #{$@}")

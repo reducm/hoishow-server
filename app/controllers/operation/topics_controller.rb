@@ -93,6 +93,8 @@ class Operation::TopicsController < Operation::ApplicationController
       topic.subject.stars
     when Topic::SUBJECT_STAR
       Star.where(id: topic.subject_id)
+    when Topic::SUBJECT_SHOW
+      topic.subject.stars
     end
   end
 end

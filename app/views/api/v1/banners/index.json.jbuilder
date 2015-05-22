@@ -1,3 +1,1 @@
-json.array! @banners do |banner|
-  json.partial! "banner", locals: {banner: banner}
-end
+json.array! @banners, partial: "banner", as: :banner

@@ -1,6 +1,1 @@
-json.partial! "api/v1/shows/show", { show: @show }
-json.topics do
-  json.array! @show.topics.limit(20) do |topic|
-    json.partial! "api/v1/topics/topic", {topic: topic}
-  end
-end
+json.partial! "api/v1/shows/show", show: @show, need_concert: true, need_stadium: true, need_topics: true, need_city: true
