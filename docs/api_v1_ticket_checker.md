@@ -39,6 +39,13 @@ type: `GET`
 
 必须参数 Order的out_id在url传
 
+```javascript
+  {
+    admin_id: "2", //验票员id
+  }
+
+```
+
 成功时返回Order对象:
 ```javascript
   {参考Order对象}

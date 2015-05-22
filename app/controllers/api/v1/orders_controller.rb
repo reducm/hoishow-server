@@ -11,7 +11,13 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
   end
 
   def show_to_ticket_checker
-    @order = Order.where(out_id: params[:out_id]).first
+    if admin = Admin.find(params[:admin_id]) rescue nil
+      if admin.admin_type != "ticket_checker" 
+        error_json "账户无验票权限"
+      else
+        @order = Order.where(out_id: params[:out_id]).first
+      end
+    end
   end
 
   def pay

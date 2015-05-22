@@ -25,17 +25,28 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
   end
 
   context "#show_to_ticket_checker" do
-    it "show should return tickets" do
+    it "should return tickets" do
       @order = Order.first
       3.times { create(:show_area_relation) }
       @order.set_tickets_and_price(ShowAreaRelation.all)
       @order.set_tickets
-      
-      get :show_to_ticket_checker, out_id: @order.out_id, format: :json
+      @admin = create(:admin, admin_type: 2)
+
+      get :show_to_ticket_checker, admin_id: @admin.id, out_id: @order.out_id, format: :json
       expect(assigns(:order)).to eq @order
       expect(response.body).to include("tickets") 
       expect(JSON.parse(response.body)["tickets"].count > 0).to be true
     end
-  end
 
+    it "should fail if admin is not ticket-checker" do
+      @order = Order.first
+      3.times { create(:show_area_relation) }
+      @order.set_tickets_and_price(ShowAreaRelation.all)
+      @order.set_tickets
+      @admin = create(:admin, admin_type: 1)
+
+      get :show_to_ticket_checker, admin_id: @admin.id, out_id: @order.out_id, format: :json
+      expect(response.status).to eq 403 
+    end
+  end
 end
