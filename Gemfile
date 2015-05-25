@@ -1,6 +1,7 @@
 #encoding: UTF-8
 source 'http://ruby.taobao.org'
 
+gem 'httpi'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'

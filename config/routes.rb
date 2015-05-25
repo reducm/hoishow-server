@@ -8,6 +8,15 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
+      get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
+
+      resources :admins do
+        collection do
+          post "sign_in"
+          patch "check_tickets"
+        end
+      end
+
       resources :users do
         collection do
           post "verification"
@@ -119,6 +128,7 @@ Rails.application.routes.draw do
       end
     end
     resources :tickets
+    resources :messages
     resources :cities, only: [:index]
     resources :stadiums, except: [:show, :destroy] do
       member do

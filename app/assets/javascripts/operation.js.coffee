@@ -17,6 +17,7 @@
 #= require operation/users
 #= require operation/cities
 #= require operation/tickets
+#= require operation/messages
 #= require operation/stadiums
 #= require operation/startup
 #= require dataTables/jquery.dataTables
