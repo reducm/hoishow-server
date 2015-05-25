@@ -24,7 +24,7 @@
 
   <div class="form-group">
     <%= fields_for :videos do |video| %>
-      <%= video.label :source, "艺人视频" %>
+      <%= video.label :source, "艺人视频(单个文件最大30m，只支持mp4格式)" %>
       <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
      <% end %>
   </div>
