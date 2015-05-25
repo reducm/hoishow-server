@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       resources :comments
       resources :cities
       resources :stadiums
+      resources :messages
       resources :tickets
       resources :areas
       resources :orders, only: [:index, :show] do
