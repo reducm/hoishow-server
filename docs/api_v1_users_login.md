@@ -321,4 +321,25 @@ type `GET`
 ```javascript
   Order对象
 ```
+-----------
+
+## 查看订单详情
+[/api/v1/messages]()
+
+type `GET`
+
+必需参数
+```javascript
+  url携带order out_id参数
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    type: "system/reply",   #系统消息或者是回复的消息
+  }
+```
+
+成功时返回
+```javascript
+  Message对象
+```
 
