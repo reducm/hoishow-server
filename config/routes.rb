@@ -127,6 +127,11 @@ Rails.application.routes.draw do
         delete :del_area
       end
     end
+    resources :startup, except: [:new, :show, :edit] do
+      member do
+        post :set_startup_status
+      end
+    end
     #TODO api_auth
   end
 
