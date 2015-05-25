@@ -14,7 +14,9 @@ $ ->
     else
       $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#creator").val()}, (data)->
         if data.success
-          $("#replyModal").modal('newModal')
+          $("#replyModal").modal('toggle')
+          $('body').removeClass('modal-open')
+          $('.modal-backdrop').remove()
           refresh_comments_list(topic_id)
       ) # 新建comment
 
@@ -29,7 +31,9 @@ $ ->
       else
         $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val(), parent_id: $("#parent_id").val()}, (data)->
           if data.success
-            $("#replyModal").modal('hide')
+            $("#replyModal").modal('toggle')
+            $('body').removeClass('modal-open')
+            $('.modal-backdrop').remove()
             refresh_comments_list(topic_id)
         )  # 回复comment
 
