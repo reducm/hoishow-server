@@ -84,6 +84,11 @@
             <% end %>
           </li>
           <li>
+            <%= link_to operation_startup_index_path do %>
+              <i class="fa fa-mobile fa-fw"></i> 启动页管理
+            <% end %>
+          </li>
+          <li>
             <a href="#"><i class="fa fa-cog fa-fw"></i> 系统管理 <span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <% if can? :manage, current_admin %>

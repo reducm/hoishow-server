@@ -13,4 +13,5 @@
 //= require jquery
 //= require jquery_ujs
 //= require dataTables/jquery.dataTables
+//= require jquery-fileupload/basic
 //= require_tree .
