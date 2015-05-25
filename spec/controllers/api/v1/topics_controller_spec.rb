@@ -118,8 +118,10 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
 
   context "#show" do
     it "should has attributes" do
+      @user = create :user
       @topic = create :topic
-      get :show, with_key(id: @topic.id, format: :json)
+      @user.like_topic(@topic)
+      get :show, with_key(user: @user, id: @topic.id, format: :json)
       expect(response.body).to include("creator")
       expect(response.body).to include("content")
       expect(response.body).to include("comments")

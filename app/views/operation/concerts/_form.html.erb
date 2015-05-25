@@ -5,6 +5,7 @@
   <%= f.input :status, label: "投票状态", as: :select, default: ( params[:action] == 'edit' ? concert.status_cn : "投票中" ), collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
   <%= f.input :is_show, label: "显示状态", as: :select, default: ( params[:action] == 'edit' ? concert.is_show_cn : "显示中" ), collection: [["显示中", "showing"], ["隐藏中", "hidden"]] %>
   <%= f.input :poster, label: "演出海报" %>
+  <%= hidden_field_tag "star_id",  params[:star_id] %>
   <%= image_tag(concert.poster_url, size: "700x500") if concert.poster_url %>
   <%= f.kindeditor :description %>
   <%= f.button :submit, "确认更新" %>

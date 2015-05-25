@@ -18,7 +18,7 @@ class Operation::ConcertsController < Operation::ApplicationController
     if @concert.update(concert_attributes)
       redirect_to operation_concerts_url
     else
-      flash[:error] = @concert.errors.full_messages
+      flash[:alert] = @concert.errors.full_messages
       render :edit
     end
   end
@@ -29,12 +29,19 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def create
     @concert = Concert.new(concert_attributes)
-    if @concert.save
-      redirect_to action: :index
+    star = Star.find(params[:star_id])
+    if @concert.save && star
+      star.hoi_concert(@concert)
+      users_array = star.followers
+      message = Message.new(send_type: "new_concert", creator_type: "Star", creator_id: star.id, subject_type: "Concert", subject_id: @concert.id, notification_text: "你关注的艺人发布了一个新的演出众筹", title: "新的演出众筹", content: "#{star.name}刚刚发布了一个新的演出众筹，还等什么，快来投票吧！")
+      if ( result = message.send_umeng_message(users_array, message, none_follower: "演出创建成功，但是因为艺人粉丝数为0，所以消息创建失败")) != "success"
+        flash[:alert] = result
+      end
+
     else
-      flash[:error] = @concert.errors.full_messages
-      render :new
+      flash[:alert] = @concert.errors.full_messages
     end
+    redirect_to action: :index
   end
 
   def refresh_map_data
