@@ -9,11 +9,12 @@
       <%= simple_form_for [:operation, @show] do |f| %>
         <%= f.input :is_display, label: "是否显示" %>
         <%= f.input :name, label: "演出名称" %>
+        <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", label: "票的类型"%>
         <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
         <%= f.input :poster, label: "演出海报" %>
         <%= f.kindeditor :description %>
         <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
-        <%= f.input :stadium_id, as: :select, input_html: {id: "show_stadium_select"} %>
+        <%= f.input :stadium_id, required: false, as: :select, input_html: {id: "show_stadium_select"} %>
         <%= f.hidden_field :concert_id, value: @concert.id %>
         <%= f.button :submit, "保存" %>
       <% end %>

@@ -322,6 +322,7 @@ type: `GET`
   is_voted:  //是否被投票,
   voters_count: //投票数,
   status:  // voted_users(投票用户购买)/all_users(所有用户购买)
+  ticket_type:  // 分成实体票与电子票两种
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
   stadium: {stadium对象},  //当need_stadium不为false的时候
