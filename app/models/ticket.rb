@@ -32,8 +32,7 @@ class Ticket < ActiveRecord::Base
   def generate_code
     if self.code.blank?
       loop do
-        random_num = Time.now.to_ms
-        code = id.to_s(16) + random_num.to_s(16)
+        code = SecureRandom.hex(4)
         if Ticket.where(code: code).blank?
           self.update_attributes({
             code: code

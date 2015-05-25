@@ -8,6 +8,15 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
+      get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
+
+      resources :admins do
+        collection do
+          post "sign_in"
+          patch "check_tickets"
+        end
+      end
+
       resources :users do
         collection do
           post "verification"
@@ -126,6 +135,11 @@ Rails.application.routes.draw do
         get :refresh_areas
         post :submit_area
         delete :del_area
+      end
+    end
+    resources :startup, except: [:new, :show, :edit] do
+      member do
+        post :set_startup_status
       end
     end
     #TODO api_auth

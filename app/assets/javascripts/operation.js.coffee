@@ -19,9 +19,21 @@
 #= require operation/tickets
 #= require operation/messages
 #= require operation/stadiums
+#= require operation/startup
 #= require dataTables/jquery.dataTables
 #= require operation/notify
+#= require jquery-fileupload/basic
 
 #= require operation/jquery.datetimepicker
 
+#datetimepicker
+$ ->
+  $('div.datetimepicker input').datetimepicker({
+    timepicker: false,
+    format: 'd M Y',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    scrollInput: false
+    })
 

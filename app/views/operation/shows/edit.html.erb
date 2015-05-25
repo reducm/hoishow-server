@@ -13,7 +13,7 @@
     <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
     <%= f.input :ticket_type, label: "票的类型", collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: @show.ticket_type_cn, disabled: true %>
     <%= f.input :poster, label: "演出海报" %>
-    <%= image_tag(show.poster_url, size: "700x500") if @show.poster_url %>
+    <%= image_tag(@show.poster_url, size: "700x500") if @show.poster_url %>
     <%= f.kindeditor :description %>
     <%= f.association :city, label_method: :name, value_method: :id, disabled: true %>
     <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true %>

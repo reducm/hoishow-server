@@ -228,6 +228,14 @@ ActiveRecord::Schema.define(version: 20150525083531) do
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
 
+  create_table "startups", force: :cascade do |t|
+    t.string   "pic",        limit: 255
+    t.datetime "valid_time"
+    t.boolean  "is_display", limit: 1,   default: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.integer  "area_id",         limit: 4
     t.integer  "show_id",         limit: 4
