@@ -90,6 +90,18 @@ describe User do
       @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")
       expect(@user.comments.count).to eq 1
     end
+
+    it "should create message success " do
+      comment = create :comment
+      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
+      expect(@user.messages.count).to eq 2
+    end
+
+    it "should create message success " do
+      comment = create :comment
+      @user.create_comment(create(:topic), nil, "fuck jassssssssss")     
+      expect(@user.messages.count).to eq 1
+    end
   end
 
   context "avatar" do

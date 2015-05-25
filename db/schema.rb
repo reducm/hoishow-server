@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514065849) do
+ActiveRecord::Schema.define(version: 20150520075133) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -100,6 +100,21 @@ ActiveRecord::Schema.define(version: 20150514065849) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "city_id",    limit: 4
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer  "send_type",         limit: 4
+    t.string   "title",             limit: 255
+    t.text     "content",           limit: 65535
+    t.string   "subject_type",      limit: 255
+    t.integer  "subject_id",        limit: 4
+    t.string   "creator_type",      limit: 255
+    t.integer  "creator_id",        limit: 4
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "notification_text", limit: 255
+    t.string   "link_url",          limit: 255
+    t.string   "task_id",           limit: 255
   end
 
   create_table "orders", force: :cascade do |t|
@@ -278,6 +293,16 @@ ActiveRecord::Schema.define(version: 20150514065849) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
   end
+
+  create_table "user_message_relations", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "message_id", limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "user_message_relations", ["message_id"], name: "index_user_message_relations_on_message_id", using: :btree
+  add_index "user_message_relations", ["user_id"], name: "index_user_message_relations_on_user_id", using: :btree
 
   create_table "user_vote_concerts", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
