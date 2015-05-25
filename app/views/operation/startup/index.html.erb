@@ -12,7 +12,13 @@
           <tr><td colspan='2'><%= image_tag(startup.pic_url, size: '300x500') if startup.pic_url %></td></tr>
           <tr>
             <td>广告有效期至</td>
-            <td class="text-right"><%= link_to "设为启动图片", set_startup_status_operation_startup_path(startup), method: 'post' %></td>
+            <td class="text-right">
+              <% if startup.is_display %>
+                <%= link_to "取消设定", set_startup_status_operation_startup_path(startup), method: 'post' %>
+              <% else %>
+                <%= link_to "设为启动图片", set_startup_status_operation_startup_path(startup, is_display: 1), method: 'post' %>
+              <% end %>
+            </td>
           </tr>
           <tr>
             <td>
