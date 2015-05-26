@@ -38,6 +38,8 @@ Rails.application.routes.draw do
 
       resources :banners
 
+      resources :startup
+
       resources :stars do
         collection do
           get "search"
