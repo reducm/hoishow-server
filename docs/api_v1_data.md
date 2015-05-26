@@ -4,7 +4,26 @@
 1. 所有api请求时，url后需要带`.json`
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
-----
+--------
+
+## 启动页广告
+[/api/v1/startup]()
+
+type: `GET`
+
+description: 启动时的欢迎页面
+
+成功时返回:
+```javascript
+  {
+    id: 1 //启动页id,
+    pic: 'xxxxx' //图片地址,
+    valid_time: 1231231 //图片有效期时间戳
+  }
+```
+
+
+--------
 
 ## Banner列表
 [/api/v1/banners]()

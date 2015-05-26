@@ -16,15 +16,21 @@ class Operation::StartupController < Operation::ApplicationController
 
   def update
     if @startup.update(startup_params)
+      flash[:notice] = '设置图片有效期成功'
       redirect_to operation_startup_index_url
     end
   end
 
   def set_startup_status
     Startup.update_all(is_display: 0)
-    @startup.update(is_display: 1)
 
-    flash[:notice] = '设置启动图片成功'
+    if params[:is_display]
+      @startup.update(is_display: 1)
+      flash[:notice] = '设置启动图片成功'
+    else
+      flash[:notice] = '取消设置成功'
+    end
+
     redirect_to operation_startup_index_url
   end
 
