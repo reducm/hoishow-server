@@ -198,12 +198,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       else
         @order = @user.orders.init_from_show(@show)
         @order.set_tickets_and_price(relations)
+        @order.update(user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
         @relation.reload
         if @show.area_seats_left(@relation.area) == 0
           @relation.update_attributes(is_sold_out: true)
         end
       end
     end
+
+    Express.create(user_id: @user.id, user_name: @order.user_name, user_mobile: @order.user_mobile, user_address: @order.user_address)
+
   end
 
   protected

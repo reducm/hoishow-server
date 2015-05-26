@@ -432,6 +432,10 @@ type: `GET`
   show_id: 123, //演出id
   city_name: "城市名字",
   city_id: 123, //城市id
+  express_id: "97698906987", //快递单号
+  user_name: "tom", //用户真实姓名
+  user_mobile: "11012013099", //用户电话
+  user_address: "广东省广州市越秀区不是鸠路", //用户地址
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   tickets: [tickets对象列表],
   created_at: "201504102140270000",

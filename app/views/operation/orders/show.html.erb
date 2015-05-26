@@ -1,0 +1,80 @@
+<div class="nav">
+  <h1 class="pull-left">订单详情</h1>
+  <%= hidden_field_tag "order_id", @order.id %>
+</div>
+<div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td>订单号</td>
+        <td><%= @order.out_id %></td>
+      </tr>
+      <tr>
+        <td>演出名称</td>
+        <td><%= @order.show_name %></td>
+      </tr>
+      <tr>
+        <td>场馆</td>
+        <td><%= @order.stadium_name %></td>
+      </tr>
+      <tr>
+        <td>城市</td>
+        <td><%= @order.city_name %></td>
+      </tr>
+      <tr>
+        <td>订单状态</td>
+        <td><%= @order.status_cn %></td>
+      </tr>
+      <tr>
+        <td>总价</td>
+        <td><%= @order.amount %></td>
+      </tr>
+      <% show = @order.show%>
+      <tr>
+        <td>门票类型</td>
+        <td><%= show.ticket_type_cn%></td>
+      </tr>
+      <% if show.ticket_type == "r_ticket" %>
+        <tr>
+          <td>快递单号</td>
+          <td>
+            <%= @order.express_id%>
+            <button data-toggle="modal" data-target="#express_id" class="btn btn-info" >修改单号</button>
+          </td>
+        </tr>
+        <tr>
+          <td>用户真实姓名</td>
+          <td><%= @order.user_name%></td>
+        </tr>
+        <tr>
+          <td>用户地址</td>
+          <td><%= @order.user_address%></td>
+        </tr>
+        <tr>
+          <td>用户手机</td>
+          <td><%= @order.user_mobile%></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+</div>
+
+<div class="modal fade" id="express_id">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">请输入快递单号</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <div class="form-group">
+            <%= text_area_tag "express_content", nil, class: 'form-control' %>
+          </div>
+          <%= submit_tag "确认修改", class: 'btn btn-primary change_express_content' %>
+        <% end %>
+      </div>
+      
+    </div>
+  </div>
+</div>

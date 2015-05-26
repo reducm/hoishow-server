@@ -10,5 +10,16 @@ $ ->
   if $(".orders_list").length > 0
     $(".orders").dataTable()
 
-#票码弹出
-  $("[data-toggle='popover']").popover({html : true})
+#修改快递单号
+  $("#express_id").on "click", ".change_express_content", (e) ->
+    e.preventDefault()
+    order_id = $("#order_id").val()
+    content = $("#express_content").val()
+    if content.length < 1
+      alert("不能发空回复")
+    else
+      $.post("/operation/orders/#{order_id}/update_express_id", {content: content }, (data)->
+        if data.success
+          location.reload()
+      )
+

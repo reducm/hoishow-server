@@ -223,6 +223,9 @@ type `POST`
     mobile: "users mobile",
     show_id: "Show的id",
     area_id: area的id,
+    user_name: "收货人名字",
+    user_mobile: "收货人的电话",
+    user_address: "收货人地址",
     quantity: 3 //购买数量
   }
 ```

@@ -442,7 +442,6 @@ describe Api::V1::UsersController do
       expect(response.body).to include("city")
       expect(response.body).to include("status")
       expect(response.body).to include("tickets")
-      #ap JSON.parse response.body
     end
   end
 
