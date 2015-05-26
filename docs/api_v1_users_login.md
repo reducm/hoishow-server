@@ -225,7 +225,10 @@ type `POST`
     area_id: area的id,
     user_name: "收货人名字",
     user_mobile: "收货人的电话",
-    user_address: "收货人地址",
+    user_address: "收货人地址(除了省,市,区之外的地址)",
+    province: "收货地址的省",
+    city: "收货地址的市",
+    district: "收货地址的区",
     quantity: 3 //购买数量
   }
 ```
