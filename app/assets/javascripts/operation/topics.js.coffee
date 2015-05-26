@@ -14,10 +14,7 @@ $ ->
     else
       $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#creator").val()}, (data)->
         if data.success
-          $("#replyModal").modal('toggle')
-          $('body').removeClass('modal-open')
-          $('.modal-backdrop').remove()
-          refresh_comments_list(topic_id)
+          location.reload()
       ) # 新建comment
 
   $(".comments_list").on "click", ".reply_btn", ()->
@@ -31,15 +28,12 @@ $ ->
       else
         $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val(), parent_id: $("#parent_id").val()}, (data)->
           if data.success
-            $("#replyModal").modal('toggle')
-            $('body').removeClass('modal-open')
-            $('.modal-backdrop').remove()
-            refresh_comments_list(topic_id)
+            location.reload()
         )  # 回复comment
 
   $(".comments_list").on "click", ".del_comment", ()->
     if confirm("确定要删除?")
       $.post("/operation/topics/#{topic_id}/destroy_comment", {_method: 'delete', comment_id: $(this).parent().data("id")}, (data)->
         if data.success
-          refresh_comments_list(topic_id)
+          location.reload()
       )  # 删除comment

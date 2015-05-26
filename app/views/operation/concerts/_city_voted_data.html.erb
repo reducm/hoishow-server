@@ -30,7 +30,7 @@
         <h2>互动列表</h2>
         <%= link_to "发布新互动", "javascript:void(0);", class: "add_topic" %>
         <div class="topics">
-          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics}%>
+          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5) }%>
         </div>
       </div>
 
