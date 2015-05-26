@@ -250,7 +250,20 @@ autocomplete_city_name = (concert_id) ->
   }) #城市名自动补全
 
   $("#city_name").autocomplete("option", "appendTo", "#myModal")
+
 $ ->
+  if location.hash
+    $("#concert_edit_tabs a[href='" + location.hash + "']").tab('show')
+    init_map(concert_id) #初始化地图标注
+
+  $("#concert_edit_tabs a").on "click", (e) ->
+    e.preventDefault()
+    $(this).tab('show')
+
+  $("ul.nav-pills > li > a").on "shown.bs.tab", (e) ->
+    id = $(e.target).attr("href").substr(1)
+    location.hash = id
+
   concert_id = $("#concert_id").val()
 
   if concert_id
@@ -300,8 +313,7 @@ $ ->
         else
           $.post("/operation/topics", {topic: {content: content, city_id: city_id, subject_id: concert_id, subject_type: 'Concert'}, creator: $('#topic_creator').val()}, (data)->
             if data.success
-              $("#topicModal").modal('hide')
-              refresh_topic_list(concert_id, city_id)
+              location.reload()
           )
     # 创建topic
 
@@ -317,14 +329,11 @@ $ ->
         else
           $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
             if data.success
-              $("#replyModal").modal('toggle')
-              $('body').removeClass('modal-open')
-              $('.modal-backdrop').remove()
-              refresh_topic_list(concert_id, city_id)
+              location.reload()
           )
     # 回复comment
 
-#concert index select status
+   #concert index select status
   $("#concert_status_select").change ->
     $(".concert_status_cn").parent().show()
     cs = $("#concert_status_select").val()
