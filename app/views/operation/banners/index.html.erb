@@ -1,8 +1,10 @@
 <div class="nav banners_list">
   <div class="nav-top">
-    <h1>Banner列表</h1>
-    <%= link_to "新建Banner", new_operation_banner_path, class: "btn btn-default add-banner" %>
+    <h1 class="pull-left">Banner列表</h1>
   </div>
+
+  <%= link_to "新建Banner", new_operation_banner_path, class: "btn btn-default add-banner" %>
+
   <table class="table table-striped banners" id="banner-table">
     <thead>
       <tr>

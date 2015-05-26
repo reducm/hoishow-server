@@ -41,7 +41,7 @@ class Operation::TopicsController < Operation::ApplicationController
     @comment = @topic.comments.new()
     Comment.transaction do
       @comment.content = params[:content]
-      
+
       if params[:creator] == current_admin.name
         @comment.creator_type = 'Admin'
         @comment.creator_id = current_admin.id
