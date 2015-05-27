@@ -6,6 +6,26 @@
 
 --------
 
+## 物流查询接口
+[/api/v1/express_detail]()
+
+type `GET`
+
+description: 查询顺丰物流详情
+
+必要参数
+```javascript
+   { code: 432423 //快递单号 }
+```
+
+成功时返回
+```javascript
+   { express_url: 'xxxx' //物流查询的h5页面链接 }
+```
+
+
+--------
+
 ## 启动页广告
 [/api/v1/startup]()
 
