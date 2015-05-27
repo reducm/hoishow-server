@@ -22,7 +22,6 @@
 #= require operation/startup
 #= require dataTables/jquery.dataTables
 #= require operation/notify
-#= require jquery-fileupload/basic
 
 #= require operation/jquery.datetimepicker
 
