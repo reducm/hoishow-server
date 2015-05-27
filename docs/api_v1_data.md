@@ -444,6 +444,7 @@ type: `GET`
   concert: Concert对象, //当need_concert不为false时
   stadium: Stadium对象, //当need_stadium不为false时
   city: City对象,  //当need_city不为false时
+  tickets: [tickets对象列表], //当need_tickets不为false时
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -457,7 +458,9 @@ type: `GET`
   user_mobile: "11012013099", //收货人电话
   user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
-  tickets: [tickets对象列表],
+  poster: //海报url
+  tickets_count: //票数
+  show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
   valid_time: "201504102140270000"  //15分钟过期
