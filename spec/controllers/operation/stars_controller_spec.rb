@@ -17,6 +17,13 @@ RSpec.describe Operation::StarsController, :type => :controller do
       expect(response).to render_template :show 
     end
 
+    it "should get star's followers if exist" do
+      user = create(:user)
+      user.follow_star(@star)
+      get :show, id: @star
+      expect(@star.followers.first).to eq user 
+    end
+
     it "should get star's concerts if exist" do
       concert = create(:concert)
       @star.hoi_concert(concert)
