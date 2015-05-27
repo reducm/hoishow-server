@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
       get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
 
+      get "express_detail" => "express_detail#index"
+
       resources :admins do
         collection do
           post "sign_in"
@@ -153,4 +155,5 @@ Rails.application.routes.draw do
   end
 
   get "description", to: "description#show"
+  get "express_detail", to: "express_detail#show"
 end
