@@ -515,3 +515,19 @@ type: `GET`
   snapshot: "截图url",
 }
 ```
+
+## Message对象
+
+```javascript
+{
+  title: 'xxx',
+  content: "截图url",
+  redirect_url: 'xxxxx' //点击message后跳转的url
+  creator:  {
+    id: ID
+    name: "名称",
+    avatar: "头像url",
+    is_admin: "true or false" //是否由运营人员创建
+  }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
+}
+```

@@ -1,5 +1,7 @@
 include UmengMessage
 class Message < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   has_many :user_message_relations
   has_many :users, through: :user_message_relations, source: :user
 
@@ -102,7 +104,7 @@ class Message < ActiveRecord::Base
           message.update!(task_id: task_id)
           s = "success"
         else
-          get_task_id_fail 
+          get_task_id_fail
         end
       else
         none_follower
