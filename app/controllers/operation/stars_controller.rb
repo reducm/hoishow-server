@@ -27,6 +27,7 @@ class Operation::StarsController < Operation::ApplicationController
           flash[:alert] = @video.errors.full_messages.to_sentence
           render action: 'new' and return
         else
+          @video.update(is_main: true)
           redirect_to operation_star_url(@star), notice: '艺人创建成功。'
         end
       else
