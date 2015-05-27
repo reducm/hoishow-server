@@ -1,4 +1,5 @@
 class Operation::StarsController < Operation::ApplicationController
+  before_filter :check_login!
   before_action :get_star, only: [:show, :edit, :update]
   before_action :get_videos, only: [:edit, :update]
   load_and_authorize_resource

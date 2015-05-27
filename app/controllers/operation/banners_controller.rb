@@ -1,4 +1,5 @@
 class Operation::BannersController < Operation::ApplicationController
+  before_filter :check_login!
   def index
     @banners = Banner.all
   end
