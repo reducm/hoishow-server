@@ -20,7 +20,7 @@ class Concert < ActiveRecord::Base
 
   after_create :set_showing_concert_after_create
 
-  scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]) }
+  scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]).order('created_at DESC') }
 
   paginates_per 20
 
@@ -38,7 +38,7 @@ class Concert < ActiveRecord::Base
 
   def poster_url
     if poster.url.present?
-      if Rails.env.production?      
+      if Rails.env.production?
         poster.url("800")
       else
         poster.url

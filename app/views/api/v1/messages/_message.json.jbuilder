@@ -1,4 +1,5 @@
-json.(message, :title, :content, :subject_type, :subject_id)
+json.(message, :title, :content)
+json.redirect_url url_for([:api, :v1, message.subject])
 json.creator do
   json.id message.creator_id
   json.name message.creator_name

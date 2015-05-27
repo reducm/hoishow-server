@@ -1,4 +1,6 @@
 class Ticket < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   STATUS_PENDING = 0
   STATUS_SUCCESS = 1
   STATUS_USED = 2

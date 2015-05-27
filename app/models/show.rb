@@ -1,4 +1,6 @@
 class Show < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   belongs_to :concert
   belongs_to :city
   belongs_to :stadium
@@ -57,7 +59,7 @@ class Show < ActiveRecord::Base
   end
 
   def ticket_type_cn
-    case ticket_type 
+    case ticket_type
     when "e_ticket"
       "电子票"
     when "r_ticket"
