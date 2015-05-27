@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150520075133) do
+ActiveRecord::Schema.define(version: 20150526094448) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -102,6 +102,18 @@ ActiveRecord::Schema.define(version: 20150520075133) do
     t.integer  "city_id",    limit: 4
   end
 
+  create_table "expresses", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4
+    t.string   "user_name",    limit: 255
+    t.string   "user_address", limit: 255
+    t.string   "user_mobile",  limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "province",     limit: 255
+    t.string   "city",         limit: 255
+    t.string   "district",     limit: 255
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer  "send_type",         limit: 4
     t.string   "title",             limit: 255
@@ -133,6 +145,10 @@ ActiveRecord::Schema.define(version: 20150520075133) do
     t.integer  "status",       limit: 4
     t.datetime "created_at",                                        null: false
     t.datetime "updated_at",                                        null: false
+    t.string   "express_id",   limit: 255
+    t.string   "user_address", limit: 255
+    t.string   "user_name",    limit: 255
+    t.string   "user_mobile",  limit: 255
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -183,6 +199,7 @@ ActiveRecord::Schema.define(version: 20150520075133) do
     t.text     "description", limit: 65535
     t.integer  "status",      limit: 4
     t.boolean  "is_display",  limit: 1,                              default: true
+    t.integer  "ticket_type", limit: 4
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
@@ -226,6 +243,14 @@ ActiveRecord::Schema.define(version: 20150520075133) do
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
+
+  create_table "startups", force: :cascade do |t|
+    t.string   "pic",        limit: 255
+    t.datetime "valid_time"
+    t.boolean  "is_display", limit: 1,   default: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
 
   create_table "tickets", force: :cascade do |t|
     t.integer  "area_id",         limit: 4

@@ -21,7 +21,7 @@ class Operation::ShowsController < Operation::ApplicationController
       city = City.find(@show.city_id)
       user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: city.id).pluck(:user_id)
       users_array = User.where("id in (?)", user_ids)
-      message = Message.new(send_type: "new_show", creator_type: "Concert", creator_id: concert.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
+      message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
       end
@@ -64,7 +64,7 @@ class Operation::ShowsController < Operation::ApplicationController
     @show = Show.find(params[:id])
     if @show.update(status: params[:status].to_i)
       users_array = @show.show_followers
-      message = Message.new(send_type: "all_users_buy", creator_type: "Show", creator_id: @show.id, subject_type: "Show", subject_id: @show.id, notification_text: "#{@show.name}已经开放购票啦～", title: "演唱会开放购买通知", content: "你关注的#{@show.name}已经开放购票了，快叫上小伙伴们一起买买买吧！")
+      message = Message.new(send_type: "all_users_buy", creator_type: "Star", creator_id: @show.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "#{@show.name}已经开放购票啦～", title: "演唱会开放购买通知", content: "你关注的#{@show.name}已经开放购票了，快叫上小伙伴们一起买买买吧！")
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
       end
@@ -74,7 +74,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id)
+    params.require(:show).permit(:ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id)
   end
 
   def get_show

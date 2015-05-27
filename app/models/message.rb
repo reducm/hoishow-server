@@ -1,11 +1,16 @@
 include UmengMessage
 class Message < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   has_many :user_message_relations
   has_many :users, through: :user_message_relations, source: :user
 
   validates :creator_type, presence: true
   validates :subject_type, presence: true
   validates :send_type, presence: true
+
+  scope :system_messages, -> { where("subject_type != ?", "Topic") }
+  scope :reply_messages, -> { where("subject_type = ?", "Topic") }
 
   paginates_per 20
 
@@ -35,11 +40,19 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def creator_name
+    if creator.is_a?(User)
+      creator.show_name
+    elsif creator.is_a?(Star) || creator.is_a?(Admin)
+      creator.name
+    end
+  end
+
   def subject_show_name
     case subject_type
     when 'Concert' || 'Show' || 'Star'
       subject.name
-    when 'Topic' || 'Comment'
+    when 'Topic'
       subject.content
     end
   end
@@ -55,10 +68,10 @@ class Message < ActiveRecord::Base
       '关注show的用户'
     when 'Star'
       '关注star的用户'
-    when 'Topic'
-      '回覆topic的用户'
-    when 'Comment'
-      '回覆comment的用户'
+    when 'Admin'
+      '创建comment的管理员'
+    when 'User'
+      '创建comment的用户'
     end
   end
 
@@ -91,7 +104,7 @@ class Message < ActiveRecord::Base
           message.update!(task_id: task_id)
           s = "success"
         else
-          get_task_id_fail 
+          get_task_id_fail
         end
       else
         none_follower

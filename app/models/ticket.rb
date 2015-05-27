@@ -1,4 +1,6 @@
 class Ticket < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   STATUS_PENDING = 0
   STATUS_SUCCESS = 1
   STATUS_USED = 2
@@ -32,8 +34,7 @@ class Ticket < ActiveRecord::Base
   def generate_code
     if self.code.blank?
       loop do
-        random_num = Time.now.to_ms
-        code = id.to_s(16) + random_num.to_s(16)
+        code = SecureRandom.hex(4)
         if Ticket.where(code: code).blank?
           self.update_attributes({
             code: code

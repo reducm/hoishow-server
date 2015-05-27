@@ -1,10 +1,12 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   ORDER_STATUS_PENDING = 0 #待支付
   ORDER_STATUS_PAID = 1 #已支付
   ORDER_STATUS_SUCCESS = 2 #成功出票
   ORDER_STATUS_REFUND = 3 #退款
-  ORDER_STATUS_OUTDATE = 4
+  ORDER_STATUS_OUTDATE = 4 #过期
 
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询

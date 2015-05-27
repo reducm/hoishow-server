@@ -4,7 +4,46 @@
 1. 所有api请求时，url后需要带`.json`
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
-----
+--------
+
+## 物流查询接口
+[/api/v1/express_detail]()
+
+type `GET`
+
+description: 查询顺丰物流详情
+
+必要参数
+```javascript
+   { code: 432423 //快递单号 }
+```
+
+成功时返回
+```javascript
+   { express_url: 'xxxx' //物流查询的h5页面链接 }
+```
+
+
+--------
+
+## 启动页广告
+[/api/v1/startup]()
+
+type: `GET`
+
+description: 启动时的欢迎页面
+
+成功时返回:
+```javascript
+  {
+    id: 1 //启动页id,
+    pic: 'xxxxx' //图片地址,
+    valid_time: 1231231 //图片有效期时间戳
+  }
+```
+
+
+--------
 
 ## Banner列表
 [/api/v1/banners]()
@@ -322,6 +361,7 @@ type: `GET`
   is_voted:  //是否被投票,
   voters_count: //投票数,
   status:  // voted_users(投票用户购买)/all_users(所有用户购买)
+  ticket_type:  // 分成实体票与电子票两种
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
   stadium: {stadium对象},  //当need_stadium不为false的时候
@@ -404,6 +444,7 @@ type: `GET`
   concert: Concert对象, //当need_concert不为false时
   stadium: Stadium对象, //当need_stadium不为false时
   city: City对象,  //当need_city不为false时
+  tickets: [tickets对象列表], //当need_tickets不为false时
   concert_name: "演唱会名字",
   concert_id: 123, //演唱会id
   stadium_id: 123, //场馆id
@@ -412,8 +453,14 @@ type: `GET`
   show_id: 123, //演出id
   city_name: "城市名字",
   city_id: 123, //城市id
+  express_id: "97698906987", //快递单号
+  user_name: "tom", //收货人姓名
+  user_mobile: "11012013099", //收货人电话
+  user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
-  tickets: [tickets对象列表],
+  poster: //海报url
+  tickets_count: //票数
+  show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
   valid_time: "201504102140270000"  //15分钟过期
@@ -469,5 +516,21 @@ type: `GET`
 {
   source: "视频url",
   snapshot: "截图url",
+}
+```
+
+## Message对象
+
+```javascript
+{
+  title: 'xxx',
+  content: "截图url",
+  redirect_url: 'xxxxx' //点击message后跳转的url
+  creator:  {
+    id: ID
+    name: "名称",
+    avatar: "头像url",
+    is_admin: "true or false" //是否由运营人员创建
+  }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
 }
 ```

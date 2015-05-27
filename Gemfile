@@ -27,6 +27,7 @@ gem 'bootstrap-sass'
 gem 'font-awesome-sass', '~> 4.3.0'
 gem 'simple_form'
 gem 'jquery-datatables-rails', '~> 3.2.0'
+gem "jquery-fileupload-rails"
 #####END assets ######
 
 #gem 'devise'

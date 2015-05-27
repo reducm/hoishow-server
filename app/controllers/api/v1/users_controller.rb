@@ -204,6 +204,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         end
       end
     end
+
+    @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
+    address = params[:province] + params[:city] + params[:district] + params[:user_address]
+    @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
+
   end
 
   protected

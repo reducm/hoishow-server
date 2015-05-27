@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
       get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
 
+      get "express_detail" => "express_detail#index"
+
       resources :admins do
         collection do
           post "sign_in"
@@ -38,6 +40,8 @@ Rails.application.routes.draw do
 
       resources :banners
 
+      resources :startup
+
       resources :stars do
         collection do
           get "search"
@@ -57,6 +61,7 @@ Rails.application.routes.draw do
       resources :comments
       resources :cities
       resources :stadiums
+      resources :messages
       resources :tickets
       resources :areas
       resources :orders, only: [:index, :show] do
@@ -107,7 +112,11 @@ Rails.application.routes.draw do
         post "update_status"
       end
     end
-    resources :orders
+    resources :orders do
+      member do
+        post "update_express_id"
+      end
+    end
     resources :users, only: [:index, :show] do
       member do
         post :block_user
@@ -137,8 +146,14 @@ Rails.application.routes.draw do
         delete :del_area
       end
     end
+    resources :startup, except: [:new, :show, :edit] do
+      member do
+        post :set_startup_status
+      end
+    end
     #TODO api_auth
   end
 
   get "description", to: "description#show"
+  get "express_detail", to: "express_detail#show"
 end

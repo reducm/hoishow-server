@@ -3,10 +3,11 @@
     <tr>
       <th>演出名称</th>
       <th>用户 / 手机号</th>
-      <th>座位</th>
+      <th>票的类型</th>
       <th>订单时间</th>
       <th>状态</th>
       <th>总价</th>
+      <th>操作</th>
     </tr>
   </thead>
   <tbody>
@@ -15,33 +16,11 @@
         <% user = order.user %>
         <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
         <td><%= link_to user_name(user), operation_user_path(user) %></td>
-        <td>
-          <table>
-            <% get_areas(order).each do |area| %>
-              <% tickets = order.tickets.where(area_id: area.id) %>
-              <tr>
-                <td><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></td>
-              </tr>
-              <% ticket_code = "<table>" %>
-              <% tickets.each do |ticket| %>
-              <% ticket_code += "<tr><td>#{ ticket.try(:code)}</td></tr>" %>
-              <%end%>
-              <% ticket_code += "</table>" %>
-              <tr>
-                <td>
-                  <button type="button" class="btn btn-info"  
-                    data-container="body" data-toggle="popover" data-placement="top" 
-                    data-content=<%= ticket_code %>>
-                    查看票码
-                  </button>
-                </td>
-              </tr>
-            <% end %>
-          </table>
-        </td>
+        <td><%= order.show.ticket_type_cn %></td>
         <td><%= order.created_at.strfcn_date %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <td><%= order.amount %></td>
+        <td><%= link_to "查看详情", operation_order_path(order) %></td>
       </tr>
     <% end %>
   </tbody>

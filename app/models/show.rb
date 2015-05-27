@@ -1,4 +1,6 @@
 class Show < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   belongs_to :concert
   belongs_to :city
   belongs_to :stadium
@@ -29,6 +31,11 @@ class Show < ActiveRecord::Base
     all_users: 1, #全部用户都可以购买
   }
 
+  enum ticket_type: {
+    e_ticket: 0, #电子票
+    r_ticket: 1, #实体票
+  }
+
   mount_uploader :poster, ImageUploader
 
   def poster_url
@@ -48,6 +55,15 @@ class Show < ActiveRecord::Base
       "显示"
     else
       "不显示"
+    end
+  end
+
+  def ticket_type_cn
+    case ticket_type
+    when "e_ticket"
+      "电子票"
+    when "r_ticket"
+      "实体票"
     end
   end
 

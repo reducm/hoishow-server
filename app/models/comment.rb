@@ -1,4 +1,6 @@
 class Comment < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
+
   CREATOR_USER = 'User'
   CREATOR_STAR = 'Star'
   CREATOR_ADMIN = 'Admin'
