@@ -37,7 +37,7 @@ gem 'zeus-parallel_tests'
 修改config/database.yml
 ```
 test:
-  database: hoishow_test<%= ENV['TEST_ENV_NUMBER'] %>`
+  database: hoishow_test<%= ENV['TEST_ENV_NUMBER'] %>
 ```
 创建数据库
 ```
