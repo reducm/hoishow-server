@@ -329,14 +329,13 @@ type `GET`
 ```
 -----------
 
-## 查看订单详情
+## 查看消息详情
 [/api/v1/messages]()
 
 type `GET`
 
 必需参数
 ```javascript
-  url携带order out_id参数
   {
     api_token: "users_token",
     mobile: "users mobile",
