@@ -361,6 +361,7 @@ type: `GET`
   is_voted:  //是否被投票,
   voters_count: //投票数,
   status:  // voted_users(投票用户购买)/all_users(所有用户购买)
+  ticket_type:  // 分成实体票与电子票两种
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
   stadium: {stadium对象},  //当need_stadium不为false的时候
@@ -451,6 +452,10 @@ type: `GET`
   show_id: 123, //演出id
   city_name: "城市名字",
   city_id: 123, //城市id
+  express_id: "97698906987", //快递单号
+  user_name: "tom", //收货人姓名
+  user_mobile: "11012013099", //收货人电话
+  user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   tickets: [tickets对象列表],
   created_at: "201504102140270000",

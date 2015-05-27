@@ -223,6 +223,12 @@ type `POST`
     mobile: "users mobile",
     show_id: "Show的id",
     area_id: area的id,
+    user_name: "收货人名字",
+    user_mobile: "收货人的电话",
+    user_address: "收货人地址(除了省,市,区之外的地址)",
+    province: "收货地址的省",
+    city: "收货地址的市",
+    district: "收货地址的区",
     quantity: 3 //购买数量
   }
 ```
@@ -320,5 +326,25 @@ type `GET`
 成功时返回
 ```javascript
   Order对象
+```
+-----------
+
+## 查看消息详情
+[/api/v1/messages]()
+
+type `GET`
+
+必需参数
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    type: "system/reply",   #系统消息或者是回复的消息
+  }
+```
+
+成功时返回
+```javascript
+  Message对象
 ```
 

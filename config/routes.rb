@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       resources :comments
       resources :cities
       resources :stadiums
+      resources :messages
       resources :tickets
       resources :areas
       resources :orders, only: [:index, :show] do
@@ -111,7 +112,11 @@ Rails.application.routes.draw do
         post "update_status"
       end
     end
-    resources :orders
+    resources :orders do
+      member do
+        post "update_express_id"
+      end
+    end
     resources :users, only: [:index, :show] do
       member do
         post :block_user

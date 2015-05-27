@@ -3,7 +3,7 @@ need_show ||= false
 need_stadium ||= false
 need_city ||= false
 
-json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
+json.(order, :express_id, :user_address, :user_mobile, :user_name, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
 
 if need_show
   json.show {json.partial!("api/v1/shows/show", {show: order.show})}

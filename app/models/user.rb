@@ -1,6 +1,7 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
   has_many :orders
+  has_many :expresses
 
   has_many :comments, -> { where creator_type: Comment::CREATOR_USER }, :foreign_key => 'creator_id'
   has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'

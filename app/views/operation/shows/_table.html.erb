@@ -4,6 +4,7 @@
       <th>演出艺人</th>
       <th>演出名称</th>
       <th>是否显示</th>
+      <th>票的类型</th>
       <th>演出地点</th>
       <th>演出时间</th>
       <th>售出票数／总票数</th>
@@ -17,6 +18,7 @@
         <td><%= show.stars.pluck(:name).join(",") %></td>
         <td><%= show.name %></td>
         <td><%= show.is_display_cn %></td>
+        <td><%= show.ticket_type_cn %></td>
         <td><%= show.stadium.try(:name) %></td>
         <td><%= show.show_time.strfcn_time %></td>
         <td><%= tickets.sold_tickets_count %> / <%= show.total_seats_count %></td>
