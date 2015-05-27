@@ -1,12 +1,66 @@
 class Operation::StarsController < Operation::ApplicationController
-  before_filter :check_login!
-  before_action :get_star, only: [:show]
+  before_action :get_star, only: [:show, :edit, :update]
   before_action :get_videos, only: [:edit, :update]
   load_and_authorize_resource
 
   def index
     @stars = Star.order(:position)
   end
+
+  def show
+    @concerts = @star.concerts.page(params[:page])
+    @topics = @star.topics.page(params[:page])
+    @users = @star.followers.page(params[:page])
+  end
+
+  def new
+    @star = Star.new
+  end
+
+  def create
+    @star = Star.new(star_params)
+    if @star.save
+      if params[:videos] 
+        create_video
+        if @video.errors.any?
+          @star.delete
+          flash[:alert] = @video.errors.full_messages.to_sentence
+          render action: 'new' and return
+        else
+          redirect_to operation_star_url(@star), notice: '艺人创建成功。'
+        end
+      else
+        redirect_to operation_star_url(@star), notice: '艺人创建成功。'
+      end
+    else
+      flash[:alert] = @star.errors.full_messages.to_sentence
+      @star.delete
+      render action: 'new'
+    end 
+  end
+
+
+  def edit
+  end
+
+  def update
+    if @star.update(star_params)
+      if params[:videos] 
+        create_video
+        if @video.errors.any?
+          flash[:alert] = @video.errors.full_messages.to_sentence
+          render action: 'edit' and return
+        else
+          redirect_to operation_star_url(@star), notice: '艺人更新成功。'
+        end
+      else
+        redirect_to operation_star_url(@star), notice: '艺人更新成功。'
+      end
+    else
+      flash[:alert] = @star.errors.full_messages.to_sentence
+      render action: 'edit'
+    end
+  end    
 
   def sort
     if params[:star].present?
@@ -17,43 +71,11 @@ class Operation::StarsController < Operation::ApplicationController
     render nothing: true
   end
 
-  def new
-    @star = Star.new
-  end
-
-  def create
-    @star = Star.new(star_params)
-    if @star.save
-      create_video if params[:videos]
-      redirect_to operation_star_url(@star), notice: '艺人创建成功。'
-    else
-      flash[:alert] = @star.errors.full_messages.first 
-      render action: 'new'
-    end
-  end
-
-  def edit
-  end
-
-  def show
-    @concerts = @star.concerts.page(params[:page])
-    @topics = @star.topics.page(params[:page])
-    @users = @star.followers.page(params[:page])
-  end
-
   def get_topics
     @topics = @star.topics.page(params[:page])
+
     render partial: 'operation/topics/table', locals: {topics: @topics}
   end
-
-  def update
-    if @star.update(star_params)
-      create_video if params[:videos]
-      redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-    else
-      render action: 'edit'
-    end
-  end    
 
   private
   def star_params
@@ -62,13 +84,8 @@ class Operation::StarsController < Operation::ApplicationController
 
   def create_video
     params[:videos]['source'].each do |source|
-      begin
-        @video = @star.videos.create!(:source => source, :star_id => @star.id)
-      rescue => ex 
-        redirect_to edit_operation_star_url(Star.find(ex.record.star_id)), alert: ex.message
-        return
-      end
-    end    
+      @video = @star.videos.create(:source => source, :star_id => @star.id)
+    end
   end
 
   def get_star
@@ -76,7 +93,6 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def get_videos
-    @star = Star.find(params[:id])
     @videos = @star.videos.order(is_main: :desc)
   end
 end

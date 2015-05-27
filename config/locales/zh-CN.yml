@@ -107,6 +107,7 @@ zh-CN:
       equal_to: 必须等于 %{count}
       even: 必须为双数
       exclusion: 是保留关键字
+      extension_white_list_error: 文件名不符合上传要求
       greater_than: 必须大于 %{count}
       greater_than_or_equal_to: 必须大于或等于 %{count}
       inclusion: 不包含于列表中
@@ -219,4 +220,12 @@ zh-CN:
         subject_id: 主体
         description: 图文内容
         slogan: 标语  
-
+      video:
+        star_id: 艺人id
+        source: 视频
+        snapshot: 视频截图
+      star:
+        name: 名称
+        avatar: 头像
+        poster: 海报
+        description: 图文内容

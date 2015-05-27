@@ -8,13 +8,19 @@
   </div>
 
   <div class="form-group">
-    <%= f.input :avatar, label: "艺人头像" %>
-    <%= image_tag(star.avatar_url, size: "80x80") if star.avatar_url %>
+    <% if star.avatar_url %>
+      <%= label_tag "当前头像" %>
+      <%= image_tag(star.avatar_url, size: "80x80")  %>
+    <% end %>
+    <%= f.input :avatar, label: "上传头像" %>
   </div>
 
   <div class="form-group">
-    <%= f.input :poster, label: "艺人海报" %>
-    <%= image_tag(star.poster_url, size: "700x500") if star.poster_url %>
+    <% if star.avatar_url %>
+      <%= label_tag "当前头像" %>
+      <%= image_tag(star.poster_url, size: "700x500") %>
+    <% end %>
+    <%= f.input :poster, label: "上传海报" %>
   </div>
 
   <div class="form-group">
@@ -29,8 +35,10 @@
      <% end %>
   </div>
   
-  <% if @star.videos.first %>
-    <%= render partial: 'operation/videos/table', locals: { videos: @videos } %> 
+  <% if star.videos.any? %>
+    <% if star.videos.first.valid? %>
+      <%= render partial: 'operation/videos/table', locals: { videos: @videos } %> 
+    <% end %>
   <% end %>
 
     <div class="form-group">

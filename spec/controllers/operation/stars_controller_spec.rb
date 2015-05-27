@@ -125,10 +125,9 @@ RSpec.describe Operation::StarsController, :type => :controller do
     before :each do
       admin = create :admin
       session[:admin_id] = admin.id
-      @video = attributes_for(:video)
     end
 
-    context "with invalid attributes" do
+    context "with invalid star attributes" do
       it "does not save the new star in the database" do
         expect{
           post :create, star: attributes_for(:invalid_star)
@@ -141,17 +140,57 @@ RSpec.describe Operation::StarsController, :type => :controller do
       end 
     end
 
-    context "with valid attributes" do
-      it "saves the new star in the database" do
+    context "with valid star attributes without video" do
+      it "save the new star in the database" do
         expect{
-          post :create, star: attributes_for(:star, video: @video, description: "THE LAST OF US")
+          post :create, star: attributes_for(:star)
         }.to change(Star, :count).by(1)
       end
 
-      it "redirects to stars#show" do
-        post :create, star: attributes_for(:star, video: @video)
+      it "redirect_to star's show page" do 
+        post :create, star: attributes_for(:star)
         expect(response).to redirect_to operation_star_path(assigns[:star])
       end 
+    end
+  end
+
+  describe 'PATCH #update' do 
+    before :each do
+      admin = create :admin
+      session[:admin_id] = admin.id
+      @star = create(:star, name: "tom总")
+    end
+
+    context "valid attributes" do
+      it "locates the requested @star" do
+        patch :update, id: @star, star: attributes_for(:star)
+        expect(assigns(:star)).to eq(@star)
+      end
+
+      it "changes @star's attributes" do 
+        patch :update, id: @star, star: attributes_for(:star, name: "大佬")
+        @star.reload
+        expect(@star.name).to eq("大佬")
+      end
+
+      it "redirects to the updated star" do
+        patch :update, id: @star, star: attributes_for(:star) 
+        expect(response).to redirect_to operation_star_path(@star)
+      end
+    end
+
+    context "with invalid attributes" do
+      it "dose not change star's attributes" do
+        patch :update, id: @star, star: attributes_for(:star, name: nil)
+        @star.reload
+        expect(@star.name).to eq("tom总")
+      end
+
+      it "re-render edit page" do
+        patch :update, id: @star, star: attributes_for(:star, name: nil)
+        @star.reload
+        expect(response).to render_template :edit
+      end
     end
   end
 
