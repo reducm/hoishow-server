@@ -42,12 +42,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
     end
-
-    it "with page params" do
-      get :index, with_key(page: 2, format: :json)
-      concerts_id = Concert.pluck(:id)
-      expect(concerts_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
-    end
   end
 
   context "#index with user" do

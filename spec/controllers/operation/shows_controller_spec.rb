@@ -25,14 +25,13 @@ RSpec.describe Operation::ShowsController, :type => :controller do
     before('each') do
       star = create :star
       @concert = create :concert
-      show = create :show
+      star.hoi_concert(@concert)
       user = create :user
       @city = create :city
       @stadium = create :stadium
       user.follow_star(star)
       user.vote_concert(@concert, @city)
       user.follow_concert(@concert)
-      user.follow_show(show)
     end
 
     it "saves the new show in the database" do
@@ -52,14 +51,14 @@ RSpec.describe Operation::ShowsController, :type => :controller do
   context "#update_status" do
     before('each') do
       star = create :star
-      @concert = create :concert
-      @show = create :show
+      concert = create :concert
+      city = create :city
+      star.hoi_concert(concert)
+      @show = create :show, concert: concert, city: city
       user = create :user
-      @city = create :city
-      @stadium = create :stadium
       user.follow_star(star)
-      user.vote_concert(@concert, @city)
-      user.follow_concert(@concert)
+      user.vote_concert(concert, city)
+      user.follow_concert(concert)
       user.follow_show(@show)
     end
 

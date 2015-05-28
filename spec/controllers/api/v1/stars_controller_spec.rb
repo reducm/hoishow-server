@@ -11,8 +11,8 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "should get 20 shows without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20 
-    end    
+      expect(JSON.parse(response.body).size).to eq 20
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
@@ -24,7 +24,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
       expect(response.body).to include("followers_count")
-      JSON.parse(response.body).each do|object| 
+      JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
       end
     end
@@ -39,12 +39,6 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end    
-
-    it "with page params" do
-      get :index, with_key(page: 2, format: :json)
-      stars_id = Star.pluck(:id).sort
-      expect(stars_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
     end
   end
 
@@ -68,7 +62,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#show without user" do
     before('each') do
-      @star = create :star     
+      @star = create :star
     end
 
     it "should has attributes" do
@@ -114,7 +108,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#show with user" do
     before('each') do
-      3.times {create :star}     
+      3.times {create :star}
       @user = create :user
       Star.limit(3).each do |star|
         #关注
@@ -142,7 +136,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
         #创建topic
         topic = star.topics.create(content: "fuck tom", subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
         @user.like_topic(topic)
-      end 
+      end
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body)["topics"].count > 0 ).to be true
       expect(JSON.parse(response.body)["topics"].first["is_like"] ).to be true
@@ -151,9 +145,9 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#search" do
     before('each') do
-      3.times {|n|create(:star, name: "tom#{n}")}     
-      4.times {|n|create(:star, name: "xo#{n}")}     
-      2.times {|n|create(:star, name: "芙蓉#{n}")}     
+      3.times {|n|create(:star, name: "tom#{n}")}
+      4.times {|n|create(:star, name: "xo#{n}")}
+      2.times {|n|create(:star, name: "芙蓉#{n}")}
     end
 
     it "search should has results" do

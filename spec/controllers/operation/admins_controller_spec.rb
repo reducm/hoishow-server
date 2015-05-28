@@ -16,17 +16,17 @@ RSpec.describe Operation::AdminsController, :type => :controller do
       end
     end
 
-    it "should get 5 messages" do
+    it "should get 16 admins" do
       get :index
       expect(assigns(:admins).size).to eq 16
       expect(response).to render_template :index
     end
   end
-#, username:"1tom", type:"0", password:"123"
+
   context "#create" do
     it "add new admin" do
       expect {
-        post :create, admin: attributes_for(:admin)
+        post :create, username: 'xxx', password: 'xxx', admin_type: 0
       }.to change(Admin, :count).by(1)
     end
   end
