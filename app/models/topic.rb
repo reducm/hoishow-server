@@ -1,6 +1,6 @@
 #encoding: UTF-8
 class Topic < ActiveRecord::Base
-  default_scope {order('is_top DESC, topics.created_at DESC')}
+  default_scope {order('topics.is_top DESC, topics.created_at DESC')}
 
   SUBJECT_CONCERT = 'Concert'
   SUBJECT_STAR = 'Star'

@@ -1,5 +1,5 @@
 class Concert < ActiveRecord::Base
-  default_scope {order('is_top DESC, concerts.created_at DESC')}
+  default_scope {order('concerts.is_top DESC, concerts.created_at DESC')}
 
   has_many :videos
   has_many :shows
@@ -22,7 +22,7 @@ class Concert < ActiveRecord::Base
 
   after_create :set_showing_concert_after_create
 
-  scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]).order('created_at DESC') }
+  scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]) }
 
   paginates_per 20
 
