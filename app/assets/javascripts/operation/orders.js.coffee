@@ -9,6 +9,9 @@ $ ->
 
   if $(".orders_list").length > 0
     $(".orders").dataTable()
+    
+  if $(".expresses_list").length > 0
+    $(".expresses").dataTable()
 
 #修改快递单号
   $("#express_id").on "click", ".change_express_content", (e) ->

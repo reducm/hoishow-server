@@ -53,7 +53,7 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
           status: Payment::STATUS_SUCCESS,
           pay_at: Time.now
         )
-        if @order.paid?
+        if @order.paid? && @order.show.e_ticket?
           @order.set_tickets
           @order.update(status: Order::ORDER_STATUS_SUCCESS)
         end
