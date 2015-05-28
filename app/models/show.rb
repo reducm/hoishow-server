@@ -1,4 +1,5 @@
 class Show < ActiveRecord::Base
+  default_scope {order('is_top DESC, shows.created_at DESC')}
 
   belongs_to :concert
   belongs_to :city

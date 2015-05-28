@@ -1,4 +1,6 @@
 class Concert < ActiveRecord::Base
+  default_scope {order('is_top DESC, concerts.created_at DESC')}
+
   has_many :videos
   has_many :shows
 

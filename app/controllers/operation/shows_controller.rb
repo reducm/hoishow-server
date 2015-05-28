@@ -72,6 +72,15 @@ class Operation::ShowsController < Operation::ApplicationController
     redirect_to operation_show_url(@show)
   end
 
+  def toggle_is_top
+    if @show.is_top
+      @show.update(is_top: false)
+    else
+      @show.update(is_top: true)
+    end
+    redirect_to operation_shows_url
+  end
+
   protected
   def show_params
     params.require(:show).permit(:ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id)

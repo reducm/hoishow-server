@@ -25,6 +25,7 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       expect(response.body).to include("poster")
       expect(response.body).to include("description")
       expect(response.body).to include("is_followed")
+      expect(response.body).to include("is_top")
     end
   end
 
