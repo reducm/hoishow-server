@@ -24,6 +24,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
+      expect(response.body).to include("is_top")
       expect(response.body).to include("voted_city")
       JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
@@ -84,6 +85,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
       expect(response.body).to include("topics")
+      expect(response.body).to include("is_top")
     end
 
     it "status should going string" do
