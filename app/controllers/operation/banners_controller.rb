@@ -1,11 +1,9 @@
 class Operation::BannersController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :get_banner, except: [:index, :new, :create]
+
   def index
     @banners = Banner.all
-  end
-
-  def show
-    @banner = Banner.find(params[:id])   
   end
 
   def new
@@ -22,13 +20,14 @@ class Operation::BannersController < Operation::ApplicationController
     end
   end
 
+  def show
+  end
+
   def edit
-    @banner = Banner.find(params[:id])   
   end
 
   def update
-    @banner = Banner.find(params[:id])   
-    if @banner.update_attributes(params.require(:banner).permit(:poster, :description))
+    if @banner.update(banner_params)
       redirect_to action: :index
     else
       flash[:notice] = @banner.errors.full_messages
@@ -37,12 +36,15 @@ class Operation::BannersController < Operation::ApplicationController
   end
 
   def destroy
-    @banner = Banner.find(params[:id])   
     @banner.destroy
     redirect_to action: :index
   end
 
   protected
+  def get_banner
+    @banner = Banner.find(params[:id])
+  end
+
   def banner_params
     params.require(:banner).permit(:subject_type, :subject_id, :poster, :description)
   end
