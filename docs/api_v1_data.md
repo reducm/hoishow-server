@@ -336,6 +336,7 @@ type: `GET`
   voters_count: //投票人数,
   is_followed: //是否被关注,
   is_voted: //是否被投票,
+  is_top: "true or false", //是否置顶
   voted_city: {City对象}, //用户登录时对本concert投过票的城市
   stars: [Star对象列表], //当need_stars不为false的时候
   topics: [Topic对象列表], //当need_topics不为false的时候
@@ -359,6 +360,7 @@ type: `GET`
   description:  //图文介绍的url,
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
+  is_top: "true or false", //是否置顶
   voters_count: //投票数,
   status:  // voted_users(投票用户购买)/all_users(所有用户购买)
   ticket_type:  // 分成实体票与电子票两种

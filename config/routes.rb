@@ -101,6 +101,7 @@ Rails.application.routes.draw do
         post :add_concert_city
         get :refresh_map_data
         delete :remove_concert_city
+        patch :toggle_is_top
       end
     end
     resources :shows do
@@ -110,6 +111,7 @@ Rails.application.routes.draw do
       member do
         post "update_area_data"
         post "update_status"
+        patch :toggle_is_top
       end
     end
     resources :orders do

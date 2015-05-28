@@ -14,13 +14,14 @@ $ ->
     select = $(e.currentTarget)
     selected_option = select.find("option:selected")
     if selected_option.val() == "Article"
-      $('#editor').show()
+      $('.editor').removeClass('hidden')
+      $('.banner_subject_id').hide()
     else
-      $('#editor').hide()
+      $('.editor').addClass('hidden')
+      $('.banner_subject_id').show()
     key = selected_option.val().toLowerCase() + "s"
     subjects = data[key]
     options = generate_options(subjects)
-    console.log options
     $("#subject_id_select").html(options)
     $("#subject_id_select").attr("data-live-search", true)
     $("#subject_id_select").selectpicker("refresh")

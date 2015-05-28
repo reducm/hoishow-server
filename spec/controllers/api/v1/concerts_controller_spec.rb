@@ -24,6 +24,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
+      expect(response.body).to include("is_top")
       expect(response.body).to include("voted_city")
       JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
@@ -41,12 +42,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 20
-    end
-
-    it "with page params" do
-      get :index, with_key(page: 2, format: :json)
-      concerts_id = Concert.pluck(:id)
-      expect(concerts_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
     end
   end
 
@@ -90,6 +85,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
       expect(response.body).to include("topics")
+      expect(response.body).to include("is_top")
     end
 
     it "status should going string" do

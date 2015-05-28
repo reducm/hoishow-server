@@ -1,9 +1,11 @@
 <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
-  <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}, disabled: ( params[:action] == 'edit' ? true : false )   %>
-  <%= f.input :subject_id, as: :select,  input_html: {id: "subject_id_select"}, disabled: ( params[:action] == 'edit' ? true : false ) %>
-  <div id="editor"><%= f.kindeditor :description %></div>
+  <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
+  <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
+  <div class="hidden editor"><%= f.kindeditor :description %></div>
   <%= f.input :poster %>
-  <%= f.submit class: 'btn btn-primary' %>
+  <div class="form-group">
+    <%= f.submit class: 'btn btn-primary' %>
+  </div>
 <% end %>
 
 <%= content_tag :div, id: "hoishow", data: {

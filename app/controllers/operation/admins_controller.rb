@@ -1,7 +1,6 @@
 class Operation::AdminsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :find_admin, except: [:index, :new, :create]
-  load_and_authorize_resource param_method: :admin_params
 
   def index
     params[:page] ||= 1
@@ -13,13 +12,14 @@ class Operation::AdminsController < Operation::ApplicationController
   end
 
   def create
-    #@admin = Admin.new(name: params[:username], admin_type: params[:type].to_i)
-    @admin = Admin.new(admin_params)
-    @admin.set_password(params[:encrypted_password])
+    @admin = Admin.new(name: params[:username], admin_type: params[:type].to_i)
+    @admin.set_password(params[:password])
 
     if @admin.save
+      flash[:notice] = '管理员创建成功'
       redirect_to operation_admins_url
     else
+      flash[:error] = @admin.errors.full_messages
       render :new
     end
   end
@@ -42,9 +42,6 @@ class Operation::AdminsController < Operation::ApplicationController
   end
 
   private
-  def admin_params
-    params.require(:admin).permit(:name, :admin_type, :encrypted_password)
-  end
   def find_admin
     @admin = Admin.find params[:id]
   end

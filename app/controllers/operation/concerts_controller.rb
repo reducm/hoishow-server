@@ -89,6 +89,15 @@ class Operation::ConcertsController < Operation::ApplicationController
     render json: cities.map{|city| {value: city.id, label: city.name}}
   end
 
+  def toggle_is_top
+    if @concert.is_top
+      @concert.update(is_top: false)
+    else
+      @concert.update(is_top: true)
+    end
+    redirect_to operation_concerts_url
+  end
+
   private
     def concert_attributes
       params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description, :poster)
