@@ -7,7 +7,7 @@ need_city ||= false
 @followed_shows = @user.present? ? @user.follow_shows.pluck(:id) : []
 @voted_show = @user.present? ? @user.user_vote_concerts.where(concert_id: show.concert_id, city_id: show.city_id).first : nil
 
-json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :ticket_type)
+json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :is_top, :ticket_type)
 json.concert_name show.concert.name
 json.city_name show.city.name
 json.stadium_name show.stadium.name

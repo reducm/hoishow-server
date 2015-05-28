@@ -1,4 +1,5 @@
 class Show < ActiveRecord::Base
+  default_scope {order('shows.is_top DESC, shows.created_at DESC')}
 
   belongs_to :concert
   belongs_to :city
@@ -17,7 +18,7 @@ class Show < ActiveRecord::Base
   validates :concert, presence: {message: "Concert不能为空"}
   validates :stadium, presence: {message: "Stadium不能为空"}
 
-  scope :is_display, -> { where(is_display: true).order('created_at DESC') }
+  scope :is_display, -> { where(is_display: true) }
 
   before_create :set_city
 
