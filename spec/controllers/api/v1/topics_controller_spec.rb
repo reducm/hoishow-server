@@ -108,12 +108,6 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
         create(:concert_topic, subject_type: @concert.name, subject_id: @concert.id)
       end
     end
-
-    it "with page params" do
-      get :index, with_key(page: 2, subject_type: @concert.name, subject_id: @concert.id, format: :json)
-      topics_id = Topic.pluck(:id)
-      expect(topics_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
-    end
   end
 
   context "#show" do
