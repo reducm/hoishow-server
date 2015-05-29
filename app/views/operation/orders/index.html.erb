@@ -32,11 +32,13 @@
         <td><%= order.status_cn %></td>
         <td><%= order.show.ticket_type_cn %></td>
         <td><%= order.express_id%></td>
-        <td>
-            <button data-toggle="modal" data-target="#express_id" class="btn btn-info" >修改单号</button>
-</td>
+        <td><%= link_to "查看详情", operation_order_path(order) %></td>
       </tr>
     <%end%>
   </tbody>
 </table>
 </div>
+
+
+
+

@@ -52,7 +52,7 @@
         <td>门票类型</td>
         <td><%= show.ticket_type_cn%></td>
       </tr>
-      <% if show.ticket_type == "r_ticket" %>
+      <% if show.r_ticket? %>
         <tr>
           <td>快递单号</td>
           <td>

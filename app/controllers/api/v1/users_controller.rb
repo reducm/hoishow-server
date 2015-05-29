@@ -1,6 +1,6 @@
 # coding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_shows, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_shows, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order, :update_express_info]
 
   def sign_in
     if params[:mobile] && params[:code]
@@ -204,11 +204,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         end
       end
     end
+  end
 
+  def update_express_info
+    @order = Order.find(params[:order_id])
     @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
-    @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
-
+    if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
+        render json: {msg: "ok"}, status: 200
+    end
   end
 
   protected

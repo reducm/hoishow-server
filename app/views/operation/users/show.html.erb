@@ -48,8 +48,8 @@
 
       <!-- Tab panes -->
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active table" id="user_orders">
-          <table class="table">
+        <div role="tabpanel" class="tab-pane active table users_list" id="user_orders">
+          <table class="table users">
             <thead>
               <tr>
                 <th>演出</th>
@@ -71,8 +71,8 @@
           </table>
           <%= paginate @orders %>
         </div>
-        <div role="tabpanel" class="tab-pane" id="user_topics">
-          <table class="table">
+        <div role="tabpanel" class="tab-pane users_list" id="user_topics">
+          <table class="table users">
             <thead>
               <tr>
                 <th>时间</th>
@@ -87,8 +87,8 @@
             <% end %>
           </table>
         </div>
-        <div role="tabpanel" class="tab-pane" id="user_comments">
-          <table class="table">
+        <div role="tabpanel" class="tab-pane users_list" id="user_comments">
+          <table class="table users">
             <thead>
               <tr>
                 <th>时间</th>

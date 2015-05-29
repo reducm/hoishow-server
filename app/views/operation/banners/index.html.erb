@@ -30,7 +30,11 @@
           <% end %>
         </td>
         <td><%= image_tag(banner.poster_url, class: "preview-pic") if banner.poster_url %></td>
-        <td><%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %> </td>
+        <td>
+          <% if banner.subject_type == "Article" %>
+            <%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %>
+          <%end%>
+        </td>
         <td><%= banner.updated_at %></td>
         <td>
           <%= link_to "编辑", edit_operation_banner_path(banner) %> /
