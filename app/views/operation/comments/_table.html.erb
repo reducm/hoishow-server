@@ -10,7 +10,7 @@
   <% comments.each do |comment| %>
     <tr>
       <td><%= comment.creator_name %></td>
-      <td>
+      <td width="550px">
         <% if comment.parent %>
           回复<%= comment.parent.try(:creator_name) %> : <%= comment.content %>
         <% else %>
