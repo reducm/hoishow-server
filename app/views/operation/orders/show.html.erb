@@ -22,6 +22,24 @@
         <td><%= @order.city_name %></td>
       </tr>
       <tr>
+        <td>座位</td>
+        <td>
+          <table>
+            <tr>
+              <td>
+                <% get_areas(@order).each do |area| %>
+                  <% tickets = @order.tickets.where(area_id: area.id) %>
+                  <p><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></p>
+                  <% tickets.each do |ticket| %>
+                    <p><%= ticket.code %></p>            
+                  <%end%>
+                <%end%>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
         <td>订单状态</td>
         <td><%= @order.status_cn %></td>
       </tr>
@@ -43,15 +61,15 @@
           </td>
         </tr>
         <tr>
-          <td>用户真实姓名</td>
+          <td>收货人姓名</td>
           <td><%= @order.user_name%></td>
         </tr>
         <tr>
-          <td>用户地址</td>
+          <td>收货人地址</td>
           <td><%= @order.user_address%></td>
         </tr>
         <tr>
-          <td>用户手机</td>
+          <td>收货人手机</td>
           <td><%= @order.user_mobile%></td>
         </tr>
       <%end%>
@@ -74,7 +92,7 @@
           <%= submit_tag "确认修改", class: 'btn btn-primary change_express_content' %>
         <% end %>
       </div>
-      
+
     </div>
   </div>
 </div>

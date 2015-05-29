@@ -7,3 +7,36 @@
 <div class="orders_list">
   <%= render partial: "table", locals: {orders: @orders} %>
 </div>
+<div class="nav">
+    <h1 class="pull-left">实体票快递详情</h1>
+</div>
+<div class="expresses_list">
+<table class="table table-hover expresses">
+  <thead>
+    <tr>
+      <th>收货人姓名</th>
+      <th>收货人电话</th>
+      <th>收货人地址</th>
+      <th>票的状态</th>
+      <th>票的类型</th>
+      <th>快递单号</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @r_ticket_orders.each do |order| %>
+      <tr>
+        <td><%= order.user_name  %></td>
+        <td><%= order.user_mobile %></td>
+        <td width="550px"><%= order.user_address %></td>
+        <td><%= order.status_cn %></td>
+        <td><%= order.show.ticket_type_cn %></td>
+        <td><%= order.express_id%></td>
+        <td>
+            <button data-toggle="modal" data-target="#express_id" class="btn btn-info" >修改单号</button>
+</td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>
+</div>

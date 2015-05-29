@@ -57,7 +57,7 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="shows_show_topics">
-      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics} %>
+      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page} %>
     </div>
 
   </div>
