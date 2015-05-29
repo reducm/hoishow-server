@@ -207,7 +207,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def update_express_info
-    @order = Order.find(params[:order_id])
+    @order = Order.where(out_id: params[:out_id]).first
     @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
     if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])

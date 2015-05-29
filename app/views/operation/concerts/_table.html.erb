@@ -24,6 +24,7 @@
         <td>
           <% if can? :update, concert %>
             <%= link_to "编辑", edit_operation_concert_path(concert)%>
+            <%= link_to "图文描述", description_path(subject_type: "Concert", subject_id: concert.id), target: "blank" %>
             <%= link_to (concert.is_top ? "取消置顶" : "置顶"), toggle_is_top_operation_concert_path(concert), method: 'PATCH' %>
           <% end %>
         </td>

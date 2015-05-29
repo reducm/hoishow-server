@@ -10,7 +10,7 @@
 <div class="nav">
     <h1 class="pull-left">实体票快递详情</h1>
 </div>
-<div class="expresses_list">
+<div class="expresses_list" id="expresses_list">
 <table class="table table-hover expresses">
   <thead>
     <tr>
@@ -20,7 +20,8 @@
       <th>票的状态</th>
       <th>票的类型</th>
       <th>快递单号</th>
-      <th>操作</th>
+      <th>修改</th>
+      <th>查看</th>
     </tr>
   </thead>
   <tbody>
@@ -28,11 +29,16 @@
       <tr>
         <td><%= order.user_name  %></td>
         <td><%= order.user_mobile %></td>
-        <td width="550px"><%= order.user_address %></td>
+        <td width="450px"><%= order.user_address %></td>
         <td><%= order.status_cn %></td>
         <td><%= order.show.ticket_type_cn %></td>
-        <td><%= order.express_id%></td>
-        <td><%= link_to "查看详情", operation_order_path(order) %></td>
+        <td id="td_express_id_<%= order.id %>"><%= order.express_id%></td>
+        <td>
+          <button class="btn btn-info change_express_data" data-order-id="<%= order.id %>">修改单号</button>
+        </td>
+        <td>
+          <%= link_to "查看详情", operation_order_path(order) %>
+        </td>
       </tr>
     <%end%>
   </tbody>
