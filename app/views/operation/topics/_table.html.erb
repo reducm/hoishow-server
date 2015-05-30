@@ -11,7 +11,11 @@
   </thead>
   <% topics.each do |topic| %>
     <tr>
-      <td><%= topic.creator_name %></td>
+      <% if topic.creator_type == "Admin"%>
+        <td><%= topic.creator_name %></td>
+      <%else%>
+        <td><%= link_to topic.creator_name, url_for([:operation, topic.creator]) %></td>
+      <%end%>
       <td width="550px"><%= topic.content %></td>
       <td><%= topic.like_count %>/<%= topic.comments.count %>/<%= 0 %></td>
       <td><%= get_datetime(topic.created_at) %></td>
