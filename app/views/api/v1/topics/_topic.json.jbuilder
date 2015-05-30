@@ -1,6 +1,7 @@
 @user ||= nil
 
-json.(topic, :id, :content, :is_top, :like_count, :subject_type, :subject_id)
+json.(topic, :id, :is_top, :like_count, :subject_type, :subject_id)
+json.content Base64.decode64(topic.content)
 json.created_at topic.created_at.to_ms
 topic_city = topic.city
 topic_city ? (json.city { json.partial!("api/v1/cities/city", {city: topic_city}) }) : (json.city nil)

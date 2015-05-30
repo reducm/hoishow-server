@@ -16,9 +16,9 @@
       <%end%>
       <td width="550px">
         <% if comment.parent %>
-          回复<%= comment.parent.try(:creator_name) %> : <%= comment.content %>
+          回复<%= comment.parent.try(:creator_name) %> : <%= Base64.decode64(comment.content) %>
       <% else %>
-        <%= comment.content %>
+        <%= Base64.decode64(comment.content)%>
       <% end %>
     </td>
     <td><%= get_datetime(comment.created_at) %></td>

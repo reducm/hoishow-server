@@ -134,7 +134,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "should have topic staff" do
       Star.all.each do |star|
         #创建topic
-        topic = star.topics.create(content: "fuck tom", subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
+        topic = star.topics.create(content: Base64.encode64("fuck tom"), subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
         @user.like_topic(topic)
       end
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
