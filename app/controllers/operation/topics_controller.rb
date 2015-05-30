@@ -7,6 +7,7 @@ class Operation::TopicsController < Operation::ApplicationController
   def create
     @topic = Topic.new(topic_params)
     Topic.transaction do
+      @topic.content = Base64.encode64(params[:content])
       if params[:creator] == current_admin.name
         @topic.creator_type = 'Admin'
         @topic.creator_id = current_admin.id
@@ -41,7 +42,7 @@ class Operation::TopicsController < Operation::ApplicationController
   def add_comment
     @comment = @topic.comments.new()
     Comment.transaction do
-      @comment.content = params[:content]
+      @comment.content = Base64.encode64(params[:content])
 
       if params[:creator] == current_admin.name
         @comment.creator_type = 'Admin'

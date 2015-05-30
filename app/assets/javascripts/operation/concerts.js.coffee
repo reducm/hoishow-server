@@ -311,7 +311,7 @@ $ ->
         if content.length < 1
           alert("不能发空互动")
         else
-          $.post("/operation/topics", {topic: {content: content, city_id: city_id, subject_id: concert_id, subject_type: 'Concert'}, creator: $('#topic_creator').val()}, (data)->
+          $.post("/operation/topics", {topic: {city_id: city_id, subject_id: concert_id, subject_type: 'Concert'}, creator: $('#topic_creator').val(), content: content}, (data)->
             if data.success
               location.reload()
           )

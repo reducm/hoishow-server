@@ -45,7 +45,7 @@ $ ->
         if content.length < 1
           alert("不能发空互动")
         else
-          $.post("/operation/topics", {topic: {content: content, subject_id: star_id, subject_type: 'Star'}, creator: $('#topic_creator').val()}, (data)->
+          $.post("/operation/topics", {topic: {subject_id: star_id, subject_type: 'Star'}, creator: $('#topic_creator').val(), content: content}, (data)->
             if data.success
               location.reload()
           )

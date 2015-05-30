@@ -96,7 +96,7 @@ class User < ActiveRecord::Base
   end
 
   def create_comment(topic, parent_id = nil, content)
-    comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: content)
+    comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: Base64.encode64(content))
     content = remove_emoji_from_content(content)
     if parent_id 
       #回覆评论

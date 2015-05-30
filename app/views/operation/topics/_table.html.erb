@@ -16,7 +16,7 @@
       <%else%>
         <td><%= link_to topic.creator_name, url_for([:operation, topic.creator]) %></td>
       <%end%>
-      <td width="550px"><%= topic.content %></td>
+      <td width="550px"><%= Base64.decode64(topic.content) %></td>
       <td><%= topic.like_count %>/<%= topic.comments.count %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.last_reply_time) %></td>

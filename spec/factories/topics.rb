@@ -6,7 +6,7 @@ FactoryGirl.define do
     creator_id 1
     subject_type "Star"
     subject_id 1
-    content "MyText"
+    content Base64.encode64("MyText")
     is_top false
     city_id nil
     factory :concert_topic do
