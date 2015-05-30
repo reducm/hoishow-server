@@ -1,4 +1,5 @@
 class Operation::TopicsController < Operation::ApplicationController
+  include Operation::ApplicationHelper
   before_filter :check_login!
   before_action :get_topic, except: [:create]
   load_and_authorize_resource
@@ -53,14 +54,21 @@ class Operation::TopicsController < Operation::ApplicationController
       if params[:parent_id]
         @comment.parent_id = params[:parent_id]
         #回覆评论
-        message = Message.create(send_type: "comment_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
+        message = Message.create(send_type: "comment_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: remove_emoji_from_content( @comment.content ))
         comment = Comment.find(params[:parent_id])
         if comment.creator_type == "User"
-          message.user_message_relations.where(user: comment.creator).first_or_create!
+          creator = comment.creator
+          if @comment.creator_type != "User"
+            title = @comment.creator.name + "回复了你的评论"
+          else
+            title = @comment.creator.nickname + "回复了你的评论"
+          end
+          message.user_message_relations.where(user: creator).first_or_create!
+          message.send_message_for_reply_comment(creator.mobile, title, message.content)
         end
       end
 
-      message = Message.create(send_type: "topic_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: @comment.content)
+      message = Message.create(send_type: "topic_reply", creator_type: @comment.creator_type, creator_id: @comment.creator_id, subject_type: "Topic", subject_id: @topic.id, title: "你有新的回覆", content: remove_emoji_from_content( @comment.content ))
         if @topic.creator_type == "User"
           message.user_message_relations.where(user: @topic.creator).first_or_create!
         end

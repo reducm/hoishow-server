@@ -13,16 +13,14 @@
 
   <!-- Tab panes -->
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="star_concerts">
+    <div role="tabpanel" class="tab-pane active concerts_list" id="star_concerts">
       <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts} %>
     </div>
 
-    <div role="tabpanel" class="tab-pane" id="star_topics">
-      <div class='topics'>
+    <div role="tabpanel" class="tab-pane topics_list" id="star_topics">
         <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
-      </div>
     </div>
-    <div role="tabpanel" class="tab-pane" id="star_followers">
+    <div role="tabpanel" class="tab-pane users_list" id="star_followers">
       <%= render partial: 'operation/users/table', locals: {users: @users} %>
     </div>
   </div>

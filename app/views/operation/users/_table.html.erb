@@ -21,7 +21,7 @@
           <td class="text-center"><%= user.topics.count %></td>
           <td class="text-center"><%= user.comments.count %></td>
           <td class="text-center">
-            <%= link_to "查看", operation_user_path(user)%>
+            <%= link_to "查看详情", operation_user_path(user)%>
             <% if user.is_block %>
               <%= link_to "解除屏蔽", block_user_operation_user_path(user, is_block: 0), method: 'post' %>
             <% else %>

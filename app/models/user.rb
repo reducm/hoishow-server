@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
+  include Operation::ApplicationHelper
   has_many :orders
   has_many :expresses
 
@@ -96,10 +97,21 @@ class User < ActiveRecord::Base
 
   def create_comment(topic, parent_id = nil, content)
     comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: content)
+    content = remove_emoji_from_content(content)
     if parent_id 
       #回覆评论
       message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
       create_relation_with_messages(message)
+      r_comment = Comment.find(parent_id)
+      if r_comment.creator_type == "User"
+        creator = r_comment.creator
+        if comment.creator_type != "User"
+          title = comment.creator.name + "回复了你的评论"
+        else
+          title = comment.creator.nickname + "回复了你的评论"
+        end
+        message.send_message_for_reply_comment(creator.mobile, title, message.content)
+      end
     end
     message = Message.create(send_type: "topic_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
     create_relation_with_messages(message)
