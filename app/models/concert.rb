@@ -27,7 +27,7 @@ class Concert < ActiveRecord::Base
 
   scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]) }
 
-  paginates_per 20
+  paginates_per 10
 
   enum status: {
     voting: 0,

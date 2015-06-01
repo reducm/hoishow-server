@@ -20,7 +20,8 @@ class Operation::MessagesController < Operation::ApplicationController
   end
 
   def index
-    @message = Message.all
+    params[:page] ||= 1
+    @messages = Message.page(params[:page]).order("created_at desc")
   end
 
   private

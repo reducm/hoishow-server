@@ -5,7 +5,8 @@ class Operation::ShowsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @shows = Show.all
+    params[:page] ||= 1
+    @shows = Show.page(params[:page]).order("created_at desc")
   end
 
   def new

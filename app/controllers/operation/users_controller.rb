@@ -5,7 +5,8 @@ class Operation::UsersController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @users = User.all
+    params[:page] ||= 1
+    @users = User.page(params[:page]).order("created_at desc")
   end
 
   def show

@@ -13,7 +13,7 @@ class Message < ActiveRecord::Base
   scope :system_messages, -> { where("subject_type != ?", "Topic") }
   scope :reply_messages, -> { where("subject_type = ?", "Topic") }
 
-  paginates_per 20
+  paginates_per 10
 
   enum send_type: {
     new_show: 0, #有新show时的通知

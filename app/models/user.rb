@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
 
   mount_uploader :avatar, ImageUploader
 
-  paginates_per 20
+  paginates_per 10
 
   enum sex: {
     male: 0,
