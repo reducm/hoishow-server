@@ -30,7 +30,7 @@
 $ ->
   $('div.datetimepicker input').datetimepicker({
     timepicker: false,
-    format: 'd M Y',
+    format: 'Y-m-d',
     startDate: new Date(),
     defaultDate: new Date(),
     lang: 'zh',
