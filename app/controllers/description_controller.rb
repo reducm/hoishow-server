@@ -1,3 +1,4 @@
+# encoding: utf-8
 class DescriptionController < ApplicationController
   def show
     if !params[:subject_type].in?(%W( Banner Star Show Concert ))

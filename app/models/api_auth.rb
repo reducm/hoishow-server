@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class ApiAuth < ActiveRecord::Base
   validates :user, presence: true
   validates :key, presence: true, uniqueness: true

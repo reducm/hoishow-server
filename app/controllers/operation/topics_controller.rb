@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!

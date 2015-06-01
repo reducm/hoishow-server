@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Api::V1::ExpressDetailController < Api::V1::ApplicationController
   def index
     if params[:code]

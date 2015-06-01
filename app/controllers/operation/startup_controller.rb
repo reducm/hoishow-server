@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::StartupController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_startup, only: [:update, :set_startup_status, :destroy]

@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Payment < ActiveRecord::Base
   STATUS_PENDING = 0
   STATUS_SUCCESS = 1

@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Startup < ActiveRecord::Base
   mount_uploader :pic, ImageUploader
   after_create :set_valid_time

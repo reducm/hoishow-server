@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class City < ActiveRecord::Base
   has_many :stadiums
   has_many :shows

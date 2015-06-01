@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :api_verify
