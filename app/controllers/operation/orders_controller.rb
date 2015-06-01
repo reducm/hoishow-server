@@ -6,7 +6,8 @@ class Operation::OrdersController < Operation::ApplicationController
   def index
     params[:page] ||= 1
     @orders = Order.page(params[:page]).order("created_at desc")
-    @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+    #@r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+    @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
   end
 
   def show
