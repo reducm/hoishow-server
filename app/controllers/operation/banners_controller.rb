@@ -4,7 +4,8 @@ class Operation::BannersController < Operation::ApplicationController
   before_action :get_banner, except: [:index, :new, :create]
 
   def index
-    @banners = Banner.all
+    params[:page] ||= 1
+    @banners = Banner.page(params[:page]).order("created_at desc")
   end
 
   def new

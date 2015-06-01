@@ -21,7 +21,7 @@ class Star < ActiveRecord::Base
   mount_uploader :avatar, ImageUploader
   mount_uploader :poster, ImageUploader
 
-  paginates_per 20
+  paginates_per 10
 
   def set_position_for_new_record
     self.position = Star.maximum("position").to_i + 1

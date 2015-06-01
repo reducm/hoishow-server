@@ -78,7 +78,7 @@ class Show < ActiveRecord::Base
     end
   end
 
-  paginates_per 20
+  paginates_per 10
 
   mount_uploader :poster, ImageUploader
 

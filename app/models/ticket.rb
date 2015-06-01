@@ -26,7 +26,7 @@ class Ticket < ActiveRecord::Base
   scope :sold_tickets, ->{ where("status != ?", statuses[:pending] ) }
   before_create :set_status
 
-  paginates_per 20
+  paginates_per 10
 
   def self.sold_tickets_count
     sold_tickets.count

@@ -4,8 +4,9 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @orders = Order.all
-    @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+    params[:page] ||= 1
+    @orders = Order.page(params[:page]).order("created_at desc")
+    @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
   end
 
   def show

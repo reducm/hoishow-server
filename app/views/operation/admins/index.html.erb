@@ -2,6 +2,7 @@
 <div class="nav">
   <h2>系统用户</h2>
   <p><%= link_to "创建新用户", new_operation_admin_path%></p>
+    <%= paginate @admins%>
   <div class="admins_list">
     <table class="table admins">
       <thead>
@@ -30,5 +31,6 @@
         <% end %>
       </tbody>
     </table>
+    <%= paginate @admins%>
   </div>
 </div>
