@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <%= simple_form_for [:operation, concert ] do |f| %>
   <%= f.input :name, required: false, label: "投票名称" %>
   <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker, input_html:{ value: ( params[:action] == 'edit' ? concert.start_date.to_date : "" ) } %>

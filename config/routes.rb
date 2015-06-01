@@ -126,6 +126,9 @@ Rails.application.routes.draw do
         post :block_user
         post :remove_avatar
       end
+      collection do
+        get :search
+      end
     end
     resources :admins, except: [:destroy] do
       member do

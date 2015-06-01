@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150528072258) do
+ActiveRecord::Schema.define(version: 20150528083956) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -172,6 +172,16 @@ ActiveRecord::Schema.define(version: 20150528072258) do
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
+
+  create_table "seats", force: :cascade do |t|
+    t.integer  "show_id",    limit: 4
+    t.integer  "area_id",    limit: 4
+    t.integer  "status",     limit: 4
+    t.integer  "row",        limit: 4
+    t.integer  "column",     limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
 
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4

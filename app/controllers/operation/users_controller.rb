@@ -1,12 +1,16 @@
 # encoding: utf-8
 class Operation::UsersController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_user, except: [:index]
+  before_action :get_user, except: [:index, :search]
   load_and_authorize_resource
 
   def index
-    params[:page] ||= 1
     @users = User.page(params[:page]).order("created_at desc")
+  end
+
+  def search
+    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    render :index
   end
 
   def show
@@ -23,6 +27,7 @@ class Operation::UsersController < Operation::ApplicationController
 
   def remove_avatar
     @user.remove_avatar!
+    @user.avatar = nil
     @user.save
 
     redirect_to operation_user_url(@user)

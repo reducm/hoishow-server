@@ -1,4 +1,4 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
 need_concert ||= false
 need_show ||= false
 need_stadium ||= false
@@ -13,6 +13,7 @@ json.user_name order.user_name || ''
 json.user_mobile order.user_mobile || ''
 json.tickets_count order.tickets_count
 json.show_time order.show.show_time.to_ms rescue nil
+json.ticket_type order.show.ticket_type rescue ''
 
 if need_show
   json.show {json.partial!("api/v1/shows/show", {show: order.show})}
