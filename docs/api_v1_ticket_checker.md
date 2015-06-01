@@ -33,7 +33,7 @@ type: `POST`
 -----
 
 ## 获取订单详情
-[/api/v1/orders/:out_id]()
+[/api/v1/orders/:out_id/show_for_qr_scan]()
 
 type: `GET`
 

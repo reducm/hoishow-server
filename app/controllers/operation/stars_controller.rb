@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_star, only: [:show, :edit, :update]
+  before_action :get_star, only: [:new_show, :show, :edit, :update]
   before_action :get_videos, only: [:edit, :update]
   load_and_authorize_resource
 
@@ -17,6 +17,18 @@ class Operation::StarsController < Operation::ApplicationController
 
   def new
     @star = Star.new
+  end
+
+  def new_show
+    concert = Concert.create(name: @star.name + "(自动生成)", is_show: "hidden", status: "finished", start_date: Time.now, end_date: Time.now + 1)
+    @star.hoi_concert(concert) 
+    begin
+      redirect_to new_operation_show_url(concert_id: concert.id)
+    rescue
+      concert.delete
+      flash[:alert] = "发布新演出失败"
+      render action: 'show'
+    end
   end
 
   def create
