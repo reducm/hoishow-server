@@ -21,7 +21,7 @@ class Topic < ActiveRecord::Base
   has_many :user_like_topics
   has_many :likers, through: :user_like_topics, source: :user
 
-  paginates_per 20
+  paginates_per 10
 
   def subject
      begin
