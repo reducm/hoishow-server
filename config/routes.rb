@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       end
       member do
         get :get_topics
+        post :new_show
       end
     end
     resources :concerts do
