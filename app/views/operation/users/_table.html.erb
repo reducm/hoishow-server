@@ -13,10 +13,10 @@
     <tbody>
       <% users.each do|user|%>
         <tr>
-          <td class="text-center">
+          <td class="text-center" width="50px" height="50px">
             <%= image_tag user.avatar_url if user.avatar_url %>
-            <%= user.show_name %>
-          </td class="text-center">
+            <%= user.nickname || user.mobile %>
+          </td>
           <td class="text-center"><%= user.mobile %></td>
           <td class="text-center"><%= user.orders.count %></td>
           <td class="text-center"><%= user.topics.count %></td>
