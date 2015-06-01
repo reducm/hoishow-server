@@ -26,7 +26,7 @@ class Operation::StarsController < Operation::ApplicationController
       redirect_to new_operation_show_url(concert_id: concert.id)
     rescue
       concert.delete
-      flash[:alert] = "fuck"
+      flash[:alert] = "发布新演出失败"
       render action: 'show'
     end
   end
