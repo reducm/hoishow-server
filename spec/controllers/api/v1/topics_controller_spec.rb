@@ -12,10 +12,10 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       30.times {create :topic}
     end
 
-    it "should get 20 topics" do
+    it "should get 10 topics" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
@@ -36,7 +36,7 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       @topic = create :topic
       @user = create :user
       @user.like_topic(@topic)
-      get :index, with_key(api_token: @user.api_token, mobile: @user.mobile, page: 2, format: :json)
+      get :index, with_key(api_token: @user.api_token, mobile: @user.mobile, page: 4, format: :json)
       expect(JSON.parse(response.body).last["is_like"]).to be true
     end
   end
@@ -50,10 +50,10 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       end
     end
 
-    it "should get 20 topics" do
+    it "should get 10 topics" do
       get :index, with_key(subject_type: @concert.name, subject_id: @concert.id, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
@@ -80,10 +80,10 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
       end
     end
 
-    it "should get 20 topics" do
+    it "should get 10 topics" do
       get :index, with_key(subject_type: @star.name, subject_id: @star.id, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
