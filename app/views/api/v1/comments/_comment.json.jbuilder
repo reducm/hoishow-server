@@ -1,6 +1,6 @@
 # encoding: utf-8
 json.(comment, :id, :topic_id)
-json.content Base64.decode64(comment.content)
+json.content Base64.decode64(comment.content).force_encoding("utf-8")
 json.parent_id comment.parent_id || ''
 parent_comment = Comment.where(id: comment.parent_id).first
 parent_comment ? ( json.parent_comment { json.partial!("api/v1/comments/comment", {comment: parent_comment}) } ) : (json.parent_comment nil)
