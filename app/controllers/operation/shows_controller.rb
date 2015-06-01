@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums]

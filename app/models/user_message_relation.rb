@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class UserMessageRelation < ActiveRecord::Base
   belongs_to :user
   belongs_to :message

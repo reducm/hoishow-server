@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::VideosController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_video, :get_star

@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::AlipayController < Api::V1::ApplicationController
   skip_before_filter :api_verify
   include AlipayApi

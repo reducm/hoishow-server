@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::WxpayController < Api::V1::ApplicationController
   def notify
     query_params = params.except(*request.path_parameters.keys)

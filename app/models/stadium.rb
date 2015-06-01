@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Stadium < ActiveRecord::Base
   has_many :areas
   has_many :shows

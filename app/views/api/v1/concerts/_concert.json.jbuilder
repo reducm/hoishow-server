@@ -1,3 +1,4 @@
+# encoding: utf-8
 need_stars ||= false
 need_topics||= false
 need_shows ||= false

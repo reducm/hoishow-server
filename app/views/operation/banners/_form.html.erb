@@ -1,3 +1,4 @@
+# encoding: utf-8
 <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
   <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
   <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>

@@ -1,3 +1,4 @@
+# encoding: utf-8
 include QueryExpress
 
 class ExpressDetailController < ApplicationController

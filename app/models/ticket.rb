@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Ticket < ActiveRecord::Base
   default_scope {order('created_at DESC')}
 

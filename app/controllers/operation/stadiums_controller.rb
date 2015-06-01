@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::StadiumsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_stadium, except: [:index, :new, :create]

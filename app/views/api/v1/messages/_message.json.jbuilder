@@ -1,3 +1,4 @@
+# encoding: utf-8
 json.(message, :title, :content)
 json.redirect_url url_for([:api, :v1, message.subject])
 json.creator do
