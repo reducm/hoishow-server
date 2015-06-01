@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', multipart: :true }) do |f| %>
   <div class="form-group">
     <%= f.input :is_display, label: "是否显示" %>
@@ -35,10 +36,10 @@
       <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
      <% end %>
   </div>
-  
+
   <% if star.videos.any? %>
     <% if star.videos.first.valid? %>
-      <%= render partial: 'operation/videos/table', locals: { videos: @videos } %> 
+      <%= render partial: 'operation/videos/table', locals: { videos: @videos } %>
     <% end %>
   <% end %>
 

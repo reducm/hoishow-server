@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <%= simple_form_for([:operation, video ], html: { class: 'form-horizontal', multipart: :true }) do |f| %>
   <div class="form-group">
     <%= image_tag(video.snapshot.url, size: "300x200") if video.snapshot_url %>
