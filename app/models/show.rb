@@ -15,9 +15,10 @@ class Show < ActiveRecord::Base
   has_many :orders
   has_many :tickets
 
-  validates :name, presence: {message: "Show名不能为空"}
-  validates :concert, presence: {message: "Concert不能为空"}
-  validates :stadium, presence: {message: "Stadium不能为空"}
+  validates :name, presence: {message: "演出名不能为空"}
+  validates :concert, presence: {message: "投票不能为空"}
+  validates :stadium, presence: {message: "场馆不能为空"}
+  validates :show_time, presence: {message: "演出时间不能为空"}
 
   scope :is_display, -> { where(is_display: true) }
 
