@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 json.(comment, :id, :topic_id)
 json.content Base64.decode64(comment.content).force_encoding("utf-8")
 json.parent_id comment.parent_id || ''
