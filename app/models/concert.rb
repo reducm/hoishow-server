@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Concert < ActiveRecord::Base
   default_scope {order('concerts.is_top DESC, concerts.created_at DESC')}
 

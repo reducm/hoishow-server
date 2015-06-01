@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Show < ActiveRecord::Base
   default_scope {order('shows.is_top DESC, shows.created_at DESC')}
 

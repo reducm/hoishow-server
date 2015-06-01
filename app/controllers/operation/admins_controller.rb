@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::AdminsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :find_admin, except: [:index, :new, :create]

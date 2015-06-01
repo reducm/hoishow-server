@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Api::V1::OrdersController < Api::V1::ApplicationController
   before_action :check_login!, except: [:show_for_qr_scan]
   before_action :check_admin_validness!, only: [:show_for_qr_scan]

@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Api::V1::MessagesController < Api::V1::ApplicationController
   before_action :check_login!
 

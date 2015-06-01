@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::CitiesController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_city, except: [:index]

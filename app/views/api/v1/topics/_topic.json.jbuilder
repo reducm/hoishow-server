@@ -1,3 +1,4 @@
+# encoding: utf-8
 @user ||= nil
 
 json.(topic, :id, :is_top, :like_count, :subject_type, :subject_id)

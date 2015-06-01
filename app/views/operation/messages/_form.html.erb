@@ -1,3 +1,4 @@
+# encoding: utf-8
 <%= simple_form_for [:operation, message] do |f| %>
   <%= f.input :creator_type, collection: [["关注star的用户", "Star"], ["关注concert的用户", "Concert"], ["关注show的用户", "Show"], ["全部用户", "All"]], input_html: {id: "message_creator_type_select"}, label: "推送用户" %>
   <div id="message_creator_id"><%= f.input :creator_id, as: :select, input_html: {id: "message_creator_id_select"}, label: "选择目标"%></div>
