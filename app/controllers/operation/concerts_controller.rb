@@ -25,6 +25,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def new
     @concert = Concert.new
+    @star = Star.find(params[:star_id])
   end
 
   def create

@@ -1,14 +1,14 @@
 <div role="tabpanel">
+  <%= label_tag "name", @star.name, class: 'btn btn-link btn-lg disabled star_title' %>
   <%= link_to "编辑资料", edit_operation_star_path, class: 'btn btn-default' %>
   <%= link_to "发布新互动", 'javascript:void(0)', class: 'btn btn-default add_topic' %>
   <%= link_to "发布新演出", new_operation_concert_path(star_id: @star.id), class: 'btn btn-default' %>
 
-  <h1><%= @star.name %></h1>
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">
     <li role="presentation" class="active"><a href="#star_concerts" aria-controls="star_concerts" role="tab" data-toggle="tab">演出活动</a></li>
     <li role="presentation"><a href="#star_topics" aria-controls="star_topics" role="tab" data-toggle="tab">互动topic</a></li>
-    <li role="presentation"><a href="#star_shows" aria-controls="star_shows" role="tab" data-toggle="tab">粉丝（<%= @star.followers.count || 0 %>）个</a></li>
+    <li role="presentation"><a href="#star_followers" aria-controls="star_followers" role="tab" data-toggle="tab">粉丝（<%= @star.followers.count || 0 %>）个</a></li>
   </ul>
 
   <!-- Tab panes -->
