@@ -5,8 +5,12 @@ need_stadium ||= false
 need_city ||= false
 need_tickets ||= false
 
-json.(order, :express_id, :user_address, :user_mobile, :user_name, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
+json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
 json.poster order.show.poster_url || ''
+json.express_id order.express_id || ''
+json.user_address order.user_address || ''
+json.user_name order.user_name || ''
+json.user_mobile order.user_mobile || ''
 json.tickets_count order.tickets_count
 json.show_time order.show.show_time.to_ms rescue nil
 json.ticket_type order.show.ticket_type rescue ''
