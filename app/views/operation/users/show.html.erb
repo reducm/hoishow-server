@@ -43,7 +43,7 @@
     <div role="tabpanel" class="col-md-8">
       <!-- Nav tabs -->
       <ul class="nav nav-pills" role="tablist">
-        <li role="presentation" class="active"><a href="#user_orders" aria-controls="orders" role="tab" data-toggle="tab">购票记录<span class="badge"><%= @orders.count %></span></a></li>
+        <li role="presentation" class="active"><a href="#user_orders" aria-controls="orders" role="tab" data-toggle="tab">订单记录<span class="badge"><%= @orders.count %></span></a></li>
         <li role="presentation"><a href="#user_topics" aria-controls="topics" role="tab" data-toggle="tab">互动记录<span class="badge"><%= @topics.count %></span></a></li>
         <li role="presentation"><a href="#user_comments" aria-controls="comments" role="tab" data-toggle="tab">评论记录<span class="badge"><%= @comments.count %></span></a></li>
       </ul>
@@ -51,6 +51,7 @@
       <!-- Tab panes -->
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane active table users_list" id="user_orders">
+  <h3 class="pull-left">订单列表</h3>
           <table class="table users">
             <thead>
               <tr>
@@ -74,6 +75,7 @@
           <%= paginate @orders %>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_topics">
+  <h3 class="pull-left">互动列表</h3>
           <table class="table users">
             <thead>
               <tr>
@@ -90,6 +92,7 @@
           </table>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_comments">
+  <h3 class="pull-left">评论列表</h3>
           <table class="table users">
             <thead>
               <tr>

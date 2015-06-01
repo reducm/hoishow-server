@@ -4,6 +4,7 @@
     <h1 class="pull-left">城市列表</h1>
   </div>
 
+    <%= paginate @cities%>
   <div class="cities_list">
     <table class="cities table">
       <thead>
@@ -19,4 +20,5 @@
         </tr>
       <% end %>
     </table>
+    <%= paginate @cities%>
   </div>

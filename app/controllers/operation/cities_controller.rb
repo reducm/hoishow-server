@@ -5,7 +5,8 @@ class Operation::CitiesController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @cities = City.all
+    params[:page] ||= 1
+    @cities = City.page(params[:page])
   end
 
   def stadiums_list

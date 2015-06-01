@@ -337,7 +337,7 @@ $ ->
   $("#concert_status_select").change ->
     $(".concert_status_cn").parent().show()
     cs = $("#concert_status_select").val()
-    if cs == "演出投票状态"
+    if cs == "投票状态"
       location.reload()
     else
       $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()

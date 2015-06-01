@@ -13,6 +13,7 @@
     <h1 class="pull-left">实体票快递详情</h1>
 </div>
 <div class="expresses_list" id="expresses_list">
+  <%= paginate @r_ticket_orders%>
 <table class="table table-hover expresses">
   <thead>
     <tr>
@@ -45,6 +46,7 @@
     <%end%>
   </tbody>
 </table>
+  <%= paginate @r_ticket_orders%>
 </div>
 
 

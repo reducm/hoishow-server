@@ -7,7 +7,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
-    @concerts = Concert.all
+    params[:page] ||= 1
+    @concerts = Concert.page(params[:page]).order("created_at desc")
   end
 
   def edit

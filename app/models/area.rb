@@ -7,7 +7,7 @@ class Area < ActiveRecord::Base
   has_many :tickets
   has_many :seats
 
-  validates :stadium, presence: {message: "Stadium不能为空"}
+  validates :stadium, presence: {message: "场馆不能为空"}
 
-  paginates_per 20
+  paginates_per 10
 end

@@ -56,12 +56,12 @@
         <% end %>
       </div>
       <div class="orders_list">
-      <%= render partial: 'operation/orders/table', locals: {orders: @show.orders} %>
+      <%= render partial: 'operation/orders/table', locals: {orders: @show.orders.page.order("created_at desc")} %>
       </div>
     </div>
 
     <div role="tabpanel" class="tab-pane topics_list" id="shows_show_topics">
-      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page} %>
+      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page.order("created_at desc")} %>
     </div>
 
   </div>

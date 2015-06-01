@@ -10,7 +10,7 @@ class Comment < ActiveRecord::Base
   validates :creator_id, presence: true
   validates :creator_type, presence: true
 
-  paginates_per 20
+  paginates_per 10
 
   def creator
     begin
