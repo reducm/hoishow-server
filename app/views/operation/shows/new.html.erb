@@ -14,7 +14,7 @@
         <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
         <%= f.input :poster, label: "演出海报" %>
         <%= f.kindeditor :description %>
-        <% if @concert.cities = [] %>
+        <% if @concert.cities.empty? %>
           <%= f.input :city_id, collection: City.all, input_html: {id: "show_city_select"} %>
         <% else %>
           <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
