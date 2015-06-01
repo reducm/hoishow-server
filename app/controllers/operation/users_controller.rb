@@ -1,11 +1,16 @@
 # encoding: utf-8
 class Operation::UsersController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_user, except: [:index]
+  before_action :get_user, except: [:index, :search]
   load_and_authorize_resource
 
   def index
-    @users = User.all
+    @users = User.page(params[:page]).order("created_at desc")
+  end
+
+  def search
+    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    render :index
   end
 
   def show
