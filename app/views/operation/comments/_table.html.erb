@@ -1,3 +1,4 @@
+# encoding: utf-8
 <table class="table">
   <thead>
     <tr>
@@ -9,21 +10,25 @@
   </thead>
   <% comments.each do |comment| %>
     <tr>
-      <td><%= comment.creator_name %></td>
-      <td>
+      <% if comment.creator_type == "Admin"%>
+        <td><%= comment.creator_name %></td>
+      <%else%>
+        <td><%= link_to comment.creator_name, url_for([:operation, comment.creator]) %></td>
+      <%end%>
+      <td width="550px">
         <% if comment.parent %>
-          回复<%= comment.parent.try(:creator_name) %> : <%= comment.content %>
-        <% else %>
-          <%= comment.content %>
-        <% end %>
-      </td>
-      <td><%= get_datetime(comment.created_at) %></td>
-      <td data-id="<%= comment.id %>">
-        <%= link_to "回复", 'javascript:void(0);', class: 'reply_btn' %>
-        <%= link_to "删除", 'javascript:void(0);', class: 'del_comment' %>
-      </td>
-    </tr>
-  <% end %>
+          回复<%= comment.parent.try(:creator_name) %> : <%= Base64.decode64(comment.content) %>
+      <% else %>
+        <%= Base64.decode64(comment.content)%>
+      <% end %>
+    </td>
+    <td><%= get_datetime(comment.created_at) %></td>
+    <td data-id="<%= comment.id %>">
+      <%= link_to "回复", 'javascript:void(0);', class: 'reply_btn' %>
+      <%= link_to "删除", 'javascript:void(0);', class: 'del_comment' %>
+    </td>
+  </tr>
+<% end %>
 </table>
 
 <%= paginate comments, remote: true %>

@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :api_verify
@@ -27,6 +27,10 @@ class Api::V1::ApplicationController < ApplicationController
     end
     @user = get_user_from_params(params[:api_token], params[:mobile])
     return error_json("api_token_wrong") if @user.blank?
+    if verify_block?(@user)
+      @user.update(api_token:SecureRandom.hex(16))
+      return error_json "账户被锁定，请联系管理员" 
+    end
     @user
   end
 

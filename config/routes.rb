@@ -35,6 +35,7 @@ Rails.application.routes.draw do
           post "like_topic" => "users#like_topic"
           post "create_comment" => "users#create_comment"
           post "create_order" => "users#create_order"
+          post "update_express_info" => "users#update_express_info"
         end
       end
 

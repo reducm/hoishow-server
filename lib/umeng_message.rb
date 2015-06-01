@@ -110,7 +110,30 @@ module UmengMessage
     end
   end
 
-
+  def send_message_for_reply_comment(user_mobile, title, text)
+    time_stamp = ( Time.now + 1.minutes ).to_i.to_s
+    appkey = UmengMessageSetting["umeng_app_key"]
+    option = {
+      appkey: appkey,
+      timestamp: time_stamp,
+      type: "customizedcast",
+      alias: user_mobile,
+      alias_type: "mobile",
+      payload: {
+        display_type: "notification",
+        body: {
+          ticker: "你有新的回复！", 
+          title: title,
+          text: text,
+          after_open:"go_activity",
+          activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
+        }
+      }
+    }
+    send_url = UmengMessageSetting["umeng_send_url"]
+    post_body = string_convert_ascii( option.to_json )
+    response = httpi_send(send_url, post_body)
+  end
 
 
 end

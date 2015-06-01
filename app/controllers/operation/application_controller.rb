@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Operation::ApplicationController < ApplicationController
   layout "operation"
 

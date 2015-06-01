@@ -1,9 +1,10 @@
-<table class="table" id="topics">
+# encoding: utf-8
+<table class="table topics" id="topics">
   <thead>
     <tr>
       <th>发布用户</th>
       <th>内容</th>
-      <th>赞/回复/查看数</th>
+      <th>赞/回复</th>
       <th>发布时间</th>
       <th>最后回复时间</th>
       <th>操作</th>
@@ -11,9 +12,13 @@
   </thead>
   <% topics.each do |topic| %>
     <tr>
-      <td><%= topic.creator_name %></td>
-      <td><%= topic.content %></td>
-      <td><%= topic.like_count %>/<%= topic.comments.count %>/<%= 0 %></td>
+      <% if topic.creator_type == "Admin"%>
+        <td><%= topic.creator_name %></td>
+      <%else%>
+        <td><%= link_to topic.creator_name, url_for([:operation, topic.creator]) %></td>
+      <%end%>
+      <td width="550px"><%= Base64.decode64(topic.content) %></td>
+      <td><%= topic.like_count %>/<%= topic.comments.count %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.last_reply_time) %></td>
       <td data-id="<%= topic.id %>">

@@ -1,3 +1,4 @@
+# encoding: utf-8
 @user ||= nil
 need_concerts ||= false
 need_shows ||= false

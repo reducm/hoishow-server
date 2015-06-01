@@ -1,3 +1,4 @@
+# encoding: utf-8
 <div class="nav">
   <h2>
     演出详情
@@ -53,11 +54,13 @@
           <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> sold_count=<%= tickets.sold_tickets_count %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %> style="height:300px; width:300px"></div>
         <% end %>
       </div>
+      <div class="orders_list">
       <%= render partial: 'operation/orders/table', locals: {orders: @show.orders} %>
+      </div>
     </div>
 
-    <div role="tabpanel" class="tab-pane" id="shows_show_topics">
-      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics} %>
+    <div role="tabpanel" class="tab-pane topics_list" id="shows_show_topics">
+      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page} %>
     </div>
 
   </div>

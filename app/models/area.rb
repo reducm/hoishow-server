@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Area < ActiveRecord::Base
   belongs_to :stadium
 

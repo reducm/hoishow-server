@@ -21,6 +21,12 @@ $ ->
   if $(".shows_list").length > 0
     $(".shows").dataTable()
 
+  if $(".orders_list").length > 0
+    $(".orders").dataTable()
+
+  if $(".topics_list").length > 0
+    $(".topics").dataTable()
+
   $("#pie_cake div").each(() ->
     left_count = $(this).attr("left_count")
     sold_count = $(this).attr("sold_count")

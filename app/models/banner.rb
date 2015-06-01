@@ -17,6 +17,19 @@ class Banner < ActiveRecord::Base
     subject.name rescue "图文主体"
   end
 
+  def subject_type_cn
+    case subject_type
+    when "Star"
+      "明星"
+    when "Concert"
+      "投票"
+    when "Show"
+      "演出"
+    when "Article"
+      "图文"
+    end
+  end
+
   def is_article?
     subject_type == "Article"
   end

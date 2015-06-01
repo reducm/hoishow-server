@@ -1,6 +1,6 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::UsersController < Api::V1::ApplicationController
-  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_shows, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order]
+  before_filter :check_login!, only: [:update_user, :get_user, :follow_subject, :unfollow_subject, :vote_concert, :followed_shows, :followed_concerts, :followed_stars, :create_topic, :like_topic, :create_comment, :create_order, :update_express_info]
 
   def sign_in
     if params[:mobile] && params[:code]
@@ -164,7 +164,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_topic
-    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: params[:content])
+    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: Base64.encode64(params[:content]))
     @topic.city_id = params[:city_id] if params[:city_id]
     if !@topic.save
       return error_json(@topic.errors.full_messages)
@@ -204,11 +204,15 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         end
       end
     end
+  end
 
+  def update_express_info
+    @order = Order.where(out_id: params[:out_id]).first
     @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
-    @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
-
+    if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
+        render json: {msg: "ok"}, status: 200
+    end
   end
 
   protected

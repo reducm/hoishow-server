@@ -1,3 +1,4 @@
+# encoding: utf-8
 need_concert ||= false
 need_show ||= false
 need_stadium ||= false

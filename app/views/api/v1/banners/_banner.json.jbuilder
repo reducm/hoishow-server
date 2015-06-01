@@ -1,3 +1,4 @@
+# encoding: utf-8
 json.(banner, :id, :subject_type, :subject_id)
 json.poster banner.poster_url || ''
 

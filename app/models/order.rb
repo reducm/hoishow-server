@@ -26,6 +26,7 @@ class Order < ActiveRecord::Base
 
   after_create :set_attr_after_create
 
+
   enum status: {
     pending: 0, #未支付
     paid: 1, #已支付
@@ -34,6 +35,7 @@ class Order < ActiveRecord::Base
     outdate: 4 #过期
   }
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
+  scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, Order.statuses[:pending]) }
 
   #创建order时,

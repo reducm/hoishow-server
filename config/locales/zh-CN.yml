@@ -137,6 +137,19 @@ zh-CN:
       header:
         one: 有 1 个错误发生导致「%{model}」无法被保存。
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
+  controller:
+    home: "首页"
+    banners: "首页广告"
+    stars: "艺人列表"
+    concerts: "投票列表"
+    shows: "演出列表"
+    orders: "订单列表"
+    users: "用户列表"
+    cities: "城市与场馆"
+    messages: "推送通知"
+    tickets: "验票详情"
+    startup: "启动页管理"
+    admins: "系统管理"
   views:
     pagination:
       first: '首页'

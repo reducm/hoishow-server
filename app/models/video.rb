@@ -1,3 +1,4 @@
+#encoding: UTF-8
 class Video < ActiveRecord::Base
   belongs_to :star
   belongs_to :concert

@@ -26,6 +26,15 @@ $ ->
     paging: false
   )
 
+  if $(".concerts_list").length > 0
+    $(".concerts").dataTable()
+
+  if $(".topics_list").length > 0
+    $(".topics").dataTable()
+
+  if $(".users_list").length > 0
+    $(".users").dataTable()
+
   star_id = $("#star_id").val()
   if star_id
     $(".add_topic").on "click", ()->
@@ -36,7 +45,7 @@ $ ->
         if content.length < 1
           alert("不能发空互动")
         else
-          $.post("/operation/topics", {topic: {content: content, subject_id: star_id, subject_type: 'Star'}, creator: $('#topic_creator').val()}, (data)->
+          $.post("/operation/topics", {topic: {subject_id: star_id, subject_type: 'Star'}, creator: $('#topic_creator').val(), content: content}, (data)->
             if data.success
               location.reload()
           )

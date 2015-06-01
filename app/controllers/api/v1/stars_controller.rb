@@ -1,3 +1,4 @@
+# encoding: utf-8
 class Api::V1::StarsController < Api::V1::ApplicationController
   before_action :check_has_user
   def index
