@@ -11,7 +11,7 @@
   <%= simple_form_for [:operation, @show] do |f| %>
     <%= f.input :is_display, label: "是否显示" %>
     <%= f.input :name, required: false, label: "演出名称" %>
-    <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: @show.show_time.to_date } rescue "" %>
+    <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: @show.show_time.to_date } %>
     <%= f.input :ticket_type, label: "票的类型", collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: @show.ticket_type_cn, disabled: true %>
     <%= f.input :poster, label: "演出海报" %>
     <%= image_tag(@show.poster_url, size: "700x500") if @show.poster_url %>
