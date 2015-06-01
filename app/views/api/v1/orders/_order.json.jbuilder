@@ -9,6 +9,7 @@ json.(order, :express_id, :user_address, :user_mobile, :user_name, :out_id, :amo
 json.poster order.show.poster_url || ''
 json.tickets_count order.tickets_count
 json.show_time order.show.show_time.to_ms rescue nil
+json.ticket_type order.show.ticket_type rescue ''
 
 if need_show
   json.show {json.partial!("api/v1/shows/show", {show: order.show})}
