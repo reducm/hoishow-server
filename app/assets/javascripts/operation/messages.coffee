@@ -31,5 +31,3 @@ $ ()->
     $("#message_subject_id_select").attr("data-live-search", true)
     $("#message_subject_id_select").selectpicker("refresh")
 
-  if $(".messages_list").length > 0
-    $(".messages").dataTable()

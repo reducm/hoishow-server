@@ -7,12 +7,6 @@ $ ->
     else
       $(".order_status_cn:not(:contains('" + vtxt + "'))").parent().hide()
 
-  if $(".orders_list").length > 0
-    $(".orders").dataTable()
-    
-  if $(".expresses_list").length > 0
-    $(".expresses").dataTable()
-
 #修改快递单号
   $("#expresses_list").on "click", ".change_express_data", (e) ->
     e.preventDefault()
