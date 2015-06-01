@@ -7,22 +7,25 @@
 
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">
-    <li role="presentation" class="active"><a href="#star_concerts" aria-controls="star_concerts" role="tab" data-toggle="tab">演出活动</a></li>
-    <li role="presentation"><a href="#star_topics" aria-controls="star_topics" role="tab" data-toggle="tab">互动topic</a></li>
+    <li role="presentation" class="active"><a href="#star_concerts" aria-controls="star_concerts" role="tab" data-toggle="tab">投票</a></li>
+    <li role="presentation"><a href="#star_topics" aria-controls="star_topics" role="tab" data-toggle="tab">互动</a></li>
     <li role="presentation"><a href="#star_followers" aria-controls="star_followers" role="tab" data-toggle="tab">粉丝（<%= @star.followers.count || 0 %>）个</a></li>
   </ul>
 
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active concerts_list" id="star_concerts">
-      <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts} %>
+  <h3 class="pull-left">投票列表</h3>
+      <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts.page.order("created_at desc")} %>
     </div>
 
     <div role="tabpanel" class="tab-pane topics_list" id="star_topics">
-        <%= render partial: 'operation/topics/table', locals: {topics: @topics} %>
+  <h3 class="pull-left">互动列表</h3>
+        <%= render partial: 'operation/topics/table', locals: {topics: @topics.page.order("created_at desc")} %>
     </div>
     <div role="tabpanel" class="tab-pane users_list" id="star_followers">
-      <%= render partial: 'operation/users/table', locals: {users: @users} %>
+  <h3 class="pull-left">粉丝列表</h3>
+      <%= render partial: 'operation/users/table', locals: {users: @users.page.order("created_at desc")} %>
     </div>
   </div>
 

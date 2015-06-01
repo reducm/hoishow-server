@@ -26,7 +26,7 @@ class Order < ActiveRecord::Base
 
   after_create :set_attr_after_create
 
-  paginates_per 1
+  paginates_per 10
 
   enum status: {
     pending: 0, #未支付
