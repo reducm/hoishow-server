@@ -1,8 +1,4 @@
 $ ->
-  #admins index
-  if $(".admins_list").length > 0
-    $(".admins").dataTable()
-
   #admins edit
   $("#submit").on "click", (e) ->
     if $("#pw1").val() != $("#pw2").val() or $("#pw1").val() == "" or $("#pw2").val() == ""

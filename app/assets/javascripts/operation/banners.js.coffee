@@ -1,7 +1,4 @@
 $ ->
-  if $(".banners_list").length > 0
-    $(".banners").dataTable(paging: false)
-
   data = $("#hoishow").data()
 
   generate_options = (subjects = [])->
