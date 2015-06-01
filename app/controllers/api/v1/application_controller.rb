@@ -27,7 +27,10 @@ class Api::V1::ApplicationController < ApplicationController
     end
     @user = get_user_from_params(params[:api_token], params[:mobile])
     return error_json("api_token_wrong") if @user.blank?
-    return error_json "账户被锁定，请联系管理员" if verify_block?(@user)
+    if verify_block?(@user)
+      @user.update(api_token:SecureRandom.hex(16))
+      return error_json "账户被锁定，请联系管理员" 
+    end
     @user
   end
 
