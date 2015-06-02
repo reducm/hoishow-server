@@ -11,6 +11,7 @@ class Operation::StarsController < Operation::ApplicationController
 
   def show
     @concerts = @star.concerts.page(params[:page])
+    @shows = @star.shows.page(params[:page])
     @topics = @star.topics.page(params[:page])
     @users = @star.followers.page(params[:page])
   end
