@@ -252,8 +252,11 @@ autocomplete_city_name = (concert_id) ->
   $("#city_name").autocomplete("option", "appendTo", "#myModal")
 
 $ ->
+  concert_id = $("#concert_id").val()
+
   if location.hash
     $("#concert_edit_tabs a[href='" + location.hash + "']").tab('show')
+
     init_map(concert_id) #初始化地图标注
 
   $("#concert_edit_tabs a").on "click", (e) ->
@@ -263,8 +266,6 @@ $ ->
   $("ul.nav-pills > li > a").on "shown.bs.tab", (e) ->
     id = $(e.target).attr("href").substr(1)
     location.hash = id
-
-  concert_id = $("#concert_id").val()
 
   if concert_id
     $("#get_map").on "click", () ->
