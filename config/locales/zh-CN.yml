@@ -146,6 +146,7 @@ zh-CN:
     orders: "订单列表"
     users: "用户列表"
     cities: "城市与场馆"
+    stadiums: "城市与场馆"
     messages: "推送通知"
     tickets: "验票详情"
     startup: "启动页管理"
