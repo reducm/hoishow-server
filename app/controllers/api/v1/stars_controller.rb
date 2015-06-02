@@ -3,7 +3,7 @@ class Api::V1::StarsController < Api::V1::ApplicationController
   before_action :check_has_user
   def index
     params[:page] ||= 1
-    @stars = Star.is_display.page(params[:page])
+    @stars = Star.is_display.order(:position).page(params[:page])
   end
 
   def show
@@ -11,6 +11,6 @@ class Api::V1::StarsController < Api::V1::ApplicationController
   end
 
   def search
-    @stars = Star.is_display.search params[:q]
+    @stars = Star.is_display.order(:position).search params[:q]
   end
 end
