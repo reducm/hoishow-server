@@ -21,7 +21,7 @@
   <%= f.input :avatar, label: "上传头像" %>
 
 <div class="form-group">
-  <% if star.avatar_url %>
+  <% if star.poster_url %>
     <%= label_tag "当前海报" %>
     <%= image_tag(star.poster_url, size: "700x500") %>
   <% end %>
