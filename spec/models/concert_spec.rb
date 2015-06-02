@@ -8,12 +8,12 @@ describe Concert do
       end
     end
     it "per 20" do
-      expect( Concert.page(2).size ).to eq 20
+      expect( Concert.page(2).size ).to eq 10
     end
 
     it "page2's model should be correct" do
       concerts = Concert.all
-      expect(concerts.index Concert.page(2).first).to be 20
+      expect(concerts.index Concert.page(2).first).to be 10
     end
   end
 end
