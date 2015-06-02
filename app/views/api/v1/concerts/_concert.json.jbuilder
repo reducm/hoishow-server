@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 need_stars ||= false
 need_topics||= false
 need_shows ||= false
@@ -19,7 +17,7 @@ json.is_voted @voted_concert ? true : false
 json.voted_city @voted_concert
 
 if need_stars
-  json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
+  json.stars{ json.array! concert.stars.is_display, partial: "api/v1/stars/star", as: :star }
 end
 
 if need_topics
@@ -27,5 +25,5 @@ if need_topics
 end
 
 if need_shows
-  json.shows{ json.array! concert.shows, partial: "api/v1/shows/show", as: :show }
+  json.shows{ json.array! concert.shows.is_display, partial: "api/v1/shows/show", as: :show }
 end

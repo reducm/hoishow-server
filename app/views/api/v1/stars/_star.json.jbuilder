@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 @user ||= nil
 need_concerts ||= false
 need_shows ||= false
@@ -17,11 +15,11 @@ json.followers_count star.followers_count
 star.videos.present? ? ( json.video { json.partial!("api/v1/videos/video", { video: star.videos.is_main.first }) } ) : (json.video nil)
 
 if need_concerts
-  json.concerts{ json.array! star.concerts, partial: "api/v1/concerts/concert", as: :concert }
+  json.concerts{ json.array! star.concerts.showing_concerts, partial: "api/v1/concerts/concert", as: :concert }
 end
 
 if need_shows
-  json.shows{ json.array! star.shows, partial: "api/v1/shows/show", as: :show }
+  json.shows{ json.array! star.shows.is_display, partial: "api/v1/shows/show", as: :show }
 end
 
 if need_topics

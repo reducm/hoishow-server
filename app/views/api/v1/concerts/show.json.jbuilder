@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 json.partial! "concert", { concert: @concert, need_stars: true, need_topics: true, need_shows: true  }
 json.cities do
   json.array! @concert.cities do|city|

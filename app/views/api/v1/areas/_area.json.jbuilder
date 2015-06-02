@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 json.(area, :id, :name, :stadium_id)
 json.seats_count area.seats_count.to_i
 json.created_at area.created_at.to_ms
