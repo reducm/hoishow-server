@@ -20,7 +20,7 @@ class Operation::StarsController < Operation::ApplicationController
   end
 
   def new_show
-    concert = Concert.create(name: @star.name + "(自动生成)", is_show: "hidden", status: "finished", start_date: Time.now, end_date: Time.now + 1)
+    concert = Concert.create(name: @star.name + "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
     @star.hoi_concert(concert) 
     begin
       redirect_to new_operation_show_url(concert_id: concert.id)
