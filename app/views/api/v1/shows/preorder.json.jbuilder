@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 json.stadium do
   json.partial! "api/v1/stadiums/stadium", stadium: @stadium, show: @show, need_areas: true, need_city: true
 end

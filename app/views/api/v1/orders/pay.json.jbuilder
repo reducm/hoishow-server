@@ -1,5 +1,3 @@
-<%# encoding: utf-8 %>
-
 json.order {json.partial! "order", {order: @order}}
 
 json.payment @payment.payment_type
