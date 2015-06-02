@@ -11,7 +11,7 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
     it "should get 20 (base on model paginates_per) shows" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
