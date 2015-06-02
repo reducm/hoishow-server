@@ -208,7 +208,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def update_express_info
     @order = Order.where(out_id: params[:out_id]).first
-    @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
+    if params[:express_id] && express = @user.expresses.find_by_id(params[:express_id])
+      express.update(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
+    else
+      @user.expresses.create(province: params[:province], city: params[:city], district: params[:district], user_address: params[:user_address], user_mobile: params[:user_mobile], user_name: params[:user_name])
+    end
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
     if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
         render json: {msg: "ok"}, status: 200

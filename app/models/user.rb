@@ -49,6 +49,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def default_address
+    express = expresses.last
+    if express
+      "#{express.provice.to_s express.city.to_s express.district.to_s express.user_address}"
+    else
+      ""
+    end
+  end
+
   def sign_in_api
     return if self.api_token.present? && self.api_expires_in.present?
 
@@ -98,7 +107,7 @@ class User < ActiveRecord::Base
   def create_comment(topic, parent_id = nil, content)
     comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: Base64.encode64(content))
     content = remove_emoji_from_content(content)
-    if parent_id 
+    if parent_id
       #回覆评论
       message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: content)
       create_relation_with_messages(message)
