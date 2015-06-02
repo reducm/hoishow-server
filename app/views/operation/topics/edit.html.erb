@@ -3,12 +3,12 @@
 <div class="nav">
   <div class="col-md-6">
     <h2>查看互动</h2>
-    <%= simple_form_for [:operation, @topic] do |f| %>
+    <%= form_tag(operation_topic_path(@topic), method: :put) do %>
       <div class="form-group">
-        <%= f.text_area :content, rows: 10, cols: 50 %>
+        <%= text_area_tag "content", Base64.decode64(@topic.content), rows: 10, cols: 50 %>
       </div>
       <div class="form-group">
-        <%= f.submit "确认修改互动内容", class: 'btn btn-primary' %>
+        <%= submit_tag "确认修改互动内容", class: 'btn btn-primary' %>
       </div>
     <% end %>
   </div>

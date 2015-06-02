@@ -28,7 +28,8 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def update
     Topic.transaction do
-      @topic.update(topic_params)
+      @topic.content = Base64.encode64(params[:content])
+      @topic.save!
     end
     redirect_to edit_operation_topic_url(@topic)
   end
