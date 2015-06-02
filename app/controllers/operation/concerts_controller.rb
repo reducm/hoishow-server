@@ -8,7 +8,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def index
     params[:page] ||= 1
-    @concerts = Concert.page(params[:page]).order("created_at desc")
+    @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
   end
 
   def edit

@@ -26,6 +26,7 @@ class Concert < ActiveRecord::Base
   after_create :set_showing_concert_after_create
 
   scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]) }
+  scope :concerts_without_auto_hide, ->{ where("is_show != ?", is_shows[:auto_hide]) }
 
   paginates_per 10
 
@@ -36,7 +37,8 @@ class Concert < ActiveRecord::Base
 
   enum is_show: {
     showing: 0,
-    hidden: 1
+    hidden: 1,
+    auto_hide: 2
   }
 
   mount_uploader :poster, ImageUploader

@@ -18,7 +18,7 @@
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active concerts_list" id="star_concerts">
   <h3 class="pull-left">投票列表</h3>
-      <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts.page.order("created_at desc")} %>
+      <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts.concerts_without_auto_hide.page.order("created_at desc")} %>
     </div>
 
     <div role="tabpanel" class="tab-pane topics_list" id="star_topics">
