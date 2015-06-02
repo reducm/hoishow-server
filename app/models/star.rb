@@ -14,7 +14,7 @@ class Star < ActiveRecord::Base
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
-  scope :is_display, -> { where(is_display: true).order('created_at DESC') }
+  scope :is_display, -> { where(is_display: true).order(:position) }
 
   before_create :set_position_for_new_record
 
