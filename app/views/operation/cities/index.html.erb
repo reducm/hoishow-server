@@ -11,12 +11,14 @@
         <tr>
           <th>名称</th>
           <th>场馆数</th>
+          <th>操作</th>
         </tr>
       </thead>
       <% @cities.each do |city| %>
         <tr>
           <td><%= city.name %></td>
           <td><%= link_to city.stadiums_count, operation_stadiums_path(city_id: city.id) %></td>
+          <td><%= link_to "编辑城市", operation_stadiums_path(city_id: city.id) %></td>
         </tr>
       <% end %>
     </table>
