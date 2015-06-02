@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <div class="nav new_show">
   <h1 class="pull-left">新建演出</h1>
   <% if @concert %>
@@ -14,7 +15,11 @@
         <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
         <%= f.input :poster, label: "演出海报" %>
         <%= f.kindeditor :description %>
-        <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
+        <% if @concert.cities.empty? %>
+          <%= f.input :city_id, collection: City.all, input_html: {id: "show_city_select"} %>
+        <% else %>
+          <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
+        <% end %>
         <%= f.input :stadium_id, required: false, as: :select, input_html: {id: "show_stadium_select"} %>
         <%= f.hidden_field :concert_id, value: @concert.id %>
         <%= f.button :submit, "保存" %>

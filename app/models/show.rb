@@ -11,6 +11,7 @@ class Show < ActiveRecord::Base
 
   has_many :show_area_relations
   has_many :areas, through: :show_area_relations
+  has_many :seats
 
   has_many :orders
   has_many :tickets

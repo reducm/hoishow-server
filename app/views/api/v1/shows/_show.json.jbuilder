@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 need_concert ||= false
 need_topics||= false
 need_stadium ||= false

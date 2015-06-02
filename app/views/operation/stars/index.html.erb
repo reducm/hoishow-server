@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <div class="nav stars_list">
   <h1 class="pull-left">艺人列表</h1>
   <div class="search">
@@ -28,7 +29,7 @@
       <% @stars.each do|star|%>
         <%= content_tag_for :tr, star, remote: true do %>
           <td><%= star.position %></td>
-          <td><%= image_tag(star.avatar_url, size: "80x80") if star.avatar_url %></td>
+          <td><%= image_tag(star.avatar_url, size: "50x50") if star.avatar_url %></td>
           <td><%= star.name %></td>
           <td><%= star.is_display_cn %></td>
           <td class="status_cn"><%= star.status_cn %></td>

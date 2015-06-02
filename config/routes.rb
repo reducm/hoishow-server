@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
-      get 'orders/:out_id', :to => 'orders#show_for_qr_scan'
+      get 'orders/:out_id/show_for_qr_scan', :to => 'orders#show_for_qr_scan'
 
       get "express_detail" => "express_detail#index"
 
@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       end
       member do
         get :get_topics
+        post :new_show
       end
     end
     resources :concerts do
@@ -124,6 +125,9 @@ Rails.application.routes.draw do
       member do
         post :block_user
         post :remove_avatar
+      end
+      collection do
+        get :search
       end
     end
     resources :admins, except: [:destroy] do

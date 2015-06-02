@@ -1,9 +1,11 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <div role="tabpanel">
   <%= label_tag "name", @star.name, class: 'btn btn-link btn-lg disabled star_title' %>
   <%= link_to "编辑资料", edit_operation_star_path, class: 'btn btn-default' %>
   <%= link_to "发布新互动", 'javascript:void(0)', class: 'btn btn-default add_topic' %>
-  <%= link_to "发布新演出", new_operation_concert_path(star_id: @star.id), class: 'btn btn-default' %>
+  <%= link_to "发布新投票", new_operation_concert_path(star_id: @star.id), class: 'btn btn-default' %>
+  <%= link_to "发布新演出", new_show_operation_star_path(@star), method: 'POST', class: 'btn btn-default' %>
 
   <!-- Nav tabs -->
   <ul class="nav nav-pills" role="tablist">

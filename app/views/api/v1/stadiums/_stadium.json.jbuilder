@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 need_city ||= false
 need_areas ||= false
 

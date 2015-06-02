@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,11 +14,11 @@
   $(function(){
     var notice = "<%= flash[:notice] || flash[:alert] %>"
     <% if flash[:notice] %>
-      $.notify(notice, { 
+      $.notify(notice, {
         globalPosition:"top center",
         className: 'success',} );
     <% elsif flash[:alert] %>
-      $.notify(notice, { 
+      $.notify(notice, {
         globalPosition:"top center",
         className: 'error'  } );
     <% end %>

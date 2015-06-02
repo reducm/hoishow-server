@@ -1,4 +1,5 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
+
 <div class="nav">
   <h1 class="pull-left">订单详情</h1>
   <%= hidden_field_tag "order_id", @order.id %>
@@ -32,7 +33,7 @@
                   <% tickets = @order.tickets.where(area_id: area.id) %>
                   <p><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></p>
                   <% tickets.each do |ticket| %>
-                    <p><%= ticket.code %></p>            
+                    <p><%= ticket.code %></p>
                   <%end%>
                 <%end%>
               </td>

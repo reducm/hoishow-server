@@ -1,48 +1,38 @@
-# encoding: utf-8
+<%# encoding: utf-8 %>
 <%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', multipart: :true }) do |f| %>
-  <div class="form-group">
-    <%= f.input :is_display, label: "是否显示" %>
-  </div>
+  <%= f.input :is_display, label: "是否显示" %>
+  <%= f.input :name, label: "艺人名称" %>
 
-  <div class="form-group">
-    <%= f.input :name, label: "艺人名称" %>
-  </div>
+  <% if star.avatar_url %>
+    <%= label_tag "当前头像" %>
+    <%= image_tag(star.avatar_url, size: "80x80")  %>
+  <% end %>
 
-  <div class="form-group">
-    <% if star.avatar_url %>
-      <%= label_tag "当前头像" %>
-      <%= image_tag(star.avatar_url, size: "80x80")  %>
-    <% end %>
-    <%= f.input :avatar, label: "上传头像" %>
-  </div>
+  <%= f.input :avatar, label: "上传头像" %>
 
-  <div class="form-group">
-    <% if star.avatar_url %>
-      <%= label_tag "当前头像" %>
-      <%= image_tag(star.poster_url, size: "700x500") %>
-    <% end %>
-    <%= f.input :poster, label: "上传海报" %>
-  </div>
+  <% if star.avatar_url %>
+    <%= label_tag "当前头像" %>
+    <%= image_tag(star.poster_url, size: "700x500") %>
+  <% end %>
 
-  <div class="form-group">
-    <%= label_tag "图文编辑" %>
-    <%= f.kindeditor :description %>
-  </div>
+  <%= f.input :poster, label: "上传海报" %>
+
+  <%= f.kindeditor :description %>
 
   <div class="form-group">
     <%= fields_for :videos do |video| %>
       <%= video.label :source, "艺人视频(单个文件最大30m，只支持mp4格式)" %>
       <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
-     <% end %>
+    <% end %>
   </div>
-  
+
   <% if star.videos.any? %>
     <% if star.videos.first.valid? %>
-      <%= render partial: 'operation/videos/table', locals: { videos: @videos } %> 
+      <%= render partial: 'operation/videos/table', locals: { videos: @videos } %>
     <% end %>
   <% end %>
 
-    <div class="form-group">
-      <%= f.button :submit %>
-    </div>
+  <div class="form-group">
+    <%= f.button :submit %>
+  </div>
 <% end %>
