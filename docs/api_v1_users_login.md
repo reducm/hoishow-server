@@ -246,6 +246,7 @@ type `POST`
     api_token: "users_token",
     mobile: "users mobile",
     out_id: order的out_id,
+    express_id: 用户地址的id,
     user_name: "收货人名字",
     user_mobile: "收货人的电话",
     user_address: "收货人地址(除了省,市,区之外的地址)",

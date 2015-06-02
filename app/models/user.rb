@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   end
 
   def default_address
-    express = expresses.first
+    express = expresses.last
     if express
       "#{express.provice.to_s express.city.to_s express.district.to_s express.user_address}"
     else
