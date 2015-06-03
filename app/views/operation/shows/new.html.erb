@@ -13,9 +13,10 @@
     <% if @concert.cities.empty? %>
       <%= f.input :city_id, collection: City.all, input_html: {id: "show_city_select"}, label: '城市' %>
     <% else %>
-      <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"} %>
+      <%= f.association :city, label_method: :name, value_method: :id, input_html: {id: "show_city_select"} %>
     <% end %>
     <%= f.input :stadium_id, required: false, as: :select, input_html: {id: "show_stadium_select"}, label: '场馆' %>
+    <%= f.input :stadium_map, label: '场馆地图' %>
     <%= f.hidden_field :concert_id, value: @concert.id %>
     <%= f.button :submit, "保存" %>
   <% end %>

@@ -40,6 +40,7 @@ class Show < ActiveRecord::Base
   }
 
   mount_uploader :poster, ImageUploader
+  mount_uploader :stadium_map, ImageUploader
 
   def poster_url
     if poster.url.present?
