@@ -9,6 +9,7 @@ class Message < ActiveRecord::Base
   validates :creator_type, presence: true
   validates :subject_type, presence: true
   validates :send_type, presence: true
+  validates :content, length: { maximum: 150 }
 
   scope :system_messages, -> { where("subject_type != ?", "Topic") }
   scope :reply_messages, -> { where("subject_type = ?", "Topic") }

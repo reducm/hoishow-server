@@ -34,12 +34,12 @@ describe Show do
       end
     end
     it "per 20" do
-      expect( Show.page(2).size ).to eq 20
+      expect( Show.page(2).size ).to eq 10
     end
 
     it "page2's model should be correct" do
       shows = Show.all
-      expect(shows.index Show.page(2).first).to be 20
+      expect(shows.index Show.page(2).first).to be 10
     end
   end
 

@@ -5,7 +5,7 @@ FactoryGirl.define do
     send_type "new_concert"
     notification_text "hahaha"
     title "MyString"
-    content "MyText"
+    content Base64.encode64("MyText")
     subject_type "Star"
     subject_id 1
     creator_type "Star"
