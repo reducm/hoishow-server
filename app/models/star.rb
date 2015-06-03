@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Star < ActiveRecord::Base
+  default_scope {order(:position)}
   has_many :videos
   accepts_nested_attributes_for :videos, allow_destroy: true
   has_many :user_follow_stars
@@ -14,7 +15,7 @@ class Star < ActiveRecord::Base
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
-  scope :is_display, -> { where(is_display: true).order('created_at DESC') }
+  scope :is_display, -> { where(is_display: true) }
 
   before_create :set_position_for_new_record
 

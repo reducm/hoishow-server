@@ -1,7 +1,14 @@
 #encoding: UTF-8
 class Banner < ActiveRecord::Base
+  default_scope {order(:position)}
   belongs_to :admin
   mount_uploader :poster, ImageUploader
+  validates :position, uniqueness: true
+  before_create :set_position_for_new_record
+
+  def set_position_for_new_record
+    self.position = Banner.maximum("position").to_i + 1
+  end
 
   def subject
      begin

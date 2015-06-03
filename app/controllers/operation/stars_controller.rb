@@ -6,7 +6,7 @@ class Operation::StarsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @stars = Star.order(:position)
+    @stars = Star.all
   end
 
   def show

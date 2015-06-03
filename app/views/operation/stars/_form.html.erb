@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal star-form', multipart: :true }) do |f| %>
+<%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', id: 'star-form', multipart: :true }) do |f| %>
 <div class="form-group">
   <legend><%= star.name ? star.name : "新增艺人" %></legend>
 </div>

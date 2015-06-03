@@ -1,9 +1,23 @@
 <%# encoding: utf-8 %>
 
 <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
+  <div class="form-group">
+  <div class="col-xs-1">
   <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
+  </div>
+  </div>
+  <div class="form-group">
+  <div class="col-xs-4">
   <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
+  </div>
+  </div>
   <div class="hidden editor"><%= f.kindeditor :description %></div>
+  <div class="form-group">
+  <% if banner.poster_url %>
+    <%= label_tag "当前海报" %>
+    <%= image_tag(banner.poster_url, width: "700px") %>
+  <% end %>
+  </div>
   <%= f.input :poster %>
   <div class="form-group">
     <%= f.submit class: 'btn btn-primary' %>

@@ -40,7 +40,6 @@ Rails.application.routes.draw do
       end
 
       resources :banners
-
       resources :startup
 
       resources :stars do
@@ -80,7 +79,11 @@ Rails.application.routes.draw do
     match "/signin" => "sessions#new", via: [:get]
     match "/signout" => "sessions#destroy", via: [:delete]
 
-    resources :banners
+    resources :banners do
+      collection do
+        post :sort
+      end
+    end
     resources :videos do
       member do
         patch :set_main
