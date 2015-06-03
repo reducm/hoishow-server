@@ -51,4 +51,8 @@ class Ticket < ActiveRecord::Base
   def set_status
     self.status = :pending if self.status.blank?
   end
+
+  def search(q)
+    where("nickname like ? or mobile like ?", "%#{q}%", "%#{q}%")
+  end
 end

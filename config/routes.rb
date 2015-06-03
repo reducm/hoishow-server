@@ -123,6 +123,10 @@ Rails.application.routes.draw do
       member do
         post "update_express_id"
       end
+      collection do
+        get :search
+        get :search_express
+      end
     end
     resources :users, only: [:index, :show] do
       member do
@@ -146,9 +150,17 @@ Rails.application.routes.draw do
         post :set_topic_top
       end
     end
-    resources :tickets
+    resources :tickets do
+      collection do
+        get :search
+      end
+    end
     resources :messages
-    resources :cities, only: [:index]
+    resources :cities, only: [:index] do
+      collection do
+        get :search
+      end
+    end
     resources :stadiums, except: [:show, :destroy] do
       member do
         get :refresh_areas

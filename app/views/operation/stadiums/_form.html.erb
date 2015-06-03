@@ -8,6 +8,7 @@
     <div class="form-group">
       <%= f.label :address, '场馆地址' %>
       <%= f.text_field :address %>
+      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo'%>
     </div>
     <div class="form-group">
       <label>场馆坐标</label>
@@ -43,49 +44,101 @@
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=798886ba701989c1cbcf271aaa944ccc"></script>
 
   <script type="text/javascript">
-  function initMap(){
-    var longitude = $("#stadium_longitude").val();
-    var latitude = $("#stadium_latitude").val();
+  var longitude = $("#stadium_longitude").val();
+  var latitude = $("#stadium_latitude").val();
 
-    var map = new AMap.Map('map');
-    var marker, position, center;
-    if(longitude || latitude){
-      center = new AMap.LngLat(longitude, latitude)
-      map.setZoomAndCenter(14, center)
-    }
-    else{
-      map.setCity($("#city_name").val())
-    }
+  var map = new AMap.Map('map');
+  var marker, position, center;
+  var newMarker = new Array();
 
-    map.plugin(["AMap.ToolBar"],function(){
-      toolBar = new AMap.ToolBar();
-      map.addControl(toolBar);
-    });
+  if(longitude && latitude){
+    center = new AMap.LngLat(longitude, latitude)
+    map.setZoomAndCenter(14, center)
+  }
+  else{
+    map.setCity($("#city_name").val())
+  }
 
-    function addMarker(){
-      if(!center) center = map.getCenter()
+  map.plugin(["AMap.ToolBar"],function(){
+    toolBar = new AMap.ToolBar();
+    map.addControl(toolBar);
+  });
 
-      marker = new AMap.Marker({
-        position: center,
-        draggable: true //点标记可拖拽
+  function geoCoder(str){
+    var MGeocoder;
+    //加载地理编码插件
+    AMap.service(["AMap.Geocoder"], function() {
+      MGeocoder = new AMap.Geocoder({
+        city: $("#city_name").val()//城市，默认：“全国”
       });
-      marker.setMap(map)
-    }
-
-    function getMarkerPosition(){
-      AMap.event.addListener(marker,'dragend',function(){
-        position = marker.getPosition()
-        $("#stadium_longitude").val(position.lng)
-        $("#stadium_latitude").val(position.lat)
+      //返回地理编码结果
+      MGeocoder.getLocation(str, function(status, result){
+      	if(status === 'complete' && result.info === 'OK'){
+      		geocoder_CallBack(result);
+      	}
+        else{
+          alert("找不到相应地址");
+        }
       });
-    }
-
-    AMap.event.addListener(map,'complete',function(){
-      map.setZoom(14)
-      addMarker()
-      getMarkerPosition()
     });
   }
 
-  initMap()
+  function initmarker(){
+    if(!center) center = map.getCenter()
+    marker = new AMap.Marker({
+      position: center,
+      draggable: true //点标记可拖拽
+    });
+    marker.setMap(map)
+  }
+
+  function addmarker(d) {
+    var lngX = d.location.getLng();
+    var latY = d.location.getLat();
+
+    newMarker = new AMap.Marker({
+      position: new AMap.LngLat(lngX, latY),
+      draggable: true //点标记可拖拽
+    });
+    newMarker.setMap(map)
+	}
+
+	//地理编码返回结果展示
+	function geocoder_CallBack(data){
+	    //地理编码结果数组
+    var geocode = new Array();
+    geocode = data.geocodes;
+    for (var i = 0; i < geocode.length; i++) {
+       if(newMarker.length < 1){
+         marker.setMap(null);
+       }
+       else{
+         newMarker.setMap(null);
+       }
+       addmarker(geocode[i]);
+    }
+    map.setFitView();
+    getMarkerPosition(newMarker);
+	}
+
+  function getMarkerPosition(m){
+    AMap.event.addListener(m,'dragend',function(){
+      position = m.getPosition()
+      $("#stadium_longitude").val(position.lng)
+      $("#stadium_latitude").val(position.lat)
+    });
+  }
+
+  $(document).ready(function(){
+    AMap.event.addListener(map,'complete',function(){
+      map.setZoom(14)
+      initmarker()
+      getMarkerPosition(marker)
+    });
+
+    $(".get_geo").on("click", function(){
+      address = $("#stadium_address").val()
+      geoCoder(address)
+    })
+  })
   </script>

@@ -14,7 +14,7 @@ RSpec.describe Operation::TicketsController, :type => :controller do
   context "#index" do
     it "should get 20 (base on model paginates_per) tickets" do
       get :index
-      expect(assigns(:tickets).size).to eq 30
+      expect(assigns(:tickets).size).to eq 10
       expect(response).to render_template :index
     end
 

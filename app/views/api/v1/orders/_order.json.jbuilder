@@ -11,7 +11,7 @@ json.user_address order.user_address || ''
 json.user_name order.user_name || ''
 json.user_mobile order.user_mobile || ''
 json.tickets_count order.tickets_count
-json.default_address @user.default_address
+json.default_address @user ? @user.default_address : ""
 json.express_id @user.expresses.last.id rescue ''
 json.show_time order.show.show_time.to_ms rescue nil
 json.ticket_type order.show.ticket_type rescue ''

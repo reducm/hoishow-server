@@ -37,7 +37,7 @@ RSpec.describe Operation::StarsController, :type => :controller do
         @star.hoi_concert(concert)
       end
       get :show, id: @star
-      expect(@star.concerts.page.size).to eq 20 
+      expect(@star.concerts.page.size).to eq 10 
     end
 
     it "should get star's topics if exist" do
@@ -51,7 +51,7 @@ RSpec.describe Operation::StarsController, :type => :controller do
         topic = create(:star_topic, subject_id: @star.id)
       end
       get :show, id: @star
-      expect(@star.topics.page.size).to eq 20 
+      expect(@star.topics.page.size).to eq 10 
     end
 
     it "should get star's followers if exist" do
@@ -67,7 +67,7 @@ RSpec.describe Operation::StarsController, :type => :controller do
         user.follow_star(@star)
       end
       get :show, id: @star
-      expect(@star.followers.page.size).to eq 20 
+      expect(@star.followers.page.size).to eq 10 
     end
   end
 

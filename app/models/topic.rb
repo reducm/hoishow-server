@@ -16,6 +16,7 @@ class Topic < ActiveRecord::Base
   validates :subject_type, presence: true
   validates :content, presence: true
   validates :subject_id, presence: true
+  validates :content, length: { maximum: 150 }
 
   has_many :comments
   has_many :user_like_topics
