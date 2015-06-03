@@ -8,10 +8,15 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       100.times {create :star}
     end
 
+    it "should order by position" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse(response.body)[0]["position"] < JSON.parse(response.body)[1]["position"]).to be true
+    end
+
     it "should get 20 shows without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
@@ -38,7 +43,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "should get 20 stars without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
   end
 

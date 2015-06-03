@@ -15,14 +15,24 @@ class Operation::BannersController < Operation::ApplicationController
   def create
     @banner = current_admin.banners.create(banner_params)
     if @banner.errors.any?
-      flash[:notice] = @banner.errors.full_messages
+      flash[:alert] = @banner.errors.full_messages.to_sentence
       render :new
     else
+      flash[:notice] = "创建成功" 
       redirect_to action: :index
     end
   end
 
   def show
+  end
+
+  def sort
+    if params[:banner].present?
+      params[:banner].each_with_index do |id, index|
+        Banner.where(id: id).update_all(position: index+1)
+      end
+    end
+    render nothing: true
   end
 
   def edit
@@ -31,8 +41,9 @@ class Operation::BannersController < Operation::ApplicationController
   def update
     if @banner.update(banner_params)
       redirect_to action: :index
+      flash[:notice] = "更新成功" 
     else
-      flash[:notice] = @banner.errors.full_messages
+      flash[:alert] = @banner.errors.full_messages.to_sentence
       render :edit
     end
   end

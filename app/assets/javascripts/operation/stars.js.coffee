@@ -4,14 +4,6 @@ refresh_topic_list = (star_id)->
   )
 # 刷新topic列表
 $ ->
-  $('#stars_list').sortable(
-    axis: 'y'
-    handle: '.handle'
-    update: ->
-      $.post($(this).data('update-url'), $(this).sortable('serialize'))
-      location.reload()
-  )
-
   $('#status_select').change ->
     $(".status_cn").parent().show()
     vtxt = $('#status_select').val()

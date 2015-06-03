@@ -29,11 +29,17 @@
 #datetimepicker
 $ ->
   $('div.datetimepicker input').datetimepicker({
-    timepicker: false,
-    format: 'Y-m-d',
+    format: 'Y-m-d h:m',
     startDate: new Date(),
     defaultDate: new Date(),
     lang: 'zh',
     scrollInput: false
     })
 
+  $('.dragable_items').sortable(
+    axis: 'y'
+    handle: '.handle'
+    update: ->
+      $.post($(this).data('update-url'), $(this).sortable('serialize'))
+      location.reload()
+  )
