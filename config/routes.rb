@@ -126,6 +126,7 @@ Rails.application.routes.draw do
     resources :orders do
       member do
         post "update_express_id"
+        post "update_remark_content"
       end
       collection do
         get :search

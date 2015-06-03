@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150603083849) do
+ActiveRecord::Schema.define(version: 20150603115458) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 20150603083849) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.decimal  "amount",                   precision: 10, scale: 2
+    t.decimal  "amount",                     precision: 10, scale: 2
     t.string   "concert_name", limit: 255
     t.string   "stadium_name", limit: 255
     t.string   "show_name",    limit: 255
@@ -145,12 +145,13 @@ ActiveRecord::Schema.define(version: 20150603083849) do
     t.integer  "stadium_id",   limit: 4
     t.integer  "show_id",      limit: 4
     t.integer  "status",       limit: 4
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
     t.string   "express_id",   limit: 255
     t.string   "user_address", limit: 255
     t.string   "user_name",    limit: 255
     t.string   "user_mobile",  limit: 255
+    t.text     "remark",       limit: 65535
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
