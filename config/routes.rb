@@ -39,7 +39,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :banner
+      resources :banners
       resources :startup
 
       resources :stars do
