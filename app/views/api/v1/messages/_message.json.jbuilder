@@ -1,8 +1,10 @@
 json.(message, :title, :content)
-json.redirect_url url_for([:api, :v1, message.subject])
+json.subject_type message.subject_type || ''
+json.subject_id message.subject_id || ''
+json.created_at message.created_at.to_ms
 json.creator do
-  json.id message.creator_id
-  json.name message.creator_name
+  json.id message.creator_id || ''
+  json.name message.creator_name || ''
   json.avatar message.creator.avatar_url || ''
   json.is_admin message.creator.is_a?(Admin) ? true : false
 end

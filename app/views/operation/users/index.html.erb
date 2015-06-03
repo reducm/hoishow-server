@@ -4,7 +4,7 @@
   <h1 class="pull-left">用户列表</h1>
   <div class="search">
     <%= form_tag(search_operation_users_path, class: 'form-inline', method: 'get') do %>
-      <%= text_field_tag "q", nil,  class: 'form-control' %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "按用户名或手机号搜索" %>
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>

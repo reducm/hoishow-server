@@ -1,1 +1,0 @@
-['Read', 'about', 'factories', 'https', 'github', 'thoughtbot', 'factory_girl', 'FactoryGirl', 'define', 'factory', 'message', 'send_type', 'new_concert', 'notification_text', 'hahaha', 'title', 'MyString', 'content', 'MyText', 'subject_type', 'Star', 'subject_id', 'creator_type', 'creator_id', 'task_id', 'akfwhehfasdnkhnsdf', 'reply_message', 'Topic', 'system_message']
