@@ -39,6 +39,11 @@ class Show < ActiveRecord::Base
     r_ticket: 1, #实体票
   }
 
+  enum seat_type: {
+    selectable: 0, #可以选座
+    selected: 1, #只能选区
+  }
+
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 

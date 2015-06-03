@@ -1,31 +1,40 @@
 <%# encoding: utf-8 %>
 
 <div class="nav">
-  <h1 class="pull-left">编辑演出</h1>
-</div>
-<div class="form-group show">
-  <%= label_tag(:name, "演出名称", class: "col-sm-2 control-label")%>
-  <div class="col-sm-10">
-    <%= label_tag(:name, @show.name, class: "form-control-static")%>
-  </div>
+  <h2>编辑演出</h2>
+  <h4>演出名称: <%= @show.name %></h4>
   <%= hidden_field_tag "show_id", @show.id %>
-  <%= simple_form_for [:operation, @show] do |f| %>
-    <%= f.input :is_display, label: "是否显示" %>
-    <%= f.input :name, required: false, label: "演出名称" %>
+  <%= simple_form_for [:operation, @show], html: {class: 'show-form'} do |f| %>
+    <div class='form-group'>
+      <%= f.check_box :is_display %>
+      <%= f.label :is_display, '是否显示' %>
+      <%= f.radio_button :ticket_type, @show.ticket_type %>
+      <%= f.label :ticket_type, @show.ticket_type_cn %>
+    </div>
+    <%= f.input :name, label: "演出名称" %>
     <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
-    <%= f.input :ticket_type, label: "票的类型", collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: @show.ticket_type_cn, disabled: true %>
-    <%= f.input :poster, label: "演出海报" %>
-    <%= image_tag(@show.poster_url, size: "700x500") if @show.poster_url %>
-    <%= f.kindeditor :description %>
-    <%= f.association :city, label_method: :name, value_method: :id, disabled: true %>
-    <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true %>
+    <div class="form-group">
+      <%= f.input :poster, label: "演出海报" %>
+      <%= image_tag(@show.poster_url, size: "400x300") if @show.poster_url %>
+    </div>
+    <div class="form-group">
+      <%= label_tag("图文描述") %>
+      <%= f.kindeditor :description %>
+    </div>
+    <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
+    <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true, label: '场馆' %>
+    <%= f.input :stadium_map, label: '场馆地图' %>
+    <div class="form-group">
+      <%= image_tag(@show.stadium_map, size: "400x200") if @show.stadium_map_url %>
+    </div>
+    <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: "电子票", selected: @show.seat_type, label: '选座设置' %>
     <%= f.hidden_field :concert_id, value: @concert.id %>
     <%= f.button :submit, "保存" %>
   <% end %>
 
-  <%= image_tag(@show.stadium.pic_url, size: "700x500") if @show.stadium.pic_url %>
-</div>
-
-<div id="show_area">
-  <%= render partial: "area_table", locals: {show: @show, stadium: @show.stadium} %>
+  <div id='show_areas'>
+    <h2>区域管理</h2>
+    <%= link_to "新增区域", "javascript:void(0);", class: 'add_area' %>
+    <%= render partial: "area_table", locals: {show: @show} %>
+  </div>
 </div>
