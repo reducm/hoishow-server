@@ -98,7 +98,7 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    areas.sum(:seats_count)
+    show_area_relations.sum(:seats_count)
   end
 
   def area_seats_count(area)

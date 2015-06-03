@@ -31,6 +31,8 @@ class Operation::TopicsController < Operation::ApplicationController
       @topic.content = Base64.encode64(params[:content])
       @topic.save!
     end
+
+    flash[:notice] = "互动修改成功"
     redirect_to edit_operation_topic_url(@topic)
   end
 
