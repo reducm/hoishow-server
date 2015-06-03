@@ -28,11 +28,11 @@ class Message < ActiveRecord::Base
   def send_type_cn
     case send_type
     when 'new_show'
-      '发布新show时'
+      '发布新演出时'
     when 'all_users_buy'
       '开放所有用户购买'
     when 'new_concert'
-      '发布新concert时'
+      '发布新投票时'
     when 'comment_reply'
       '评论有新的回覆时'
     when 'topic_reply'
@@ -65,15 +65,15 @@ class Message < ActiveRecord::Base
     when 'All'
       '全部用户'
     when 'Concert'
-      '关注concert的用户'
+      '关注投票的用户'
     when 'Show'
-      '关注show的用户'
+      '关注演出的用户'
     when 'Star'
-      '关注star的用户'
+      '关注艺人的用户'
     when 'Admin'
-      '创建comment的管理员'
+      '创建评论的管理员'
     when 'User'
-      '创建comment的用户'
+      '创建评论的用户'
     end
   end
 
