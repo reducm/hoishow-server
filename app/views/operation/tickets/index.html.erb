@@ -4,7 +4,7 @@
   <h1 class="pull-left">验票详情</h1>
   <div class="search">
     <%= form_tag(search_operation_tickets_path, class: 'form-inline', method: 'get') do %>
-      <%= text_field_tag "q", nil,  class: 'form-control' %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入验票员名字或演出名称或用户名或手机号进行搜索", size: 50%>
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>
@@ -27,11 +27,11 @@
         <tr>
           <% order = ticket.order %>
           <% user = order.user %>
-          <td><%= ticket.admin.name %></td>
+          <td><%= ticket.admin.try(:name) %></td>
           <td><%= order.show_name %></td>
           <td><%= user_name( user )%></td>
           <td><%= ticket.code %></td>
-          <td><%= ticket.checked_at.strfcn_time%></td>
+          <td><%= ticket.checked_at.try(:strfcn_time)%></td>
         </tr>
       <%end%>
     </tbody>

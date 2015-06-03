@@ -11,7 +11,8 @@ class Operation::OrdersController < Operation::ApplicationController
 
   def search
     params[:page] ||= 1
-    @orders = Order.where("show_name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    ids = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").map(&:id).compact
+    @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).page(params[:page]).order("created_at desc")
     @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
     render :index
   end

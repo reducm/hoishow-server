@@ -24,15 +24,15 @@
     <tbody>
       <tr>
         <td>演出时间</td>
-        <td><%= @show.show_time.strfcn_time%></td>
+        <td><%= @show.show_time.try(:strfcn_time)%></td>
       </tr>
       <tr>
         <td>演出城市</td>
-        <td><%= @show.city.name%></td>
+        <td><%= @show.city.try(:name)%></td>
       </tr>
       <tr>
         <td>演出场馆</td>
-        <td><%= @show.stadium.name %></td>
+        <td><%= @show.stadium.try(:name) %></td>
       </tr>
     </tbody>
   </table>
