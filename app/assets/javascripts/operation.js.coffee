@@ -37,3 +37,10 @@ $ ->
     scrollInput: false
     })
 
+  $('.dragable_items').sortable(
+    axis: 'y'
+    handle: '.handle'
+    update: ->
+      $.post($(this).data('update-url'), $(this).sortable('serialize'))
+      location.reload()
+  )
