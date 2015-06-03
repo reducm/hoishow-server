@@ -32,6 +32,8 @@ class Operation::TopicsController < Operation::ApplicationController
       @topic.save!
       flash[:notice] = '内容修改成功'
     end
+
+    flash[:notice] = "互动修改成功"
     redirect_to edit_operation_topic_url(@topic)
   end
 

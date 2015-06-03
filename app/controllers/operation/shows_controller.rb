@@ -27,7 +27,7 @@ class Operation::ShowsController < Operation::ApplicationController
   def create
     @show = Show.new(show_params)
     concert = Concert.find(params[:show][:concert_id])
-    if @show.save && concert
+    if @show.save! && concert
       city = City.find(@show.city_id)
       user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: city.id).pluck(:user_id)
       users_array = User.where("id in (?)", user_ids)
@@ -35,6 +35,7 @@ class Operation::ShowsController < Operation::ApplicationController
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
       end
+      flash[:notice] = "演出创建成功"
       redirect_to action: :index
     else
       flash[:alert] = @show.errors.full_messages
@@ -51,6 +52,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update
     if @show.update!(show_params)
+      flash[:notice] = "演出修改成功"
       redirect_to operation_shows_url
     else
       flash[:alert] = @show.errors.full_messages
@@ -93,7 +95,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id)
+    params.require(:show).permit(:ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type)
   end
 
   def get_show

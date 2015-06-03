@@ -39,7 +39,13 @@ class Show < ActiveRecord::Base
     r_ticket: 1, #实体票
   }
 
+  enum seat_type: {
+    selectable: 0, #可以选座
+    selected: 1, #只能选区
+  }
+
   mount_uploader :poster, ImageUploader
+  mount_uploader :stadium_map, ImageUploader
 
   def poster_url
     if poster.url.present?
@@ -98,7 +104,7 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    areas.sum(:seats_count)
+    show_area_relations.sum(:seats_count)
   end
 
   def area_seats_count(area)

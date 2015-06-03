@@ -138,6 +138,7 @@ zh-CN:
         one: 有 1 个错误发生导致「%{model}」无法被保存。
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
   controller:
+    sessions: "登录"
     home: "首页"
     banners: "首页广告"
     stars: "艺人列表"

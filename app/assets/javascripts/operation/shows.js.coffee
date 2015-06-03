@@ -36,22 +36,12 @@ $ ->
       city_id = selected_option.val()
       $.get("/operation/shows/get_city_stadiums", {city_id: city_id}, (data)->
         result = ""
-        PICS = {}
         for stadium in data
           result += "<option value='#{stadium.id}'>#{stadium.name}</option>"
-          PICS[stadium.id] = stadium.pic
         $("#show_stadium_select").html(result)
         $("#show_stadium_select").attr("data-live-search", true)
         $("#show_stadium_select").selectpicker("refresh")
-        $("#stadium_pic").attr("src", data[0]["pic"])
       )
-
-    #change stadium pic
-    $("#show_stadium_select").on "change", (e) ->
-      select = $(e.currentTarget)
-      selected_option = select.find("option:selected")
-      stadium_id = selected_option.val()
-      $("#stadium_pic").attr("src", PICS[stadium_id])
 
   #change area data
   $("#show_area").on "click", ".change_show_area_data", (e) ->

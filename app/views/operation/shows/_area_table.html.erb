@@ -1,27 +1,35 @@
 <%# encoding: utf-8 %>
 
 <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>场馆区域</th>
+  <thead>
+    <tr>
+      <th>场馆区域</th>
+      <% if show.selected? %>
         <th>票价</th>
-        <th>座位数(座位数不能少于已售出数量)</th>
-        <th>当前区域售出票数</th>
-        <th>操作</th>
-      </tr>
-      <tbody>
-        <% stadium.areas.each do |area| %>
-          <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
-          <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
-          <tr>
-            <td><%= area.name %></td>
-            <td id="td_price_<%= area.id%>"><%= relation.try(:price) %></td>
-            <td id="td_seats_count_<%= area.id%>"><%= relation.try(:seats_count) %></td>
-            <td id="sold_tickets_<%= area.id%>"><%= sold_tickets_count %></td>
+      <% end %>
+      <th>座位数(座位数不能少于已售出数量)</th>
+      <th>当前区域售出票数</th>
+      <th>操作</th>
+    </tr>
+    <tbody>
+      <% show.areas.each do |area| %>
+        <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
+        <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
+        <tr>
+          <td><%= area.name %></td>
+          <% if show.selected? %>
+            <td id="td_price_<%= area.id %>"><%= relation.try(:price) %></td>
+          <% end %>
+          <td id="td_seats_count_<%= area.id %>"><%= relation.try(:seats_count) %></td>
+          <td id="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+          <% if show.selected? %>
             <td class="submit_td"><button class="change_show_area_data" data-area-id="<%= area.id %>">修改</button></td>
-          </tr>
-        <%end%>
-      </tbody>
-    </thead>
-  </table>
+          <% elsif show.selectable? %>
+            <td><%= link_to "设置选座" %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </thead>
+</table>
 
