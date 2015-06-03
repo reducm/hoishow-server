@@ -2,7 +2,13 @@
 
 <div class="nav">
     <h1 class="pull-left">城市列表</h1>
+  <div class="search">
+    <%= form_tag(search_operation_cities_path, class: 'form-inline', method: 'get') do %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入城市名称搜索" %>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
   </div>
+</div>
 
     <%= paginate @cities%>
   <div class="cities_list">
