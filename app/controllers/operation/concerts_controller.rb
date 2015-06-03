@@ -2,13 +2,21 @@
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
   before_action :check_login!, except: [:get_city_voted_data, :get_cities]
-  before_action :get_concert, except: [:index, :new, :create]
+  before_action :get_concert, except: [:index, :new, :create, :search]
   load_and_authorize_resource param_method: :concert_attributes
   skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
     params[:page] ||= 1
     @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
+  end
+
+  def search
+    params[:page] ||= 1
+    star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
+    concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
+    @concerts = Concert.concerts_without_auto_hide.where("name like ? or id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
+    render :index
   end
 
   def edit

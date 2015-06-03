@@ -108,10 +108,14 @@ Rails.application.routes.draw do
         delete :remove_concert_city
         patch :toggle_is_top
       end
+      collection do
+        get :search
+      end
     end
     resources :shows do
       collection do
         get "get_city_stadiums"
+        get :search
       end
       member do
         post "update_area_data"
