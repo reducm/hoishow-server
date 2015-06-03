@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums]
+  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search]
   load_and_authorize_resource
 
   def index
@@ -14,6 +14,14 @@ class Operation::ShowsController < Operation::ApplicationController
     if params[:concert_id]
       @concert = Concert.find(params[:concert_id])
     end
+  end
+
+  def search
+    params[:page] ||= 1
+    star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
+    concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
+    @shows = Show.where("name like ? or concert_id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
+    render :index
   end
 
   def create

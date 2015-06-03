@@ -2,6 +2,12 @@
 
 <div class="nav">
   <h1 class="pull-left">演出列表</h1>
+<div class="search">
+    <%= form_tag(search_operation_shows_path, class: 'form-inline', method: 'get') do %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入演出名称或艺人名字进行搜索", size:30%>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
 </div>
 
 <div class="shows_list">

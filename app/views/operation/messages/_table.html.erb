@@ -21,7 +21,7 @@
         <td><%= message.title %></td>
         <td width="500px"><%= message.content %></td>
         <td><%= message.users.count%></td>
-        <td><%= message.created_at.strfcn_time %></td>
+        <td><%= message.created_at.try(:strfcn_time) %></td>
       </tr>
     <% end %>
   </tbody>
