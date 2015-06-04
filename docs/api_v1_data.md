@@ -538,5 +538,6 @@ type: `GET`
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
   }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
+  is_new: true or false
 }
 ```

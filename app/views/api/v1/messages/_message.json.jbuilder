@@ -8,3 +8,4 @@ json.creator do
   json.avatar message.creator.avatar_url || ''
   json.is_admin message.creator.is_a?(Admin) ? true : false
 end
+json.is_new message.has_new_send_log? 
