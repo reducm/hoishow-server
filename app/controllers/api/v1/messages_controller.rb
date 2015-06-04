@@ -4,19 +4,19 @@ class Api::V1::MessagesController < Api::V1::ApplicationController
   after_action  :set_send_log_is_new_false
 
   def index
-    if params[:type] != "all"
+    if params[:type] == "all"
+      if UserMessageRelation.where(user: @user, is_new: true).any?
+        render json: {msg: "yes"}, status: 200
+      else
+        render json: {msg: "no"}, status: 200
+      end     
+    else
       if params[:type] == "system"
         @messages = @user.messages.system_messages
       elsif params[:type] == "reply"
         @messages = @user.messages.reply_messages
       else
         error_json("传递参数出现不匹配")
-      end
-    else
-      if UserMessageRelation.where(user: @user, is_new: true).any?
-        render json: {msg: "yes"}, status: 200
-      else
-        render json: {msg: "no"}, status: 200
       end
     end
   end
