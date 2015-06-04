@@ -35,4 +35,14 @@ class Operation::OrdersController < Operation::ApplicationController
       render json: {success: true}
     end
   end
+
+  def update_remark_content
+    @order = Order.find(params[:id])
+    if @order.update!(remark: params[:remark])
+      flash[:notice] = "更新备注成功"
+    else
+      flash[:alert] = "更新备注失败"
+    end
+    redirect_to operation_order_url(@order)
+  end
 end

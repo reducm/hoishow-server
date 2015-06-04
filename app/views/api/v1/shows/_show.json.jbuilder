@@ -1,5 +1,6 @@
 need_concert ||= false
-need_topics||= false
+need_topics ||= false
+need_stars ||= false
 need_stadium ||= false
 need_city ||= false
 @user ||= nil
@@ -7,7 +8,7 @@ need_city ||= false
 @followed_shows = @user.present? ? @user.follow_shows.pluck(:id) : []
 @voted_show = @user.present? ? @user.user_vote_concerts.where(concert_id: show.concert_id, city_id: show.city_id).first : nil
 
-json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :is_top, :ticket_type)
+json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :is_top, :ticket_type, :mode)
 json.concert_name show.concert.name
 json.city_name show.city.name
 json.stadium_name show.stadium.name
@@ -33,3 +34,8 @@ end
 if need_topics
   json.topics{ json.array! show.topics, partial: "api/v1/topics/topic", as: :topic }
 end
+
+if need_stars
+  json.stars { json.array! show.stars, partial: "api/v1/stars/star", as: :star}
+end
+

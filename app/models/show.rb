@@ -26,12 +26,18 @@ class Show < ActiveRecord::Base
   before_create :set_city
 
   after_create :set_status_after_create
+  after_create :set_mode_after_create
 
   delegate :stars, to: :concert
 
-  enum status: {
+  enum mode: {
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
+  }
+
+  enum status: {
+    selling: 0, #购票中
+    sell_stop: 1, #购票结束
   }
 
   enum ticket_type: {
@@ -76,12 +82,21 @@ class Show < ActiveRecord::Base
     end
   end
 
-  def status_cn
-    case status
+  def mode_cn
+    case mode
     when "voted_users"
       "只有参与投票的用户才能买"
     when "all_users"
       "全部用户都能购买"
+    end
+  end
+
+  def status_cn
+    case status
+    when "selling"
+      "开放购票中"
+    when "sell_stop"
+      "购票结束"
     end
   end
 
@@ -123,8 +138,12 @@ class Show < ActiveRecord::Base
   end
 
   def set_status_after_create
-    self.status = :voted_users if self.status.blank?
+    self.status = :selling if self.status.blank?
     save!
   end
 
+  def set_mode_after_create
+    self.mode = :voted_users if self.mode.blank?
+    save!
+  end
 end

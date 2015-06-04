@@ -13,6 +13,7 @@
     </div>
     <%= f.input :name, label: "演出名称" %>
     <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
+    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"]], selected: @show.status, label: 'show购票状态' %>
     <div class="form-group">
       <%= f.input :poster, label: "演出海报" %>
       <%= image_tag(@show.poster_url, size: "400x300") if @show.poster_url %>
@@ -27,7 +28,7 @@
     <div class="form-group">
       <%= image_tag(@show.stadium_map, size: "400x200") if @show.stadium_map_url %>
     </div>
-    <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: "电子票", selected: @show.seat_type, label: '选座设置' %>
+    <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: @show.seat_type, label: '选座设置' %>
     <%= f.hidden_field :concert_id, value: @concert.id %>
     <%= f.button :submit, "保存", class: 'btn-primary' %>
   <% end %>

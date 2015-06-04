@@ -73,6 +73,19 @@
           <td>收货人手机</td>
           <td><%= @order.user_mobile%></td>
         </tr>
+        <tr>
+          <td>备注</td>
+          <td>
+    <%= form_tag(update_remark_content_operation_order_path(@order), method: :post) do %>
+      <div class="form-group">
+        <%= text_area_tag "remark", @order.remark, rows: 5, cols: 50 %>
+      </div>
+      <div class="form-group">
+        <%= submit_tag "确认修改备注内容", class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+          </td>
+        </tr>
       <%end%>
     </tbody>
   </table>
