@@ -17,7 +17,7 @@ json.show_time show.show_time.to_ms
 json.poster show.poster_url || ''
 json.is_followed show.id.in?(@followed_shows) ? true : false
 json.is_voted @voted_show ? true : false
-json.voters_count ( UserVoteConcert.where(concert_id: show.concert_id, city_id: show.city_id).count + ConcertCityRelation.where(concert_id: show.concert_id, city_id: show.city_id).first.base_number)
+json.voters_count ( UserVoteConcert.where(concert_id: show.concert_id, city_id: show.city_id).count.to_s + show.get_show_base_number.to_s)
 
 if need_concert
   json.concert { json.partial!("api/v1/concerts/concert", {concert: show.concert}) }

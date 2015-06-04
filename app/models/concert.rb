@@ -90,6 +90,14 @@ class Concert < ActiveRecord::Base
     voters.count
   end
 
+  def get_concert_base_number(city_id)
+    if relation = concert_city_relations.where(city_id: city_id).first
+      relation.base_number
+    else
+      ""
+    end
+  end
+
   private
   def set_showing_concert_after_create
     self.is_show = :showing if self.is_show.blank?

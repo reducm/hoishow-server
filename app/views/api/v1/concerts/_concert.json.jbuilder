@@ -10,7 +10,7 @@ json.(concert, :id, :name, :status, :is_top, :followers_count, :shows_count)
 
 json.description description_path(subject_id: concert.id, subject_type: "Concert")
 json.start_date concert.start_date.to_ms
-json.voters_count @voted_concert ? (concert.concert_city_relations.where(city_id: @voted_concert.city_id).first.base_number + concert.voters_count) : ""
+json.voters_count @voted_concert ? (concert.get_concert_base_number(@voted_concert.city_id).to_s + concert.voters_count.to_s) : ""
 json.end_date concert.end_date.to_ms
 json.poster concert.poster_url || ''
 json.is_followed concert.id.in?(@followed_concerts) ? true : false
