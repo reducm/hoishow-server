@@ -64,7 +64,7 @@ RSpec.describe Operation::ShowsController, :type => :controller do
 
     it "saves the new show in the database" do
       expect {
-        post :update_status, id: @show
+        post :update_mode, id: @show
       }.to change(Message, :count).by(1)
     end
   end
