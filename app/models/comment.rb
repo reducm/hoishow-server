@@ -30,7 +30,9 @@ class Comment < ActiveRecord::Base
   def creator_name
     if creator.is_a?(User)
       creator.show_name
-    elsif creator.is_a?(Star) || creator.is_a?(Admin)
+    elsif creator.is_a?(Admin)
+      creator.default_name
+    elsif creator.is_a?(Star)
       creator.name
     end
   end
