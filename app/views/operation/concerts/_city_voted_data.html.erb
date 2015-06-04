@@ -12,16 +12,21 @@
               <tr>
                 <th>城市</th>
                 <th>投票数</th>
+                <th>底数</th>
                 <th>操作</th>
               </tr>
             </thead>
             <% concert.cities.each do |city| %>
               <tr>
-                <td><%= city.name %></td>
+                <td><h4><%= city.name %></h4></td>
                 <td><%= get_city_voted_count(concert, city) %></td>
+                <td data-concert-id="<%= concert.id %>" data-city-id="<%= city.id %>">
+                  <p id="base_number_<%= city.id %>"><%= get_city_concert_base_number(concert, city) %></p>
+                  <p><%= link_to '修改底数', 'javascript:void(0)', class: 'btn btn-primary change_base_number' %></p>
+                </td>
                 <td data-count="<%= get_city_voted_count(concert, city) %>" data-id="<%= city.id %>">
-                  <%= link_to '查看互动', 'javascript:void(0)', class: 'get_topics' %>
-                  <%= link_to '删除', 'javascript:void(0);', class: "del_city" %>
+                  <p><%= link_to '查看城市互动', 'javascript:void(0)', class: 'get_topics' %></p>
+                  <p><%= link_to '删除城市', 'javascript:void(0);', class: "del_city" %></p>
                 </td>
               </tr>
             <% end %>

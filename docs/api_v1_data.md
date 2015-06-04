@@ -333,7 +333,7 @@ type: `GET`
   status: //voting(众筹中)/finished(众筹结束),
   followers_count:  //关注数,
   shows_count:  //演唱会数目,
-  voters_count: //投票人数,
+  voters_count: //投票人数(包含底数),
   is_followed: //是否被关注,
   is_voted: //是否被投票,
   is_top: "true or false", //是否置顶
@@ -361,7 +361,7 @@ type: `GET`
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
   is_top: "true or false" //是否置顶,
-  voters_count: //投票数,
+  voters_count: //投票数(包含底数),
   status:  // 分成selling与sell_stop两种,
   ticket_type:  // 分成实体票与电子票两种,
   mode:  // voted_users(投票用户购买)/all_users(所有用户购买),
