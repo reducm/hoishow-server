@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150602091003) do
+ActiveRecord::Schema.define(version: 20150603084536) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -335,8 +335,9 @@ ActiveRecord::Schema.define(version: 20150602091003) do
   create_table "user_message_relations", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "message_id", limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.boolean  "is_new",     limit: 1, default: true
   end
 
   add_index "user_message_relations", ["message_id"], name: "index_user_message_relations_on_message_id", using: :btree

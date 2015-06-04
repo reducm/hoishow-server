@@ -25,6 +25,10 @@ class Message < ActiveRecord::Base
     manual: 5 #手动推送通知
   }
 
+  def has_new_send_log?
+    self.user_message_relations.where(is_new: true).any?
+  end
+
   def send_type_cn
     case send_type
     when 'new_show'
