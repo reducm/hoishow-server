@@ -48,7 +48,7 @@
         <td><%= order.user_mobile %></td>
         <td width="400px"><%= order.user_address %></td>
         <td><%= order.status_cn %></td>
-        <td><%= order.show.ticket_type_cn %></td>
+        <td><%= order.show.try(:ticket_type_cn) %></td>
         <td id="td_express_id_<%= order.id %>"><%= order.express_id%></td>
         <td>
           <button class="btn btn-info change_express_data" data-order-id="<%= order.id %>">修改单号</button>

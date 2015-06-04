@@ -17,12 +17,8 @@
       <%= f.label :latitude, '纬度' %>
       <%= f.text_field :latitude %>
     </div>
-    <div id="map"></div>
     <div class="form-group">
-      <p><%= f.label :pic, "场馆平面图" %>
-      <%= f.file_field :pic %></p>
-      <%= image_tag(@stadium.pic_url, class: 'stadium-pic') if @stadium.pic_url %>
-      <%= f.hidden_field :pic_cache %>
+      <div id="map"></div>
     </div>
     <%= f.hidden_field :city_id, value: city.id %>
     <div class="form-group">
@@ -30,16 +26,6 @@
     </div>
   <% end %>
   <%= hidden_field_tag 'city_name', city.name %>
-
-  <% if @stadium.id %>
-    <div>
-      <h1>区域设置</h1>
-      <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default btn-xs add_area' %>
-      <div class="areas">
-        <%= render partial: 'operation/areas/stadium_areas_table', locals: {stadium: @stadium, areas: @stadium.areas} %>
-      </div>
-    </div>
-  <% end %>
 
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=798886ba701989c1cbcf271aaa944ccc"></script>
 

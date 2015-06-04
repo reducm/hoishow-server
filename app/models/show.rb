@@ -26,12 +26,18 @@ class Show < ActiveRecord::Base
   before_create :set_city
 
   after_create :set_status_after_create
+  after_create :set_mode_after_create
 
   delegate :stars, to: :concert
 
-  enum status: {
+  enum mode: {
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
+  }
+
+  enum status: {
+    selling: 0, #购票中
+    sell_stop: 1, #购票结束
   }
 
   enum ticket_type: {
@@ -39,7 +45,13 @@ class Show < ActiveRecord::Base
     r_ticket: 1, #实体票
   }
 
+  enum seat_type: {
+    selectable: 0, #可以选座
+    selected: 1, #只能选区
+  }
+
   mount_uploader :poster, ImageUploader
+  mount_uploader :stadium_map, ImageUploader
 
   def poster_url
     if poster.url.present?
@@ -70,12 +82,21 @@ class Show < ActiveRecord::Base
     end
   end
 
-  def status_cn
-    case status
+  def mode_cn
+    case mode
     when "voted_users"
       "只有参与投票的用户才能买"
     when "all_users"
       "全部用户都能购买"
+    end
+  end
+
+  def status_cn
+    case status
+    when "selling"
+      "开放购票中"
+    when "sell_stop"
+      "购票结束"
     end
   end
 
@@ -98,7 +119,7 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    areas.sum(:seats_count)
+    show_area_relations.sum(:seats_count)
   end
 
   def area_seats_count(area)
@@ -117,8 +138,12 @@ class Show < ActiveRecord::Base
   end
 
   def set_status_after_create
-    self.status = :voted_users if self.status.blank?
+    self.status = :selling if self.status.blank?
     save!
   end
 
+  def set_mode_after_create
+    self.mode = :voted_users if self.mode.blank?
+    save!
+  end
 end

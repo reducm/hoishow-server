@@ -20,8 +20,8 @@
         <% user = order.user %>
         <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
         <td><%= link_to user_name(user), operation_user_path(user) %></td>
-        <td><%= order.show.ticket_type_cn %></td>
-        <td><%= order.created_at.strfcn_date %></td>
+        <td><%= order.show.try(:ticket_type_cn) %></td>
+        <td><%= order.created_at.try(:strfcn_date) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <td><%= order.amount %></td>
         <td><%= link_to "查看详情", operation_order_path(order) %></td>

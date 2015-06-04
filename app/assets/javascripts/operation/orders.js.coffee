@@ -23,3 +23,4 @@ $ ->
       if data.success
         location.reload()
     )
+

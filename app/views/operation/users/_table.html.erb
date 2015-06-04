@@ -15,7 +15,7 @@
   <tbody>
     <% users.each do|user|%>
       <tr>
-        <td class="text-center"><%= image_tag user.avatar_url, size:"50x50" if user.avatar_url %></td>
+        <td class="text-center"><%= get_avatar(user, '50x50') %></td>
         <td class="text-center"><%= user.nickname || user.mobile %></td>
         <td class="text-center"><%= user.mobile %></td>
         <td class="text-center"><%= user.orders.count %></td>

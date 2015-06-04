@@ -11,7 +11,8 @@ class Operation::OrdersController < Operation::ApplicationController
 
   def search
     params[:page] ||= 1
-    @orders = Order.where("show_name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    ids = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").map(&:id).compact
+    @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).page(params[:page]).order("created_at desc")
     @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
     render :index
   end
@@ -33,5 +34,15 @@ class Operation::OrdersController < Operation::ApplicationController
       @order.set_tickets
       render json: {success: true}
     end
+  end
+
+  def update_remark_content
+    @order = Order.find(params[:id])
+    if @order.update!(remark: params[:remark])
+      flash[:notice] = "更新备注成功"
+    else
+      flash[:alert] = "更新备注失败"
+    end
+    redirect_to operation_order_url(@order)
   end
 end
