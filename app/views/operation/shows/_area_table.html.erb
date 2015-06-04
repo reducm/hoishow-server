@@ -1,35 +1,25 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>场馆区域</th>
-      <% if show.selected? %>
-        <th>票价</th>
-      <% end %>
-      <th>座位数(座位数不能少于已售出数量)</th>
-      <th>当前区域售出票数</th>
-      <th>操作</th>
-    </tr>
-    <tbody>
-      <% show.areas.each do |area| %>
-        <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
-        <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
-        <tr>
-          <td><%= area.name %></td>
-          <% if show.selected? %>
-            <td id="td_price_<%= area.id %>"><%= relation.try(:price) %></td>
-          <% end %>
-          <td id="td_seats_count_<%= area.id %>"><%= relation.try(:seats_count) %></td>
-          <td id="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
-          <% if show.selected? %>
-            <td class="submit_td"><button class="change_show_area_data" data-area-id="<%= area.id %>">修改</button></td>
-          <% elsif show.selectable? %>
-            <td><%= link_to "设置选座" %></td>
-          <% end %>
-        </tr>
-      <% end %>
-    </tbody>
-  </thead>
-</table>
-
+<% @show.areas.each do |area| %>
+  <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
+  <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
+  <tr>
+    <% if show.selected? %>
+      <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control' %></td>
+      <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control' %></td>
+      <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control' %></td>
+    <% elsif show.selectable? %>
+      <td><%= area.name %></td>
+      <td><%= relation.try(:seats_count) %></td>
+    <% end %>
+    <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+    <% if show.selected? %>
+      <td data-id="<%= area.id %>">
+        <%= link_to "修改", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
+        <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+      </td>
+    <% elsif show.selectable? %>
+      <td><%= link_to "设置选座" %></td>
+    <% end %>
+  </tr>
+<% end %>

@@ -29,12 +29,53 @@
     </div>
     <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: "电子票", selected: @show.seat_type, label: '选座设置' %>
     <%= f.hidden_field :concert_id, value: @concert.id %>
-    <%= f.button :submit, "保存" %>
+    <%= f.button :submit, "保存", class: 'btn-primary' %>
   <% end %>
 
   <div id='show_areas'>
-    <h2>区域管理</h2>
-    <%= link_to "新增区域", "javascript:void(0);", class: 'add_area' %>
-    <%= render partial: "area_table", locals: {show: @show} %>
+    <h3>区域管理</h3>
+    <%= link_to "新增区域", "javascript:void(0);", class: 'btn btn-default btn-xs add_area' %>
+    <table class="table table-hover areas">
+      <thead>
+        <tr>
+          <th>区域名</th>
+          <% if @show.selected? %>
+            <th>票价</th>
+          <% end %>
+          <th>座位数(座位数不能少于已售出数量)</th>
+          <th>当前区域售出票数</th>
+          <th>操作</th>
+        </tr>
+        <tbody>
+          <%= render partial: "area_table", locals: {show: @show} %>
+        </tbody>
+      </thead>
+    </table>
   </div>
 </div>
+
+
+<script type="text/javascript">
+  (function($){
+    $('.add_area').on("click", function(){
+      name = prompt("请输入区域名称")
+      $.post("/operation/shows/<%= @show.id %>/new_area", {area_name: name}, function(data){
+        $(".areas tbody").html(data)
+      })
+    })
+
+    $('.areas').on("click", ".del_area", function(){
+      if(confirm("确定要删除该区域吗?")){
+        area_id = $(this).parent().data('id')
+        if(area_id){
+          $.post("/operation/shows/<%= @show.id %>/del_area", {area_id: area_id, _method: 'delete'}, function(data){
+            $(".areas tbody").html(data)
+          })
+        }
+        else{
+          $(this).parents('tr').remove()
+        }
+      }
+    })
+  })(jQuery);
+</script>
