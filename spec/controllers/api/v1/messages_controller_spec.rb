@@ -30,7 +30,9 @@ RSpec.describe Api::V1::MessagesController, :type => :controller do
       expect(JSON.parse(response.body).first["is_new"]).to eq true 
     end
     it "should set send_log is_new false after request" do
-      send_log = UserMessageRelation.first
+      message = create :reply_message 
+      message.create_relation_with_users([@user])
+      send_log = UserMessageRelation.last
       get :index, with_key(type: "reply", mobile: @user.mobile, api_token: @user.api_token, format: :json)
       expect(JSON.parse(response.body).first["is_new"]).to eq true 
       send_log.reload
