@@ -121,6 +121,8 @@ Rails.application.routes.draw do
         post "update_area_data"
         post "update_status"
         patch :toggle_is_top
+        post :new_area
+        delete :del_area
       end
     end
     resources :orders do
