@@ -119,7 +119,7 @@ Rails.application.routes.draw do
       end
       member do
         post "update_area_data"
-        post "update_status"
+        post "update_mode"
         patch :toggle_is_top
       end
     end

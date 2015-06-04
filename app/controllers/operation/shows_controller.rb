@@ -72,9 +72,9 @@ class Operation::ShowsController < Operation::ApplicationController
     render partial: "area_table", locals:{show: @show, stadium: @show.stadium}
   end
 
-  def update_status
+  def update_mode
     @show = Show.find(params[:id])
-    if @show.update(status: params[:status].to_i)
+    if @show.update(mode: params[:mode].to_i)
       users_array = @show.show_followers
       message = Message.new(send_type: "all_users_buy", creator_type: "Star", creator_id: @show.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "#{@show.name}已经开放购票啦～", title: "演唱会开放购买通知", content: "你关注的#{@show.name}已经开放购票了，快叫上小伙伴们一起买买买吧！")
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
@@ -95,7 +95,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type)
+    params.require(:show).permit(:status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type)
   end
 
   def get_show

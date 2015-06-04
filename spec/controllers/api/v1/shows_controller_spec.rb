@@ -23,6 +23,8 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       expect(response.body).to include("stadium_id")
       expect(response.body).to include("show_time")
       expect(response.body).to include("poster")
+      expect(response.body).to include("status")
+      expect(response.body).to include("mode")
       expect(response.body).to include("description")
       expect(response.body).to include("is_followed")
       expect(response.body).to include("is_top")
@@ -33,6 +35,8 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
     it "concert should has something" do
       @concert = create :concert
       @show = create(:show, concert: @concert)
+      @star = create(:star)
+      @star.hoi_concert(@concert)
       get :show, with_key(id: @show.id, format: :json)
       expect(JSON.parse(response.body)["concert"].size > 0).to be true
     end
