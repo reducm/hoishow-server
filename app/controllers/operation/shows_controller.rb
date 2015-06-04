@@ -65,11 +65,26 @@ class Operation::ShowsController < Operation::ApplicationController
     render json: data
   end
 
+  def new_area
+    @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name])
+    render partial: "area_table", locals: {show: @show}
+  end
+
   def update_area_data
-    relation = ShowAreaRelation.where(show_id: params[:id], area_id: params[:area_id]).first_or_create
+    area = @show.areas.find_by_id(params[:area_id])
+    area.update(name: params[:area_name])
+
+    relation = @show.show_area_relations.where(area_id: area.id).first_or_create
     relation.update(price: params[:price], seats_count: params[:seats_count])
 
     render partial: "area_table", locals:{show: @show, stadium: @show.stadium}
+  end
+
+  def del_area
+    area = @show.areas.find_by_id(params[:area_id])
+    if area && area.destroy
+      render partial: "area_table", locals: {show: @show}
+    end
   end
 
   def update_mode
