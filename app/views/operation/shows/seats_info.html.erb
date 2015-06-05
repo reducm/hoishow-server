@@ -10,7 +10,7 @@
   </div>
   <div class="nav-control">
     <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn btn-default' %>
-    <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_unavaliable btn btn-default' %>
+    <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn btn-default' %>
     <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn btn-default' %>
     <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-default' %>
     <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-default' %>
@@ -22,7 +22,7 @@
       <% if @seats_info %>
         <% @seats_info['rows'].each_with_index do |row, idx| %>
           <li class="row_<%= idx + 1 %>">
-            <% row.each_with_index do |seat, idx| %>
+            <% row.each do |seat| %>
               <span title="座位号: <%= seat['seat_no'] %> 价格: <%= seat['price'] %>元" class="seat <%= seat['seat_status'] %>" data-row-id="<%= seat['row'] %>" data-column-id="<%= seat['column'] %>" data-seat-no="<%= seat['seat_no'] %>" data-status="<%= seat['seat_status'] %>" data-seat-price="<%= seat['price'] %>"></span>
             <% end %>
           </li>
@@ -66,17 +66,17 @@
 
   $(".set_avaliable").on("click", function(){
     $(".ui-selected").addClass("avaliable").data("status", "avaliable");
-    $(".ui-selected").removeClass("unavailable unused ui-selected blank");
+    $(".ui-selected").removeClass("locked unused ui-selected blank");
   })
 
-  $(".set_unavaliable").on("click", function(){
-    $(".ui-selected").addClass("unavailable").data("status", "unavailable");
+  $(".set_locked").on("click", function(){
+    $(".ui-selected").addClass("locked").data("status", "locked");
     $(".ui-selected").removeClass("avaliable unused ui-selected blank");
   })
 
   $(".set_unused").on("click", function(){
     $(".ui-selected").addClass("unused").data("status", "unused");
-    $(".ui-selected").removeClass("avaliable unavailable ui-selected blank");
+    $(".ui-selected").removeClass("avaliable locked ui-selected blank");
   })
 
   $(".set_seat_no").on("click", function(){
@@ -152,7 +152,7 @@
 .seats-info {position: relative;}
 .nav-control {
   position: fixed;
-  top: 30%;
+  top: 8%;
   width: 100px;
   padding: 10px;
 }
@@ -168,11 +168,14 @@ div.front h4 {
 }
 .submit_seats {width: 180px;}
 .set_avaliable, .avaliable { background-color: green; color: #fff;}
-.set_unavaliable, .unavailable { background-color: #000; color: #fff;}
+.set_locked, .locked { background-color: #000; color: #fff;}
 .set_unused, .unused { background-color: grey; color: #fff;}
 .ui-selecting { background-color: #FECA40; }
 .ui-selected { background-color: #FADAAD; }
-
+.seats-box {
+  overflow: auto;
+  white-space:nowrap;
+}
 span.seat {
   border: 1px solid #000;
   width: 20px;
