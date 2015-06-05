@@ -123,6 +123,8 @@ Rails.application.routes.draw do
         patch :toggle_is_top
         post :new_area
         delete :del_area
+        get :seats_info
+        post :update_seats_info
       end
     end
     resources :orders do

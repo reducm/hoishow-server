@@ -87,6 +87,20 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
+  def seats_info
+    @area = @show.areas.find_by_id(params[:area_id])
+    @seats_info = JSON.parse @show.seats.where(area_id: @area.id).first.seats_info
+  end
+
+  def update_seats_info
+    @area = @show.areas.find_by_id(params[:area_id])
+    @area.update(name: params[:area_name])
+    @seat = @show.seats.where(area_id: @area.id).first_or_create
+    @seat.update(seats_info: params[:seats_info])
+
+    render json: {success: true}
+  end
+
   def update_status
     @show = Show.find(params[:id])
     if @show.update(status: params[:status].to_i)
