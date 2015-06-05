@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @concerts.concerts_without_auto_hide.each do|concert|%>
+    <% @concerts.each do|concert|%>
       <tr>
         <td><%= concert.stars.pluck(:name).join(",") %></td>
         <td><%= concert.name %></td>

@@ -28,7 +28,7 @@
         <td><%= order.created_at.try(:strfcn_time) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <td><%= order.amount %></td>
-        <% if order.with_r_tickets? %>
+        <% if order.show.r_ticket? %>
         <td><%= order.user_name  %></td>
         <td><%= order.user_mobile %></td>
         <td width="400px"><%= order.user_address %></td>

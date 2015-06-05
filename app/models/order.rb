@@ -39,10 +39,6 @@ class Order < ActiveRecord::Base
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, Order.statuses[:pending]) }
 
-  def with_r_tickets?
-    paid? || success?
-  end
-
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
   #2. new order执行order.set_tickets_and_price(show和area的中间表数组), 例如买三张三区，所以就扔三个三区的中间表数组[show_area_relation, show_area_relation, show_area_relation]
