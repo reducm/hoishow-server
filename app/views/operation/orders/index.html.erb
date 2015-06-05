@@ -12,6 +12,14 @@
     <% end %>
   </div>
 </div>
+
+  <% if @orders.any? %>
+<p>
+  下载:
+  <%= link_to "Excel", operation_orders_path(format: "xls") %>
+</p>
+  <% end %>
+
 <div class="orders_list">
   <%= render partial: "table", locals: {orders: @orders} %>
 </div>

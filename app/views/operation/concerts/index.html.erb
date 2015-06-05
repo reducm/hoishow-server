@@ -16,6 +16,13 @@
   </div>
 </div>
 
+  <% if @concerts.any? %>
+<p>
+  下载:
+  <%= link_to "Excel", operation_concerts_path(format: "xls") %>
+</p>
+  <% end %>
+
 <div class="concerts_list">
   <%= render partial: "table", locals: {concerts: @concerts} %>
 </div>
