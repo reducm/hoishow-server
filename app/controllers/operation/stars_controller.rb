@@ -67,6 +67,9 @@ class Operation::StarsController < Operation::ApplicationController
           flash[:alert] = @video.errors.full_messages.to_sentence
           render action: 'edit' and return
         else
+          if @star.videos.count == 1
+            @video.update(is_main: true)
+          end
           redirect_to operation_star_url(@star), notice: '艺人更新成功。'
         end
       else
