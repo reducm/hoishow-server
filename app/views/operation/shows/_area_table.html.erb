@@ -19,7 +19,10 @@
         <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
       </td>
     <% elsif show.selectable? %>
-      <td><%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id) %></td>
+      <td>
+        <%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id), class: 'btn btn-default' %>
+        <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+      </td>
     <% end %>
   </tr>
 <% end %>
