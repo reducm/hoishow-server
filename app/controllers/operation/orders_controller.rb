@@ -7,6 +7,10 @@ class Operation::OrdersController < Operation::ApplicationController
     params[:page] ||= 1
     @orders = Order.page(params[:page]).order("created_at desc")
     @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
+    respond_to do |format|
+      format.html
+      format.xls
+    end
   end
 
   def search

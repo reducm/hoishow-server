@@ -31,7 +31,7 @@ class Operation::VideosController < Operation::ApplicationController
   end
 
   def set_main 
-    @videos = Video.all
+    @videos = @star.videos 
     @videos.update_all(is_main: false)
     @video.update(is_main: true)
     redirect_to edit_operation_star_url(@star)
