@@ -104,6 +104,7 @@ Rails.application.routes.draw do
         get :get_city_voted_data
         get :get_cities
         post :add_concert_city
+        post :update_base_number
         get :refresh_map_data
         delete :remove_concert_city
         patch :toggle_is_top
