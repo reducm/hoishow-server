@@ -4,7 +4,7 @@
       区域名称: <%= text_field_tag "area_name", @area.name %>
     </h3>
     <div class="box-size">
-      大小: <%= text_field_tag "row_size", @seats_info['rows'].size %>行<%= text_field_tag "column_size", @seats_info['rows'][0].size %>列
+      大小: <%= text_field_tag "row_size", @seats_info['rows'].size if @seats_info %>行<%= text_field_tag "column_size", @seats_info['rows'][0].size if @seats_info %>列
       <%= link_to "确定", "javascript:void(0)", class: 'btn btn-default set_box' %>
     </div>
   </div>
@@ -14,17 +14,19 @@
     <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn btn-default' %>
     <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-default' %>
     <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-default' %>
-    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @seats_info['sort_by']) %>
+    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], (@seats_info['sort_by'] if @seats_info)) %>
   </div>
   <div class="seats-box">
     <div class="front"><h4>舞台</h4></div>
     <ul class="list-unstyled seats">
-      <% @seats_info['rows'].each_with_index do |row, idx| %>
-        <li class="row_<%= idx + 1 %>">
-          <% row.each_with_index do |seat, idx| %>
-            <span class="seat <%= seat['seat_status'] %>" data-row-id="<%= seat['row'] %>" data-column-id="<%= seat['column'] %>" data-seat-no="<%= seat['seat_no'] %>" data-status="<%= seat['seat_status'] %>" data-seat-price="<%= seat['price'] %>"></span>
-          <% end %>
-        </li>
+      <% if @seats_info %>
+        <% @seats_info['rows'].each_with_index do |row, idx| %>
+          <li class="row_<%= idx + 1 %>">
+            <% row.each_with_index do |seat, idx| %>
+              <span class="seat <%= seat['seat_status'] %>" data-row-id="<%= seat['row'] %>" data-column-id="<%= seat['column'] %>" data-seat-no="<%= seat['seat_no'] %>" data-status="<%= seat['seat_status'] %>" data-seat-price="<%= seat['price'] %>"></span>
+            <% end %>
+          </li>
+        <% end %>
       <% end %>
     </ul>
   </div>
