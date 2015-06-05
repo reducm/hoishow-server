@@ -123,7 +123,11 @@ class Show < ActiveRecord::Base
   end
 
   def area_seats_count(area)
-    show_area_relations.where(area_id: area.id).first.seats_count
+    if seats_count = show_area_relations.where(area_id: area.id).first.seats_count
+      seats_count
+    else
+      0
+    end
   end
 
   def get_show_base_number

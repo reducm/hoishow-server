@@ -117,7 +117,7 @@ class User < ActiveRecord::Base
         if comment.creator_type != "User"
           title = comment.creator.name + "回复了你的评论"
         else
-          title = comment.creator.nickname + "回复了你的评论"
+          title = comment.creator.show_name + "回复了你的评论"
         end
         message.send_message_for_reply_comment(creator.mobile, title, message.content)
       end
