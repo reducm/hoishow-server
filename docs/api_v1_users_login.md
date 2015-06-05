@@ -359,12 +359,15 @@ type `GET`
   {
     api_token: "users_token",
     mobile: "users mobile",
-    type: "system/reply",   #系统消息或者是回复的消息
+    type: "all/system/reply",   #系统消息或者是回复的消息
   }
 ```
 
-成功时返回
+若type参数是system或reply，成功时返回
 ```javascript
   Message对象
 ```
 
+若type参数是all，成功时根据有无新消息返回不同msg
+有新消息`{msg: "yes"}` 返回状态码200
+没有新消息`{msg: "no"}` 返回状态码200

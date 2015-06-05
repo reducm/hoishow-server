@@ -26,6 +26,10 @@ class Admin < ActiveRecord::Base
   def avatar_url
   end
 
+  def default_name
+    "hoishow官方"
+  end
+
   def set_password(password)
     self.createHash(password)
   end

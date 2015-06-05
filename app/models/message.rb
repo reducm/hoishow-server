@@ -25,6 +25,10 @@ class Message < ActiveRecord::Base
     manual: 5 #手动推送通知
   }
 
+  def has_new_send_log?
+    self.user_message_relations.where(is_new: true).any?
+  end
+
   def send_type_cn
     case send_type
     when 'new_show'
@@ -45,7 +49,9 @@ class Message < ActiveRecord::Base
   def creator_name
     if creator.is_a?(User)
       creator.show_name
-    elsif creator.is_a?(Star) || creator.is_a?(Admin)
+    elsif creator.is_a?(Admin)
+      creator.default_name
+    elsif creator.is_a?(Star)
       creator.name
     end
   end

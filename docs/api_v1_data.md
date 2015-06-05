@@ -360,14 +360,16 @@ type: `GET`
   description:  //图文介绍的url,
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
-  is_top: "true or false", //是否置顶
+  is_top: "true or false" //是否置顶,
   voters_count: //投票数,
-  status:  // voted_users(投票用户购买)/all_users(所有用户购买)
-  ticket_type:  // 分成实体票与电子票两种
+  status:  // 分成selling与sell_stop两种,
+  ticket_type:  // 分成实体票与电子票两种,
+  mode:  // voted_users(投票用户购买)/all_users(所有用户购买),
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
   stadium: {stadium对象},  //当need_stadium不为false的时候
-  topics: [topic对象列表]  //当need_topics不为false的时候
+  topics: [topic对象列表],  //当need_topics不为false的时候
+  stars: [star对象列表]  //当need_stars不为false的时候
 }
 ```
 
@@ -536,5 +538,6 @@ type: `GET`
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
   }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
+  is_new: true or false
 }
 ```
