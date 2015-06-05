@@ -9,6 +9,10 @@ class Operation::ConcertsController < Operation::ApplicationController
   def index
     params[:page] ||= 1
     @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
+    respond_to do |format|
+      format.html
+      format.xls
+    end
   end
 
   def search
@@ -109,11 +113,11 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   private
-    def concert_attributes
-      params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description, :poster)
-    end
+  def concert_attributes
+    params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description, :poster)
+  end
 
-    def get_concert
-      @concert = Concert.find(params[:id])
-    end
+  def get_concert
+    @concert = Concert.find(params[:id])
+  end
 end

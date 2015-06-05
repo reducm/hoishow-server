@@ -11,11 +11,10 @@
       <th>演出数量</th>
       <th>投票数量</th>
       <th>关注数量</th>
-      <th>操作</th>
     </tr>
   </thead>
   <tbody>
-    <% concerts.each do|concert|%>
+    <% @concerts.concerts_without_auto_hide.each do|concert|%>
       <tr>
         <td><%= concert.stars.pluck(:name).join(",") %></td>
         <td><%= concert.name %></td>
@@ -25,15 +24,8 @@
         <td><%= concert.shows.count %></td>
         <td><%= concert.voters_count %></td>
         <td><%= concert.followers_count %></td>
-        <td>
-          <% if can? :update, concert %>
-            <%= link_to "编辑", edit_operation_concert_path(concert)%>
-            <%= link_to "图文描述", description_path(subject_type: "Concert", subject_id: concert.id), target: "blank" %>
-            <%= link_to (concert.is_top ? "取消置顶" : "置顶"), toggle_is_top_operation_concert_path(concert), method: 'PATCH' %>
-          <% end %>
-        </td>
       </tr>
     <%end%>
   </tbody>
 </table>
-<%= paginate concerts %>
+<%= paginate @concerts %>

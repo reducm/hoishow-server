@@ -10,23 +10,33 @@
       <th>订单时间</th>
       <th>状态</th>
       <th>总价</th>
-      <th>操作</th>
+      <th>收货人姓名</th>
+      <th>收货人电话</th>
+      <th>收货人地址</th>
+      <th>票的状态</th>
+      <th>快递单号</th>
     </tr>
   </thead>
   <tbody>
-    <% orders.each do|order| %>
+    <% @orders.each do|order| %>
       <tr>
         <td><%= order.out_id%></td>
         <% user = order.user %>
-        <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
-        <td><%= link_to user_name(user), operation_user_path(user) %></td>
+        <td><%= order.show_name %></td>
+        <td><%= user_name(user) %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
         <td><%= order.created_at.try(:strfcn_time) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <td><%= order.amount %></td>
-        <td><%= link_to "查看详情", operation_order_path(order) %></td>
+        <% if order.with_r_tickets? %>
+        <td><%= order.user_name  %></td>
+        <td><%= order.user_mobile %></td>
+        <td width="400px"><%= order.user_address %></td>
+        <td><%= order.status_cn %></td>
+        <td id="td_express_id_<%= order.id %>"><%= order.express_id%></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
 </table>
-<%= paginate orders %>
+<%= paginate @orders %>
