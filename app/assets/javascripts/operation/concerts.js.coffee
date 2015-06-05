@@ -301,7 +301,26 @@ $ ->
       city_id = $(this).parent().data("id")
       refresh_topic_list(concert_id, city_id)
     #查看互动
-    
+
+    #添加明星
+    $("#add_star").on "click", (e) ->
+      e.preventDefault()
+      star_id = $("#select_star").val()
+      $.post("/operation/concerts/#{concert_id}/add_star", { star_id: star_id}, (data)->
+        if data.success
+          location.reload()
+      )
+
+    #删除明星
+    $("#delete_star").on "click", ".remove_star", (e) ->
+      e.preventDefault()
+      star_id = $(this).data("star-id")
+      $.post("/operation/concerts/#{concert_id}/remove_star", {star_id: star_id, _method: 'delete'}, (data)->
+        if data.success
+          location.reload()
+      )
+
+
     #更改底数
     $("#profile").on "click", ".change_base_number", () ->
       concert_id = $(this).parent().parent().data("concert-id")
@@ -360,4 +379,5 @@ $ ->
       location.reload()
     else
       $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()
+
 

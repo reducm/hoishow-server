@@ -54,7 +54,7 @@
           </div>
           <div class="form-group">
             <%= label_tag "topic_creator", "创建人" %>
-            <%= select_tag "topic_creator", options_for_select([[@star.name, @star.id], [current_admin.name]]) %>
+            <%= select_tag "topic_creator", options_for_select([[@star.name, @star.id], [current_admin.default_name]]) %>
           </div>
           <%= hidden_field_tag "star_id", @star.id %>
           <%= submit_tag "提交", class: 'btn btn-primary create_topic' %>

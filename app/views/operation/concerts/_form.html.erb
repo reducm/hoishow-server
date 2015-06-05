@@ -1,5 +1,24 @@
 <%# encoding: utf-8 %>
+<div>
+  
+  <%= label_tag "star", "参演艺人" %>
+  <div id="delete_star">
+    <% stars = concert.stars.pluck(:name, :id)%>
+    <% stars.each do |star| %>
+      <span class="btn btn-default"><%= star[0] + " "%></span><button data-star-id="<%= star[1] %>" class="btn btn-info remove_star" data-confirm="确定删除此艺人吗？">删除</button>
+    <%end%>
+  </div>
+<div>
+<p></p>
+<p></p>
+    <div class="form-group">
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]})  %>
+      <a class="btn btn-success" id="add_star">添加选中艺人</a>
+    </div>
+  </div>
+</div>
 
+<p></p>
 <%= simple_form_for [:operation, concert ] do |f| %>
   <%= f.input :name, required: false, label: "投票名称" %>
   <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker, input_html:{ value: ( params[:action] == 'edit' ? get_datetime(concert.start_date) : "" ) } %>

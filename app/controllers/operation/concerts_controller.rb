@@ -115,6 +115,27 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
+  def add_star
+    star = Star.find_by_id([params[:star_id]])
+    if star
+      star.hoi_concert(@concert)
+      render json: {success: true}
+    else
+      render json: {success: false}
+    end
+  end
+
+  def remove_star
+    relation = @concert.star_concert_relations.where(star_id: params[:star_id]).first
+    if relation
+      relation.destroy
+      render json: {success: true}
+    else
+      render json: {success: false}
+    end
+  end
+
+
   private
     def concert_attributes
       params.require(:concert).permit(:name, :is_show, :status, :start_date, :end_date, :description, :poster)
