@@ -152,7 +152,8 @@ description: concert详情
 
 成功时返回：
 ```javascript
-  {concert对象}
+  {concert对象},
+  cities: [{city1}, {city2}...]
 ```
 
 -----------
