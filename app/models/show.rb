@@ -130,7 +130,7 @@ class Show < ActiveRecord::Base
     if relation =ConcertCityRelation.where(concert_id: self.concert_id, city_id: self.city_id).first
       relation.base_number
     else
-      ""
+      0
     end
   end
 

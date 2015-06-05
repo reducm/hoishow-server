@@ -94,7 +94,7 @@ class Concert < ActiveRecord::Base
     if relation = concert_city_relations.where(city_id: city_id).first
       relation.base_number
     else
-      ""
+      0
     end
   end
 
