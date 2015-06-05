@@ -190,4 +190,5 @@ Rails.application.routes.draw do
 
   get "description", to: "description#show"
   get "express_detail", to: "express_detail#show"
+  get "seats_map", to: "seats_map#show"
 end
