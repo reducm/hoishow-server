@@ -340,8 +340,9 @@ ActiveRecord::Schema.define(version: 20150604071206) do
   create_table "user_message_relations", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "message_id", limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.boolean  "is_new",     limit: 1, default: true
   end
 
   add_index "user_message_relations", ["message_id"], name: "index_user_message_relations_on_message_id", using: :btree
