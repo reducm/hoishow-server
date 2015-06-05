@@ -51,7 +51,6 @@ class Operation::ConcertsController < Operation::ApplicationController
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演出创建成功，但是因为艺人粉丝数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
       end
-
     else
       flash[:alert] = @concert.errors.full_messages
     end
@@ -110,6 +109,14 @@ class Operation::ConcertsController < Operation::ApplicationController
       @concert.update(is_top: true)
     end
     redirect_to operation_concerts_url
+  end
+
+  def update_base_number
+    if ConcertCityRelation.where(concert_id: params[:concert_id], city_id: params[:city_id]).first.update(base_number: params[:base_number])
+      render json: {success: true}
+    else
+      render json: {success: false}
+    end
   end
 
   private

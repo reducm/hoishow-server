@@ -301,6 +301,24 @@ $ ->
       city_id = $(this).parent().data("id")
       refresh_topic_list(concert_id, city_id)
     #查看互动
+    
+    #更改底数
+    $("#profile").on "click", ".change_base_number", () ->
+      concert_id = $(this).parent().parent().data("concert-id")
+      city_id = $(this).parent().parent().data("city-id")
+      $("#base_number_#{city_id}").html("<input id='base_number_value_#{city_id}' type='text' class='form-control'>")
+      $(this).parent().html("<a data-concert-id='#{concert_id}' data-city-id='#{city_id}' class='btn btn-primary submit_base_number'>确定修改</a>")
+
+    #提交底数更改
+    $("#profile").on "click", ".submit_base_number", () ->
+      concert_id = $(this).data("concert-id")
+      city_id = $(this).data("city-id")
+      base_number = $("#base_number_value_#{city_id}").val()
+      $.post("/operation/concerts/#{concert_id}/update_base_number", {concert_id: concert_id, city_id: city_id, base_number: base_number }, (data)->
+        if data.success
+          init_map_data(concert_id)
+      )
+
 
     $("#profile").on "click", ".add_topic", (e)->
       e.preventDefault()

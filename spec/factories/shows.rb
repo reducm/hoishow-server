@@ -11,7 +11,8 @@ FactoryGirl.define do
     association :concert
     association :stadium
     association :city
-    status "voted_users"
+    status "selling"
+    mode "voted_users"
     is_display true
   end
 end

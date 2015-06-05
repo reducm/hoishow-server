@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150604021942) do
+ActiveRecord::Schema.define(version: 20150604112527) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -75,10 +75,11 @@ ActiveRecord::Schema.define(version: 20150604021942) do
   end
 
   create_table "concert_city_relations", force: :cascade do |t|
-    t.integer  "concert_id", limit: 4
-    t.integer  "city_id",    limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.integer  "concert_id",  limit: 4
+    t.integer  "city_id",     limit: 4
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "base_number", limit: 4, default: 0
   end
 
   add_index "concert_city_relations", ["city_id"], name: "index_concert_city_relations_on_city_id", using: :btree
@@ -178,11 +179,9 @@ ActiveRecord::Schema.define(version: 20150604021942) do
   create_table "seats", force: :cascade do |t|
     t.integer  "show_id",    limit: 4
     t.integer  "area_id",    limit: 4
-    t.integer  "status",     limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "name",       limit: 255
-    t.string   "seats_info", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.text     "seats_info", limit: 65535
   end
 
   create_table "show_area_relations", force: :cascade do |t|
