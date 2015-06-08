@@ -18,7 +18,7 @@
     <% concerts.each do|concert|%>
       <tr>
         <% stars_array = concert.stars.pluck(:name) %>
-        <td width=" 350px"><%= stars_array.join(",") %></td>
+        <td width=" 300px"><%= stars_array.join(",") %></td>
         <td width=" 300px"><%= concert.name %></td>
         <td class="concert_status_cn"><%= concert.status_cn %></td>
         <td><%= concert.is_show_cn %></td>

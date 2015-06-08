@@ -25,7 +25,7 @@
           </tr>
           <tr>
             <td>性别</td>
-            <td><%= @user.sex %></td>
+            <td><%= @user.sex_cn %></td>
           </tr>
           <tr>
             <td>生日</td>
@@ -86,7 +86,8 @@
             <% @topics.each do |topic| %>
               <tr>
                 <td><%= get_datetime(topic.created_at) %></td>
-                <td><%= topic.content %></td>
+                <td><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
+              </tr>
               </tr>
             <% end %>
           </table>
@@ -103,7 +104,7 @@
             <% @comments.each do |comment| %>
               <tr>
                 <td><%= get_datetime(comment.created_at) %></td>
-                <td><%= comment.content %></td>
+                <td><%= Base64.decode64(comment.content).force_encoding("utf-8") %></td>
               </tr>
             <% end %>
           </table>
