@@ -3,7 +3,7 @@
 <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
   <div class="form-group">
   <div class="col-xs-1">
-  <%= f.input :subject_type, collection: [["明星", "Star"], ["演出", "Concert"], ["Show", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
+  <%= f.input :subject_type, collection: [["明星", "Star"], ["投票", "Concert"], ["演出", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
   </div>
   </div>
   <div class="form-group">

@@ -9,7 +9,6 @@
     <%= stylesheet_link_tag "application" %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="format-detection" content="telephone=no">
-    <%= favicon_link_tag '/favicon.png', :type => 'image/png' %>
     <%= yield :other_js %>
     <%= yield :other_css %>
     <%= csrf_meta_tags %>
@@ -39,65 +38,3 @@
     </div>
   </body>
 </html>
-
-<style type="text/css" media="screen">
-body {
-  background-color: rgb(48, 0, 143);
-  overflow: hidden;
-  _height: 100%;
-  height: auto !important;
-  min-height: 100%;
-}
-.content {
-  margin-top: 10px;
-  padding-bottom: 32767px;
-  margin-bottom: -32767px;
-}
-div.front h4 {
-  display: inline-block;
-  width: 180px;
-  height: 25px;
-  line-height: 25px;
-  color: #fff;
-  border-radius: 5px;
-  background-color: rgb(101, 65, 174);
-}
-.nav-seat span {
-  color: #fff;
-  margin: auto 15px;
-}
-.nav-seat span i {
-  margin-bottom: -4px;
-  margin-right: 5px;
-}
-.seats_box {
-  margin: 10px 20px;
-  overflow: auto;
-  white-space:nowrap;
-}
-.seats_box .row-bar {
-  color: #fff;
-}
-.seats_box li {margin-left: 6%;}
-span i {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-.seats_box span i {
-  margin: 4px 2px;
-}
-.avaliable {
-  background: url(/assets/seats/icon_whiteseat.png);
-  background-size: 20px 20px;
-}
-.locked {
-  background: url(/assets/seats/icon_purpleseat.png);
-  background-size: 20px 20px;
-}
-.checked {
-  background: url(/assets/seats/icon_redseat.png);
-  background-size: 20px 20px;
-}
-</style>
