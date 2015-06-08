@@ -4,6 +4,32 @@
 1. 所有api请求时，url后需要带`.json`
 2. api成功返回时参照各api描述，失败时统一返回:`{errors: "..."}`, 状态403
 
+
+--------
+
+## 点击选座
+[/api/v1/shows/[:id]/click_seat]()
+
+type `GET`
+
+description: 用户在h5选座页面点击某个座位时发起请求
+
+成功时返回
+
+```javascript
+  {
+    show_id: 1 //演出id
+    show_name: 'abc' //演出名字
+    area_id: 1 //区域id
+    area_name: 'A区' //区域名字
+    row_id: 1  //行号
+    column_id: 1  //列号
+    price: 100  //票价
+    remark: 'xxx'  //备注
+  }
+```
+
+
 --------
 
 ## 物流查询接口
@@ -365,10 +391,12 @@ type: `GET`
   voters_count: //投票数(包含底数),
   status:  // selling(售票中)/sell_stop(售票结束),
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
+  stadium_map: 'xxx' //场馆图
   seat_type: // selectable(可以选座)/selected(只能选区)
   mode:  // voted_users(投票用户购买)/all_users(所有用户购买),
   concert: {concert对象},  //当need_concert不为false的时候
-  city: {city对象},  //当need_city不为false的时候
+  city: {city对象},  //当need_city不为false的时候,
+  areas: [area对象列表], //当need_areas不为false的时候,
   stadium: {stadium对象},  //当need_stadium不为false的时候
   topics: [topic对象列表],  //当need_topics不为false的时候
   stars: [star对象列表]  //当need_stars不为false的时候
@@ -395,8 +423,6 @@ type: `GET`
   longitude: "经度",
   latitude: "维度",
   city: {City对象}, //当need_city不为false的时候
-  pic: "场馆的图片"
-  area: [area对象列表] //当need_areas不为false的时候
 }
 ```
 
@@ -487,6 +513,7 @@ type: `GET`
   price: 1,  //票价
   seats_left: 10,  //剩余票数
   is_sold_out: false   //是否卖完
+  seats_map: 'xxxs' //选座图url
 }
 ```
 
