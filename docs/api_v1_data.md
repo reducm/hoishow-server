@@ -363,8 +363,9 @@ type: `GET`
   is_voted:  //是否被投票,
   is_top: "true or false" //是否置顶,
   voters_count: //投票数(包含底数),
-  status:  // 分成selling与sell_stop两种,
-  ticket_type:  // 分成实体票与电子票两种,
+  status:  // selling(售票中)/sell_stop(售票结束),
+  ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
+  seat_type: // selectable(可以选座)/selected(只能选区)
   mode:  // voted_users(投票用户购买)/all_users(所有用户购买),
   concert: {concert对象},  //当need_concert不为false的时候
   city: {city对象},  //当need_city不为false的时候
