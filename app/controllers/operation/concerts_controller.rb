@@ -11,6 +11,7 @@ class Operation::ConcertsController < Operation::ApplicationController
     @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
     respond_to do |format|
       format.html
+      format.csv { send_data @concerts.to_csv(encoding: "UTF-8") }
       format.xls
     end
   end

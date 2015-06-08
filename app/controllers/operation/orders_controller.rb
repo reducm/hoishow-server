@@ -9,6 +9,7 @@ class Operation::OrdersController < Operation::ApplicationController
     @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
     respond_to do |format|
       format.html
+      format.csv { send_data @orders.to_csv(encoding: "UTF-8") }
       format.xls
     end
   end

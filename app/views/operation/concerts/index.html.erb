@@ -19,6 +19,7 @@
   <% if @concerts.any? %>
 <p>
   下载:
+  <%= link_to "CSV", operation_concerts_path(format: "csv") %> |
   <%= link_to "Excel", operation_concerts_path(format: "xls") %>
 </p>
   <% end %>
