@@ -37,6 +37,17 @@ class User < ActiveRecord::Base
     secret: 2
   }
 
+  def sex_cn
+    case sex
+    when 'male'
+      '男'
+    when 'female'
+      '女'
+    when 'secret'
+      '保密'
+    end
+  end
+
   def avatar_url
     if avatar.url.present?
       if Rails.env.production?
@@ -63,6 +74,7 @@ class User < ActiveRecord::Base
 
     self.api_token = SecureRandom.hex(16)
     self.api_expires_in = 1.years
+    self.last_sign_in_at = DateTime.now
     save!
   end
 
