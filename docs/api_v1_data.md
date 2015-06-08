@@ -26,6 +26,7 @@ description: 用户在h5选座页面点击某个座位时发起请求
     column_id: 1  //列号
     seat_name: '10排8座' //座位名
     price: 100  //票价
+    status: 'avaliable'/'checked' //座位状态
     remark: 'xxx'  //备注
   }
 ```
@@ -564,7 +565,7 @@ type: `GET`
   title: 'xxx',
   content: "截图url",
   subject_type:  //Star or Show or Concert or Topic,
-  subject_id: //subject的id 
+  subject_id: //subject的id
   created_at: //消息创建的时间
   creator:  {
     id: ID
