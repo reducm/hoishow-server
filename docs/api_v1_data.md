@@ -494,6 +494,7 @@ type: `GET`
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   poster: //海报url
   tickets_count: //票数
+  ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
   show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
@@ -505,6 +506,7 @@ type: `GET`
 
 ```javascript
 {
+  id: area对象的id,
   name: "A区",
   seats_count: 11, //座位数
   stadium_id: 22, //场馆id
@@ -560,13 +562,15 @@ type: `GET`
 {
   title: 'xxx',
   content: "截图url",
-  redirect_url: 'xxxxx' //点击message后跳转的url
+  subject_type:  //Star or Show or Concert or Topic,
+  subject_id: //subject的id 
+  created_at: //消息创建的时间
   creator:  {
     id: ID
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
   }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
-  is_new: true or false
+  is_new: true or false //是否为新消息
 }
 ```
