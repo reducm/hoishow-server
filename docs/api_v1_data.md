@@ -18,12 +18,13 @@ description: 用户在h5选座页面点击某个座位时发起请求
 
 ```javascript
   {
-    show_id: 1 //演出id
+    id: 1 //演出id
     show_name: 'abc' //演出名字
     area_id: 1 //区域id
     area_name: 'A区' //区域名字
     row_id: 1  //行号
     column_id: 1  //列号
+    seat_name: '10排8座' //座位名
     price: 100  //票价
     remark: 'xxx'  //备注
   }

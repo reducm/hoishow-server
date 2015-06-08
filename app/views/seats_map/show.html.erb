@@ -7,13 +7,14 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta content='True' name='HandheldFriendly' />
     <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag 'application' %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="format-detection" content="telephone=no">
     <%= yield :other_js %>
     <%= yield :other_css %>
     <%= csrf_meta_tags %>
   </head>
-  <body>
+  <body id="seats_map">
     <div class="content text-center">
       <div class="front">
         <h4>舞台</h4>
@@ -29,12 +30,16 @@
             <span class="row-bar pull-left"><%= idx + 1 %></span>
             <li>
               <% row.each do |seat| %>
-                <span><i class="<%= seat['seat_status'] %>"></i></span>
+                <span><i class="<%= seat['seat_status'] %>" data-row-id="<%= seat['row']%>" data-column-id="<%= seat['column'] %>" data-seat-name="<%= seat['seat_no'] %>" data-seat-price="<%= seat['price'] %>"></i></span>
               <% end %>
             </li>
           <% end %>
         </ul>
       </div>
+      <%= hidden_field_tag 'show_id', @show.id %>
+      <%= hidden_field_tag 'show_name', @show.name %>
+      <%= hidden_field_tag 'area_id', @area.id %>
+      <%= hidden_field_tag 'area_name', @area.name %>
     </div>
   </body>
 </html>
