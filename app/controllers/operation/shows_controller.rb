@@ -89,8 +89,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    seat = @show.seats.where(area_id: @area.id).first
-    @seats_info = JSON.parse seat.seats_info if seat
+    @seats_info = @area.seats_info(@show.id)
   end
 
   def update_seats_info
