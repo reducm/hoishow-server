@@ -1,6 +1,6 @@
 json.stadium do
-  json.partial! "api/v1/stadiums/stadium", stadium: @stadium, show: @show, need_areas: true, need_city: true
+  json.partial! "api/v1/stadiums/stadium", stadium: @stadium, need_city: true
 end
 json.show do
-  json.partial! "api/v1/shows/show", show: @show, need_concert: true
+  json.partial! "api/v1/shows/show", show: @show, need_concert: true, need_areas: true
 end
