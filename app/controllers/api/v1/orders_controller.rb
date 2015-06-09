@@ -5,7 +5,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
   skip_before_filter :api_verify, only: [:show_for_qr_scan]
 
   def index
-    @orders = @user.page_orders
+    @orders = @user.page_orders(params[:page])
   end
 
   def show
