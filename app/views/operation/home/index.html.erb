@@ -1,1 +1,137 @@
 <%# encoding: utf-8 %>
+<div class="nav">
+  <h1 class="pull-left">Hoishow后台首页</h1>
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>今日成功订单数</th>
+      <th>今日支付金额</th>
+      <th>待发货订单</th>
+      <th>今日注册用户数</th>
+      <th>今日新增投票</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= link_to Order.today_success_orders.count, operation_orders_path %></td>
+      <td><%= link_to Order.today_success_orders.sum(:amount), operation_orders_path %></td>
+      <td><%= link_to Order.where("status = 1").select { |order| order.show.r_ticket? }.count, operation_orders_path %></td>
+      <td><%= link_to User.today_registered_users.count, operation_users_path %></td>
+      <td><%= link_to UserVoteConcert.today_votes.count, operation_concerts_path %></td>
+    </tr>
+  </tbody>
+
+</table>
+
+
+<table class="table table-hover">
+  <tbody>
+    <tr>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>最新投票(<%= link_to "更多", operation_concerts_path %>)</th>
+              <th>今日投票</th>
+              <th>投票总数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_vote_concert_relations.each do |relation|%>
+              <%concert = Concert.find_by_id(relation.concert_id)%>
+              <tr>
+                <td><%= link_to concert.name, edit_operation_concert_path(concert) %></td>
+                <td><%=concert.user_vote_concerts.where("created_at > ?", Time.now - 1.days).count%></td>
+                <td><%=concert.user_vote_concerts.count%></td>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+      </td>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>正在售票(<%= link_to "更多", operation_shows_path %>)</th>
+              <th>今日售出座位数</th>
+              <th>总座位数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @shows.each do |show|%>
+              <tr>
+                <td><%= link_to show.name, operation_show_path(show) %></td>
+                <td><%= show.tickets.where("created_at > ?", Time.now - 1.days).count%></td>
+                <%if show.selected? %>
+                  <td><%=show.total_seats_count%></td>
+                <%else%>
+                  <td><%=show.seats.count%></td>
+                <%end%>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>最新回复(<%= link_to "更多", operation_comments_path %>)</th>
+              <th>内容详情</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @comments.each do |comment|%>
+              <%creator = comment.creator%>
+              <tr>
+                <td width="150px">
+                  <div>
+                    <p><%= image_tag(creator.avatar_url, size: "50x50") if creator.avatar_url %></p>
+                    <% if comment.creator_type == "Admin"%>
+                      <p><%= comment.creator_name %></p>
+                    <%else%>
+                      <%if creator = comment.creator%>
+                        <p><%= link_to comment.creator_name, url_for([:operation, creator]) %></p>
+                      <%else%>
+                        <p>该对象已经被屏蔽或删除</p>
+                      <%end%>
+                    <%end%>
+                  </div>
+                </td>
+                <td>
+                  <%topic = comment.topic%>
+                  <p>在<%= link_to Base64.decode64(topic.content).force_encoding("utf-8"), url_for([:operation, creator]) %>下</p>
+                  <p></p>
+                </td>
+                <td>
+                </td>
+            </tr>
+          <%end%>
+        </tbody>
+      </table>       
+    </td>
+    <td>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>最新互动(<%= link_to "更多", operation_topics_path %>)</th>
+            <th>内容详情</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @topics.each do |topic|%>
+            <tr>
+            </tr>
+          <%end%>
+        </tbody>
+      </table>
+    </td>
+  </tr>
+</tbody>
+</table>

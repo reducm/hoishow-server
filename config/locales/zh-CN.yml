@@ -153,6 +153,7 @@ zh-CN:
     startup: "启动页管理"
     admins: "系统管理"
     topics: "互动列表"
+    comments: "评论列表"
   views:
     pagination:
       first: '首页'
