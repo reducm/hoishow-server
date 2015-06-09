@@ -8,6 +8,7 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/stars
+#= require operation/home
 #= require operation/concerts
 #= require operation/banners
 #= require operation/shows
