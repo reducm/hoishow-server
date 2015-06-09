@@ -8,5 +8,5 @@ json.creator do
   json.name comment.creator_name
   json.avatar comment.creator.avatar_url rescue ''
   json.is_admin comment.creator.is_a?(Admin)
-  json.is_star topic.creator.is_a?(Star)
+  json.is_star comment.creator.is_a?(Star)
 end
