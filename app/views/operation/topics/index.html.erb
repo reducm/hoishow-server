@@ -1,6 +1,10 @@
 <%# encoding: utf-8 %>
 
-<%= paginate topics %>
+<div class="nav">
+  <h1 class="pull-left">互动列表</h1>
+</div>
+<div class="topics_index_list">
+<%= paginate @topics %>
 <table class="table topics" id="topics">
   <thead>
     <tr>
@@ -12,7 +16,7 @@
       <th>操作</th>
     </tr>
   </thead>
-  <% topics.each do |topic| %>
+  <% @topics.each do |topic| %>
     <tr>
       <% if topic.creator_type == "Admin"%>
         <td><%= topic.creator_name %></td>
@@ -40,7 +44,9 @@
   <% end %>
 </table>
 
-<%= paginate topics, remote: true %>
+<%= paginate @topics %>
+
+</div>
 
 <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">

@@ -155,7 +155,7 @@ Rails.application.routes.draw do
         post :block_admin
       end
     end
-    resources :topics, only: [:create, :edit, :update] do
+    resources :topics, only: [:create, :edit, :update, :index] do
       member do
         get :refresh_comments
         post :add_comment
@@ -169,6 +169,7 @@ Rails.application.routes.draw do
       end
     end
     resources :messages
+    resources :comments
     resources :cities, only: [:index] do
       collection do
         get :search

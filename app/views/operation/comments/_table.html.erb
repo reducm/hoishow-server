@@ -14,7 +14,11 @@
       <% if comment.creator_type == "Admin"%>
         <td><%= comment.creator_name %></td>
       <%else%>
-        <td><%= link_to comment.creator_name, url_for([:operation, comment.creator]) %></td>
+        <%if creator = comment.creator%>
+          <td><%= link_to comment.creator_name, url_for([:operation, creator]) %></td>
+        <%else%>
+          <td>该对象已经被屏蔽或删除</td>
+        <%end%>
       <%end%>
       <td width="550px">
         <% if comment.parent %>
@@ -48,7 +52,7 @@
           </div>
           <div class="form-group">
             <%= label_tag "reply_creator", "回复人" %>
-            <%= select_tag "reply_creator", options_for_select([current_admin.default_name] + @stars.collect{|star| [star.name, star.id]}) %>
+            <%= select_tag "reply_creator", options_for_select([current_admin.default_name])%>
           </div>
           <%= hidden_field_tag "parent_id" %>
           <%= submit_tag "提交", class: 'btn btn-primary add_comment' %>

@@ -2,8 +2,13 @@
 class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!
-  before_action :get_topic, except: [:create]
+  before_action :get_topic, except: [:create, :index]
   load_and_authorize_resource
+
+  def index
+    params[:page] ||= 1
+    @topics = Topic.page(params[:page]).order("created_at desc")
+  end
 
   def create
     @topic = Topic.new(topic_params)
@@ -49,7 +54,7 @@ class Operation::TopicsController < Operation::ApplicationController
     Comment.transaction do
       @comment.content = Base64.encode64(params[:content])
 
-      if params[:creator] == current_admin.name
+      if params[:creator] == current_admin.default_name
         @comment.creator_type = 'Admin'
         @comment.creator_id = current_admin.id
       else
