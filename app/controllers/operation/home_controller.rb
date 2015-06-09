@@ -3,5 +3,9 @@ class Operation::HomeController < Operation::ApplicationController
   before_filter :check_login!
 
   def index
+    @user_vote_concert_relations = UserVoteConcert.order('created_at DESC').limit(10)
+    @shows = Show.where("status = 0").order("created_at desc").limit(10)
+    @topics = Topic.order("created_at desc").limit(10)
+    @comments = Comment.order("created_at desc").limit(10)
   end
 end

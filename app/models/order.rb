@@ -39,6 +39,7 @@ class Order < ActiveRecord::Base
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, Order.statuses[:pending]) }
+  scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, Order.statuses[:success]) }
 
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库

@@ -2,8 +2,13 @@
 class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!
-  before_action :get_topic, except: [:create]
+  before_action :get_topic, except: [:create, :index]
   load_and_authorize_resource
+
+  def index
+    params[:page] ||= 1
+    @topics = Topic.page(params[:page]).order("created_at desc")
+  end
 
   def create
     @topic = Topic.new(topic_params)
@@ -39,7 +44,7 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def set_topic_top
     @topic.update(is_top: params[:is_top])
-    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
+    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).order("created_at desc").page(params[:page]).per(10)
 
     @topics = @topics.where(city_id: params[:city_id]) if params[:city_id]
   end

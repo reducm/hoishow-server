@@ -14,6 +14,7 @@
 #= require operation/admins
 #= require operation/orders
 #= require operation/topics
+#= require operation/comments
 #= require operation/users
 #= require operation/cities
 #= require operation/tickets
