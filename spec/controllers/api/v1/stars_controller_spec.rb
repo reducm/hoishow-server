@@ -125,6 +125,21 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       end
     end
 
+    it "should has attributes" do
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("position")
+      expect(response.body).to include("status_cn")
+      expect(response.body).to include("description")
+      expect(response.body).to include("avatar")
+      expect(response.body).to include("poster")
+      expect(response.body).to include("is_followed")
+      expect(response.body).to include("concerts")
+      expect(response.body).to include("video")
+      expect(response.body).to include("shows")
+    end
+
     it "3 stars is_followed should be true " do
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(response.body).to include("is_followed")
