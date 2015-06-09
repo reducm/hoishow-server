@@ -1,5 +1,5 @@
 module Operation::OrdersHelper
-  def user_name(user)
+  def get_username(user)
     if user.nickname
       "#{user.nickname}/#{user.mobile}"
     else
