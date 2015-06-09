@@ -466,6 +466,7 @@ type: `GET`
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
+    is_star: "true or false" //是否是明星
   }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
   like_count: "点赞的数目",
   comments_count: "comment的数目",
@@ -489,6 +490,7 @@ type: `GET`
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
+    is_star: "true or false" //是否是明星
   }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
 }
 ```
