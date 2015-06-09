@@ -20,7 +20,7 @@
           <td>该对象已经被屏蔽或删除</td>
         <%end%>
       <%end%>
-      <td width="550px">
+      <td style='max-width: 400px'>
         <% if comment.parent %>
           回复<%= comment.parent.try(:creator_name) %> : <%= Base64.decode64(comment.content).force_encoding("utf-8") %>
       <% else %>
