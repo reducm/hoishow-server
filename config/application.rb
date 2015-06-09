@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'csv'
 
 ActiveRecord::Base.raise_in_transactional_callbacks = true
 

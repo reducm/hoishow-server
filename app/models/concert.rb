@@ -43,6 +43,15 @@ class Concert < ActiveRecord::Base
 
   mount_uploader :poster, ImageUploader
 
+  def self.to_csv(options = {})
+    CSV.generate(options) do |csv|
+      csv << ["演出艺人", "投票名称", "投票状态", "显示状态", "投票时间范围", "演出数量", "投票数量", "关注数量"] 
+      all.each do |c|
+        csv << [c.stars.pluck(:name).join(","), c.name, c.status_cn, c.is_show_cn, c.votedate_cn, c.shows.count, c.voters_count, c.followers_count]  
+      end
+    end
+  end
+
   def poster_url
     if poster.url.present?
       if Rails.env.production?
