@@ -9,7 +9,7 @@ json.(star, :id, :name, :position, :status_cn)
 json.description description_path(subject_id: star.id, subject_type: "Star")
 json.avatar star.avatar_url || ''
 json.poster star.poster_url || ''
-json.is_followed star.id.in?(@followed_stars) ? true : false
+json.is_followed star.id.in?(@followed_stars)
 json.followers_count star.followers_count
 
 star.videos.present? ? ( json.video { json.partial!("api/v1/videos/video", { video: star.videos.is_main.first }) } ) : (json.video nil)

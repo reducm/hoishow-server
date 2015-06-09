@@ -9,7 +9,8 @@ json.creator do
   json.id topic.creator_id
   json.name topic.creator_name
   json.avatar topic.creator.avatar_url || ''
-  json.is_admin topic.creator.is_a?(Admin) ? true : false
+  json.is_admin topic.creator.is_a?(Admin)
+  json.is_star topic.creator.is_a?(Star)
 end
 json.comments_count topic.comments.count
 json.is_like topic.is_like(@user)

@@ -7,5 +7,6 @@ json.creator do
   json.id comment.creator_id
   json.name comment.creator_name
   json.avatar comment.creator.avatar_url rescue ''
-  json.is_admin comment.creator.is_a?(Admin) ? true : false
+  json.is_admin comment.creator.is_a?(Admin)
+  json.is_star topic.creator.is_a?(Star)
 end
