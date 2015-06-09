@@ -4,28 +4,24 @@
   <h1 class="pull-left">投票列表</h1>
 
   <div class="search">
-    <%= form_tag(operation_concerts_url, method: "get", class: 'navbar-form') do %>
-      <%= select_tag "concert_status_select", options_for_select(%w(投票状态 投票中 投票完结), "投票状态"), class: 'form-control' %>
+    <%= form_tag(operation_concerts_path, class: 'form-inline', method: 'get') do %>
+      <% if params[:concert_status_select] %>
+        <%= select_tag "concert_status_select", options_for_select([["投票中", "voting"], ["投票结束","finished"], ["全部", "all"]], "#{params[:concert_status_select]}"), class: 'form-control' %>
+      <% else %>
+        <%= select_tag "concert_status_select", options_for_select([["投票中", "voting"], ["投票结束","finished"], ["全部", "all"]], "all"), class: 'form-control' %>
+      <% end %>
+      <%= text_field_tag "q", params[:q] ||= nil,  class: 'form-control', placeholder: "输入投票名称或艺人名字进行搜索", size:30%>
     <% end %>
   </div>
-<div class="search">
-    <%= form_tag(search_operation_concerts_path, class: 'form-inline', method: 'get') do %>
-      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入投票名称或艺人名字进行搜索", size:30 %>
-      <%= submit_tag "搜索", class: 'btn btn-default' %>
-    <% end %>
-  </div>
-</div>
 
   <% if @concerts.any? %>
-<p>
+  <p>
   下载:
-  <%= link_to "Excel", operation_concerts_path(format: "xls") %>
-</p>
+    <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
+    <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
+  </p>
   <% end %>
 
-<div class="concerts_list">
-  <%= render partial: "table", locals: {concerts: @concerts} %>
-</div>
-
-
-
+  <div class="concerts_list">
+    <%= render partial: "table", locals: {concerts: @concerts} %>
+  </div>

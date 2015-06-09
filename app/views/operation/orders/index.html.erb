@@ -16,6 +16,7 @@
   <% if @orders.any? %>
 <p>
   下载:
+  <%= link_to "CSV", operation_orders_path(format: "csv") %> |
   <%= link_to "Excel", operation_orders_path(format: "xls") %>
 </p>
   <% end %>

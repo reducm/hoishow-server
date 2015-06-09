@@ -1,26 +1,36 @@
 # encoding: utf-8
+
 class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
   before_action :check_login!, except: [:get_city_voted_data, :get_cities]
-  before_action :get_concert, except: [:index, :new, :create, :search]
+  before_action :get_concert, except: [:index, :new, :create]
   load_and_authorize_resource param_method: :concert_attributes
   skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
 
   def index
     params[:page] ||= 1
-    @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
-    respond_to do |format|
-      format.html
-      format.xls
+    #有搜索关键字时
+    if params[:q]
+      star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
+      concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
+      @concerts = Concert.concerts_without_auto_hide.where("name like ? or id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
+    else
+      @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
     end
-  end
-
-  def search
-    params[:page] ||= 1
-    star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
-    concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
-    @concerts = Concert.concerts_without_auto_hide.where("name like ? or id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
-    render :index
+    #下拉框筛选
+    case params[:concert_status_select]
+    when "voting"
+      @concerts = @concerts.where(status: 0)
+    when "finished"
+      @concerts = @concerts.where(status: 1)
+    end
+    #导出
+    filename = Time.now.strfcn_time + '投票列表'
+    respond_to do |format|
+      format.html { render :index }
+      format.csv { send_data @concerts.to_csv, filename: filename + '.csv'}
+      format.xls { headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\""}
+    end
   end
 
   def edit
@@ -138,7 +148,6 @@ class Operation::ConcertsController < Operation::ApplicationController
       render json: {success: false}
     end
   end
-
 
   private
   def concert_attributes
