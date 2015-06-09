@@ -5,11 +5,7 @@
     
   <div class="search">
     <%= form_tag(operation_orders_path, class: 'form-inline', method: 'get') do %>
-      <% if params[:order_status_select] %>
-        <%= select_tag "order_status_select", options_for_select([["未支付", "pending"], ["已支付", "paid"], ["已出票", "success"], ["已退款", "refund"], ["已过期", "outdate"], ["全部", "all"]], "#{params[:order_status_select]}"), class: 'form-control' %>
-      <% else %>
-        <%= select_tag "order_status_select", options_for_select([["未支付", "pending"], ["已支付", "paid"], ["已出票", "success"], ["已退款", "refund"], ["已过期", "outdate"], ["全部", "all"]], "all"),  class: 'form-control' %>
-      <% end %>
+      <%= select_tag "order_status_select", options_for_select([["全部", "all"], ["未支付", "pending"], ["已支付", "paid"], ["已出票", "success"], ["已退款", "refund"], ["已过期", "outdate"]], "#{params[:order_status_select]}"), class: 'form-control' %>
       <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入演出名称搜索" %>
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>

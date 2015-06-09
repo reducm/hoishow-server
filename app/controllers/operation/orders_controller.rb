@@ -21,19 +21,14 @@ class Operation::OrdersController < Operation::ApplicationController
     case params[:order_status_select]
     when "pending"
       @orders = @orders.where(status: 0)
-      @r_ticket_orders = @r_ticket_orders.where(status: 0)
     when "paid"
       @orders = @orders.where(status: 1)
-      @r_ticket_orders = @r_ticket_orders.where(status: 1)
     when "success"
       @orders = @orders.where(status: 2)
-      @r_ticket_orders = @r_ticket_orders.where(status: 2)
     when "refund"
       @orders = @orders.where(status: 3)
-      @r_ticket_orders = @r_ticket_orders.where(status: 3)
     when "outdate"
       @orders = @orders.where(status: 4)
-      @r_ticket_orders = @r_ticket_orders.where(status: 4)
     end
     #导出
     filename = Time.now.strfcn_time + '订单列表'
