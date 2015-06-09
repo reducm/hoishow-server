@@ -106,8 +106,10 @@
                 </td>
                 <td>
                   <%topic = comment.topic%>
-                  <p>在<%= link_to Base64.decode64(topic.content).force_encoding("utf-8"), url_for([:operation, creator]) %>下</p>
+                  <p>在<%= link_to Base64.decode64(topic.content).force_encoding("utf-8"), url_for([:operation, creator]) %>下回复</p>
+                  <%if comment.parent%>
                   <p></p>
+                  <%end%>
                 </td>
                 <td>
                 </td>
