@@ -42,5 +42,5 @@ if need_stars
 end
 
 if need_areas
-  json.areas { json.array! show.areas, partial: "api/v1/areas/area", as: :area, show: show, need_seats_map: true}
+  json.areas { json.array! show.areas, partial: "api/v1/areas/area", as: :area, show: show}
 end

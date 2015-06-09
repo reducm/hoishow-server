@@ -254,6 +254,28 @@ descrption: 点击购票后选区
 
 ------------
 
+## 选座接口
+
+[/api/v1/shows/:id/seats_info]()
+
+type `GET`
+
+description: 点击区域后选座
+
+必需参数
+```javascript
+   {
+     area_id: 1 //选择的区域id
+   }
+```
+
+成功时返回
+```javascript
+   {area对象}
+```
+
+------------
+
 ## 话题列表
 
 [/api/v1/topics/]()
