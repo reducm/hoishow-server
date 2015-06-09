@@ -10,7 +10,7 @@
       <% else %>
         <%= select_tag "order_status_select", options_for_select([["未支付", "pending"], ["已支付", "paid"], ["已出票", "success"], ["已退款", "refund"], ["已过期", "outdate"], ["全部", "all"]], "all"),  class: 'form-control' %>
       <% end %>
-      <%= text_field_tag "q", params[:q] ||= nil,  class: 'form-control', placeholder: "输入演出名称搜索" %>
+      <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入演出名称搜索" %>
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>
@@ -31,7 +31,7 @@
     <h1 class="pull-left">实体票快递详情</h1>
   <div class="search">
     <%= form_tag(operation_orders_path, class: 'form-inline', method: 'get') do %>
-      <%= text_field_tag "q_express", params[:q_express] ||= nil,  class: 'form-control', placeholder: "输入收货人信息搜索" %>
+      <%= text_field_tag "q_express", params[:q_express],  class: 'form-control', placeholder: "输入收货人信息搜索" %>
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>
