@@ -15,6 +15,10 @@ class Api::V1::ShowsController < Api::V1::ApplicationController
     @stadium = @show.stadium
   end
 
+  def seats_info
+    @area = @show.areas.find_by_id(params[:area_id])
+  end
+
   def click_seat
     render nothing: true
   end

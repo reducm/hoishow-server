@@ -1,0 +1,1 @@
+json.partial! "api/v1/areas/area", show: @show, area: @area, need_seats_map: true

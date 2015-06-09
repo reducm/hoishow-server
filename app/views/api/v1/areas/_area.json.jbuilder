@@ -14,5 +14,5 @@ if show && relations.any?
 end
 
 if need_seats_map
-  json.seats_map "xxx"
+  json.seats_map seats_map_path(show_id: show.id, area_id: area.id)
 end
