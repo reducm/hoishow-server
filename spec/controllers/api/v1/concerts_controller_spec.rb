@@ -137,13 +137,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       get :city_rank, with_key(id: @concert.id, format: :json)
       expect(response.body).to include("vote_count")
     end
-
-    it "city does not display when has show" do
-      show = create :show, concert: @concert, city: @city1
-      get :city_rank, with_key(id: @concert.id, format: :json)
-      expect(JSON.parse(response.body).size).to eq 1
-      expect(JSON.parse(response.body).first["id"]).to_not eq @city1.id
-    end
   end
 end
 
