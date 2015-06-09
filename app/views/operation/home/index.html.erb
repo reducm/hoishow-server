@@ -43,7 +43,7 @@
               <%concert = Concert.find_by_id(relation.concert_id)%>
               <tr>
                 <td><%= link_to concert.name, edit_operation_concert_path(concert) %></td>
-                <td><%=concert.user_vote_concerts.where("created_at > ?", Time.now - 1.days).count%></td>
+                <td><%=concert.user_vote_concerts.where("created_at > ?", Time.now.at_beginning_of_day).count%></td>
                 <td><%=concert.user_vote_concerts.count%></td>
               </tr>
             <%end%>
@@ -63,7 +63,7 @@
             <% @shows.each do |show|%>
               <tr>
                 <td><%= link_to show.name, operation_show_path(show) %></td>
-                <td><%= show.tickets.where("created_at > ?", Time.now - 1.days).count%></td>
+                <td><%= show.tickets.where("created_at > ?", Time.now.at_beginning_of_day).count%></td>
                 <%if show.selected? %>
                   <td><%=show.total_seats_count%></td>
                 <%else%>

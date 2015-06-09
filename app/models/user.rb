@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
     secret: 2
   }
 
-  scope :today_registered_users, ->{ where("created_at > ?", Time.now - 1.days) }
+  scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
 
   def sex_cn
     case sex
