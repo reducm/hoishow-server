@@ -369,15 +369,3 @@ $ ->
             if data.success
               location.reload()
           )
-    # 回复comment
-
-   #concert index select status
-  $("#concert_status_select").change ->
-    $(".concert_status_cn").parent().show()
-    cs = $("#concert_status_select").val()
-    if cs == "投票状态"
-      location.reload()
-    else
-      $(".concert_status_cn:not(:contains('" + cs + "'))").parent().hide()
-
-
