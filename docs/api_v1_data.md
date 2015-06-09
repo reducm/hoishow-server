@@ -434,6 +434,7 @@ type: `GET`
   pinyin: "城市名称的拼音",
   name: "城市名字",
   code: "城市代码",
+  is_show: true //城市是否开show
   vote_count: 0   //请求城市排名的时候才有
 }
 ```
