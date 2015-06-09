@@ -43,9 +43,9 @@
     <div role="tabpanel" class="col-md-8">
       <!-- Nav tabs -->
       <ul class="nav nav-pills" role="tablist">
-        <li role="presentation" class="active"><a href="#user_orders" aria-controls="orders" role="tab" data-toggle="tab">订单记录<span class="badge"><%= @orders.count %></span></a></li>
-        <li role="presentation"><a href="#user_topics" aria-controls="topics" role="tab" data-toggle="tab">互动记录<span class="badge"><%= @topics.count %></span></a></li>
-        <li role="presentation"><a href="#user_comments" aria-controls="comments" role="tab" data-toggle="tab">评论记录<span class="badge"><%= @comments.count %></span></a></li>
+        <li role="presentation" class="active"><a href="#user_orders" aria-controls="orders" role="tab" data-toggle="tab">订单记录<span class="badge"><%= @user.orders.count %></span></a></li>
+        <li role="presentation"><a href="#user_topics" aria-controls="topics" role="tab" data-toggle="tab">互动记录<span class="badge"><%= @user.topics.count %></span></a></li>
+        <li role="presentation"><a href="#user_comments" aria-controls="comments" role="tab" data-toggle="tab">评论记录<span class="badge"><%= @user.comments.count %></span></a></li>
       </ul>
 
       <!-- Tab panes -->
@@ -62,7 +62,7 @@
                 <th>操作</th>
               </tr>
             </thead>
-            <% @orders.each do |order| %>
+            <% @user.orders.page.each do |order| %>
               <tr>
                 <td><%= order.show_name %></td>
                 <td><%= order.amount %></td>
@@ -72,7 +72,7 @@
               </tr>
             <% end %>
           </table>
-          <%= paginate @orders %>
+          <%= paginate @user.orders.page %>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_topics">
   <h3 class="pull-left">互动列表</h3>
@@ -83,7 +83,7 @@
                 <th>主题</th>
               </tr>
             </thead>
-            <% @topics.each do |topic| %>
+            <% @user.topics.page.each do |topic| %>
               <tr>
                 <td><%= get_datetime(topic.created_at) %></td>
                 <td><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
@@ -91,6 +91,7 @@
               </tr>
             <% end %>
           </table>
+          <%= paginate @user.topics.page %>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_comments">
   <h3 class="pull-left">评论列表</h3>
@@ -101,13 +102,14 @@
                 <th>回复</th>
               </tr>
             </thead>
-            <% @comments.each do |comment| %>
+            <% @user.comments.page.each do |comment| %>
               <tr>
                 <td><%= get_datetime(comment.created_at) %></td>
                 <td><%= Base64.decode64(comment.content).force_encoding("utf-8") %></td>
               </tr>
             <% end %>
           </table>
+          <%= paginate @user.comments.page %>
         </div>
       </div>
     </div>

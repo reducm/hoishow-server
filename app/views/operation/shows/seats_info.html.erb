@@ -4,7 +4,7 @@
       区域名称: <%= text_field_tag "area_name", @area.name %>
     </h3>
     <div class="box-size">
-      大小: <%= text_field_tag "row_size", (@seats_info['rows'].size if @seats_info) %>行<%= text_field_tag "column_size", (@seats_info['rows'][0].size if @seats_info) %>列
+      大小: <%= text_field_tag "row_size", @seats_info.size %>行<%= text_field_tag "column_size", (@seats_info[0].size if @seats_info) %>列
       <%= link_to "确定", "javascript:void(0)", class: 'btn btn-default set_box' %>
     </div>
   </div>
@@ -14,16 +14,16 @@
     <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn btn-default' %>
     <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-default' %>
     <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-default' %>
-    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], (@seats_info['sort_by'] if @seats_info)) %>
+    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], (@seats_info[0][0][:sort_by] if @seats_info)) %>
   </div>
   <div class="seats-box">
     <div class="front"><h4>舞台</h4></div>
     <ul class="list-unstyled seats">
       <% if @seats_info %>
-        <% @seats_info['rows'].each_with_index do |row, idx| %>
+        <% @seats_info.each_with_index do |row, idx| %>
           <li class="row_<%= idx + 1 %>">
             <% row.each do |seat| %>
-              <span title="座位号: <%= seat['seat_no'] %> 价格: <%= seat['price'] %>元" class="seat <%= seat['seat_status'] %>" data-row-id="<%= seat['row'] %>" data-column-id="<%= seat['column'] %>" data-seat-no="<%= seat['seat_no'] %>" data-status="<%= seat['seat_status'] %>" data-seat-price="<%= seat['price'] %>"></span>
+              <span title="座位号: <%= seat[:seat_no] %> 价格: <%= seat[:price] %>元" class="seat <%= seat[:status] %>" data-row-id="<%= seat[:row] %>" data-column-id="<%= seat[:column] %>" data-seat-no="" data-status="<%= seat[:status] %>" data-seat-price="<%= seat[:price] %>"></span>
             <% end %>
           </li>
         <% end %>
@@ -53,7 +53,7 @@
       for(var i=0;i<row_size;i++){
         $("ul.seats").append("<li class='row_" + (i + 1) + "'></li>");
         for(var j=0;j<column_size;j++){
-          $("li.row_" + (i + 1) ).append("<span title='' class='seat blank' data-seat-no='" + (i + 1) + "排" + (j + 1) + "座' data-row-id='" + (i + 1) + "' data-column-id='" + (j + 1) +"'></span");
+          $("li.row_" + (i + 1) ).append("<span title='' class='seat blank' data-seat-no='' data-row-id='" + (i + 1) + "' data-column-id='" + (j + 1) +"'></span");
         }
       }
       $("ul.seats").selectable({filter: 'span'})

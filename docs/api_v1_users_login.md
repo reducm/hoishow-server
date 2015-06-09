@@ -223,8 +223,21 @@ type `POST`
     api_token: "users_token",
     mobile: "users mobile",
     show_id: "Show的id",
+
+    //只能选区
     area_id: area的id,
     quantity: 3 //购买数量
+
+    //可以选座
+    areas:
+     [
+      area_id: 1 //区域id,
+      seats:
+       [
+         row: 1,   //行号
+         column: 1 //列号
+       ]
+     ]
   }
 ```
 

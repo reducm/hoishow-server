@@ -18,13 +18,15 @@ description: 用户在h5选座页面点击某个座位时发起请求
 
 ```javascript
   {
-    show_id: 1 //演出id
+    id: 1 //演出id
     show_name: 'abc' //演出名字
     area_id: 1 //区域id
     area_name: 'A区' //区域名字
     row_id: 1  //行号
     column_id: 1  //列号
+    seat_name: '10排8座' //座位名
     price: 100  //票价
+    status: 'avaliable'/'checked' //座位状态
     remark: 'xxx'  //备注
   }
 ```
@@ -252,6 +254,28 @@ descrption: 点击购票后选区
 
 ------------
 
+## 选座接口
+
+[/api/v1/shows/:id/seats_info]()
+
+type `GET`
+
+description: 点击区域后选座
+
+必需参数
+```javascript
+   {
+     area_id: 1 //选择的区域id
+   }
+```
+
+成功时返回
+```javascript
+   {area对象}
+```
+
+------------
+
 ## 话题列表
 
 [/api/v1/topics/]()
@@ -410,6 +434,7 @@ type: `GET`
   pinyin: "城市名称的拼音",
   name: "城市名字",
   code: "城市代码",
+  is_show: true //城市是否开show
   vote_count: 0   //请求城市排名的时候才有
 }
 ```
@@ -494,6 +519,7 @@ type: `GET`
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   poster: //海报url
   tickets_count: //票数
+  ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
   show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
@@ -505,6 +531,7 @@ type: `GET`
 
 ```javascript
 {
+  id: area对象的id,
   name: "A区",
   seats_count: 11, //座位数
   stadium_id: 22, //场馆id
@@ -560,13 +587,15 @@ type: `GET`
 {
   title: 'xxx',
   content: "截图url",
-  redirect_url: 'xxxxx' //点击message后跳转的url
+  subject_type:  //Star or Show or Concert or Topic,
+  subject_id: //subject的id
+  created_at: //消息创建的时间
   creator:  {
     id: ID
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
   }, // 消息创建者，可以是用户或者明星或者演唱会运营人员
-  is_new: true or false
+  is_new: true or false //是否为新消息
 }
 ```

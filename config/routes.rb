@@ -55,6 +55,8 @@ Rails.application.routes.draw do
       resources :shows do
         member do
           get "preorder"
+          get "seats_info"
+          get "click_seat"
         end
       end
       resources :topics
