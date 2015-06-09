@@ -21,8 +21,8 @@
       <tr>
         <td><%= order.out_id%></td>
         <% user = order.user %>
-        <td><%= order.get_username %></td>
-        <td><%= user_name(user) %></td>
+        <td><%= order.show_name %></td>
+        <td><%= order.get_username(user) %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
         <td><%= order.created_at.try(:strfcn_time) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
@@ -31,7 +31,7 @@
         <td><%= order.user_name  %></td>
         <td><%= order.user_mobile %></td>
         <td width="400px"><%= order.user_address %></td>
-        <td id="td_express_id_<%= order.id %>"><%= order.express_id%></td>
+        <td id="td_express_id_<%= order.id %>"><%= order.express_id %></td>
         <% end %>
       </tr>
     <% end %>
