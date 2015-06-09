@@ -26,11 +26,11 @@
       </div>
       <div class="seats_box">
         <ul class="list-unstyled">
-          <% @seats_info.each_with_index do |row, idx| %>
-            <span class="row-bar pull-left"><%= idx + 1 %></span>
+          <% @seats.maximum('row').times.each do |row| %>
+            <span class="row-bar pull-left"><%= row + 1 %></span>
             <li>
-              <% row.each do |seat| %>
-                <span><i class="<%= seat[:status] %>" data-row-id="<%= seat[:row]%>" data-column-id="<%= seat[:column] %>" data-seat-name="<%= seat[:seat_no] %>" data-seat-price="<%= seat[:price] %>"></i></span>
+              <% @seats.where(row: row + 1).each do |seat| %>
+                <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>"></i></span>
               <% end %>
             </li>
           <% end %>

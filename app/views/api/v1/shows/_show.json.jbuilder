@@ -20,6 +20,7 @@ json.stadium_map show.stadium_map_url || ''
 json.is_followed show.id.in?(@followed_shows) ? true : false
 json.is_voted @voted_show ? true : false
 json.voters_count ( UserVoteConcert.where(concert_id: show.concert_id, city_id: show.city_id).count + show.get_show_base_number)
+json.sharing_page 'http://www.dan-che.com'
 
 if need_concert
   json.concert { json.partial!("api/v1/concerts/concert", {concert: show.concert}) }
@@ -42,5 +43,5 @@ if need_stars
 end
 
 if need_areas
-  json.areas { json.array! show.areas, partial: "api/v1/areas/area", as: :area, show: show}
+  json.areas { json.array! show.areas, partial: "api/v1/areas/area", as: :area, show: show, need_seats_map: true}
 end
