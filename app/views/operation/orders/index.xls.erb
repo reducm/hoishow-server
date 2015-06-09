@@ -22,7 +22,7 @@
         <td><%= order.out_id%></td>
         <% user = order.user %>
         <td><%= order.show_name %></td>
-        <td><%= user_name(user) %></td>
+        <td><%= user_name_in_helper(user) %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
         <td><%= order.created_at.try(:strfcn_time) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>

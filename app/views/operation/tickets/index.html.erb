@@ -29,7 +29,7 @@
           <% user = order.user %>
           <td><%= ticket.admin.try(:name) %></td>
           <td><%= order.show_name %></td>
-          <td><%= user_name( user )%></td>
+          <td><%= user_name_in_helper( user )%></td>
           <td><%= ticket.code %></td>
           <td><%= ticket.checked_at.try(:strfcn_time)%></td>
         </tr>
