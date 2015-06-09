@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
+  include Operation::OrdersHelper
   default_scope {order('created_at DESC')}
 
   ORDER_STATUS_PENDING = 0 #待支付
@@ -43,6 +44,18 @@ class Order < ActiveRecord::Base
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
   #2. new order执行order.set_tickets_and_price(show和area的中间表数组), 例如买三张三区，所以就扔三个三区的中间表数组[show_area_relation, show_area_relation, show_area_relation]
+  def self.to_csv(options = {})
+    CSV.generate(options) do |csv|
+      csv << ["订单号", "演出名称", "用户 / 手机号", "票的类型", "订单时间", "状态", "总价", "收货人姓名", "收货人电话", "收货人地址", "票的状态", "快递单号"] 
+      all.each do |o|
+        csv << [o.out_id, o.show_name, o.user_name(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]  
+        if o.show.r_ticket?
+          csv << [o.user_name, o.user_mobile, o.user_address, o.express_id]
+        end
+      end
+    end
+  end
+
   class << self
     def init_from_show(show)
       init_from_data(city: show.city, concert: show.concert, show: show, stadium: show.stadium)
@@ -65,6 +78,10 @@ class Order < ActiveRecord::Base
     show_area_relations.each do |relation|
       tickets.create(area_id: relation.area_id, show_id: relation.show_id, price: relation.price)
     end
+  end
+
+  def set_tickets_info(seat)
+    tickets.create(area_id: seat.area_id, show_id: seat.show_id, price: seat.price, seat_name: seat.name)
   end
 
   def set_tickets

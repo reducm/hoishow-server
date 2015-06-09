@@ -14,9 +14,6 @@ class Operation::UsersController < Operation::ApplicationController
   end
 
   def show
-    @orders = @user.orders.page(params[:page])
-    @topics = @user.topics.page(params[:page])
-    @comments = @user.comments.page(params[:page])
   end
 
   def block_user

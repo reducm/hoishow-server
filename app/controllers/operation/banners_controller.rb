@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::BannersController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_banner, except: [:index, :new, :create]
+  before_action :get_banner, except: [:sort, :index, :new, :create]
 
   def index
     params[:page] ||= 1

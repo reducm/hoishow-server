@@ -89,15 +89,16 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @seats_info = @area.seats_info(@show.id)
+    @seats = @area.seats.where(show_id: @show.id)
   end
 
   def update_seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @area.update(name: params[:area_name])
-    @seat = @show.seats.where(area_id: @area.id).first_or_create
-    @seat.update(seats_info: params[:seats_info])
-
+    @area.update(name: params[:area_name], sort_by: params[:sort_by])
+    Seat.transaction do
+      @show.seats.where(area_id: @area.id).delete_all
+      set_seats(params[:seats_info])
+    end
     render json: {success: true}
   end
 
@@ -129,5 +130,29 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def get_show
     @show = Show.find(params[:id])
+  end
+
+  def set_seats(str)
+    seats_info = JSON.parse str
+    rowId = 1
+    seats_info['seats'].each do |row|
+      columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
+      row.each do |seat|
+        seat = @show.seats.where(area_id: @area.id).create(row: seat['row'], column: seat['column'], status: seat['seat_status'], price: seat['price'])
+        if seat.status != 'unused'
+          if seat['seat_no']
+            seat.update(name: seat['seat_no'])
+          else
+            seat.update(name: "#{rowId}排#{columnId}座")
+          end
+          if seats_info['sort_by'] == 'asc'
+            columnId += 1
+          else
+            columnId -= 1
+          end
+        end
+      end
+      rowId += 1 unless row.all? {|seat| seat['seat_status'] == 'unused'}
+    end
   end
 end
