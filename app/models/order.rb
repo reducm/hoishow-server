@@ -81,6 +81,7 @@ class Order < ActiveRecord::Base
   end
 
   def set_tickets_info(seat)
+    save!
     tickets.create(area_id: seat.area_id, show_id: seat.show_id, price: seat.price, seat_name: seat.name)
   end
 
