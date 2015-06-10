@@ -56,7 +56,7 @@ $ ->
           )
 
   # 删除topic
-  $(".topic_delete").on "click", ".del_topic", ()->
+  $(".topics_index_list").on "click", ".del_topic", ()->
     if confirm("确定要删除?")
       topic_id = $(this).parent().data("id")
       $.post("/operation/topics/#{topic_id}/destroy_topic", {_method: 'delete'}, (data)->

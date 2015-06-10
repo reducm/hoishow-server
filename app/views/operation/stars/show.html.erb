@@ -27,7 +27,7 @@
       <%= render partial: 'operation/shows/table', locals: {shows: @shows.page} %>
     </div>
 
-    <div role="tabpanel" class="tab-pane topics_list" id="star_topics">
+    <div role="tabpanel" class="tab-pane topics_list star_show_topics_list" id="star_topics">
       <h3 class="pull-left">互动列表</h3>
       <%= render partial: 'operation/topics/table', locals: {topics: @topics.page, stars: [@star]} %>
     </div>
