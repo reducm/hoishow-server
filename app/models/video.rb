@@ -5,7 +5,6 @@ class Video < ActiveRecord::Base
 
   validates :source, presence: true
   validates :star_id, presence: true
-  validates :star, presence: true
   validate :video_size_validation, :if => "source?"
 
   scope :is_main, -> { where(is_main: true)  }

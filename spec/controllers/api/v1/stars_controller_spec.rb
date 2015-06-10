@@ -91,6 +91,18 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(JSON.parse( response.body )["video"].size > 0 ).to be true
     end
 
+    it "video sholud be empty string if star does not have main video" do
+      create(:video, star_id: @star.id, is_main: false)
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"]).to eq "" 
+    end
+
+    it "video sholud be empty string if video is invalid" do
+      Video.create(star_id: @star.id, is_main: true, source: "aa.mp4")
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"]).to eq "" 
+    end
+
     it "concerts sholud has something real" do
       3.times do
         concert = create(:concert)
@@ -123,6 +135,21 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
         @user.follow_concert(concert)
         star.hoi_concert(concert)
       end
+    end
+
+    it "should has attributes" do
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("position")
+      expect(response.body).to include("status_cn")
+      expect(response.body).to include("description")
+      expect(response.body).to include("avatar")
+      expect(response.body).to include("poster")
+      expect(response.body).to include("is_followed")
+      expect(response.body).to include("concerts")
+      expect(response.body).to include("video")
+      expect(response.body).to include("shows")
     end
 
     it "3 stars is_followed should be true " do
