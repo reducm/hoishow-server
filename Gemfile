@@ -108,3 +108,6 @@ gem 'exception_notification'
 
 # 日志处理
 gem "yell-rails"
+
+# 静态页
+gem "high_voltage"
