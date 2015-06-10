@@ -160,7 +160,9 @@ Rails.application.routes.draw do
         get :refresh_comments
         post :add_comment
         delete :destroy_comment
+        delete :destroy_topic
         post :set_topic_top
+        post :update_topic_is_top
       end
     end
     resources :tickets do

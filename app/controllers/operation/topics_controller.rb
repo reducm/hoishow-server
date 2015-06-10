@@ -2,12 +2,12 @@
 class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!
-  before_action :get_topic, except: [:create, :index]
+  before_action :get_topic, except: [:create, :index, :destroy_topic]
   load_and_authorize_resource
 
   def index
     params[:page] ||= 1
-    @topics = Topic.page(params[:page]).order("created_at desc")
+    @topics = Topic.page(params[:page])
   end
 
   def create
@@ -27,8 +27,8 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def edit
-    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(10)
-    @stars = get_stars(@topic)
+    @comments = @topic.comments.page(params[:page]).per(10)
+    @stars = @topic.get_stars
   end
 
   def update
@@ -44,9 +44,15 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def set_topic_top
     @topic.update(is_top: params[:is_top])
-    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).order("created_at desc").page(params[:page]).per(10)
+    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
 
     @topics = @topics.where(city_id: params[:city_id]) if params[:city_id]
+  end
+
+  def update_topic_is_top
+    @topic.update(is_top: params[:is_top])
+
+    redirect_to operation_topics_url
   end
 
   def add_comment
@@ -98,8 +104,16 @@ class Operation::TopicsController < Operation::ApplicationController
     end
   end
 
+  def destroy_topic
+    if @topic.destroy
+      render json: {success: true}
+    else
+      render json: {success: false}
+    end
+  end
+
   def refresh_comments
-    @comments = @topic.comments.order("created_at desc").page(params[:page]).per(10)
+    @comments = @topic.comments.page(params[:page]).per(10)
     @stars = get_stars(@topic)
     respond_to do |format|
       format.js {}
@@ -115,14 +129,4 @@ class Operation::TopicsController < Operation::ApplicationController
     @topic = Topic.find(params[:id])
   end
 
-  def get_stars(topic)
-    case topic.subject_type
-    when Topic::SUBJECT_CONCERT
-      topic.subject.stars
-    when Topic::SUBJECT_STAR
-      Star.where(id: topic.subject_id)
-    when Topic::SUBJECT_SHOW
-      topic.subject.stars
-    end
-  end
 end

@@ -33,19 +33,6 @@ class Operation::ConcertsController < Operation::ApplicationController
     end
   end
 
-  def edit
-    @concert_shows = @concert.shows.page(params[:page])
-  end
-
-  def update
-    if @concert.update(concert_attributes)
-      redirect_to operation_concerts_url
-    else
-      flash[:alert] = @concert.errors.full_messages
-      render :edit
-    end
-  end
-
   def new
     @concert = Concert.new
     @star = Star.find(params[:star_id])
@@ -65,6 +52,20 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:alert] = @concert.errors.full_messages
     end
     redirect_to action: :index
+  end
+
+  def edit
+    @concert_shows = @concert.shows.page(params[:page])
+    @stars = @concert.stars
+  end
+
+  def update
+    if @concert.update(concert_attributes)
+      redirect_to operation_concerts_url
+    else
+      flash[:alert] = @concert.errors.full_messages
+      render :edit
+    end
   end
 
   def refresh_map_data
