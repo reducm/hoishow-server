@@ -22,7 +22,7 @@
     </thead>
     <tbody class="dragable_items" id="banners_list" data-update-url="<%= sort_operation_banners_url %>">
     <% @banners.each do|banner|%>
-      <tr>
+      <%= content_tag_for :tr, banner, remote: true do %>
         <td><%= banner.position %></td>
         <td><%= banner.subject_type_cn %></td>
         <td>
@@ -44,7 +44,7 @@
           <%= link_to "编辑", edit_operation_banner_path(banner) %> /
           <%= link_to "删除", operation_banner_path(banner), method: "delete", data: {confirm: "确定删除吗？"} %>
         </td>
-      </tr>
+      <% end %>
     <% end %>
     </tbody>
   </table>

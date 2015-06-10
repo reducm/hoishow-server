@@ -5,7 +5,7 @@ class Operation::BannersController < Operation::ApplicationController
 
   def index
     params[:page] ||= 1
-    @banners = Banner.page(params[:page]).order("created_at desc")
+    @banners = Banner.page(params[:page])
   end
 
   def new
