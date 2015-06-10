@@ -36,7 +36,7 @@
       <div id="city_topics">
         <h2>互动列表</h2>
         <%= link_to "发布新互动", "javascript:void(0);", class: "add_topic" %>
-        <div >
+        <div class="city_voted_data_topics_list">
           <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5), stars: @stars }%>
         </div>
       </div>
