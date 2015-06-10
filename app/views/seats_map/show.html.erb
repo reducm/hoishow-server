@@ -36,6 +36,11 @@
           <% end %>
         </ul>
       </div>
+      <%= content_tag :div, id: "check_seats", data: {
+        check_seats: params[:seat_ids]
+      } do %>
+      <% end %>
+
       <%= hidden_field_tag 'show_id', @show.id %>
       <%= hidden_field_tag 'show_name', @show.name %>
       <%= hidden_field_tag 'area_id', @area.id %>
