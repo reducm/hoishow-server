@@ -74,4 +74,14 @@ class Topic < ActiveRecord::Base
       self.created_at
     end
   end
+
+  def get_stars
+    case subject_type
+    when Topic::SUBJECT_CONCERT || Topic::SUBJECT_SHOW
+      subject.stars
+    when Topic::SUBJECT_STAR
+      Star.where(id: subject_id)
+    end
+  end
+
 end

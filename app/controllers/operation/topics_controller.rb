@@ -2,7 +2,7 @@
 class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!
-  before_action :get_topic, except: [:create, :index]
+  before_action :get_topic, except: [:create, :index, :destroy_topic]
   load_and_authorize_resource
 
   def index
@@ -28,7 +28,7 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def edit
     @comments = @topic.comments.page(params[:page]).per(10)
-    @stars = get_stars(@topic)
+    @stars = @topic.get_stars
   end
 
   def update
@@ -104,6 +104,14 @@ class Operation::TopicsController < Operation::ApplicationController
     end
   end
 
+  def destroy_topic
+    if @topic.destroy
+      render json: {success: true}
+    else
+      render json: {success: false}
+    end
+  end
+
   def refresh_comments
     @comments = @topic.comments.page(params[:page]).per(10)
     @stars = get_stars(@topic)
@@ -121,14 +129,4 @@ class Operation::TopicsController < Operation::ApplicationController
     @topic = Topic.find(params[:id])
   end
 
-  def get_stars(topic)
-    case topic.subject_type
-    when Topic::SUBJECT_CONCERT
-      topic.subject.stars
-    when Topic::SUBJECT_STAR
-      Star.where(id: topic.subject_id)
-    when Topic::SUBJECT_SHOW
-      topic.subject.stars
-    end
-  end
 end

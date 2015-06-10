@@ -94,13 +94,13 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "video sholud be empty string if star does not have main video" do
       create(:video, star_id: @star.id, is_main: false)
       get :show, with_key(id: @star.id, format: :json)
-      expect(JSON.parse( response.body )["video"]).to eq "" 
+      expect(JSON.parse( response.body )["video"]).to eq nil 
     end
 
     it "video sholud be empty string if video is invalid" do
       Video.create(star_id: @star.id, is_main: true, source: "aa.mp4")
       get :show, with_key(id: @star.id, format: :json)
-      expect(JSON.parse( response.body )["video"]).to eq "" 
+      expect(JSON.parse( response.body )["video"]).to eq nil 
     end
 
     it "concerts sholud has something real" do

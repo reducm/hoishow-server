@@ -17,20 +17,20 @@
     </thead>
     <% @topics.each do |topic| %>
       <tr>
-        <% if topic.creator_type == "Admin"%>
+        <% if topic.creator_type == "Admin" %>
           <td><%= topic.creator_name %></td>
-        <%else%>
+        <% else %>
           <% if creator = topic.creator%>
             <td><%= link_to topic.creator_name, url_for([:operation, creator]) %></td>
-          <%else%>
+          <% else %>
             <td>该对象已经被屏蔽或删除</td>
-          <%end%>
-        <%end%>
+          <% end %>
+        <% end %>
         <td style='max-width: 400px'><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
         <td><%= topic.like_count %>/<%= topic.comments.count %></td>
         <td><%= get_datetime(topic.created_at) %></td>
         <td><%= get_datetime(topic.last_reply_time) %></td>
-        <td data-id="<%= topic.id %>">
+        <td data-id="<%= topic.id %>" class="topic_delete">
           <%= link_to '查看', edit_operation_topic_path(topic) %>
           <% if topic.is_top %>
             <%= link_to '取消置顶', update_topic_is_top_operation_topic_path(topic, is_top: 0), method: :post %>
@@ -38,6 +38,7 @@
             <%= link_to '置顶', update_topic_is_top_operation_topic_path(topic, is_top: 1), method: :post %>
           <% end %>
           <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
+          <%= link_to '删除', "javascript:void(0)", class: 'del_topic' %>
         </td>
       </tr>
     <% end %>
