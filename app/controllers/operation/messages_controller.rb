@@ -9,20 +9,33 @@ class Operation::MessagesController < Operation::ApplicationController
 
   def create
     @message = Message.new(message_params)
-    content = ""
     users_array = get_users(@message)
 
     if ( result = @message.send_umeng_message(users_array, @message)) != "success"
       flash[:alert] = result
     end
 
-    redirect_to action: :index
+    flash[:notice] = "消息创建成功"
+    redirect_to operation_messages_url
   end
 
   def index
     params[:page] ||= 1
     @messages = Message.page(params[:page]).order("created_at desc")
   end
+
+  def send_umeng_message_again
+    @message = Message.find(params[:id])
+    users_array = get_users(@message)
+    if ( result = @message.send_umeng_message(users_array, @message)) != "success"
+      flash[:alert] = result
+    else
+      flash[:notice] = "推送发送成功"
+    end
+    redirect_to operation_messages_url
+  end
+
+
 
   private
   def message_params

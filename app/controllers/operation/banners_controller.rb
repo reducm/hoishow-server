@@ -19,7 +19,7 @@ class Operation::BannersController < Operation::ApplicationController
       render :new
     else
       flash[:notice] = "创建成功" 
-      redirect_to action: :index
+      redirect_to operation_banners_url
     end
   end
 
