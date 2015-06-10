@@ -4,48 +4,45 @@
   <h1 class="pull-left">互动列表</h1>
 </div>
 <div class="topics_index_list">
-<%= paginate @topics %>
-<table class="table topics" id="topics">
-  <thead>
-    <tr>
-      <th>发布用户</th>
-      <th>内容</th>
-      <th>赞/回复</th>
-      <th>发布时间</th>
-      <th>最后回复时间</th>
-      <th>操作</th>
-    </tr>
-  </thead>
-  <% @topics.each do |topic| %>
-    <tr>
-      <% if topic.creator_type == "Admin"%>
-        <td><%= topic.creator_name %></td>
-      <%else%>
-        <% if creator = topic.creator%>
-          <td><%= link_to topic.creator_name, url_for([:operation, creator]) %></td>
+  <table class="table topics" id="topics">
+    <thead>
+      <tr>
+        <th>发布用户</th>
+        <th>内容</th>
+        <th>赞/回复</th>
+        <th>发布时间</th>
+        <th>最后回复时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <% @topics.each do |topic| %>
+      <tr>
+        <% if topic.creator_type == "Admin"%>
+          <td><%= topic.creator_name %></td>
         <%else%>
-          <td>该对象已经被屏蔽或删除</td>
+          <% if creator = topic.creator%>
+            <td><%= link_to topic.creator_name, url_for([:operation, creator]) %></td>
+          <%else%>
+            <td>该对象已经被屏蔽或删除</td>
+          <%end%>
         <%end%>
-      <%end%>
-      <td style='max-width: 400px'><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
-      <td><%= topic.like_count %>/<%= topic.comments.count %></td>
-      <td><%= get_datetime(topic.created_at) %></td>
-      <td><%= get_datetime(topic.last_reply_time) %></td>
-      <td data-id="<%= topic.id %>">
-        <%= link_to '查看', edit_operation_topic_path(topic) %>
-        <% if topic.is_top %>
-          <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0), method: :post, remote: true %>
-        <% else %>
-          <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1), method: :post , remote: true %>
-        <% end %>
-        <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
-      </td>
-    </tr>
-  <% end %>
-</table>
-
-<%= paginate @topics %>
-
+        <td style='max-width: 400px'><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
+        <td><%= topic.like_count %>/<%= topic.comments.count %></td>
+        <td><%= get_datetime(topic.created_at) %></td>
+        <td><%= get_datetime(topic.last_reply_time) %></td>
+        <td data-id="<%= topic.id %>">
+          <%= link_to '查看', edit_operation_topic_path(topic) %>
+          <% if topic.is_top %>
+            <%= link_to '取消置顶', update_topic_is_top_operation_topic_path(topic, is_top: 0), method: :post %>
+          <% else %>
+            <%= link_to '置顶', update_topic_is_top_operation_topic_path(topic, is_top: 1), method: :post %>
+          <% end %>
+          <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+  <%= paginate @topics %>
 </div>
 
 <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
