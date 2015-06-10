@@ -162,6 +162,7 @@ Rails.application.routes.draw do
         delete :destroy_comment
         delete :destroy_topic
         post :set_topic_top
+        post :update_topic_is_top
       end
     end
     resources :tickets do
