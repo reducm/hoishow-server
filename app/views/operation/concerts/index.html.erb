@@ -5,23 +5,21 @@
 
   <div class="search">
     <%= form_tag(operation_concerts_path, class: 'form-inline', method: 'get') do %>
-      <% if params[:concert_status_select] %>
-        <%= select_tag "concert_status_select", options_for_select([["投票中", "voting"], ["投票结束","finished"], ["全部", "all"]], "#{params[:concert_status_select]}"), class: 'form-control' %>
-      <% else %>
-        <%= select_tag "concert_status_select", options_for_select([["投票中", "voting"], ["投票结束","finished"], ["全部", "all"]], "all"), class: 'form-control' %>
-      <% end %>
+      <%= select_tag "concert_status_select", options_for_select([["全部", "all"], ["投票中", "voting"], ["投票结束","finished"]], "#{params[:concert_status_select]}"), class: 'form-control' %>
       <%= text_field_tag "q", params[:q] ||= nil,  class: 'form-control', placeholder: "输入投票名称或艺人名字进行搜索", size:30%>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>
+</div>
 
-  <% if @concerts.any? %>
-  <p>
-  下载:
-    <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
-    <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
-  </p>
-  <% end %>
+<% if @concerts.any? %>
+<p>
+下载:
+  <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
+  <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
+</p>
+<% end %>
 
-  <div class="concerts_list">
-    <%= render partial: "table", locals: {concerts: @concerts} %>
-  </div>
+<div class="concerts_list">
+  <%= render partial: "table", locals: {concerts: @concerts} %>
+</div>

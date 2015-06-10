@@ -424,7 +424,7 @@ describe Api::V1::UsersController do
     before('each') do
       @stadium = create :stadium
       10.times{create :area, stadium: @stadium}
-      @show = create :show, stadium: @stadium
+      @show = create :show, stadium: @stadium, seat_type: 1
       Area.all.each_with_index do |area, i|
         @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
       end
@@ -432,7 +432,7 @@ describe Api::V1::UsersController do
     end
 
     it "create_order should success" do
-      post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, province:"1111", city:"222", district:"333", user_address:"444", user_mobile:"555", user_name:"666", format: :json)
+      post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
       expect(response.body).to include("out_id")
       expect(response.body).to include("amount")
       expect(response.body).to include("valid_time")
@@ -451,7 +451,7 @@ describe Api::V1::UsersController do
       before('each') do
         @stadium = create :stadium
         10.times{create :area, stadium: @stadium}
-        @show = create :show, stadium: @stadium
+        @show = create :show, stadium: @stadium, seat_type: 1
         Area.all.each_with_index do |area, i|
           @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
         end
@@ -460,7 +460,7 @@ describe Api::V1::UsersController do
 
       it "should raise errors if order is sold out" do
         2.times do
-          post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, province:"1111", city:"222", district:"333", user_address:"444", user_mobile:"555", user_name:"666", format: :json)
+          post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
         end
         expect(response.body).to eq "{\"errors\":\"购买票数大于该区剩余票数!\"}"
       end

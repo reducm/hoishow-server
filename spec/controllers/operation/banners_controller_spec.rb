@@ -79,4 +79,23 @@ RSpec.describe Operation::BannersController, :type => :controller do
       expect(response).to redirect_to operation_banners_url
     end
   end
+
+  describe "PATCH sort" do 
+    before :each do
+      @banner1 = create(:banner) 
+      @banner2 = create(:banner) 
+      admin = create :admin
+      session[:admin_id] = admin.id
+    end
+
+    it "set banner's position" do
+      patch :sort, banner: [@banner2.id, @banner1.id] 
+      expect @banner2.reload.position < @banner1.reload.position
+    end
+
+    it "render nothing" do
+      patch :sort, banner: [@banner2.id, @banner1.id] 
+      expect(response.status).to eq 200
+    end 
+  end
 end

@@ -12,7 +12,11 @@ json.poster star.poster_url || ''
 json.is_followed star.id.in?(@followed_stars)
 json.followers_count star.followers_count
 
-star.videos.present? ? ( json.video { json.partial!("api/v1/videos/video", { video: star.videos.is_main.first }) } ) : (json.video nil)
+if star.videos.is_main.any? && star.videos.is_main.first.valid?
+  json.video { json.partial!("api/v1/videos/video", { video: star.videos.is_main.first }) }
+else
+  json.video nil 
+end
 
 if need_concerts
   json.concerts{ json.array! star.concerts.showing_concerts, partial: "api/v1/concerts/concert", as: :concert }

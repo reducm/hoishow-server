@@ -15,6 +15,7 @@ json.default_address @user ? @user.default_address : ""
 json.express_id @user.expresses.last.id rescue ''
 json.show_time order.show.show_time.to_ms rescue nil
 json.ticket_type order.show.ticket_type rescue ''
+json.qr_url show_for_qr_scan_api_v1_order_path(order)
 
 if need_show
   json.show {json.partial!("api/v1/shows/show", {show: order.show})}

@@ -484,6 +484,7 @@ type: `GET`
   topic_id: "话题的id",
   parent_id: "如果有回复的话，此为被回复comment的id",
   parent_comment: 参照comment对象,
+  created_at: "回复创建时间",
   content: "评论",
   creator:  {
     id: ID
@@ -523,6 +524,7 @@ type: `GET`
   poster: //海报url
   tickets_count: //票数
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
+  qr_url: 'xxx' //二维码地址
   show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",

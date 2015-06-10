@@ -8,8 +8,6 @@ Rails.application.routes.draw do
 
       post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
 
-      get 'orders/:out_id/show_for_qr_scan', :to => 'orders#show_for_qr_scan'
-
       get "express_detail" => "express_detail#index"
 
       resources :admins do
@@ -69,6 +67,7 @@ Rails.application.routes.draw do
       resources :orders, only: [:index, :show] do
         member do
           post :pay
+          get :show_for_qr_scan
         end
       end
     end

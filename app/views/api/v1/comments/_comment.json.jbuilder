@@ -1,4 +1,5 @@
 json.(comment, :id, :topic_id)
+json.created_at comment.created_at.to_ms
 json.content Base64.decode64(comment.content).force_encoding("utf-8")
 json.parent_id comment.parent_id || ''
 parent_comment = Comment.where(id: comment.parent_id).first
