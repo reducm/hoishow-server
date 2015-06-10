@@ -208,15 +208,16 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       end
     elsif @show.selectable? #可以选座
       @order = @user.orders.init_from_show(@show)
-
-      params[:areas].each do |area_array|
+      areas = JSON.parse params[:areas]
+      areas.each do |area_array|
         area = @show.areas.find_by_id(area_array['area_id'])
         Seat.transaction do
           area_array['seats'].each do |seat_array|
             seat = area.seats.find_by_id(seat_array['id'])
             seat.with_lock do
               seat.update(status: :locked)
-              @order.set_ticket_info(seat)
+              @order.set_tickets_info(seat)
+              @order.update(amount: @order.tickets.sum(:price))
             end
           end
         end
