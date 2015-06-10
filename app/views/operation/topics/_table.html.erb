@@ -26,7 +26,7 @@
       <td><%= topic.like_count %>/<%= topic.comments.count %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.last_reply_time) %></td>
-      <td data-id="<%= topic.id %>" class="topic_delete">
+      <td data-id="<%= topic.id %>">
         <%= link_to '查看', edit_operation_topic_path(topic) %>
         <% if topic.is_top %>
           <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0, city_id: topic.city_id), method: :post, remote: true %>
