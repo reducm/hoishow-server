@@ -31,7 +31,7 @@
       <td><%= topic.like_count %>/<%= topic.comments.count %></td>
       <td><%= get_datetime(topic.created_at) %></td>
       <td><%= get_datetime(topic.last_reply_time) %></td>
-      <td data-id="<%= topic.id %>">
+      <td data-id="<%= topic.id %>" class="topic_delete">
         <%= link_to '查看', edit_operation_topic_path(topic) %>
         <% if topic.is_top %>
           <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0), method: :post, remote: true %>
@@ -39,6 +39,7 @@
           <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1), method: :post , remote: true %>
         <% end %>
         <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
+        <%= link_to '删除', "javascript:void(0)", class: 'del_topic' %>
       </td>
     </tr>
   <% end %>

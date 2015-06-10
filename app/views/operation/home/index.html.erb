@@ -39,8 +39,7 @@
             </tr>
           </thead>
           <tbody>
-            <% @user_vote_concert_relations.each do |relation|%>
-              <%concert = Concert.find_by_id(relation.concert_id)%>
+            <% @concerts.each do |concert|%>
               <tr>
                 <td><%= link_to concert.name, edit_operation_concert_path(concert) %></td>
                 <td><%=concert.user_vote_concerts.where("created_at > ?", Time.now.at_beginning_of_day).count%></td>
@@ -112,7 +111,7 @@
                   <%end%>
                   <%= Base64.decode64(comment.content).force_encoding("utf-8") %>
                   </p>
-                  <p data-id="<%= comment.id %>" data-topic-id="<%=topic.id%>">
+                  <p data-id="<%= comment.id %>" data-topic-id="<%=topic.id%>" class="pull-right">
                   <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %> 
                   <%= link_to "删除", 'javascript:void(0);', class: 'btn btn-info del_comment' %>
                   </p>
@@ -148,11 +147,15 @@
                     <%end%>
                   </div>
                 </td>
-                <td class="home_comments_list">
+                <td class="home_topics_list">
                   <%topic_subject = topic.subject%>
                   <p>在<%= link_to topic_subject.name, url_for([:operation, topic_subject]) %>下发表</p>
                   <p>
                   <%= Base64.decode64(topic.content).force_encoding("utf-8") %>
+                  </p>
+                  <p data-topic-id="<%=topic.id%>" class="pull-right">
+                    <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %> 
+                    <%= link_to "删除", 'javascript:void(0);', class: 'btn btn-info del_topic' %>
                   </p>
                 </td>
               </tr>
