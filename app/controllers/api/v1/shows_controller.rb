@@ -2,6 +2,7 @@
 class Api::V1::ShowsController < Api::V1::ApplicationController
   before_action :check_has_user
   before_action :get_show, except: [:index]
+  skip_before_filter :api_verify, only: [:click_seat]
 
   def index
     params[:page] ||= 1

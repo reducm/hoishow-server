@@ -230,14 +230,14 @@ type `POST`
 
     //可以选座
     areas:
-     [
+     [{
       area_id: 1 //区域id,
       seats:
-       [
-         row: 1,   //行号
-         column: 1 //列号
-       ]
-     ]
+       [{
+         id: 1 //座位id
+         seat_no: '1排1座' //座位号
+       }]
+     }]
   }
 ```
 

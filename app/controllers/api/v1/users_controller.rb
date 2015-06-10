@@ -183,24 +183,42 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def create_order
     @show = Show.find(params[:show_id])
-    @relation = ShowAreaRelation.where(show_id: @show.id, area_id: params[:area_id]).first
 
-    if @show.area_seats_left(@relation.area) - params[:quantity].to_i < 0
-      return error_json("购买票数大于该区剩余票数!")
-    end
+    if @show.selected?  #只能选区
+      @relation = ShowAreaRelation.where(show_id: @show.id, area_id: params[:area_id]).first
 
-    relations ||= []
-    params[:quantity].to_i.times{relations.push @relation}
+      if @show.area_seats_left(@relation.area) - params[:quantity].to_i < 0
+        return error_json("购买票数大于该区剩余票数!")
+      end
 
-    @relation.with_lock do
-      if @relation.is_sold_out
-        return error_json("你所买的区域暂时不能买票, 请稍后再试")
-      else
-        @order = @user.orders.init_from_show(@show)
-        @order.set_tickets_and_price(relations)
-        @relation.reload
-        if @show.area_seats_left(@relation.area) == 0
-          @relation.update_attributes(is_sold_out: true)
+      relations ||= []
+      params[:quantity].to_i.times{relations.push @relation}
+
+      @relation.with_lock do
+        if @relation.is_sold_out
+          return error_json("你所买的区域暂时不能买票, 请稍后再试")
+        else
+          @order = @user.orders.init_from_show(@show)
+          @order.set_tickets_and_price(relations)
+          @relation.reload
+          if @show.area_seats_left(@relation.area) == 0
+            @relation.update_attributes(is_sold_out: true)
+          end
+        end
+      end
+    elsif @show.selectable? #可以选座
+      @order = @user.orders.init_from_show(@show)
+
+      params[:areas].each do |area_array|
+        area = @show.areas.find_by_id(area_array['area_id'])
+        Seat.transaction do
+          area_array['seats'].each do |seat_array|
+            seat = area.seats.find_by_id(seat_array['id'])
+            seat.with_lock do
+              seat.update(status: :locked)
+              @order.set_ticket_info(seat)
+            end
+          end
         end
       end
     end

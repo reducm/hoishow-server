@@ -14,7 +14,7 @@ type `GET`
 
 description: 用户在h5选座页面点击某个座位时发起请求
 
-成功时返回
+传递参数
 
 ```javascript
   {
@@ -22,8 +22,7 @@ description: 用户在h5选座页面点击某个座位时发起请求
     show_name: 'abc' //演出名字
     area_id: 1 //区域id
     area_name: 'A区' //区域名字
-    row_id: 1  //行号
-    column_id: 1  //列号
+    seat_id: 1 //座位id
     seat_name: '10排8座' //座位名
     price: 100  //票价
     status: 'avaliable'/'checked' //座位状态
@@ -385,6 +384,7 @@ type: `GET`
   followers_count:  //关注数,
   shows_count:  //演唱会数目,
   voters_count: //投票人数(包含底数),
+  sharing_page: 'xxxx' //分享页url,
   is_followed: //是否被关注,
   is_voted: //是否被投票,
   is_top: "true or false", //是否置顶
@@ -412,6 +412,7 @@ type: `GET`
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
   is_top: "true or false" //是否置顶,
+  sharing_page: 'xxxx' //分享页url,
   voters_count: //投票数(包含底数),
   status:  // selling(售票中)/sell_stop(售票结束),
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
@@ -465,6 +466,7 @@ type: `GET`
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
+    is_star: "true or false" //是否是明星
   }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
   like_count: "点赞的数目",
   comments_count: "comment的数目",
@@ -488,6 +490,7 @@ type: `GET`
     name: "名称",
     avatar: "头像url",
     is_admin: "true or false" //是否由运营人员创建
+    is_star: "true or false" //是否是明星
   }, //"话题创建者，可以是用户或者明星或者演唱会运营人员"
 }
 ```
@@ -553,6 +556,7 @@ type: `GET`
   show_id: 22, //演出id
   price: 99.00, //价格
   code: 'xsdadasdxxdasd'  //票码
+  seat_name: '1排1座' //座位号
   status: "pending" or "success" or "used", //"pending": 未支付，没有code, "success": 可用, "used": 已用
   created_at: "201504102140270000",
   updated_at: "201504102140270000"

@@ -1,6 +1,10 @@
 <%# encoding: utf-8 %>
 
-<%= paginate topics %>
+<div class="nav">
+  <h1 class="pull-left">互动列表</h1>
+</div>
+<div class="topics_index_list">
+<%= paginate @topics %>
 <table class="table topics" id="topics">
   <thead>
     <tr>
@@ -12,7 +16,7 @@
       <th>操作</th>
     </tr>
   </thead>
-  <% topics.each do |topic| %>
+  <% @topics.each do |topic| %>
     <tr>
       <% if topic.creator_type == "Admin"%>
         <td><%= topic.creator_name %></td>
@@ -30,9 +34,9 @@
       <td data-id="<%= topic.id %>">
         <%= link_to '查看', edit_operation_topic_path(topic) %>
         <% if topic.is_top %>
-          <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0, city_id: topic.city_id), method: :post, remote: true %>
+          <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0), method: :post, remote: true %>
         <% else %>
-          <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1, city_id: topic.city_id), method: :post , remote: true %>
+          <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1), method: :post , remote: true %>
         <% end %>
         <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
       </td>
@@ -40,7 +44,9 @@
   <% end %>
 </table>
 
-<%= paginate topics, remote: true %>
+<%= paginate @topics %>
+
+</div>
 
 <div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">

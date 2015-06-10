@@ -10,7 +10,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">开show运营后台</a>
+      <a class="navbar-brand" href=<%= operation_root_path%>>开show运营后台</a>
     </div>
     <!-- /.navbar-header -->
     <ul class="nav navbar-top-links navbar-right">
@@ -68,6 +68,16 @@
           <li>
             <%= link_to operation_users_path do %>
               <i class="fa fa-users fa-fw"></i> 用户列表
+            <% end %>
+          </li>
+          <li>
+            <%= link_to operation_topics_path do %>
+              <i class="fa fa-users fa-fw"></i> 互动列表
+            <% end %>
+          </li>
+          <li>
+            <%= link_to operation_comments_path do %>
+              <i class="fa fa-users fa-fw"></i> 评论列表
             <% end %>
           </li>
           <li>

@@ -1,1 +1,191 @@
 <%# encoding: utf-8 %>
+<div class="nav">
+  <h1 class="pull-left">Hoishow后台首页</h1>
+</div>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>今日成功订单数</th>
+      <th>今日支付金额</th>
+      <th>待发货订单</th>
+      <th>今日注册用户数</th>
+      <th>今日新增投票</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= link_to Order.today_success_orders.count, operation_orders_path %></td>
+      <td><%= link_to Order.today_success_orders.sum(:amount), operation_orders_path %></td>
+      <td><%= link_to Order.where("status = 1").select { |order| order.show.r_ticket? }.count, operation_orders_path %></td>
+      <td><%= link_to User.today_registered_users.count, operation_users_path %></td>
+      <td><%= link_to UserVoteConcert.today_votes.count, operation_concerts_path %></td>
+    </tr>
+  </tbody>
+
+</table>
+
+
+<table class="table table-hover">
+  <tbody>
+    <tr>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>最新投票(<%= link_to "更多", operation_concerts_path %>)</th>
+              <th>今日投票</th>
+              <th>投票总数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_vote_concert_relations.each do |relation|%>
+              <%concert = Concert.find_by_id(relation.concert_id)%>
+              <tr>
+                <td><%= link_to concert.name, edit_operation_concert_path(concert) %></td>
+                <td><%=concert.user_vote_concerts.where("created_at > ?", Time.now.at_beginning_of_day).count%></td>
+                <td><%=concert.user_vote_concerts.count%></td>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+      </td>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>正在售票(<%= link_to "更多", operation_shows_path %>)</th>
+              <th>今日售出座位数</th>
+              <th>总座位数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @shows.each do |show|%>
+              <tr>
+                <td><%= link_to show.name, operation_show_path(show) %></td>
+                <td><%= show.tickets.where("created_at > ?", Time.now.at_beginning_of_day).count%></td>
+                <%if show.selected? %>
+                  <td><%=show.total_seats_count%></td>
+                <%else%>
+                  <td><%=show.seats.count%></td>
+                <%end%>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>最新回复(<%= link_to "更多", operation_comments_path %>)</th>
+              <th>内容详情</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @comments.each do |comment|%>
+              <%comment_creator = comment.creator%>
+              <tr>
+                <td width="150px">
+                  <div>
+                    <%if comment_creator%>
+                      <p><%= image_tag(comment_creator.avatar_url, size: "50x50") if comment_creator.avatar_url %></p>
+                      <% if comment.creator_type == "Admin"%>
+                        <p><%= comment.creator_name %></p>
+                      <%else%>
+                        <p><%= link_to comment.creator_name, url_for([:operation, comment_creator]) %></p>
+                      <%end%>
+                    <%else%>
+                      <p>该对象已经被屏蔽或删除</p>
+                    <%end%>
+                  </div>
+                </td>
+                <td class="home_comments_list">
+                  <%topic = comment.topic%>
+                  <p>在<%= link_to Base64.decode64(topic.content).force_encoding("utf-8"), url_for([:operation, comment_creator]) %>下回复</p>
+                  <p>
+                  <%if parent = comment.parent%>
+                    回复<%= parent.try(:creator_name) %> : 
+                  <%end%>
+                  <%= Base64.decode64(comment.content).force_encoding("utf-8") %>
+                  </p>
+                  <p data-id="<%= comment.id %>" data-topic-id="<%=topic.id%>">
+                  <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %> 
+                  <%= link_to "删除", 'javascript:void(0);', class: 'btn btn-info del_comment' %>
+                  </p>
+                </td>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>       
+      </td>
+      <td>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>最新互动(<%= link_to "更多", operation_topics_path %>)</th>
+              <th>内容详情</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @topics.each do |topic|%>
+              <%topic_creator = topic.creator%>
+              <tr>
+                <td width="150px">
+                  <div>
+                    <%if topic_creator%>
+                      <p><%= image_tag(topic_creator.avatar_url, size: "50x50") if topic_creator.avatar_url %></p>
+                      <% if topic.creator_type == "Admin"%>
+                        <p><%= topic.creator_name %></p>
+                      <%else%>
+                        <p><%= link_to topic.creator_name, url_for([:operation, topic_creator]) %></p>
+                      <%end%>
+                    <%else%>
+                      <p>该对象已经被屏蔽或删除</p>
+                    <%end%>
+                  </div>
+                </td>
+                <td class="home_comments_list">
+                  <%topic_subject = topic.subject%>
+                  <p>在<%= link_to topic_subject.name, url_for([:operation, topic_subject]) %>下发表</p>
+                  <p>
+                  <%= Base64.decode64(topic.content).force_encoding("utf-8") %>
+                  </p>
+                </td>
+              </tr>
+            <%end%>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">回复</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <div class="form-group">
+            <%= text_area_tag "reply_content", nil, class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "reply_creator", "回复人" %>
+            <%= select_tag "reply_creator", options_for_select([current_admin.default_name])%>
+          </div>
+          <%= hidden_field_tag "parent_id" %>
+          <%= hidden_field_tag "topic_id" %>
+          <%= submit_tag "提交", class: 'btn btn-primary add_comment' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

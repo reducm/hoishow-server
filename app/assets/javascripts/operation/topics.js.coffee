@@ -37,3 +37,20 @@ $ ->
         if data.success
           location.reload()
       )  # 删除comment
+
+
+  # 回复topic
+  $(".topics").on "click", ".reply_btn", ()->
+      $("#replyModal").modal('show')
+      topic_id = $(this).parent().data("id")
+      city_id = $("#city_topics").data('id')
+      $("#replyModal .add_comment").on "click", (e) ->
+        e.preventDefault()
+        content = $("#reply_content").val()
+        if content.length < 1
+          alert("不能发空回复")
+        else
+          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
+            if data.success
+              location.reload()
+          )
