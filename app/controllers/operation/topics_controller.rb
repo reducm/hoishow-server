@@ -47,6 +47,7 @@ class Operation::TopicsController < Operation::ApplicationController
     @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
 
     @topics = @topics.where(city_id: params[:city_id]) if params[:city_id]
+    @stars = @topic.get_stars
   end
 
   def update_topic_is_top
