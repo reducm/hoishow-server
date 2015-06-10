@@ -516,7 +516,6 @@ type: `GET`
   city_id: 123, //城市id
   express_code: "97698906987", //快递单号
   express_id: 123, //用户最新的地址id
-  default_address: "广东省广州市越秀区不是鸠路", //用户最后使用的地址
   user_name: "tom", //收货人姓名
   user_mobile: "11012013099", //收货人电话
   user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
