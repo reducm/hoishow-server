@@ -34,8 +34,9 @@ class Operation::ShowsController < Operation::ApplicationController
       message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
       if ( result = message.send_umeng_message(users_array, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
+      else
+        flash[:notice] = "演出创建成功"
       end
-      flash[:notice] = "演出创建成功"
       redirect_to operation_shows_url
     else
       flash[:alert] = @show.errors.full_messages
