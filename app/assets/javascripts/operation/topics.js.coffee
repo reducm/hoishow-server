@@ -59,7 +59,7 @@ $ ->
   $(".topic_delete").on "click", ".del_topic", ()->
     if confirm("确定要删除?")
       topic_id = $(this).parent().data("id")
-      $.post("/operation/topics/#{topic_id}/destroy_topic", {_method: 'delete', topic_id: topic_id}, (data)->
+      $.post("/operation/topics/#{topic_id}/destroy_topic", {_method: 'delete'}, (data)->
         if data.success
           location.reload()
       )

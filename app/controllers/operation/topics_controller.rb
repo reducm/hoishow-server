@@ -99,9 +99,7 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def destroy_topic
-    @topic = Topic.where(id: params[:topic_id]).first
-    if @topic
-      @topic.destroy
+    if @topic.destroy
       render json: {success: true}
     else
       render json: {success: false}
