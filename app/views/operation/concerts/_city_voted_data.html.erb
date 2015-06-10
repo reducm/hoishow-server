@@ -37,7 +37,7 @@
         <h2>互动列表</h2>
         <%= link_to "发布新互动", "javascript:void(0);", class: "add_topic" %>
         <div >
-          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5), stars: @stars }%>
+          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5), stars: concert.stars }%>
         </div>
       </div>
 
