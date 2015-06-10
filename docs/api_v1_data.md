@@ -524,6 +524,7 @@ type: `GET`
   poster: //海报url
   tickets_count: //票数
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
+  qr_url: 'xxx' //二维码地址
   show_time: '201504102140270000' //show的演出时间
   created_at: "201504102140270000",
   updated_at: "201504102140270000",
