@@ -124,10 +124,10 @@ class User < ActiveRecord::Base
     if parent_id
       #回覆评论
       message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
-      create_relation_with_messages(message)
       r_comment = Comment.find(parent_id)
       if r_comment.creator_type == "User"
         creator = r_comment.creator
+        creator.user_message_relations.where(message: message).first_or_create!
         if comment.creator_type != "User"
           title = comment.creator.name + "回复了你的评论"
         else
@@ -137,12 +137,10 @@ class User < ActiveRecord::Base
       end
     end
     message = Message.create(send_type: "topic_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
-    create_relation_with_messages(message)
+    if topic.creator_type == "User"
+      topic.creator.user_message_relations.where(message: message).first_or_create!
+    end
     comment
-  end
-
-  def create_relation_with_messages(message)
-    user_message_relations.where(message: message).first_or_create!
   end
 
   def vote_concert(concert, city)
