@@ -20,7 +20,7 @@ class Operation::AdminsController < Operation::ApplicationController
       flash[:notice] = '管理员创建成功'
       redirect_to operation_admins_url
     else
-      flash[:error] = @admin.errors.full_messages
+      flash[:alert] = @admin.errors.full_messages
       render :new
     end
   end
