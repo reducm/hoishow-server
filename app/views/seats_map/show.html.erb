@@ -30,7 +30,7 @@
             <span class="row-bar pull-left"><%= row + 1 %></span>
             <li>
               <% @seats.where(row: row + 1).each do |seat| %>
-                <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>"></i></span>
+                <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
               <% end %>
             </li>
           <% end %>

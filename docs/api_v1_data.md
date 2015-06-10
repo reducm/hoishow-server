@@ -484,6 +484,7 @@ type: `GET`
   topic_id: "话题的id",
   parent_id: "如果有回复的话，此为被回复comment的id",
   parent_comment: 参照comment对象,
+  created_at: "回复创建时间",
   content: "评论",
   creator:  {
     id: ID
