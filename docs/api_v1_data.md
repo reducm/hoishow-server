@@ -521,7 +521,10 @@ type: `GET`
   express_id: 123, //用户最新的地址id
   user_name: "tom", //收货人姓名
   user_mobile: "11012013099", //收货人电话
-  user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
+  user_address: "收货人地址(除了省,市,区之外的地址)",
+  province_address: "收货地址的省",
+  city_address: "收货地址的市",
+  district_address: "收货地址的区",
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   poster: //海报url
   tickets_count: //票数
