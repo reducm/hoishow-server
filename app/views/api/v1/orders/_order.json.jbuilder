@@ -3,12 +3,12 @@ need_show ||= false
 need_stadium ||= false
 need_city ||= false
 need_tickets ||= false
-@express = @user.expresses.last
+@express = @user ? @user.expresses.last : nil
 
 json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
 json.poster order.show.poster_url || ''
 json.express_code order.express_id || ''
-json.user_address order.user_address || @user.default_address
+json.user_address order.user_address || @user.default_address rescue ''
 json.user_name order.user_name || @express.user_name rescue ''
 json.user_mobile order.user_mobile || @express.user_mobile rescue ''
 json.tickets_count order.tickets_count

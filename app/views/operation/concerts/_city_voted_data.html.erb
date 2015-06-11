@@ -37,7 +37,7 @@
         <h2>互动列表</h2>
         <%= link_to "发布新互动", "javascript:void(0);", class: "add_topic" %>
         <div class="city_voted_data_topics_list">
-          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5), stars: concert.stars }%>
+          <%= render partial: 'operation/topics/table', locals: {topics: concert.topics.page.per(5), stars: stars }%>
         </div>
       </div>
 
@@ -75,7 +75,7 @@
                 </div>
                 <div class="form-group">
                   <%= label_tag "topic_creator", "创建人" %>
-                  <%= select_tag "topic_creator", options_for_select([current_admin.default_name] + @stars.collect{|star| [star.name, star.id]}) %>
+                  <%= select_tag "topic_creator", options_for_select([current_admin.default_name] + stars.collect{|star| [star.name, star.id]}) %>
                 </div>
                 <%= submit_tag "提交", class: 'btn btn-primary create_topic' %>
               <% end %>

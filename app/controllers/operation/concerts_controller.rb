@@ -69,7 +69,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def refresh_map_data
-    render partial: "city_voted_data", locals: {concert: @concert}
+    render partial: "city_voted_data", locals: {concert: @concert, stars: @concert.stars}
   end
 
   def add_concert_city
