@@ -1,20 +1,35 @@
 $blue_darker: #22272B
 $blue_dark: #282D30
-$green: #08a07a
+$green: #1FBBA6
+$green_dark: #009679
+
+.mb10
+  margin-bottom: 10px
+.mt20
+  margin-top: 20px
+
+a
+  color: #5DAEE3
 #wrapper
   background-color: $blue_dark
   color: #444
+  .nav h1,h2
+    font-size: 22px
+  .navbar-right
+    margin-right: 0
+  .nav-pills > li.active > a
+    background: #FFCD5C
   .btn-primary
-    background: #17A086
-    border-color: #17A086
+    background: $green
+    border-color: $green
     &:hover
-      background: #009679
-      border-color: #009679
+      background: $green_dark
+      border-color: $green_dark
   .navbar
     background: #EFF3F4
     border-bottom: none
     .navbar-header
-      width: 250px
+      width: 210px
       background: $blue_darker
       a
         color: #EFF3F4
@@ -37,3 +52,11 @@ $green: #08a07a
             border-right-color: $green
           i
             margin-right: 15px
+  .starpage
+    margin-bottom: 20px
+    h3
+      display: none
+  .remove_star
+    margin-left: 10px
+  .marginspace
+    margin: 20px 0
