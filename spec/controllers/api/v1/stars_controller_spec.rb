@@ -198,4 +198,22 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     end
   end
 
+  context "#star_concerts_and_shows" do
+    before('each') do
+      @star = create(:star)
+      8.times do 
+        concert = create(:concert)
+        @star.hoi_concert(concert)
+        create(:show, concert:concert)
+      end
+    end
+
+    it "should got total 16 concerts and shows" do
+      get :star_concerts_and_shows, with_key(id: @star.id, format: :json)
+      binding.pry
+      expect(JSON.parse(response.body).size).to eq 10
+    end
+
+  end
+
 end
