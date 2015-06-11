@@ -141,26 +141,6 @@ description: star详情
 ```
 
 -------------
-## 明星的所有投票和演出
-[/api/v1/stars/:id/star_concerts_and_shows]()
-
-type: `GET`
-
-description: star的所有concert和show
-
-可选参数
-```javascript
-  {
-    page: "2" //页码
-  }
-```
-
-成功时返回：
-```javascript
-  [包含star的所有concert和show对象]
-```
-
--------------
 ## 演唱会列表
 [/api/v1/concerts/]()
 
@@ -544,6 +524,7 @@ type: `GET`
   province_address: "收货地址的省",
   city_address: "收货地址的市",
   district_address: "收货地址的区",
+  order_address: "订单完整地址"
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   poster: //海报url
   tickets_count: //票数

@@ -3,12 +3,6 @@ class Order < ActiveRecord::Base
   include Operation::OrdersHelper
   default_scope {order('created_at DESC')}
 
-  ORDER_STATUS_PENDING = 0 #待支付
-  ORDER_STATUS_PAID = 1 #已支付
-  ORDER_STATUS_SUCCESS = 2 #成功出票
-  ORDER_STATUS_REFUND = 3 #退款
-  ORDER_STATUS_OUTDATE = 4 #过期
-
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
   belongs_to :show
@@ -16,6 +10,7 @@ class Order < ActiveRecord::Base
   belongs_to :concert
   belongs_to :city
 
+  has_many :seats
   has_many :tickets
   has_many :payments, -> { where purchase_type: 'Order' }, :foreign_key => 'purchase_id'
 
@@ -81,7 +76,6 @@ class Order < ActiveRecord::Base
   end
 
   def set_tickets_info(seat)
-    save!
     tickets.create(area_id: seat.area_id, show_id: seat.show_id, price: seat.price, seat_name: seat.name)
   end
 
@@ -94,7 +88,7 @@ class Order < ActiveRecord::Base
   end
 
   def refund_tickets
-    tickets.update_all(status: Ticket::STATUS_REFUND)
+    tickets.update_all(status: :refund)
   end
 
   def tickets_count
@@ -104,6 +98,8 @@ class Order < ActiveRecord::Base
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
       outdate!
+      tickets.update_all(status: :outdate)
+      seats.update_all(status: :avaliable)
     end
     outdate?
   end
