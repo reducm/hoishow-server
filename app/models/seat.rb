@@ -1,6 +1,7 @@
 class Seat < ActiveRecord::Base
   belongs_to :show
   belongs_to :area
+  belongs_to :order
 
   enum status: {
     avaliable: 0,  #可选
