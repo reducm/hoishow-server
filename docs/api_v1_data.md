@@ -141,7 +141,26 @@ description: star详情
 ```
 
 -------------
+## 明星的所有投票和演出
+[/api/v1/stars/:id/star_concerts_and_shows]()
 
+type: `GET`
+
+description: star的所有concert和show
+
+可选参数
+```javascript
+  {
+    page: "2" //页码
+  }
+```
+
+成功时返回：
+```javascript
+  [包含star的所有concert和show对象]
+```
+
+-------------
 ## 演唱会列表
 [/api/v1/concerts/]()
 
