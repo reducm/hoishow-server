@@ -1,6 +1,12 @@
 #encoding: UTF-8
 require 'sidekiq/web'
 Rails.application.routes.draw do
+  root to: 'pages#index'
+  get "/about" => 'pages#about'
+
+  get "/mobile" => 'pages#wap_index'
+  get "/mobile/about" => 'pages#wap_about'
+
   namespace :api do
     namespace :v1 do
       post "wxpay/notify" => "wxpay#notify"

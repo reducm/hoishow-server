@@ -1,19 +1,4 @@
 <%# encoding: utf-8 %>
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hoishow</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta content='True' name='HandheldFriendly' />
-    <%= stylesheet_link_tag "application" %>
-    <%= javascript_include_tag 'application' %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="format-detection" content="telephone=no">
-    <%= yield :other_js %>
-    <%= yield :other_css %>
-    <%= csrf_meta_tags %>
-  </head>
   <body id="seats_map">
     <div class="content text-center">
       <div class="front">
@@ -47,4 +32,3 @@
       <%= hidden_field_tag 'area_name', @area.name %>
     </div>
   </body>
-</html>
