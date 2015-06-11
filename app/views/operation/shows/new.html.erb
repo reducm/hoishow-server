@@ -7,7 +7,7 @@
     <%= f.input :is_display, label: "是否显示" %>
     <%= f.input :name, label: "演出名称" %>
     <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
-    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"]], selected: "开放购票中", label: 'show购票状态' %>
+    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: "开放购票中", label: 'show购票状态' %>
     <%= f.input :poster, label: "演出海报" %>
     <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", as: :radio_buttons, label: "取票方式" %>
     <%= f.kindeditor :description %>

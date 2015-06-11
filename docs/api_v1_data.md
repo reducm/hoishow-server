@@ -414,7 +414,7 @@ type: `GET`
   is_top: "true or false" //是否置顶,
   sharing_page: 'xxxx' //分享页url,
   voters_count: //投票数(包含底数),
-  status:  // selling(售票中)/sell_stop(售票结束),
+  status:  // selling(售票中)/sell_stop(售票结束)/going_to_open(即将开放),
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
   stadium_map: 'xxx' //场馆图
   seat_type: // selectable(可以选座)/selected(只能选区)
