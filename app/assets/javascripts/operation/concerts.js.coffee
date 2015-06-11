@@ -11,12 +11,12 @@ init_map = (concert_id) ->
       itemStyle:
         normal:
           areaStyle:
-            color: '#f7380c'
+            color: '#1FBBA6'
       markPoint:
         symbolSize: 7
         itemStyle:
           normal:
-            color: '#ffff00'
+            color: '#FCE271'
             borderWidth: 1
             label:
               show: false
