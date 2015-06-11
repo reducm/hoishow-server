@@ -119,7 +119,6 @@ GEM
       sass (~> 3.2)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
-    high_voltage (2.3.0)
     hike (1.2.3)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -340,7 +339,6 @@ DEPENDENCIES
   faker (~> 1.4.3)
   fakeweb
   font-awesome-sass (~> 4.3.0)
-  high_voltage
   httpi
   jbuilder (~> 2.0)
   jquery-datatables-rails (~> 3.2.0)
