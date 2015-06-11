@@ -35,6 +35,7 @@ $ ->
     startDate: new Date(),
     defaultDate: new Date(),
     lang: 'zh',
+    step: 15,
     scrollInput: false
     })
 

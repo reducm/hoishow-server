@@ -13,10 +13,15 @@
     </div>
     <%= f.input :name, label: "演出名称" %>
     <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
-    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"]], selected: @show.status, label: 'show购票状态' %>
+    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: @show.status, label: '演出购票状态' %>
+      <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
     <div class="form-group">
       <%= f.input :poster, label: "演出海报" %>
       <%= image_tag(@show.poster_url, size: "400x300") if @show.poster_url %>
+    </div>
+    <div class="form-group">
+      <%= f.input :ticket_pic, label: "门票图片" %>
+      <%= image_tag(@show.ticket_pic_url, size: "400x300") if @show.ticket_pic_url %>
     </div>
     <div class="form-group">
       <%= label_tag("图文描述") %>
