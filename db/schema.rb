@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150609085631) do
+ActiveRecord::Schema.define(version: 20150611031005) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -206,24 +206,26 @@ ActiveRecord::Schema.define(version: 20150609085631) do
   add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
-    t.decimal  "min_price",                 precision: 10, scale: 2
-    t.decimal  "max_price",                 precision: 10, scale: 2
-    t.string   "poster",      limit: 255
-    t.string   "name",        limit: 255
+    t.decimal  "min_price",                      precision: 10, scale: 2
+    t.decimal  "max_price",                      precision: 10, scale: 2
+    t.string   "poster",           limit: 255
+    t.string   "name",             limit: 255
     t.datetime "show_time"
-    t.integer  "concert_id",  limit: 4
-    t.integer  "city_id",     limit: 4
-    t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",                                                         null: false
-    t.datetime "updated_at",                                                         null: false
-    t.text     "description", limit: 65535
-    t.integer  "status",      limit: 4
-    t.boolean  "is_display",  limit: 1,                              default: true
-    t.integer  "ticket_type", limit: 4
-    t.boolean  "is_top",      limit: 1,                              default: false
-    t.string   "stadium_map", limit: 255
-    t.integer  "seat_type",   limit: 4
-    t.integer  "mode",        limit: 4
+    t.integer  "concert_id",       limit: 4
+    t.integer  "city_id",          limit: 4
+    t.integer  "stadium_id",       limit: 4
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
+    t.text     "description",      limit: 65535
+    t.integer  "status",           limit: 4
+    t.boolean  "is_display",       limit: 1,                              default: true
+    t.integer  "ticket_type",      limit: 4
+    t.boolean  "is_top",           limit: 1,                              default: false
+    t.string   "stadium_map",      limit: 255
+    t.integer  "seat_type",        limit: 4
+    t.integer  "mode",             limit: 4
+    t.string   "ticket_pic",       limit: 255
+    t.string   "description_time", limit: 255
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree

@@ -115,6 +115,7 @@ class Show < ActiveRecord::Base
   paginates_per 10
 
   mount_uploader :poster, ImageUploader
+  mount_uploader :ticket_pic, ImageUploader
 
   def topics
     Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
