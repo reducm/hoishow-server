@@ -94,13 +94,13 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "video sholud be empty string if star does not have main video" do
       create(:video, star_id: @star.id, is_main: false)
       get :show, with_key(id: @star.id, format: :json)
-      expect(JSON.parse( response.body )["video"]).to eq nil 
+      expect(JSON.parse( response.body )["video"]).to eq nil
     end
 
     it "video sholud be empty string if video is invalid" do
       Video.create(star_id: @star.id, is_main: true, source: "aa.mp4")
       get :show, with_key(id: @star.id, format: :json)
-      expect(JSON.parse( response.body )["video"]).to eq nil 
+      expect(JSON.parse( response.body )["video"]).to eq nil
     end
 
     it "concerts sholud has something real" do
@@ -197,22 +197,4 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(JSON.parse(response.body).size).to eq 7
     end
   end
-
-  context "#star_concerts_and_shows" do
-    before('each') do
-      @star = create(:star)
-      8.times do 
-        concert = create(:concert)
-        @star.hoi_concert(concert)
-        create(:show, concert:concert)
-      end
-    end
-
-    it "should got total 10 concerts and shows" do
-      get :star_concerts_and_shows, with_key(id: @star.id, format: :json)
-      expect(JSON.parse(response.body).size).to eq 10
-    end
-
-  end
-
 end

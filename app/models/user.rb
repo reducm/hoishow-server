@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
   end
 
   def display_orders
-    orders.where("status != ?", Order::ORDER_STATUS_OUTDATE).order('created_at DESC')
+    orders.where("status != ?", :outdate).order('created_at DESC')
   end
 
   def page_orders(page = 1, per = 10)

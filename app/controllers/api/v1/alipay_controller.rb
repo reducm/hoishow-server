@@ -22,9 +22,9 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
           payment = Payment.where(trade_id: details.first).first
           order = payment.purchase
           if order.present? and !order.refund?
-            payment.update(status: Payment::STATUS_REFUND, refund_amount: details[1].to_f, refund_at: Time.now)
+            payment.update(status: :refund, refund_amount: details[1].to_f, refund_at: Time.now)
             order.refund_tickets
-            order.update(status: Order::ORDER_STATUS_REFUND)
+            order.update(status: :refund)
           end
         #TODO 退款返回不成功的处理
         end
@@ -47,15 +47,15 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
     if Alipay::Notify.app_verity?(alipay_params) && @order.amount.to_f == alipay_params[:total_fee].to_f
       if alipay_params["trade_status"] == "TRADE_SUCCESS"
         wp_print("into params_valid?")
-        @order.update(status: Order::ORDER_STATUS_PAID)
+        @order.update(status: :paid)
         @payment.update(
           trade_id: alipay_params["trade_no"],
-          status: Payment::STATUS_SUCCESS,
+          status: :success,
           pay_at: Time.now
         )
-        if @order.paid? && @order.show.e_ticket?
+        if @order.paid?
           @order.set_tickets
-          @order.update(status: Order::ORDER_STATUS_SUCCESS)
+          @order.update(status: :success)
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end

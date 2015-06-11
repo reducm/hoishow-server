@@ -6,6 +6,7 @@ set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :whenever_roles, ->{ [:db, :app] }
 
 set :sidekiq_monit_default_hooks, false
+set :pty, false
 
 set :linked_files, %w{config/database.yml config/secrets.yml}
 # set the locations that we will look for changed assets to determine whether to precompile
