@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150611031005) do
+ActiveRecord::Schema.define(version: 20150611033726) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -87,16 +87,17 @@ ActiveRecord::Schema.define(version: 20150611031005) do
   add_index "concert_city_relations", ["concert_id"], name: "index_concert_city_relations_on_concert_id", using: :btree
 
   create_table "concerts", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.text     "description", limit: 65535
+    t.string   "name",             limit: 255
+    t.text     "description",      limit: 65535
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
-    t.string   "poster",      limit: 255
-    t.integer  "status",      limit: 4
-    t.integer  "is_show",     limit: 4
-    t.boolean  "is_top",      limit: 1,     default: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "poster",           limit: 255
+    t.integer  "status",           limit: 4
+    t.integer  "is_show",          limit: 4
+    t.boolean  "is_top",           limit: 1,     default: false
+    t.string   "description_time", limit: 255
   end
 
   create_table "districts", force: :cascade do |t|

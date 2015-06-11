@@ -18,8 +18,6 @@ class Concert < ActiveRecord::Base
   has_many :stars, through: :star_concert_relations
 
   validates :name, presence: {message: "演唱会名不能为空"}
-  validates :start_date, presence: {message: "开始日期不能为空"}
-  validates :end_date, presence: {message: "结束日期不能为空"}
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_CONCERT }, :foreign_key => 'subject_id'
 
