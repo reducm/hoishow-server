@@ -170,7 +170,11 @@ Rails.application.routes.draw do
         get :search
       end
     end
-    resources :messages
+    resources :messages do
+      member do
+        post :send_umeng_message_again
+      end
+    end
     resources :comments
     resources :cities, only: [:index] do
       collection do

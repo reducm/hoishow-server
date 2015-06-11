@@ -3,7 +3,7 @@
   <h1 class="pull-left">Hoishow后台首页</h1>
 </div>
 
-<table class="table table-hover">
+<table class="table">
   <thead>
     <tr>
       <th>今日成功订单数</th>
@@ -17,7 +17,7 @@
     <tr>
       <td><%= link_to Order.today_success_orders.count, operation_orders_path %></td>
       <td><%= link_to Order.today_success_orders.sum(:amount), operation_orders_path %></td>
-      <td><%= link_to Order.where("status = 1").select { |order| order.show.r_ticket? }.count, operation_orders_path %></td>
+      <td><%= link_to Order.paid.select { |order| order.show.r_ticket? }.count, operation_orders_path %></td>
       <td><%= link_to User.today_registered_users.count, operation_users_path %></td>
       <td><%= link_to UserVoteConcert.today_votes.count, operation_concerts_path %></td>
     </tr>
@@ -26,7 +26,7 @@
 </table>
 
 
-<table class="table table-hover">
+<table class="table">
   <tbody>
     <tr>
       <td>
@@ -107,19 +107,19 @@
                   <p>在<%= link_to Base64.decode64(topic.content).force_encoding("utf-8"), url_for([:operation, comment_creator]) %>下回复</p>
                   <p>
                   <%if parent = comment.parent%>
-                    回复<%= parent.try(:creator_name) %> : 
+                    回复<%= parent.try(:creator_name) %> :
                   <%end%>
                   <%= Base64.decode64(comment.content).force_encoding("utf-8") %>
                   </p>
                   <p data-id="<%= comment.id %>" data-topic-id="<%=topic.id%>" class="pull-right">
-                  <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %> 
+                  <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %>
                   <%= link_to "删除", 'javascript:void(0);', class: 'btn btn-info del_comment' %>
                   </p>
                 </td>
               </tr>
             <%end%>
           </tbody>
-        </table>       
+        </table>
       </td>
       <td>
         <table class="table table-bordered">
@@ -154,7 +154,7 @@
                   <%= Base64.decode64(topic.content).force_encoding("utf-8") %>
                   </p>
                   <p data-topic-id="<%=topic.id%>" class="pull-right">
-                    <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %> 
+                    <%= link_to "回复", 'javascript:void(0);', class: 'btn btn-success reply_btn' %>
                     <%= link_to "删除", 'javascript:void(0);', class: 'btn btn-info del_topic' %>
                   </p>
                 </td>

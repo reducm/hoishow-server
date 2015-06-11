@@ -85,22 +85,25 @@ describe User do
   end
 
   context "#create_comment" do
-    it "should create comment success " do
+    before :each do
+      @user = create(:user)
+    end
+    it "user reply comment should create 1 comment success " do
       comment = create :comment
       @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")
       expect(@user.comments.count).to eq 1
     end
 
-    it "should create message success " do
+    it "user reply comment should create 0 message success " do
       comment = create :comment
       @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
-      expect(@user.messages.count).to eq 2
+      expect(@user.messages.count).to eq 0
     end
 
-    it "should create message success " do
+    it "user reply topic should create 0 message success " do
       comment = create :comment
       @user.create_comment(create(:topic), nil, "fuck jassssssssss")     
-      expect(@user.messages.count).to eq 1
+      expect(@user.messages.count).to eq 0
     end
   end
 

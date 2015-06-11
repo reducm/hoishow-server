@@ -11,3 +11,10 @@ $ ->
   $(".seats_box").on 'click', '.checked', ()->
     $(this).addClass('avaliable').removeClass('checked')
     click_seat(show_id, 'avaliable', this)
+
+  check_seats = $('#check_seats').data('check-seats').split(",")
+
+  $.each(check_seats, (idx, val)->
+    $("[data-id='#{val}']").addClass('checked').removeClass('avaliable')
+  )
+
