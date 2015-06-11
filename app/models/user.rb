@@ -62,15 +62,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def default_address
-    express = expresses.last
-    if express
-      "#{express.province.to_s} #{express.city.to_s} #{express.district.to_s} #{express.user_address.to_s}"
-    else
-      ""
-    end
-  end
-
   def sign_in_api
     return if self.api_token.present? && self.api_expires_in.present?
 
