@@ -2,7 +2,7 @@ lock '3.4.0'
 
 set :stages, ["staging", "production"]
 set :default_stage, "staging"
-set :whenever_environment,  ->{ fetch :rails_env, fetch(:stage, "staging") }
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :whenever_roles, ->{ [:db, :app] }
 
 set :sidekiq_monit_default_hooks, false

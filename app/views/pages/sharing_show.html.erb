@@ -1,6 +1,18 @@
 <div class="sharing_show">
   <div class="top">
     <%= image_tag(@show.poster_url) %>
-    <div class="voter_count"><%= @show.voters_count %></div>
+    <div class="voters_count"><%= @show.voters_count %></div>
+  </div>
+  <div class="content">
+    <div class="intro text-center">
+      <div class='show-name'><span><%= @show.name %></span></div>
+      <div class='show-time'><label>演出时间</label><span><%= @show.show_time %></span></div>
+      <div class='show-stadium'><label>场馆</label><span><%= @show.stadium.name %></span></div>
+      <div class='show-price'><label>票价</label><span></span></div>
+      <div class='show-descrition'><label>演出详情</label></div>
+    </div>
+    <div class="description">
+      <%= @show.description.html_safe %>
+    </div>
   </div>
 </div>
