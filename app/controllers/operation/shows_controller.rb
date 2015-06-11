@@ -37,6 +37,13 @@ class Operation::ShowsController < Operation::ApplicationController
       else
         flash[:notice] = "演出创建成功"
       end
+      message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你关注的艺人发布新演出咯！", title: "新演唱会通知", content: "你关注的艺人将参与在#{city.name}开演的#{@show.name},快来支持你偶像吧！")
+      concert.stars.each {|star| users_array.push(star.followers)}
+      if ( result = message.send_umeng_message(users_array.flatten, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
+        flash[:alert] = result
+      else
+        flash[:notice] = "演出创建成功"
+      end
       redirect_to operation_shows_url
     else
       flash[:alert] = @show.errors.full_messages

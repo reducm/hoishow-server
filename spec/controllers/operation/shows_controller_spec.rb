@@ -43,7 +43,7 @@ RSpec.describe Operation::ShowsController, :type => :controller do
     it "saves the new message in the database" do
       expect {
         post :create, show: attributes_for(:show, concert_id: @concert.id, city_id: @city.id, stadium_id: @stadium.id)
-      }.to change(Message, :count).by(1)
+      }.to change(Message, :count).by(2)
     end
 
   end
