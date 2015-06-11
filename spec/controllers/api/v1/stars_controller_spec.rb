@@ -208,9 +208,8 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       end
     end
 
-    it "should got total 16 concerts and shows" do
+    it "should got total 10 concerts and shows" do
       get :star_concerts_and_shows, with_key(id: @star.id, format: :json)
-      binding.pry
       expect(JSON.parse(response.body).size).to eq 10
     end
 
