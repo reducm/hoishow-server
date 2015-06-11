@@ -8,4 +8,6 @@ class Seat < ActiveRecord::Base
     locked: 1, #不可选
     unused: 2 #空白
   }
+
+  scope :avaliable_seats, -> { where(status: statuses[:avaliable]) }
 end
