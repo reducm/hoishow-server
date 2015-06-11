@@ -51,9 +51,6 @@ Rails.application.routes.draw do
         collection do
           get "search"
         end
-        member do
-          get "star_concerts_and_shows"
-        end
       end
       resources :concerts do
         member do
