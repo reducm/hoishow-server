@@ -114,7 +114,7 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def refresh_comments
     @comments = @topic.comments.page(params[:page])
-    @stars = get_stars(@topic)
+    @stars = @topic.get_stars
     respond_to do |format|
       format.js {}
     end

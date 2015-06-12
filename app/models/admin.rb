@@ -24,7 +24,7 @@ class Admin < ActiveRecord::Base
   end
 
   def avatar_url
-    '/admin_avatar.png'
+    "#{UpyunSetting["upyun_upload_url"]}/admin_avatar.png"
   end
 
   def default_name
