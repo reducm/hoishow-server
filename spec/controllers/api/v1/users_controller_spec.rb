@@ -335,10 +335,15 @@ describe Api::V1::UsersController do
       end
     end
 
-    it "should have 20 concerts(base on controller per)" do
+    it "should have 10 concerts(base on controller per)" do
       post :followed_concerts, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
+    end
+
+    it "should have 10 concerts(base on controller per)" do
+      post :followed_concerts, with_key(page:2, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
@@ -443,6 +448,7 @@ describe Api::V1::UsersController do
       expect(response.body).to include("status")
       expect(response.body).to include("tickets")
     end
+
   end
 
   threads = []
