@@ -145,13 +145,13 @@ class Operation::ShowsController < Operation::ApplicationController
     rowId = 1
     seats_info['seats'].each do |row|
       columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
-      row.each do |seat|
-        seat = @show.seats.where(area_id: @area.id).create(row: seat['row'], column: seat['column'], status: seat['seat_status'])
-        if seat.status != 'unused'
-          if seat['seat_no']
-            seat.update(name: seat['seat_no'], price: seat['price'])
+      row.each do |s|
+        @seat = @show.seats.where(area_id: @area.id).create(row: s['row'], column: s['column'], status: s['seat_status'])
+        if @seat.status != 'unused'
+          if s['seat_no']
+            @seat.update(name: s['seat_no'], price: s['price'])
           else
-            seat.update(name: "#{rowId}排#{columnId}座", price: seat['price'])
+            @seat.update(name: "#{rowId}排#{columnId}座", price: s['price'])
           end
           if seats_info['sort_by'] == 'asc'
             columnId += 1
@@ -160,7 +160,7 @@ class Operation::ShowsController < Operation::ApplicationController
           end
         end
       end
-      rowId += 1 unless row.all? {|seat| seat['seat_status'] == 'unused'}
+      rowId += 1 unless row.all? {|s| s['seat_status'] == 'unused'}
     end
   end
 end

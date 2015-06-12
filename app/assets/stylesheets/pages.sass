@@ -1,4 +1,5 @@
 .sharing_show
+  position: relative
   .top
     position: relative
     img
@@ -16,11 +17,33 @@
   .content
     background: url(/img_background.png)
     .intro
+      padding-top: 10px
+      page-break-after: always
+      div
+        margin: 5px
       label
-        font-size: 18px
+        font-size: 20px
       span
         display: block
-        font-size: 22px
+        font-size: 25px
         color: #fff
-    .description p, .description p span
-      background-color: none !important
+      .show-name
+        span
+          display: inline-block
+          width: 45%
+          color: rgb(253, 33, 112)
+    .description
+      page-break-before: always
+    .bottom
+      position: fixed
+      bottom: 0
+      color: #fff
+      width: 100%
+      text-align: center
+      font-size: 25px
+      .download-btn
+        border: 1px solid #000
+        border-radius: 10%
+        background-color: rgb(255, 157, 2)
+        color: #fff
+        padding: 5px 15px

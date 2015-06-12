@@ -34,7 +34,6 @@ RSpec.describe Api::V1::TopicsController, :type => :controller do
 
     it "should is_like true if user like topic" do
       @topic = create :topic
-      @user = create :user
       @user.like_topic(@topic)
       get :index, with_key(api_token: @user.api_token, mobile: @user.mobile, page: 4, format: :json)
       expect(JSON.parse(response.body).last["is_like"]).to be true

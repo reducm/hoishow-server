@@ -62,7 +62,7 @@
                 <th>操作</th>
               </tr>
             </thead>
-            <% @user.orders.page.each do |order| %>
+            <% @user.orders.page(params[:page]).each do |order| %>
               <tr>
                 <td><%= order.show_name %></td>
                 <td><%= order.amount %></td>
@@ -72,7 +72,7 @@
               </tr>
             <% end %>
           </table>
-          <%= paginate @user.orders.page %>
+          <%= paginate @user.orders.page(params[:page]) %>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_topics">
   <h3 class="pull-left">互动列表</h3>
@@ -83,7 +83,7 @@
                 <th>主题</th>
               </tr>
             </thead>
-            <% @user.topics.page.each do |topic| %>
+            <% @user.topics.page(params[:page]).each do |topic| %>
               <tr>
                 <td><%= get_datetime(topic.created_at) %></td>
                 <td><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
@@ -91,7 +91,7 @@
               </tr>
             <% end %>
           </table>
-          <%= paginate @user.topics.page %>
+          <%= paginate @user.topics.page(params[:page]) %>
         </div>
         <div role="tabpanel" class="tab-pane users_list" id="user_comments">
   <h3 class="pull-left">评论列表</h3>
@@ -102,14 +102,14 @@
                 <th>回复</th>
               </tr>
             </thead>
-            <% @user.comments.page.each do |comment| %>
+            <% @user.comments.page(params[:page]).each do |comment| %>
               <tr>
                 <td><%= get_datetime(comment.created_at) %></td>
                 <td><%= Base64.decode64(comment.content).force_encoding("utf-8") %></td>
               </tr>
             <% end %>
           </table>
-          <%= paginate @user.comments.page %>
+          <%= paginate @user.comments.page(params[:page]) %>
         </div>
       </div>
     </div>
