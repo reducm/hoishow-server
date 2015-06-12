@@ -21,11 +21,10 @@
     </div>
   </div>
   <div>
-    <p>
+    <%= link_to "发送开show推送", "#", class: 'btn btn-primary' %>
     <% if @show.voted_users? %>
       <%= link_to "开放所有关注过演出的用户购买", update_mode_operation_show_path(@show, mode: 1), method: "post", data: {confirm: "确定开放所有用户购买吗？点击确定后会给所有关注过演出的用户发送消息推送"}, class: "btn btn-success" %>
     <% end %>
-    </p>
   </div>
   <table class="table">
     <tbody>
