@@ -5,6 +5,7 @@
   <%= hidden_field_tag "order_id", @order.id %>
 </div>
 <div>
+  <% show = @order.show%>
   <table class="table">
     <tbody>
       <tr>
@@ -23,6 +24,7 @@
         <td>城市</td>
         <td><%= @order.city_name %></td>
       </tr>
+      <% if show.e_ticket? %>
       <tr>
         <td>座位</td>
         <td>
@@ -41,6 +43,7 @@
           </table>
         </td>
       </tr>
+      <% end %>
       <tr>
         <td>订单状态</td>
         <td><%= @order.status_cn %></td>
@@ -49,10 +52,9 @@
         <td>总价</td>
         <td><%= @order.amount %></td>
       </tr>
-      <% show = @order.show%>
       <tr>
         <td>门票类型</td>
-        <td><%= show.ticket_type_cn%></td>
+        <td><%= show.ticket_type_cn %></td>
       </tr>
       <% if show.r_ticket? %>
         <tr>
