@@ -1,8 +1,11 @@
 #encoding: UTF-8
 class Payment < ActiveRecord::Base
-  STATUS_PENDING = 0
-  STATUS_SUCCESS = 1
-  STATUS_REFUND = 2
+
+  enum status: {
+    pending: 0, #待支付
+    success: 1, #支付成功
+    refund: 2 #已退款
+  }
 
   def purchase
     model = Object::const_get(purchase_type)

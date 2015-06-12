@@ -62,15 +62,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  def default_address
-    express = expresses.last
-    if express
-      "#{express.province.to_s} #{express.city.to_s} #{express.district.to_s} #{express.user_address.to_s}"
-    else
-      ""
-    end
-  end
-
   def sign_in_api
     return if self.api_token.present? && self.api_expires_in.present?
 
@@ -81,7 +72,7 @@ class User < ActiveRecord::Base
   end
 
   def display_orders
-    orders.where("status != ?", Order::ORDER_STATUS_OUTDATE).order('created_at DESC')
+    orders.where("status != ?", 4).order('created_at DESC')
   end
 
   def page_orders(page = 1, per = 10)

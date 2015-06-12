@@ -38,6 +38,7 @@ class Show < ActiveRecord::Base
   enum status: {
     selling: 0, #购票中
     sell_stop: 1, #购票结束
+    going_to_open: 2, #即将开放
   }
 
   enum ticket_type: {
@@ -65,6 +66,14 @@ class Show < ActiveRecord::Base
     end
   end
 
+  def get_show_time
+    if going_to_open?
+      description_time
+    else
+      show_time.strfcn_date
+    end
+  end
+
   def is_display_cn
     if is_display
       "显示"
@@ -79,6 +88,15 @@ class Show < ActiveRecord::Base
       "电子票"
     when "r_ticket"
       "实体票"
+    end
+  end
+
+  def seat_type_cn
+    case seat_type
+    when "selectable"
+      "可以选座"
+    when "selected"
+      "只能选区"
     end
   end
 
@@ -97,12 +115,15 @@ class Show < ActiveRecord::Base
       "开放购票中"
     when "sell_stop"
       "购票结束"
+    when "going_to_open"
+      "即将开放"
     end
   end
 
   paginates_per 10
 
   mount_uploader :poster, ImageUploader
+  mount_uploader :ticket_pic, ImageUploader
 
   def topics
     Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
@@ -136,6 +157,10 @@ class Show < ActiveRecord::Base
     else
       0
     end
+  end
+
+  def voters_count
+    UserVoteConcert.where(concert_id: concert_id, city_id: city_id).count + get_show_base_number
   end
 
   private

@@ -18,11 +18,11 @@
     <% concerts.each do|concert|%>
       <tr>
         <% stars_array = concert.stars.pluck(:name) %>
-        <td width=" 300px"><%= stars_array.join(",") %></td>
-        <td width=" 300px"><%= concert.name %></td>
+        <td><%= stars_array.join(",") %></td>
+        <td><%= concert.name %></td>
         <td class="concert_status_cn"><%= concert.status_cn %></td>
         <td><%= concert.is_show_cn %></td>
-        <td><%= concert.votedate_cn %></td>
+        <td><%= concert.description_time%></td>
         <td><%= concert.shows.count %></td>
         <td><%= concert.voters_count %></td>
         <td><%= concert.followers_count %></td>

@@ -1,34 +1,23 @@
 <%# encoding: utf-8 %>
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hoishow</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta content='True' name='HandheldFriendly' />
-    <%= stylesheet_link_tag "application" %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta name="format-detection" content="telephone=no">
-    <%= yield :other_js %>
-    <%= yield :other_css %>
-    <%= csrf_meta_tags %>
-  </head>
-  <body>
     <div class="header"><h2>查询结果</h2></div>
     <div class="content">
       <div class='row'>
         <span class="delivery-name col-xs-4 col-md-4">顺丰速运</span>
-        <span class="delivery-id col-xs-8 col-md-8"><%= @result["delivery_id"] %></span>
+        <span class="delivery-id col-xs-8 col-md-8"><%= @result["delivery_id"] if @result.any? %></span>
       </div>
-      <table class="table">
-        <% @result["router"].each do |router| %>
-          <tr class="<%= cycle("odd", "even") %>">
-            <td class="col1"><%= router["time"] %></td>
-            <td class="colstatus"></td>
-            <td class="col2"><%= raw(router["statue_message"]) %></td>
-          </tr>
-        <% end %>
-      </table>
+
+      <% if @result.any? %>
+        <table class="table">
+          <% @result["router"].each do |router| %>
+            <tr class="<%= cycle("odd", "even") %>">
+              <td class="col1"><%= router["time"] %></td>
+              <td class="colstatus"></td>
+              <td class="col2"><%= raw(router["statue_message"]) %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% else %>
+        <h3 class='text-center'>单号有误,请重试</h3>
+      <% end %>
     </div>
-  </body>
-</html>

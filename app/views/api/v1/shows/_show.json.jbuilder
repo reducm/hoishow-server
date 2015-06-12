@@ -14,12 +14,14 @@ json.concert_name show.concert.name
 json.city_name show.city.name
 json.stadium_name show.stadium.name
 json.description description_path(subject_id: show.id, subject_type: "Show")
+json.description_time show.description_time || ''
 json.show_time show.show_time.to_ms
 json.poster show.poster_url || ''
+json.ticket_pic show.ticket_pic_url || ''
 json.stadium_map show.stadium_map_url || ''
 json.is_followed show.id.in?(@followed_shows)
 json.is_voted @voted_show ? true : false
-json.voters_count ( UserVoteConcert.where(concert_id: show.concert_id, city_id: show.city_id).count + show.get_show_base_number)
+json.voters_count show.voters_count
 json.sharing_page 'http://www.dan-che.com'
 
 if need_concert

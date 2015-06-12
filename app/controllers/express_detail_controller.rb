@@ -2,12 +2,9 @@
 include QueryExpress
 
 class ExpressDetailController < ApplicationController
-  layout false
+  layout 'mobile'
 
   def show
-    data = get_express_info(params[:code])["result"]
-    if data.any?
-      @result = data
-    end
+    @result = get_express_info(params[:code])["result"]
   end
 end

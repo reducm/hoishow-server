@@ -18,8 +18,6 @@ class Concert < ActiveRecord::Base
   has_many :stars, through: :star_concert_relations
 
   validates :name, presence: {message: "演唱会名不能为空"}
-  validates :start_date, presence: {message: "开始日期不能为空"}
-  validates :end_date, presence: {message: "结束日期不能为空"}
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_CONCERT }, :foreign_key => 'subject_id'
 
@@ -45,9 +43,9 @@ class Concert < ActiveRecord::Base
 
   def self.to_csv(options = {})
     CSV.generate(options) do |csv|
-      csv << ["演出艺人", "投票名称", "投票状态", "显示状态", "投票时间范围", "演出数量", "投票数量", "关注数量"] 
+      csv << ["演出艺人", "投票名称", "投票状态", "显示状态", "投票时间范围", "演出数量", "投票数量", "关注数量"]
       all.each do |c|
-        csv << [c.stars.pluck(:name).join(","), c.name, c.status_cn, c.is_show_cn, c.votedate_cn, c.shows.count, c.voters_count, c.followers_count]  
+        csv << [c.stars.pluck(:name).join(","), c.name, c.status_cn, c.is_show_cn, c.description_time, c.shows.count, c.voters_count, c.followers_count]
       end
     end
   end
@@ -86,11 +84,6 @@ class Concert < ActiveRecord::Base
     end
   end
 
-
-  def votedate_cn
-    "#{ start_date.strfcn_date }~#{ end_date.strfcn_date }"
-  end
-
   def shows_count
     shows.count
   end
@@ -99,12 +92,8 @@ class Concert < ActiveRecord::Base
     voters.count
   end
 
-  def get_concert_base_number(city_id)
-    if relation = concert_city_relations.where(city_id: city_id).first
-      relation.base_number
-    else
-      0
-    end
+  def get_voters_count_with_base_number
+    self.voters_count + self.concert_city_relations.sum(:base_number)
   end
 
   private

@@ -141,7 +141,6 @@ description: star详情
 ```
 
 -------------
-
 ## 演唱会列表
 [/api/v1/concerts/]()
 
@@ -377,6 +376,7 @@ type: `GET`
   id: concert_id,
   name: //Concert名称,
   description: //图文描述的url,
+  description_time: //用这个时间替换start_date跟end_date,
   start_date: //众筹开始时间,
   end_date:  //众筹结束时间,
   poster: //海报url,
@@ -408,13 +408,15 @@ type: `GET`
   stadium_name: //stadium名称,
   show_time:  //开show时间,
   poster:  //海报url,
+  ticket_pic:  //门票图片url,
   description:  //图文介绍的url,
+  description_time:  //当show的status为going_to_open时显示这个时间替代show_time,
   is_followed:  //是否被关注,
   is_voted:  //是否被投票,
   is_top: "true or false" //是否置顶,
   sharing_page: 'xxxx' //分享页url,
   voters_count: //投票数(包含底数),
-  status:  // selling(售票中)/sell_stop(售票结束),
+  status:  // selling(售票中)/sell_stop(售票结束)/going_to_open(即将开放),
   ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
   stadium_map: 'xxx' //场馆图
   seat_type: // selectable(可以选座)/selected(只能选区)
@@ -518,7 +520,11 @@ type: `GET`
   express_id: 123, //用户最新的地址id
   user_name: "tom", //收货人姓名
   user_mobile: "11012013099", //收货人电话
-  user_address: "广东省广州市越秀区不是鸠路", //收货人完整地址
+  user_address: "收货人地址(除了省,市,区之外的地址)",
+  province_address: "收货地址的省",
+  city_address: "收货地址的市",
+  district_address: "收货地址的区",
+  order_address: "订单完整地址"
   status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
   poster: //海报url
   tickets_count: //票数

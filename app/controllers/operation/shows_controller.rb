@@ -90,7 +90,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def del_area
     area = @show.areas.find_by_id(params[:area_id])
-    if area && area.destroy
+    if area && @show.show_area_relations.where(area_id: params[:area_id]).first.destroy && area.destroy
       render partial: "area_table", locals: {show: @show}
     end
   end
@@ -133,7 +133,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type)
+    params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type)
   end
 
   def get_show
@@ -146,12 +146,12 @@ class Operation::ShowsController < Operation::ApplicationController
     seats_info['seats'].each do |row|
       columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
       row.each do |seat|
-        seat = @show.seats.where(area_id: @area.id).create(row: seat['row'], column: seat['column'], status: seat['seat_status'], price: seat['price'])
+        seat = @show.seats.where(area_id: @area.id).create(row: seat['row'], column: seat['column'], status: seat['seat_status'])
         if seat.status != 'unused'
           if seat['seat_no']
-            seat.update(name: seat['seat_no'])
+            seat.update(name: seat['seat_no'], price: seat['price'])
           else
-            seat.update(name: "#{rowId}排#{columnId}座")
+            seat.update(name: "#{rowId}排#{columnId}座", price: seat['price'])
           end
           if seats_info['sort_by'] == 'asc'
             columnId += 1

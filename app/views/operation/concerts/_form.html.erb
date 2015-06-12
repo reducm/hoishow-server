@@ -12,7 +12,7 @@
 <p></p>
 <p></p>
     <div class="form-group">
-      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]})  %>
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
       <a class="btn btn-success" id="add_star">添加选中艺人</a>
     </div>
   </div>
@@ -21,14 +21,13 @@
 <p></p>
 <%= simple_form_for [:operation, concert ] do |f| %>
   <%= f.input :name, required: false, label: "投票名称" %>
-  <%= f.input :start_date, label: "投票开始时间", as: :datetimepicker, input_html:{ value: ( params[:action] == 'edit' ? get_datetime(concert.start_date) : "" ) } %>
-  <%= f.input :end_date, label: "投票结束时间", as: :datetimepicker, input_html:{ value: ( params[:action] == 'edit' ? get_datetime(concert.end_date) : "" ) } %>
+  <%= f.input :description_time, label: "投票时间描述" %>
   <%= f.input :status, label: "投票状态", as: :select, default: ( params[:action] == 'edit' ? concert.status_cn : "投票中" ), collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
   <%= f.input :is_show, label: "显示状态", as: :select, default: ( params[:action] == 'edit' ? concert.is_show_cn : "显示中" ), collection: [["显示中", "showing"], ["隐藏中", "hidden"]] %>
   <%= f.input :poster, label: "演出海报" %>
   <%= hidden_field_tag "star_id",  params[:star_id] %>
   <%= image_tag(concert.poster_url, size: "700x500") if concert.poster_url %>
   <%= f.kindeditor :description %>
-  <%= f.button :submit, "确认更新" %>
+  <%= f.button :submit, "确认更新",class: 'marginspace' %>
 <%end%>
 
