@@ -14,4 +14,4 @@ json.creator do
 end
 json.comments_count topic.comments.count
 json.is_like topic.is_like(@user)
-json.comments topic.comments, partial: 'api/v1/comments/comment', as: :comment
+json.comments topic.comments.page(params[:page]), partial: 'api/v1/comments/comment', as: :comment

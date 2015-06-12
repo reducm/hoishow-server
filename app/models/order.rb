@@ -1,7 +1,6 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
   include Operation::OrdersHelper
-  default_scope {order('created_at DESC')}
 
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询

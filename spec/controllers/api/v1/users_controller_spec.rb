@@ -277,10 +277,10 @@ describe Api::V1::UsersController do
       end
     end
 
-    it "should have 12 stars(base on controller per)" do
+    it "should have 10 stars" do
       post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 12
+      expect(JSON.parse(response.body).size).to eq 10
     end
 
     it "should has attributes" do
