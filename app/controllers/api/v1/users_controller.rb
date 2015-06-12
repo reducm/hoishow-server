@@ -150,17 +150,17 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def followed_shows
     params[:page] ||= 1
-    @shows = @user.follow_shows.page(params[:page]).per(10)
+    @shows = @user.follow_shows.page(params[:page])
   end
 
   def followed_stars
     params[:page] ||= 1
-    @stars = @user.follow_stars.page(params[:page]).per(12)
+    @stars = @user.follow_stars.page(params[:page])
   end
 
   def followed_concerts
     params[:page] ||= 1
-    @concerts = @user.follow_concerts.page(params[:page]).per(20)
+    @concerts = @user.follow_concerts.page(params[:page])
   end
 
   def create_topic
