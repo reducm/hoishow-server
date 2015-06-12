@@ -12,7 +12,7 @@
 <p></p>
 <p></p>
     <div class="form-group">
-      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]})  %>
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
       <a class="btn btn-success" id="add_star">添加选中艺人</a>
     </div>
   </div>
@@ -28,6 +28,6 @@
   <%= hidden_field_tag "star_id",  params[:star_id] %>
   <%= image_tag(concert.poster_url, size: "700x500") if concert.poster_url %>
   <%= f.kindeditor :description %>
-  <%= f.button :submit, "确认更新" %>
+  <%= f.button :submit, "确认更新",class: 'marginspace' %>
 <%end%>
 

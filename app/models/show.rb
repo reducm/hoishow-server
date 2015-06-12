@@ -66,6 +66,14 @@ class Show < ActiveRecord::Base
     end
   end
 
+  def get_show_time
+    if going_to_open?
+      description_time
+    else
+      show_time.strfcn_date
+    end
+  end
+
   def is_display_cn
     if is_display
       "显示"

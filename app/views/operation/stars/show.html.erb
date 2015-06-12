@@ -8,7 +8,7 @@
   <%= link_to "发布新演出", new_show_operation_star_path(@star), method: 'POST', class: 'btn btn-primary' %>
 
   <!-- Nav tabs -->
-  <ul class="nav nav-pills" role="tablist">
+  <ul class="nav nav-pills mb10" role="tablist">
     <li role="presentation" class="active"><a href="#star_concerts" aria-controls="star_concerts" role="tab" data-toggle="tab">投票</a></li>
     <li role="presentation"><a href="#star_shows" aria-controls="star_shows" role="tab" data-toggle="tab">演出</a></li>
     <li role="presentation"><a href="#star_topics" aria-controls="star_topics" role="tab" data-toggle="tab">互动</a></li>
@@ -16,7 +16,7 @@
   </ul>
 
   <!-- Tab panes -->
-  <div class="tab-content">
+  <div class="tab-content starpage">
     <div role="tabpanel" class="tab-pane active concerts_list" id="star_concerts">
       <h3 class="pull-left">投票列表</h3>
       <%= render partial: 'operation/concerts/table', locals: {concerts: @concerts.concerts_without_auto_hide.page} %>
@@ -54,7 +54,7 @@
           </div>
           <div class="form-group">
             <%= label_tag "topic_creator", "创建人" %>
-            <%= select_tag "topic_creator", options_for_select([[@star.name, @star.id], [current_admin.default_name]]) %>
+            <%= select_tag "topic_creator", options_for_select([[@star.name, @star.id], [current_admin.default_name]]),class: 'form-control chooselist' %>
           </div>
           <%= hidden_field_tag "star_id", @star.id %>
           <%= submit_tag "提交", class: 'btn btn-primary create_topic' %>
