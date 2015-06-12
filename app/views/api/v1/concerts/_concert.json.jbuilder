@@ -10,9 +10,7 @@ json.(concert, :id, :name, :status, :is_top, :followers_count, :shows_count)
 
 json.description description_path(subject_id: concert.id, subject_type: "Concert")
 json.description_time concert.description_time || ''
-json.start_date concert.start_date.to_ms
 json.voters_count concert.get_voters_count_with_base_number
-json.end_date concert.end_date.to_ms
 json.poster concert.poster_url || ''
 json.is_followed concert.id.in?(@followed_concerts)
 json.is_voted @voted_concert ? true : false
