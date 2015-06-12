@@ -45,7 +45,7 @@ class Concert < ActiveRecord::Base
     CSV.generate(options) do |csv|
       csv << ["演出艺人", "投票名称", "投票状态", "显示状态", "投票时间范围", "演出数量", "投票数量", "关注数量"]
       all.each do |c|
-        csv << [c.stars.pluck(:name).join(","), c.name, c.status_cn, c.is_show_cn, c.votedate_cn, c.shows.count, c.voters_count, c.followers_count]
+        csv << [c.stars.pluck(:name).join(","), c.name, c.status_cn, c.is_show_cn, c.description_time, c.shows.count, c.voters_count, c.followers_count]
       end
     end
   end
@@ -82,11 +82,6 @@ class Concert < ActiveRecord::Base
     when "finished"
       "投票完结"
     end
-  end
-
-
-  def votedate_cn
-    "#{ start_date.strfcn_date }~#{ end_date.strfcn_date }"
   end
 
   def shows_count
