@@ -17,7 +17,6 @@ class Show < ActiveRecord::Base
   validates :name, presence: {message: "演出名不能为空"}
   validates :concert, presence: {message: "投票不能为空"}
   validates :stadium, presence: {message: "场馆不能为空"}
-  validates :show_time, presence: {message: "演出时间不能为空"}
 
   scope :is_display, -> { where(is_display: true).order('shows.is_top DESC, shows.created_at DESC') }
 
