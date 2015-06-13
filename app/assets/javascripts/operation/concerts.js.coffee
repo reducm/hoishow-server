@@ -379,3 +379,9 @@ $ ->
           if data.success
             location.reload()
         )
+
+    $("#profile").on "click", ".send_message", ()->
+      $.post("/operation/concerts/#{concert_id}/send_create_message", (data)->
+        if data.success
+          location.reload()
+      )

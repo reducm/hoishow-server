@@ -34,12 +34,6 @@ RSpec.describe Operation::ConcertsController, :type => :controller do
         post :create, concert: attributes_for(:concert), star_id: 1
       }.to change(Concert, :count).by(1)
     end
-
-    it "saves the new message in the database" do
-      expect{
-        post :create, concert: attributes_for(:concert), star_id: 1
-      }.to change(Message, :count).by(1)
-    end
   end
 
 end

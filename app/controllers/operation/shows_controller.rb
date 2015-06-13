@@ -28,26 +28,11 @@ class Operation::ShowsController < Operation::ApplicationController
     @show = Show.new(show_params)
     concert = Concert.find(params[:show][:concert_id])
     if @show.save! && concert
-      city = City.find(@show.city_id)
-      user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: city.id).pluck(:user_id)
-      users_array = User.where("id in (?)", user_ids)
-      message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
-      if ( result = message.send_umeng_message(users_array, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
-        flash[:alert] = result
-      else
-        flash[:notice] = "演出创建成功"
-      end
-      message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你关注的艺人发布新演出咯！", title: "新演唱会通知", content: "你关注的艺人将参与在#{city.name}开演的#{@show.name},快来支持你偶像吧！")
-      concert.stars.each {|star| users_array.push(star.followers)}
-      if ( result = message.send_umeng_message(users_array.flatten, message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
-        flash[:alert] = result
-      else
-        flash[:notice] = "演出创建成功"
-      end
+      flash[:notice] = "演出创建成功"
       redirect_to operation_shows_url
     else
       flash[:alert] = @show.errors.full_messages
-      redirect_to new_operation_show_url(concert_id: params[:show][:concert_id])
+      redirect_to new_operation_show_url(concert_id: @show.concert_id)
     end
   end
 
@@ -68,8 +53,27 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
+  def send_create_message
+    concert = @show.concert
+    city = City.find(@show.city_id)
+    user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: city.id).pluck(:user_id)
+    users_array = User.where("id in (?)", user_ids)
+    star_followers = concert.stars.map{|star| star.followers}.flatten
+    concert_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
+    star_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你关注的艺人发布新演出咯！", title: "新演唱会通知", content: "你关注的艺人将参与在#{city.name}开演的#{@show.name},快来支持你偶像吧！")
+    result_1 = concert_message.send_umeng_message(users_array, concert_message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
+    result_2 = star_message.send_umeng_message(star_followers, star_message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
+
+    if result_1 == "success" && result_2 == "success"
+      flash[:notice] = "推送发送成功"
+    else
+      flash[:alert] = "推送发送失败"
+    end
+    render :show
+  end
+
   def get_city_stadiums
-    data = City.find(params[:city_id]).stadiums.select(:name, :id, :pic).map {|stadium| {name: stadium.name, id: stadium.id, pic: stadium.pic.url}}
+    data = City.find(params[:city_id]).stadiums.select(:name, :id, :pic).map{|stadium| {name: stadium.name, id: stadium.id, pic: stadium.pic.url}}
     render json: data
   end
 
@@ -148,10 +152,10 @@ class Operation::ShowsController < Operation::ApplicationController
       row.each do |s|
         @seat = @show.seats.where(area_id: @area.id).create(row: s['row'], column: s['column'], status: s['seat_status'])
         if @seat.status != 'unused'
-          if s['seat_no']
-            @seat.update(name: s['seat_no'], price: s['price'])
-          else
+          if s['seat_no'].blank?
             @seat.update(name: "#{rowId}排#{columnId}座", price: s['price'])
+          else
+            @seat.update(name: s['seat_no'], price: s['price'])
           end
           if seats_info['sort_by'] == 'asc'
             columnId += 1
