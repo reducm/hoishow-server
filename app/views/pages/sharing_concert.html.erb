@@ -1,0 +1,29 @@
+<div class="sharing_concert">
+  <div class="top">
+    <%= image_tag(@concert.poster_url) %>
+    <div class="voters_count"><%= @concert.followers_count%></div>
+  </div>
+  <div class="content">
+    <div class="intro text-center">
+      <div class='concert_city_rank'><label>Hoishow地点排名</label></div>
+    </div>
+    <div class="city_rank_info">
+      <ul class="list-group">
+        <%temp = 1%>
+        <%@cities.each do |city|%>
+        <li class="list-group-item">
+        <div class="city_name"><%=city["name"]%></div>
+        <div id='city_<%=temp%>' class="progress_bar"></div>
+        <div id='city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
+        </li>
+        <%temp = temp+1%>
+        <%end%>
+      </ul>
+    </div>
+    <div class="text-center vote_part">
+      <img src="/web_index_pic/img_logo.png"/>
+      <p>想偶像来你的城市开Show?投出你的一票,一起来Show吧!</p>
+      <button class="btn btn-success vote_button">投票</button>
+    </div>
+  </div>
+</div>
