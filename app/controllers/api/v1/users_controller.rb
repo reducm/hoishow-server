@@ -207,7 +207,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         end
       end
     elsif @show.selectable? #可以选座
-      if params[:areas].any?
+      if params[:areas] && params[:areas].present?
         @order = @user.orders.init_from_show(@show)
         @order.save
         areas = JSON.parse params[:areas]
