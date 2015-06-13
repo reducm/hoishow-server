@@ -97,10 +97,14 @@ class Order < ActiveRecord::Base
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
       outdate!
-      tickets.update_all(status: :outdate)
-      seats.update_all(status: :avaliable)
+      outdate_others
     end
     outdate?
+  end
+
+  def outdate_others
+    tickets.update_all(status: :outdate)
+    seats.update_all(status: :avaliable)
   end
 
   def already_paid?

@@ -19,8 +19,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("id")
       expect(response.body).to include("name")
       expect(response.body).to include("description")
-      expect(response.body).to include("start_date")
-      expect(response.body).to include("end_date")
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
