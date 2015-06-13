@@ -119,6 +119,7 @@ Rails.application.routes.draw do
         get :refresh_map_data
         delete :remove_concert_city
         patch :toggle_is_top
+        post :send_create_message
       end
       collection do
         get :search
@@ -137,6 +138,7 @@ Rails.application.routes.draw do
         delete :del_area
         get :seats_info
         post :update_seats_info
+        post :send_create_message
       end
     end
     resources :orders do

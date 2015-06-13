@@ -1,6 +1,5 @@
 <%# encoding: utf-8 %>
 <div>
-  
   <%= label_tag "star", "参演艺人" %>
   <div id="delete_star">
     <% stars = concert.stars.pluck(:name, :id)%>
@@ -12,7 +11,7 @@
 <p></p>
 <p></p>
     <div class="form-group">
-      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}, ([star.name, star.id] if params[:action] == 'new')) , class: "form-control chooselist" %>
       <a class="btn btn-success" id="add_star">添加选中艺人</a>
     </div>
   </div>

@@ -8,10 +8,10 @@ if Rails.env.development? || Rails.env.test?
   end
 elsif Rails.env.staging?
   Sidekiq.configure_client do |config|
-    config.redis = { :size => 2, :namespace => 'hoishowslidekiq' }
+    config.redis = { :size => 2, :namespace => 'hoishowsidekiq_staging' }
   end
   Sidekiq.configure_server do |config|
-    config.redis = { :size => 25, :namespace => 'hoishowslidekiq' }
+    config.redis = { :size => 25, :namespace => 'hoishowsidekiq_staging' }
   end
 elsif Rails.env.production?
   #TODO

@@ -87,7 +87,7 @@ class Order < ActiveRecord::Base
   end
 
   def refund_tickets
-    tickets.update_all(status: :refund)
+    tickets.update_all(status: 3)
   end
 
   def tickets_count
@@ -97,10 +97,14 @@ class Order < ActiveRecord::Base
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
       outdate!
-      tickets.update_all(status: :outdate)
-      seats.update_all(status: :avaliable)
+      outdate_others
     end
     outdate?
+  end
+
+  def outdate_others
+    tickets.update_all(status: 4)
+    seats.update_all(status: 0)
   end
 
   def already_paid?
