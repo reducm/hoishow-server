@@ -21,8 +21,6 @@ class Concert < ActiveRecord::Base
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_CONCERT }, :foreign_key => 'subject_id'
 
-  after_create :set_showing_concert_after_create
-
   scope :showing_concerts, ->{ where("is_show = ?", is_shows[:showing]) }
   scope :concerts_without_auto_hide, ->{ where("is_show != ?", is_shows[:auto_hide]) }
 
@@ -95,12 +93,4 @@ class Concert < ActiveRecord::Base
   def get_voters_count_with_base_number
     self.voters_count + self.concert_city_relations.sum(:base_number)
   end
-
-  private
-  def set_showing_concert_after_create
-    self.is_show = :showing if self.is_show.blank?
-    save!
-  end
-
-
 end
