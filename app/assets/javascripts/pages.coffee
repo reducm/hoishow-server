@@ -10,9 +10,10 @@ $ ->
   set_width(i) for i in [1..10]
 
 
-  $(".page_index").onepage_scroll({
-    sectionContainer: "section"
-    easing: "ease"
-    keyboard: true
-    direction: "vertical"
-  })
+  if $('.page_index').length > 0
+    $(".page_index").onepage_scroll({
+      sectionContainer: "section"
+      easing: "ease"
+      keyboard: true
+      direction: "vertical"
+    })
