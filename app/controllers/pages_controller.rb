@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   layout false
 
   def index
+    @stars = Star.limit(4)
     render layout: 'application'
   end
 
@@ -14,8 +15,7 @@ class PagesController < ApplicationController
   end
 
   def app_download
-    #TODO 等待注册应用宝生成链接
-    redirect_to '#'
+    redirect_to 'http://a.app.qq.com/o/simple.jsp?pkgname=us.bestapp.hoishow'
   end
 
   def wap_index
