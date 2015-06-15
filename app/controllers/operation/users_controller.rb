@@ -24,8 +24,8 @@ class Operation::UsersController < Operation::ApplicationController
 
   def remove_avatar
     @user.remove_avatar!
-    @user.avatar = nil
-    @user.save
+    @user.remove_avatar = true
+    @user.save!
 
     redirect_to operation_user_url(@user)
   end
