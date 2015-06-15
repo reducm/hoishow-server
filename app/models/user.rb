@@ -111,25 +111,27 @@ class User < ActiveRecord::Base
 
   def create_comment(topic, parent_id = nil, content)
     comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: Base64.encode64(content))
-    r_content = remove_emoji_from_content(content)
-    if parent_id
-      #回覆评论
-      message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
-      r_comment = Comment.find(parent_id)
-      if r_comment.creator_type == "User"
-        creator = r_comment.creator
-        creator.user_message_relations.where(message: message).first_or_create!
-        if comment.creator_type != "User"
-          title = comment.creator.name + "回复了你的评论"
-        else
-          title = comment.creator.show_name + "回复了你的评论"
+    if comment
+      r_content = remove_emoji_from_content(content)
+      if parent_id
+        #回覆评论
+        message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
+        r_comment = Comment.find(parent_id)
+        if r_comment.creator_type == "User"
+          creator = r_comment.creator
+          creator.user_message_relations.where(message: message).first_or_create!
+          if comment.creator_type != "User"
+            title = comment.creator.name + "回复了你的评论"
+          else
+            title = comment.creator.show_name + "回复了你的评论"
+          end
+          message.send_message_for_reply_comment(creator.mobile, title, message.content)
         end
-        message.send_message_for_reply_comment(creator.mobile, title, message.content)
       end
-    end
-    message = Message.create(send_type: "topic_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
-    if topic.creator_type == "User"
-      topic.creator.user_message_relations.where(message: message).first_or_create!
+      message = Message.create(send_type: "topic_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
+      if topic.creator_type == "User"
+        topic.creator.user_message_relations.where(message: message).first_or_create!
+      end
     end
     comment
   end
