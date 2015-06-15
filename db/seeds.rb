@@ -29,16 +29,15 @@ city = City.first
 stadium = Stadium.where(name: '首都体育馆', address: '北京市海淀区中关村南大街56号', city_id: city.id).first_or_create
 
 stars = ['Coldplay', 'Eminem', 'Jay-z', 'Maroon 5', 'Linkin Park']
-img_url = 'default_avatar.png'
 
 # star, concert, star_concert_relation, show
 stars.each do |star|
-  star = Star.where(name: star, avatar: img_url).first_or_create
+  star = Star.where(name: star).first_or_create
 
   concert = Concert.where(name: "#{star.name}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0).first_or_create
   StarConcertRelation.where(star_id: star.id, concert_id: concert.id).first_or_create
 
-  Show.where(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 2.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id).first_or_create
+  Show.where(name: "#{star.name}全球巡回演唱会#{city.name}站", show_time: Time.now + 1.month, min_price: 99, max_price: 1099, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, ticket_type: 0, seat_type: 0).first_or_create
 
   Topic.where(creator_type: 'Star', creator_id: star.id, content: '大家快来看演唱会', subject_type: 'Star', subject_id: star.id).first_or_create
   Topic.where(creator_type: 'Star', creator_id: star.id, city_id: city.id, content: '演唱会真好看', subject_type: 'Concert', subject_id: concert.id).first_or_create

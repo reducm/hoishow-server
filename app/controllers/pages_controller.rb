@@ -9,7 +9,13 @@ class PagesController < ApplicationController
   end
 
   def download
+    @stars = Star.limit(4)
     render layout: 'mobile'
+  end
+
+  def app_download
+    #TODO 等待注册应用宝生成链接
+    redirect_to '#'
   end
 
   def wap_index

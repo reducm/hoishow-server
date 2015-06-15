@@ -3,9 +3,9 @@
 <div class="nav banners_list">
   <div class="nav-top">
     <h1 class="pull-left">广告列表</h1>
+    <%= link_to "新建广告", new_operation_banner_path, class: "btn btn-primary add-banner" %>
   </div>
 
-  <%= link_to "新建广告", new_operation_banner_path, class: "btn btn-primary add-banner" %>
 
     <%= paginate @banners%>
   <table class="table table-striped banners" id="banner-table">
