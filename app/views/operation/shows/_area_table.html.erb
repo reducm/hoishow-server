@@ -10,7 +10,7 @@
       <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control' %></td>
     <% elsif show.selectable? %>
       <td><%= area.name %></td>
-      <td><%= relation.try(:seats_count) %></td>
+      <td><%= show.seats.where(area_id: area.id, status: 0).count %></td>
     <% end %>
     <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
     <% if show.selected? %>

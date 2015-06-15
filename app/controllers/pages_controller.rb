@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   layout false
 
   def index
+    @stars = Star.limit(4)
     render layout: 'application'
   end
 
@@ -9,7 +10,12 @@ class PagesController < ApplicationController
   end
 
   def download
+    @stars = Star.limit(4)
     render layout: 'mobile'
+  end
+
+  def app_download
+    redirect_to 'http://a.app.qq.com/o/simple.jsp?pkgname=us.bestapp.hoishow'
   end
 
   def wap_index

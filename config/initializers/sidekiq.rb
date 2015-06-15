@@ -14,7 +14,12 @@ elsif Rails.env.staging?
     config.redis = { :size => 25, :namespace => 'hoishowsidekiq_staging' }
   end
 elsif Rails.env.production?
-  #TODO
+  Sidekiq.configure_client do |config|
+    config.redis = { :size => 2, :namespace => 'hoishowsidekiq_production' }
+  end
+  Sidekiq.configure_server do |config|
+    config.redis = { :size => 25, :namespace => 'hoishowsidekiq_production' }
+  end
 end
 
 Sidekiq.logger = Yell.new do |l|

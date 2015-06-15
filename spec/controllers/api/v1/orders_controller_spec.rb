@@ -16,6 +16,14 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
     end
   end
 
+  context "#orders_for_soon" do
+    it "orders_for_soon should get orders" do
+      @show.update(show_time: (Time.now.tomorrow.middle_of_day))
+      get :orders_for_soon, with_key(mobile: @user.mobile, api_token: @user.api_token, format: :json)
+      expect(response.status).to eq 200
+    end
+  end
+
   context "#show" do
     it "show should get the same object" do
       @order = Order.first

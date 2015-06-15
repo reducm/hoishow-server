@@ -54,7 +54,6 @@
           width: 75%
           color: rgb(253, 33, 112)
     .description
-      //padding-bottom: 70px
       color: #838383
       display: none
   .bottom
@@ -81,6 +80,7 @@
 .fixbg
   background: url(/img_background.png) center top black no-repeat
   background-size: 100%
+  background-attachment: fixed
   position: fixed
   top: 0
   bottom: 0
@@ -108,17 +108,16 @@
     background: url(/img_background.png)
     .intro
       padding-top: 10px
-      page-break-after: always
       .concert_city_rank
         margin: 20px
+        color: #fff
         label
           font-size: 25px
-          color: rgba(0,0,0,0.5)
     .city_rank_info
       width: 90%
       margin: auto
       ul li.list-group-item
-        background-color: rgba(255,255,255,0.1) !important
+        background-color: rgba(255,255,255,0.8) !important
         border: none
         border-bottom: 1px
         .city_name
@@ -146,7 +145,7 @@
       width: 70%
       font-size: 18px
       color: #fff
-    .vote_button 
+    .vote_button
       font-size: 20px
       width: 180px
       margin-top: 25px
@@ -154,11 +153,75 @@
 
 
 .download_app
-  .content
-    height: 700px
-    background: url(/web_index_pic/background.jpg)
-    background-repeat: no-repeat
-    background-size: contain
-
+  width: 100%
+  height: 100%
+  position: absolute
+  background: url(/img_downloadbackground.png)
+  background-repeat: no-repeat
+  background-size: cover
+  .icon_img
+    margin-top: 20%
+    .hoishow_icon_img
+      width: 35%
+    p
+      font-size: 1.5em
+      color: #fff
+    .download_button
+      font-size: 1.5em
+      width: 50%
+  .star_icon
+    margin-top: 10%
+    p
+      font-size: 1.5em
+      color: #fff
+    .star_icon_div
+      img
+        width: 20%
+        margin: 2%
 
 .page_index
+  .page1
+    background: url(/index_page_pic/1.jpg)
+    .qr_code
+      width: 12%
+      position: absolute
+      left: 46%
+      top: 38%
+    .app_download_button
+      width: 22%
+      position: absolute
+      left: 60%
+      top: 38%
+      img
+        width: 90%
+    .star_avatar
+      width: 60%
+      position: absolute
+      left: 43%
+      top: 68%
+      .star_avatar_div
+        margin: 5px
+        display: inline-block
+        width: 15%
+        .img-circle
+          width: 100%
+        .star_name
+          color: #fff
+          font-size: 1.5em
+  .page2
+    background: url(/index_page_pic/2.jpg)
+  .page3
+    background: url(/index_page_pic/3.jpg)
+  .page4
+    background: url(/index_page_pic/4.jpg)
+  .page5
+    background: url(/index_page_pic/5.jpg)
+    .qr_code_for_page5
+      width: 250px
+      position: absolute
+      left: 30%
+      top: 37%
+  .section
+    background-size: cover
+    background-repeat: no-repeat
+    background-position: center center

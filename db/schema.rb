@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150611115315) do
+ActiveRecord::Schema.define(version: 20150615082015) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 20150611115315) do
     t.datetime "updated_at",                                     null: false
     t.string   "poster",           limit: 255
     t.integer  "status",           limit: 4
-    t.integer  "is_show",          limit: 4
+    t.integer  "is_show",          limit: 4,     default: 0
     t.boolean  "is_top",           limit: 1,     default: false
     t.string   "description_time", limit: 255
   end
@@ -220,7 +220,7 @@ ActiveRecord::Schema.define(version: 20150611115315) do
     t.datetime "updated_at",                                                              null: false
     t.text     "description",      limit: 65535
     t.integer  "status",           limit: 4
-    t.boolean  "is_display",       limit: 1,                              default: true
+    t.boolean  "is_display",       limit: 1,                              default: false
     t.integer  "ticket_type",      limit: 4
     t.boolean  "is_top",           limit: 1,                              default: false
     t.string   "stadium_map",      limit: 255
@@ -261,11 +261,11 @@ ActiveRecord::Schema.define(version: 20150611115315) do
   create_table "stars", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.string   "avatar",      limit: 255
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.integer  "position",    limit: 4
     t.string   "video",       limit: 255
-    t.boolean  "is_display",  limit: 1,     default: true
+    t.boolean  "is_display",  limit: 1,     default: false
     t.string   "poster",      limit: 255
     t.text     "description", limit: 65535
   end

@@ -47,7 +47,7 @@ description: 查询顺丰物流详情
 
 成功时返回
 ```javascript
-   { express_url: 'xxxx' //物流查询的h5页面链接 }
+   { 物流查询的h5页面 }
 ```
 
 
