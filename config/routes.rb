@@ -79,6 +79,9 @@ Rails.application.routes.draw do
       resources :tickets
       resources :areas
       resources :orders, only: [:index, :show] do
+        collection do
+          get :orders_for_soon
+        end
         member do
           post :pay
           get :show_for_qr_scan
