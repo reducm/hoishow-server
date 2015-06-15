@@ -6,7 +6,12 @@ Rails.application.routes.draw do
 
   get "/mobile" => 'pages#wap_index'
   get "/mobile/about" => 'pages#wap_about'
+
+  #app下载
   get "/mobile/download" => 'pages#download'
+  get '/app/download', to: 'pages#app_download'
+
+  #分享页
   get "/mobile/shows/sharing" => "pages#sharing_show"
   get "/mobile/concerts/sharing" => "pages#sharing_concert"
 
