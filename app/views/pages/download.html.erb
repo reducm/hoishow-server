@@ -4,14 +4,14 @@
     <p>在这里</p>
     <p>你不仅能找到精彩的show</p>
     <p>还能参与投票,决定偶像的下一场show</p>
-    <%= link_to "立即下载", "/mobile/download", class: 'btn btn-success download_button' %>
+    <%= link_to "立即下载", app_download_path, class: 'btn btn-success download_button' %>
   </div>
   <div class="star_icon text-center">
     <p>他们已经加入Hoishow啦</p>
     <div class="star_icon_div">
-    <% @stars.each do |star|%>
-      <%= image_tag(star.avatar_url, class: "img-circle") %>
-    <%end%>
+      <% @stars.each do |star|%>
+        <%= image_tag(star.avatar_url, class: "img-circle") %>
+      <% end %>
     </div>
   </div>
 </div>
