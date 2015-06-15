@@ -35,19 +35,7 @@ class Operation::StarsController < Operation::ApplicationController
   def create
     @star = Star.new(star_params)
     if @star.save
-      if params[:videos] 
-        create_video
-        if @video.errors.any?
-          @star.delete
-          flash[:alert] = @video.errors.full_messages.to_sentence
-          render action: 'new' and return
-        else
-          @video.update(is_main: true)
-          redirect_to operation_star_url(@star), notice: '艺人创建成功。'
-        end
-      else
-        redirect_to operation_star_url(@star), notice: '艺人创建成功。'
-      end
+      redirect_to operation_star_url(@star), notice: '艺人新建成功。'
     else
       flash[:alert] = @star.errors.full_messages.to_sentence
       @star.delete
@@ -61,20 +49,7 @@ class Operation::StarsController < Operation::ApplicationController
 
   def update
     if @star.update(star_params)
-      if params[:videos] 
-        create_video
-        if @video.errors.any?
-          flash[:alert] = @video.errors.full_messages.to_sentence
-          render action: 'edit' and return
-        else
-          if @star.videos.count == 1
-            @video.update(is_main: true)
-          end
-          redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-        end
-      else
-        redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-      end
+      redirect_to operation_star_url(@star), notice: '艺人更新成功。'
     else
       flash[:alert] = @star.errors.full_messages.to_sentence
       render action: 'edit'
@@ -99,12 +74,6 @@ class Operation::StarsController < Operation::ApplicationController
   private
   def star_params
     params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, :description, videos_attributes: [:id, :star_id, :source])
-  end
-
-  def create_video
-    params[:videos]['source'].each do |source|
-      @video = @star.videos.create(:source => source, :star_id => @star.id)
-    end
   end
 
   def get_star

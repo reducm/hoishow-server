@@ -12,7 +12,7 @@
 
 <script type="text/javascript">
   $(function(){
-    var notice = "<%= flash[:notice] || flash[:alert] %>"
+    var notice = "<%= flash[:notice] || flash[:alert] || flash[:warning]%>"
     <% if flash[:notice] %>
       $.notify(notice, {
         globalPosition:"top center",
@@ -21,6 +21,10 @@
       $.notify(notice, {
         globalPosition:"top center",
         className: 'error'  } );
+    <% elsif flash[:warning] %>
+      $.notify(notice, {
+        globalPosition:"top center",
+        className: 'warning'  } );
     <% end %>
     })
 </script>
