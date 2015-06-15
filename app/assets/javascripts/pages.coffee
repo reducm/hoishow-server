@@ -19,3 +19,6 @@ $ ->
     keyboard: true
     loop: true
   })
+  
+  $("#showdesc").click ->
+    $(".description").slideToggle("600")
