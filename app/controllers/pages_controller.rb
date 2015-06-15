@@ -15,7 +15,7 @@ class PagesController < ApplicationController
 
   def app_download
     #TODO 等待注册应用宝生成链接
-    redirect_to ''
+    redirect_to '#'
   end
 
   def wap_index
