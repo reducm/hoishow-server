@@ -10,12 +10,12 @@ $ ->
   set_width(i) for i in [1..10]
 
 
-#  $(".page_index").onepage_scroll({
-    #sectionContainer: "img"
-    #easing: "ease"
-    #animationTime: 1000
-    #pagination: true
-    #updateURL: false
-    #keyboard: true
-    #loop: true
-#  })
+  $(".page_index").onepage_scroll({
+    sectionContainer: "img"
+    easing: "ease"
+    animationTime: 1000
+    pagination: true
+    updateURL: false
+    keyboard: true
+    loop: true
+  })
