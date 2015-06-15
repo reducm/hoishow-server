@@ -59,7 +59,7 @@
           </div>
           <div class="form-group">
             <%= label_tag "reply_creator", "回复人" %>
-            <%= select_tag "reply_creator", options_for_select([current_admin.default_name])%>
+            <%= select_tag "reply_creator", options_for_select([current_admin.default_name]), class: 'form-control chooselist' %>
           </div>
           <%= hidden_field_tag "parent_id" %>
           <%= hidden_field_tag "topic_id" %>

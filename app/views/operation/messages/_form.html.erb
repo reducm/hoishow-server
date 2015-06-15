@@ -9,7 +9,7 @@
   <%= f.hidden_field :send_type, value: "manual" %>
   <%= f.input :subject_type, collection: [["被关注star", "Star"], ["被关注concert", "Concert"], ["被关注show", "Show"]], input_html: {id: "message_subject_type_select"}, label: "跳转目的地" %>
   <%= f.input :subject_id, as: :select, input_html: {id: "message_subject_id_select"}, label: "选择目的地"%>
-  <%= f.button :submit, "确定创建消息" %>
+  <%= f.button :submit, "确定创建消息", class: 'btn btn-primary' %>
 <%end%>
 
 <%= content_tag :div, id: "message_creator_data", data: {
