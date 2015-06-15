@@ -27,7 +27,7 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def edit
-    @comments = @topic.comments.page(params[:page]).per(10)
+    @comments = @topic.comments.page(params[:page])
     @stars = @topic.get_stars
   end
 
@@ -43,7 +43,7 @@ class Operation::TopicsController < Operation::ApplicationController
 
   def set_topic_top
     @topic.update(is_top: params[:is_top])
-    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page]).per(10)
+    @topics = Topic.where(subject_type: @topic.subject_type, subject_id: @topic.subject_id).page(params[:page])
 
     @topics = @topics.where(city_id: params[:city_id]) if params[:city_id]
     @stars = @topic.get_stars
@@ -113,8 +113,8 @@ class Operation::TopicsController < Operation::ApplicationController
   end
 
   def refresh_comments
-    @comments = @topic.comments.page(params[:page]).per(10)
-    @stars = get_stars(@topic)
+    @comments = @topic.comments.page(params[:page])
+    @stars = @topic.get_stars
     respond_to do |format|
       format.js {}
     end

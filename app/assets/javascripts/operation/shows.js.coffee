@@ -42,6 +42,13 @@ $ ->
         $("#show_stadium_select").attr("data-live-search", true)
         $("#show_stadium_select").selectpicker("refresh")
       )
+    $(".submit-form").on('click', (e) ->
+      e.preventDefault()
+      if $("#show_stadium_select").val().length < 1
+        alert('场馆不能为空，请重新选择')
+      else
+        $(this).parents('form').submit()
+    )
 
   #change area data
   $("#show_areas").on "click", ".change_show_area_data", () ->

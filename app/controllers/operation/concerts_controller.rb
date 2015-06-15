@@ -43,11 +43,6 @@ class Operation::ConcertsController < Operation::ApplicationController
     star = Star.find(params[:star_id])
     if @concert.save && star
       star.hoi_concert(@concert)
-      users_array = star.followers
-      message = Message.new(send_type: "new_concert", creator_type: "Star", creator_id: star.id, subject_type: "Concert", subject_id: @concert.id, notification_text: "你关注的艺人发布了一个新的演出众筹", title: "新的演出众筹", content: "#{star.name}刚刚发布了一个新的演出众筹，还等什么，快来投票吧！")
-      if ( result = message.send_umeng_message(users_array, message, none_follower: "演出创建成功，但是因为艺人粉丝数为0，所以消息创建失败")) != "success"
-        flash[:alert] = result
-      end
     else
       flash[:alert] = @concert.errors.full_messages
     end
@@ -66,6 +61,21 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:alert] = @concert.errors.full_messages
       render :edit
     end
+  end
+
+  def send_create_message
+    users_array = @concert.stars.map{|star| star.followers}.flatten
+    error = 0
+    @concert.stars.each do |star|
+      message = Message.new(send_type: "new_concert", creator_type: "Star", creator_id: star.id, subject_type: "Concert", subject_id: @concert.id, notification_text: "你关注的艺人发布了一个新的演出众筹", title: "新的演出众筹", content: "#{star.name}刚刚发布了一个新的演出众筹，还等什么，快来投票吧！")
+      error += 1 if message.send_umeng_message(users_array, message, none_follower: "演出创建成功，但是因为艺人粉丝数为0，所以消息创建失败") != 'success'
+    end
+    if error > 0
+      flash[:alert] = '推送发送失败'
+    else
+      flash[:notice] = '推送发送成功'
+    end
+    render json: {success: true}
   end
 
   def refresh_map_data

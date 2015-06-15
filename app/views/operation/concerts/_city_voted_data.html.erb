@@ -1,10 +1,11 @@
 <%# encoding: utf-8 %>
 
-<div id="map"></div>
+      <div id="map"></div>
       <div id="map_data">
         <div class="nav">
-          <a class="add_vote_city" data-toggle="modal" data-target="#myModal">添加投票城市</a>
-          <%= link_to "发布演出", new_operation_show_path(concert_id: concert.id) %>
+          <a class="add_vote_city btn btn-default" data-toggle="modal" data-target="#myModal">添加投票城市</a>
+          <%= link_to "发布演出", new_operation_show_path(concert_id: concert.id), class: 'btn btn-default' %>
+          <%= link_to "发送开始投票推送", 'javascript:void(0);', class: 'btn btn-default send_message' %>
         </div>
         <div class="map-table">
           <table class="table">

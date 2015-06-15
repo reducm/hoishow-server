@@ -3,6 +3,9 @@ class Banner < ActiveRecord::Base
   default_scope {order(:position)}
   belongs_to :admin
   mount_uploader :poster, ImageUploader
+
+  validates :subject_id, presence: true
+  validates :subject_type, presence: true
   validates :position, uniqueness: true
   before_create :set_position_for_new_record
 

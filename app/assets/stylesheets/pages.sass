@@ -1,4 +1,5 @@
 .sharing_show
+  position: relative
   .top
     position: relative
     img
@@ -16,11 +17,110 @@
   .content
     background: url(/img_background.png)
     .intro
+      padding-top: 10px
+      div
+        margin: 5px
       label
         font-size: 18px
+        margin-top: 8px
       span
         display: block
-        font-size: 22px
+        font-size: 20px
         color: #fff
-    .description p, .description p span
-      background-color: none !important
+      .show-name
+        span
+          display: inline-block
+          width: 75%
+          color: rgb(253, 33, 112)
+    .description
+      padding-bottom: 70px
+    .bottom
+      position: fixed
+      bottom: 10px
+      color: #fff
+      width: 100%
+      text-align: center
+      font-size: 20px
+      div
+        margin-bottom: 10px
+      .download-btn
+        border-radius: 10%
+        background-color: rgba(255, 157, 2, 0.9)
+        font-size: 18px
+        color: #fff
+        padding: 5px 15px
+
+.sharing_concert
+  position: relative
+  .top
+    position: relative
+    img
+      width: 100%
+    .voters_count
+      position: absolute
+      width: 100%
+      height: 15%
+      background-color: rgba(0, 0, 0, 0.3)
+      bottom: 0
+      color: #fff
+      text-align: right
+      font-size: 22px
+      padding-right: 7%
+  .content
+    background: url(/img_background.png)
+    .intro
+      padding-top: 10px
+      page-break-after: always
+      .concert_city_rank
+        margin: 20px
+        label
+          font-size: 25px
+          color: rgba(0,0,0,0.5)
+    .city_rank_info
+      width: 90%
+      margin: auto
+      ul li.list-group-item
+        background-color: rgba(255,255,255,0.1) !important
+        border: none
+        border-bottom: 1px
+        .city_name
+          font-size: 16px
+          text-align: center
+          display: inline-block
+          width: 25%
+        .vote_count
+          font-size: 15px
+          display: inline-block
+          margin-left: 3px
+        .progress_bar
+          display: inline-block
+          width: 45%
+          height: 13px
+          background-color: rgba(0,255,0,0.4) !important
+  .vote_part
+    margin-top: 50px
+    img
+      width: 30%
+      height: 30%
+    p
+      margin: auto
+      margin-top: 25px
+      width: 70%
+      font-size: 18px
+      color: #fff
+    .vote_button 
+      font-size: 20px
+      width: 180px
+      margin-top: 25px
+      margin-bottom: 75px
+
+
+.download_app
+  .content
+    height: 700px
+    background: url(/web_index_pic/background.jpg)
+    background-repeat: no-repeat
+    background-size: contain
+
+
+.page_index

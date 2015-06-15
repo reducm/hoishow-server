@@ -6,7 +6,9 @@ Rails.application.routes.draw do
 
   get "/mobile" => 'pages#wap_index'
   get "/mobile/about" => 'pages#wap_about'
+  get "/mobile/download" => 'pages#download'
   get "/mobile/shows/sharing" => "pages#sharing_show"
+  get "/mobile/concerts/sharing" => "pages#sharing_concert"
 
   namespace :api do
     namespace :v1 do
@@ -118,6 +120,7 @@ Rails.application.routes.draw do
         get :refresh_map_data
         delete :remove_concert_city
         patch :toggle_is_top
+        post :send_create_message
       end
       collection do
         get :search
@@ -136,6 +139,7 @@ Rails.application.routes.draw do
         delete :del_area
         get :seats_info
         post :update_seats_info
+        post :send_create_message
       end
     end
     resources :orders do
