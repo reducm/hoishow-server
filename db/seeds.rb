@@ -29,7 +29,7 @@ city = City.first
 stadium = Stadium.where(name: '首都体育馆', address: '北京市海淀区中关村南大街56号', city_id: city.id).first_or_create
 
 stars = ['Coldplay', 'Eminem', 'Jay-z', 'Maroon 5', 'Linkin Park']
-img_url = 'default_avatar.png'
+img_url = '/default_avatar.png'
 
 # star, concert, star_concert_relation, show
 stars.each do |star|

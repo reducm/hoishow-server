@@ -3,7 +3,7 @@ $ ->
   old_count = parseInt($("#city_count_1").text())
   set_width = (n) ->
     count = parseInt($("#city_count_#{n}").text())
-    $("#city_#{n}").width((count/old_count)*width)
+    $("#city_#{n}").width((count / old_count) * width)
     width = $("#city_#{n}").width()
     old_count = count
 
@@ -13,9 +13,6 @@ $ ->
   $(".page_index").onepage_scroll({
     sectionContainer: "img"
     easing: "ease"
-    animationTime: 1000
-    pagination: true
-    updateURL: false
     keyboard: true
-    loop: true
+    direction: "vertical"
   })
