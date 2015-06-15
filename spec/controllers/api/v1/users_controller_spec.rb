@@ -239,7 +239,7 @@ describe Api::V1::UsersController do
       @topic = create(:topic)
       @comment = create(:comment)
       post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: sensitive_content, format: :json )
-      expect(JSON.parse(response.body)["content"]).to include("你懂的")
+      expect(JSON.parse(response.body)["content"]).to include("*")
     end
 
     it "should create reply comment success" do
@@ -373,7 +373,7 @@ describe Api::V1::UsersController do
       @concert = create :concert
       sensitive_content = "通常对包含关键词的信息进行阻断连接、取消或延后显示、替换、人工老江干预等处理。"
       post :create_topic, with_key(api_token: @user.api_token, mobile: @user.mobile, subject_type: "Concert", subject_id: @concert.id, content: sensitive_content, format: :json)
-      expect(JSON.parse(response.body)["content"]).to include("你懂的")
+      expect(JSON.parse(response.body)["content"]).to include("*")
     end
 
     it "create success" do
