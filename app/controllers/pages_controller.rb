@@ -2,6 +2,7 @@ class PagesController < ApplicationController
   layout false
 
   def index
+    render layout: 'application'
   end
 
   def about
