@@ -9,7 +9,6 @@ class Comment < ActiveRecord::Base
   belongs_to :topic
   validates :creator_id, presence: true
   validates :creator_type, presence: true
-  validates :content, length: { maximum: 150 }
 
   paginates_per 10
 
