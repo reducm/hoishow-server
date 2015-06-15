@@ -1,6 +1,5 @@
 .sharing_show
   position: relative
-  background-color: rgba(0,0,0,1)
   .top
     position: relative
     img
@@ -71,7 +70,6 @@
     background: url(/img_background.png)
     .intro
       padding-top: 10px
-      page-break-after: always
       .concert_city_rank
         margin: 20px
         color: #fff
@@ -145,7 +143,33 @@
 
 .page_index
   .page1
-    background: url(/index_page_pic/background.jpg)
+    background: url(/index_page_pic/1.jpg)
+    .qr_code
+      width: 12%
+      position: absolute
+      left: 46%
+      top: 38%
+    .app_download_button
+      width: 22%
+      position: absolute
+      left: 60%
+      top: 38%
+      img
+        width: 90%
+    .star_avatar
+      width: 60%
+      position: absolute
+      left: 43%
+      top: 68%
+      .star_avatar_div
+        margin: 5px
+        display: inline-block
+        width: 15%
+        .img-circle
+          width: 100%
+        .star_name
+          color: #fff
+          font-size: 1.5em
   .page2
     background: url(/index_page_pic/2.jpg)
   .page3
@@ -154,7 +178,12 @@
     background: url(/index_page_pic/4.jpg)
   .page5
     background: url(/index_page_pic/5.jpg)
+    .qr_code_for_page5
+      width: 250px
+      position: absolute
+      left: 30%
+      top: 37%
   .section
-    background-size: 100%
+    background-size: cover
     background-repeat: no-repeat
     background-position: center center
