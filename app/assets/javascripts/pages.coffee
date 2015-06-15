@@ -11,7 +11,7 @@ $ ->
 
 
   $(".page_index").onepage_scroll({
-    sectionContainer: "img"
+    sectionContainer: "section"
     easing: "ease"
     animationTime: 1000
     pagination: true
