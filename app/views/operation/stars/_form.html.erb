@@ -43,10 +43,8 @@
 </div>
 
 <div class="form-group">
-  <%= fields_for :videos do |video| %>
-    <%= video.label :source, "上传视频(单个文件最大30m，只支持mp4格式)" %>
-    <%= video.file_field :source, multiple: :true, name: "videos[source][]" %>
-  <% end %>
+  <%= link_to "上传视频", new_operation_video_path(star_id: @star.id), class: "btn btn-default" %>
+  <%= label_tag "(单个文件最大30mb，只支持mp4格式)" %>
 </div>
 
 <div class="form-group">
