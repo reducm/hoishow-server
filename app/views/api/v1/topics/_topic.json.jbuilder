@@ -13,6 +13,6 @@ json.creator do
   json.is_star topic.creator.is_a?(Star)
 end
 json.comments_count topic.comments.count
-json.city_name @user ? topic.get_user_voted_city_name(@user) : ''
+json.city_name topic.get_user_voted_city_name
 json.is_like topic.is_like(@user)
 json.comments topic.comments.page(params[:page]), partial: 'api/v1/comments/comment', as: :comment

@@ -268,6 +268,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   private
+
   def replace_sensitive_words(content)
     sensitive_words = File.read("public/keywords.txt").split("\n")
     sensitive_words.each do |word|
