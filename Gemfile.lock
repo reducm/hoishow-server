@@ -4,6 +4,12 @@ GIT
   specs:
     quiet_assets (0.0.1)
 
+GIT
+  remote: git://github.com/villins/china_sms.git
+  revision: e466ff1966338f5ea2307a3e4e8bb7e25efbfef2
+  specs:
+    china_sms (0.0.8)
+
 GEM
   remote: http://ruby.taobao.org/
   specs:
@@ -333,6 +339,7 @@ DEPENDENCIES
   capistrano-sidekiq
   carrierwave (= 0.6.2)
   carrierwave-upyun (= 0.1.5)
+  china_sms!
   coffee-rails (~> 4.1.0)
   dalli
   database_cleaner (~> 1.3.0)
