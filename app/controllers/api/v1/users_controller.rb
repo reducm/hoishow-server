@@ -47,11 +47,19 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     else
       code = find_or_create_code(mobile)
 
-      #TODO production 发短信
-      if true #ChinaSMS.to(mobile, "手机验证码为#{code}【单车电影】")[:success]
-        render json: {msg: "ok"}, status: 200
+      # production 发短信
+      if Rails.env.production?
+        if ChinaSMS.to(mobile, "手机验证码为#{code}【Hoishow】")[:success]
+          render json: {msg: "ok"}, status: 200
+        else
+          return error_json "短信发送失败，请再次获取"
+        end
       else
-        return error_json "短信发送失败，请再次获取"
+        if true
+          render json: {msg: "ok"}, status: 200
+        else
+          return error_json "短信发送失败，请再次获取"
+        end
       end
     end
   end
@@ -241,7 +249,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
     if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
-        render json: {msg: "ok"}, status: 200
+      render json: {msg: "ok"}, status: 200
     end
   end
 
