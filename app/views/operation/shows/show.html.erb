@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<div class="nav">
+<div class="nav show_show">
   <h2>
     演出详情
     <% if can? :update, @show %>
@@ -42,33 +42,33 @@
       </tr>
     </tbody>
   </table>
-</div>
 
-<div role="tabpanel">
+  <div role="tabpanel">
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-pills" role="tablist">
-    <li role="presentation" class="active"><a href="#shows_show_orders" aria-controls="shows_show_orders" role="tab" data-toggle="tab">票务</a></li>
-    <li role="presentation"><a href="#shows_show_topics" aria-controls="shows_show_topics" role="tab" data-toggle="tab">互动</a></li>
-  </ul>
+    <!-- Nav tabs -->
+    <ul class="nav nav-pills" role="tablist">
+      <li role="presentation" class="active"><a href="#shows_show_orders" aria-controls="shows_show_orders" role="tab" data-toggle="tab">票务</a></li>
+      <li role="presentation"><a href="#shows_show_topics" aria-controls="shows_show_topics" role="tab" data-toggle="tab">互动</a></li>
+    </ul>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
-      <div id="pie_cake" >
-        <% @show.areas.each do |area| %>
-          <% tickets = @show.tickets.where(area_id: area.id) %>
-          <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> sold_count=<%= tickets.sold_tickets_count %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %> style="height:300px; width:300px"></div>
-        <% end %>
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="shows_show_orders">
+        <div id="pie_cake" >
+          <% @show.areas.each do |area| %>
+            <% tickets = @show.tickets.where(area_id: area.id) %>
+            <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> sold_count=<%= tickets.sold_tickets_count %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %> style="height:300px; width:300px"></div>
+          <% end %>
+        </div>
+        <div class="orders_list">
+        <%= render partial: 'operation/orders/table', locals: {orders: @show.orders.page(params[:page]).order("created_at desc")} %>
+        </div>
       </div>
-      <div class="orders_list">
-      <%= render partial: 'operation/orders/table', locals: {orders: @show.orders.page(params[:page]).order("created_at desc")} %>
+
+      <div role="tabpanel" class="tab-pane topics_list show_show_topics_list" id="shows_show_topics">
+        <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page(params[:page]), stars: @show.stars} %>
       </div>
-    </div>
 
-    <div role="tabpanel" class="tab-pane topics_list show_show_topics_list" id="shows_show_topics">
-      <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page(params[:page]), stars: @show.stars} %>
     </div>
-
   </div>
 </div>

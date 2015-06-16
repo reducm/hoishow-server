@@ -9,11 +9,11 @@
     </div>
   </div>
   <div class="nav-control">
-    <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn btn-default' %>
-    <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn btn-default' %>
-    <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn btn-default' %>
-    <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-default' %>
-    <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-default' %>
+    <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn' %>
+    <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn' %>
+    <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn' %>
+    <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-primary' %>
+    <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-primary' %>
     <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @area.sort_by) %>
   </div>
   <div class="seats-box">
@@ -31,156 +31,8 @@
     </ul>
   </div>
   <%= link_to "提交", "javascript:void(0);", class: 'btn btn-primary submit_seats' %>
+  <%= hidden_field_tag "show_id", @show.id %>
+  <%= hidden_field_tag 'area_id', @area.id %>
 </div>
 
 <div id="cache_seats"></div>
-
-<script type="text/javascript">
-  $(".set_box").on("click", function(){
-    var row_size = $("#row_size").val()
-    var column_size = $("#column_size").val()
-    if(row_size < 1 || column_size < 1)
-    {
-      alert("行和列不能为空")
-    }
-    else if(isNaN(row_size) || isNaN(column_size))
-    {
-      alert("行和列必须为数字")
-    }
-    else
-    {
-      $("ul.seats").find("li").remove()
-      for(var i=0;i<row_size;i++){
-        $("ul.seats").append("<li class='row_" + (i + 1) + "'></li>");
-        for(var j=0;j<column_size;j++){
-          $("li.row_" + (i + 1) ).append("<span title='' class='seat blank' data-seat-no='' data-row-id='" + (i + 1) + "' data-column-id='" + (j + 1) +"'></span");
-        }
-      }
-      $("ul.seats").selectable({filter: 'span'})
-    }
-  })
-
-  $("ul.seats").selectable({filter: 'span'})
-
-  $("ul.seats span").tooltip()
-
-  $(".set_avaliable").on("click", function(){
-    $(".ui-selected").addClass("avaliable").data("status", "avaliable");
-    $(".ui-selected").removeClass("locked unused ui-selected blank");
-  })
-
-  $(".set_locked").on("click", function(){
-    $(".ui-selected").addClass("locked").data("status", "locked");
-    $(".ui-selected").removeClass("avaliable unused ui-selected blank");
-  })
-
-  $(".set_unused").on("click", function(){
-    $(".ui-selected").addClass("unused").data("status", "unused");
-    $(".ui-selected").removeClass("avaliable locked ui-selected blank");
-  })
-
-  $(".set_seat_no").on("click", function(){
-    $seat = $(".ui-selected")
-    if($seat.length < 1){
-      alert("必须选中一个座位")
-    }
-    else if($seat.length > 1)
-    {
-      alert("一次只能修改一个座位")
-    }
-    else
-    {
-      seat_no = prompt("请输入座位号")
-      if(seat_no) $(".ui-selected").data("seat-no", seat_no)
-    }
-  })
-
-  $(".set_price").on('click', function(){
-    price = prompt("请输入价格")
-    if(price && parseFloat(price) > 0){
-      $(".ui-selected").data("seat-price", price).each(function(idx, el){
-        set_title(el)
-      })
-    }
-    else{
-      alert("价格必须为数字")
-    }
-  })
-
-  $(".submit_seats").on("click", function(){
-    if($("ul.seats span").length < 1) {
-      return false
-    }
-    else if($(".blank").length > 0){
-      alert("还有座位没有设置")
-    }
-    else{
-      get_seats_info()
-    }
-  })
-
-  var set_title = function(el){
-    var seat_no = $(el).data("seat-no");
-    var price = $(el).data("seat-price");
-    var text = "座位号: " + seat_no + " 价格: " + price + "元"
-    $(el).attr('data-original-title', text)
-    $("ul.seats span").tooltip()
-  }
-
-  var get_seats_info = function(){
-    var sort_by = $("#area_sort_by").val()
-    var area_name = $("#area_name").val()
-    var seats = [];
-    $("ul.seats li").each(function(){
-      var $li = $(this)
-      var row_seats = [];
-      $li.find('span').each(function(){
-        row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price')})
-      })
-      seats.push(row_seats)
-    })
-    var result = {seats: seats, sort_by: sort_by}
-    $.post("/operation/shows/<%= @show.id %>/update_seats_info", {area_id: "<%= @area.id %>", seats_info: JSON.stringify(result), area_name: area_name, sort_by: sort_by}, function(data){
-      if(data.success){
-        location.href = "/operation/shows/<%= @show.id %>/edit"
-      }
-    })
-  }
-</script>
-
-<style type="text/css" media="screen">
-.seats-info {position: relative;}
-.nav-control {
-  position: fixed;
-  top: 8%;
-  width: 100px;
-  padding: 10px;
-}
-.nav-control a, .nav-control select {margin: 10px;}
-h3 input {width: 85px;}
-.box-size input {width: 40px;}
-div.front h4 {
-  display: inline-block;
-  width: 180px;
-  height: 30px;
-  line-height: 30px;
-  background-color: rgb(182, 179, 179);
-}
-.submit_seats {width: 180px;}
-.set_avaliable, .avaliable { background-color: green; color: #fff;}
-.set_locked, .locked { background-color: #000; color: #fff;}
-.set_unused, .unused { background-color: grey; color: #fff;}
-.ui-selecting { background-color: #FECA40; }
-.ui-selected { background-color: #FADAAD; }
-.seats-box {
-  overflow: auto;
-  white-space:nowrap;
-}
-span.seat {
-  border: 1px solid #000;
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-  margin-right: 5px;
-}
-</style>

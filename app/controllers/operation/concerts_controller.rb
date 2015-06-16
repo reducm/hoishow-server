@@ -103,7 +103,10 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def get_city_topics
     @topics = @concert.topics.where(subject_type: Topic::SUBJECT_CONCERT).page(params[:page]).per(5)
-    @topics = @topics.where(city_id: params[:city_id]).page(params[:page]).per(5) if params[:city_id]
+    @topics = if params[:city_id]
+                user_ids = @concert.user_vote_concerts.where(city_id: params[:city_id]).pluck(:user_id)
+                @topics.where('creator_type = "User" AND creator_id in (?)', user_ids).page(params[:page]).per(5)
+              end
 
     render partial: 'operation/topics/table', locals: {topics: @topics}
   end

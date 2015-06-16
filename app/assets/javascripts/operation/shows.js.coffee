@@ -17,13 +17,41 @@ set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
     myChart = echarts.init(document.getElementById(area_name))
     myChart.setOption(option)
 
+set_title = (el)->
+  seat_no = $(el).data('seat-no')
+  price = if parseFloat($(el).data('seat-price')) then parseFloat($(el).data('seat-price')) else 0
+  text = "座位号: #{seat_no} 价格: #{price}"
+  $(el).attr('data-original-title', text)
+  $('ul.seats span').tooltip()
+
+get_seats_info = ()->
+  show_id = $('#show_id').val()
+  area_id = $('#area_id').val()
+  area_name = $('#area_name').val()
+  sort_by = $('#area_sort_by').val()
+  seats = []
+  $('ul.seats li').each(()->
+    $li = $(this)
+    row_seats = []
+    $li.children().each(()->
+      row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price')})
+    )
+    seats.push(row_seats)
+  )
+  result = {seats: seats, sort_by: sort_by}
+  $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(result), area_name: area_name, sort_by: sort_by}, (data)->
+    if data.success
+      location.href = "/operation/shows/#{show_id}/edit"
+  )
 $ ->
-  $("#pie_cake div").each(() ->
-    left_count = $(this).attr("left_count")
-    sold_count = $(this).attr("sold_count")
-    area_name = $(this).attr("id")
-    tickets_count = $(this).attr("total_tickets")
-    set_pie_cake(left_count, sold_count, area_name, tickets_count))
+#show show
+  if $(".show_show").length > 0
+    $("#pie_cake div").each(() ->
+      left_count = $(this).attr("left_count")
+      sold_count = $(this).attr("sold_count")
+      area_name = $(this).attr("id")
+      tickets_count = $(this).attr("total_tickets")
+      set_pie_cake(left_count, sold_count, area_name, tickets_count))
 
 #show new form
   if $(".new_show").length > 0
@@ -81,3 +109,74 @@ $ ->
         if data.success
           location.reload()
       )
+
+  # 设置选座
+  if $('.seats-info').length > 0
+    $('ul.seats').selectable({filter: 'span'})
+
+    $('ul.seats span').tooltip()
+
+    #设置行列
+    $('.set_box').on 'click', ()->
+      row_size = $('#row_size').val()
+      column_size = $('#column_size').val()
+      if row_size < 1 || column_size < 1
+        alert('行和列不能为空')
+      else if isNaN(row_size) || isNaN(column_size)
+        alert('行和列必须为数字')
+      else
+        $('ul.seats').children().remove()
+        i = 0
+        while i < row_size
+          $('ul.seats').append '<li class=\'row_' + (i + 1) + '\'></li>'
+          j = 0
+          while j < column_size
+            $('li.row_' + (i + 1)).append '<span title=\'\' class=\'seat blank\' data-seat-no=\'\' data-row-id=\'' + (i + 1) + '\' data-column-id=\'' + (j + 1) + '\'></span'
+            j++
+          i++
+        $('ul.seats').selectable({filter: 'span'})
+
+    #设置座位状态
+    $('.set_avaliable').on 'click', ()->
+      $('.ui-selected').data('status', 'avaliable').addClass('avaliable').removeClass('locked unused ui-selected blank alert')
+
+    $('.set_locked').on 'click', ()->
+      $('.ui-selected').data('status', 'locked').addClass('locked').removeClass('avaliable unused ui-selected blank alert')
+
+    $('.set_unused').on 'click', ()->
+      $('.ui-selected').data('status', 'unused').addClass('unused').removeClass('locked avaliable ui-selected blank alert')
+
+    #设置座位号
+    $(".set_seat_no").on 'click', ()->
+      $seat = $(".ui-selected")
+      if $seat.length != 1
+        alert('一次只能修改一个座位')
+      else
+        seat_no = prompt('请输入座位号')
+        if seat_no
+          $seat.data('seat-no', seat_no)
+          set_title('.ui-selected')
+
+    #设置价格
+    $('.set_price').on 'click', ()->
+      $seats = $(".ui-selected")
+      if $seats.length < 1
+        alert('必须选中座位才能设置价格')
+      else
+        price = prompt('请输入价格')
+        if price && parseFloat(price) > 0
+          $seats.data('seat-price', price).each((idx, el)->
+            set_title(el)
+          )
+        else
+          alert('价格必须为数字')
+
+    #提交
+    $('.submit_seats').on 'click', ()->
+      if $('ul.seats span').length < 1
+        return false
+      else if $('.blank').length > 0
+        alert('还有座位没有设置状态')
+        $('.blank').addClass('alert')
+      else
+        get_seats_info()
