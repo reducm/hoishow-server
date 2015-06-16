@@ -10,6 +10,10 @@ $ ->
   set_width(i) for i in [1..10]
 
 
+
+  $("#showdesc").click ->
+    $(".description").slideToggle("600")
+
   if $('.page_index').length > 0
     $(".page_index").onepage_scroll({
       sectionContainer: "section"
@@ -17,3 +21,4 @@ $ ->
       keyboard: true
       direction: "vertical"
     })
+

@@ -473,6 +473,7 @@ type: `GET`
   like_count: "点赞的数目",
   comments_count: "comment的数目",
   created_at: "话题创建时间",
+  city_name: "用户所投城市的名字",
   is_top: "true or false", //是否置顶
   is_liked: "true or false"//是否点赞过
   comments: [comment对象列表]
