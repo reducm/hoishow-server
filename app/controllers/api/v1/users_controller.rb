@@ -120,10 +120,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_comment
-    params[:content] = replace_sensitive_words(params[:content])
+    content = replace_sensitive_words(params[:content])
     @topic = Topic.where(id: params[:topic_id]).first
     if @topic.present?
-      @comment = @user.create_comment(@topic, params[:parent_id], params[:content])
+      @comment = @user.create_comment(@topic, params[:parent_id], content)
       if @comment.errors.any?
         return error_json("comment create_error: #{@comment.errors.full_messages}")
       end
@@ -165,9 +165,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_topic
-    params[:content] = replace_sensitive_words(params[:content])
-    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: Base64.encode64(params[:content]))
-    @topic.city_id = params[:city_id] if params[:city_id]
+    content = replace_sensitive_words(params[:content])
+    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: Base64.encode64(content))
     if !@topic.save
       return error_json(@topic.errors.full_messages)
     end
@@ -264,7 +263,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   def replace_sensitive_words(content)
     sensitive_words = File.read("public/keywords.txt").split("\n")
     sensitive_words.each do |word|
-      content.gsub! word, "*" 
+      content.gsub! word, "*"
     end
     return content
   end
