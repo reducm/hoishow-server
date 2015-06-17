@@ -1,23 +1,22 @@
 <%# encoding: utf-8 %>
+<div class="header"><h2>查询结果</h2></div>
+<div class="content">
+  <div class='row'>
+    <span class="delivery-name col-xs-4 col-md-4">顺丰速运</span>
+    <span class="delivery-id col-xs-8 col-md-8"><%= @result["delivery_id"] if @result.any? %></span>
+  </div>
 
-    <div class="header"><h2>查询结果</h2></div>
-    <div class="content">
-      <div class='row'>
-        <span class="delivery-name col-xs-4 col-md-4">顺丰速运</span>
-        <span class="delivery-id col-xs-8 col-md-8"><%= @result["delivery_id"] if @result.any? %></span>
-      </div>
-
-      <% if @result.any? %>
-        <table class="table">
-          <% @result["router"].each do |router| %>
-            <tr class="<%= cycle("odd", "even") %>">
-              <td class="col1"><%= router["time"] %></td>
-              <td class="colstatus"></td>
-              <td class="col2"><%= raw(router["statue_message"]) %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% else %>
-        <h3 class='text-center'>单号有误,请重试</h3>
+  <% if @result.any? %>
+    <table class="table">
+      <% @result["router"].each do |router| %>
+        <tr class="<%= cycle("odd", "even") %>">
+          <td class="col1"><%= router["time"] %></td>
+          <td class="colstatus"></td>
+          <td class="col2"><%= raw(router["statue_message"]) %></td>
+        </tr>
       <% end %>
-    </div>
+    </table>
+  <% else %>
+    <h3 class='text-center'>单号有误,请重试</h3>
+  <% end %>
+</div>
