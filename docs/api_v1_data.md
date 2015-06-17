@@ -33,26 +33,6 @@ description: 用户在h5选座页面点击某个座位时发起请求
 
 --------
 
-## 物流查询接口
-[/api/v1/express_detail]()
-
-type `GET`
-
-description: 查询顺丰物流详情
-
-必要参数
-```javascript
-   { code: 432423 //快递单号 }
-```
-
-成功时返回
-```javascript
-   { 物流查询的h5页面 }
-```
-
-
---------
-
 ## 启动页广告
 [/api/v1/startup]()
 

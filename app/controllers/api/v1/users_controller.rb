@@ -30,7 +30,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def verification
     mobile = params[:mobile]
-    if !verify_phone?(mobile)
+    unless verify_phone?(mobile)
       return error_json "手机号码格式不对!"
     end
 
@@ -55,11 +55,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
           return error_json "短信发送失败，请再次获取"
         end
       else
-        if true
-          render json: {msg: "ok"}, status: 200
-        else
-          return error_json "短信发送失败，请再次获取"
-        end
+        render json: {msg: "ok"}, status: 200
       end
     end
   end
@@ -102,7 +98,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def follow_subject
-    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert Show)
+    return error_json("params[:subject_type] error") unless params[:subject_type].in? %W(Star Concert Show)
     subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin
@@ -115,7 +111,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def unfollow_subject
-    return error_json("params[:subject_type] error") if !params[:subject_type].in? %W(Star Concert Show)
+    return error_json("params[:subject_type] error") unless params[:subject_type].in? %W(Star Concert Show)
     subject = Object::const_get(params[:subject_type]).where(id: params["subject_id"]).first
     return error_json("could not find subject") if subject.blank?
     begin

@@ -1,10 +1,8 @@
 <%# encoding: utf-8 %>
 
-  <%= form_for [:operation, stadium], class: 'form-horizontal' do |f| %>
-    <div class="form-group">
-      <%= f.label :name, '场馆名' %>
-      <%= f.text_field :name %>
-    </div>
+  <%= simple_form_for [:operation, stadium] do |f| %>
+    <%= f.association :city, label_method: :name, value_method: :id, label: '城市', input_html: {id: 'stadium_city_select'} %>
+    <%= f.input :name, label: '场馆名' %>
     <div class="form-group">
       <%= f.label :address, '场馆地址' %>
       <%= f.text_field :address %>
@@ -20,12 +18,11 @@
     <div class="form-group">
       <div id="map"></div>
     </div>
-    <%= f.hidden_field :city_id, value: city.id %>
     <div class="form-group">
       <%= f.submit "提交", class: 'btn btn-primary' %>
     </div>
   <% end %>
-  <%= hidden_field_tag 'city_name', city.name %>
+  <%= hidden_field_tag 'city_name', (@city.name if @city) %>
 
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=798886ba701989c1cbcf271aaa944ccc"></script>
 
@@ -104,22 +101,35 @@
        addmarker(geocode[i]);
     }
     map.setFitView();
-    getMarkerPosition(newMarker);
+    getMarkerPosition(newMarker)
+    getMarkerDragendPosition(newMarker);
 	}
 
-  function getMarkerPosition(m){
+  function getMarkerDragendPosition(m){
     AMap.event.addListener(m,'dragend',function(){
-      position = m.getPosition()
-      $("#stadium_longitude").val(position.lng)
-      $("#stadium_latitude").val(position.lat)
+      getMarkerPosition(m)
     });
   }
 
+  function getMarkerPosition(m){
+    position = m.getPosition()
+    $("#stadium_longitude").val(position.lng)
+    $("#stadium_latitude").val(position.lat)
+  }
+
   $(document).ready(function(){
+    $("#stadium_city_select").attr("data-live-search", true)
+    $("#stadium_city_select").selectpicker("refresh")
+    $("#stadium_city_select").on("change", function(e){
+      select = $(e.currentTarget)
+      selected_option = select.find("option:selected")
+      $('#city_name').val(selected_option.text())
+    });
+
     AMap.event.addListener(map,'complete',function(){
       map.setZoom(14)
       initmarker()
-      getMarkerPosition(marker)
+      getMarkerDragendPosition(marker)
     });
 
     $(".get_geo").on("click", function(){

@@ -5,13 +5,16 @@ class Operation::StadiumsController < Operation::ApplicationController
   load_and_authorize_resource
 
   def index
-    @city = City.find params[:city_id]
-    @stadiums = @city.stadiums
+    if params[:q]
+      city = City.where('name like ?', "%#{params[:q]}%").first
+      @stadiums = city ? city.stadiums.page(params[:page]) : Stadium.where('name like ?', "%#{params[:q]}%")
+    else
+      @stadiums = Stadium.page(params[:page])
+    end
   end
 
   def new
     @stadium = Stadium.new
-    @city = City.find params[:city_id]
   end
 
   def create
@@ -24,6 +27,7 @@ class Operation::StadiumsController < Operation::ApplicationController
   end
 
   def edit
+    @city = @stadium.city
   end
 
   def update

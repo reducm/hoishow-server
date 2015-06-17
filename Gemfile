@@ -95,13 +95,17 @@ group :development, :test do
   gem 'thin'
   gem 'zeus-parallel_tests'
   gem 'parallel_tests'
+end
 
+group :development do
   gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-sidekiq'
   gem 'capistrano-passenger'
+
+  gem 'guard-livereload', '~> 2.4', require: false
 end
 
 # error notify
