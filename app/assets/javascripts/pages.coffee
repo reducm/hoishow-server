@@ -22,3 +22,21 @@ $ ->
       direction: "vertical"
     })
 
+  $('.shareconcert').onepage_scroll
+    sectionContainer: '.page'
+    pagination: 'false'
+    beforeMove: (index) ->
+      switch index
+        when 1 
+         $(".top").show()
+         $(".detailrank").show()
+         $('.toprank').show()
+         $('.allrank').hide()
+      return
+
+  $('.detailrank').click ->
+    $('#top').slideUp()
+    $('.detailrank').hide()
+    $('.toprank').hide()
+    $('.allrank').show()
+

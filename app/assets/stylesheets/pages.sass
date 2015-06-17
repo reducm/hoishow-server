@@ -1,3 +1,5 @@
+$green: #73CC20
+$gray: #6A6A6A
 .sharing_show
   position: relative
   z-index: 1
@@ -5,21 +7,6 @@
     position: relative
     img
       width: 100%
-    .voters_count
-      position: absolute
-      width: 100%
-      height: 30%
-      background-color: rgba(0, 0, 0, 0.4)
-      bottom: 0
-      color: #fff
-      text-align: right
-      font-size: 20px
-      padding-right: 7%
-      &:after
-        content: ""
-        display: inline-block
-        height: 100%
-        vertical-align: middle
   .content
     .intro
       padding-top: 10px
@@ -88,69 +75,88 @@
   width: 100%
   height: 100%
 
-.sharing_concert
-  position: relative
-  .top
-    position: relative
-    img
-      width: 100%
-    .voters_count
-      position: absolute
-      width: 100%
-      height: 15%
-      background-color: rgba(0, 0, 0, 0.3)
-      bottom: 0
-      color: #fff
-      text-align: right
-      font-size: 22px
-      padding-right: 7%
-  .content
-    background: url(/img_background.png)
-    .intro
-      padding-top: 10px
-      .concert_city_rank
-        margin: 20px
+.fixedbg
+  width: 100%
+  height: 100%
+  background: url(/img_background.png) top center no-repeat
+  background-size: cover
+  background-attachment: fixed
+  .shareconcert
+    .sharing_concert
+      position: relative
+      .top
+        position: relative
+        img
+          width: 100%
+      .content
+        .intro
+          .concert_city_rank
+            margin: 10%
+            color: #fff
+            label
+              font-size: 25px
+              font-weight: normal
+        .city_rank_info
+          width: 90%
+          margin: auto
+          ul li.list-group-item
+            background-color: rgba(255,255,255,0.8) !important
+            border: none
+            border-bottom: 1px solid rgba(106, 106, 106,.3)
+            margin-bottom: 0
+            color: $gray
+            .city_name
+              font-size: 16px
+              text-align: center
+              display: inline-block
+              width: 25%
+            .vote_count
+              font-size: 15px
+              display: inline-block
+              margin-left: 3px
+            .progress_bar
+              display: inline-block
+              width: 45%
+              height: 13px
+              background-color: $green
+              border-radius: 4px
+        .allrank
+          display: none
+      .detailrank
+        width: 70%
+        margin: 0 auto
+        color: white
+        background: #40209B
+        height: 40px
+        line-height: 40px
+        letter-spacing: 4px
+        border-radius: 6px
+        text-align: center
+        font-size: 18px
+      .doubledown
+        width: 100%
+        position: absolute
+        bottom: 2%
+        text-align: center
+        color: #8B8B8B
+    .vote_part
+      padding-top: 20%
+      img
+        width: 30%
+        height: 30%
+      p
+        margin: auto
+        margin-top: 10%
+        width: 90%
+        font-size: 18px
         color: #fff
-        label
-          font-size: 25px
-    .city_rank_info
-      width: 90%
-      margin: auto
-      ul li.list-group-item
-        background-color: rgba(255,255,255,0.8) !important
-        border: none
-        border-bottom: 1px
-        .city_name
-          font-size: 16px
-          text-align: center
-          display: inline-block
-          width: 25%
-        .vote_count
-          font-size: 15px
-          display: inline-block
-          margin-left: 3px
-        .progress_bar
-          display: inline-block
-          width: 45%
-          height: 13px
-          background-color: rgba(0,255,0,0.4) !important
-  .vote_part
-    margin-top: 50px
-    img
-      width: 30%
-      height: 30%
-    p
-      margin: auto
-      margin-top: 25px
-      width: 70%
-      font-size: 18px
-      color: #fff
-    .vote_button
-      font-size: 20px
-      width: 180px
-      margin-top: 25px
-      margin-bottom: 75px
-
+      .vote_button
+        font-size: 20px
+        width: 70%
+        margin-top: 20%
+        background: $green
+        border: $green
+        border-radius: 6px
 
 .download_app
   width: 100%
@@ -225,3 +231,19 @@
     background-size: cover
     background-repeat: no-repeat
     background-position: center center
+
+.voters_count
+  position: absolute
+  width: 100%
+  height: 30%
+  background-color: rgba(0, 0, 0, 0.4)
+  bottom: 0
+  color: #fff
+  text-align: right
+  font-size: 20px
+  padding-right: 7%
+  &:after
+    content: ""
+    display: inline-block
+    height: 100%
+    vertical-align: middle
