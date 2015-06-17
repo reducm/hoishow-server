@@ -16,7 +16,7 @@ class Api::V1::ApplicationController < ApplicationController
 
     if @auth.blank?
       return error_json "no permission"
-    end 
+    end
   end
 
   #无用户参数信息时会直接返回403错误
@@ -26,12 +26,13 @@ class Api::V1::ApplicationController < ApplicationController
       return error_json("no_api_token_or_mobile!")
     end
     @user = get_user_from_params(params[:api_token], params[:mobile])
-    return error_json("api_token_wrong") if @user.blank?
+
     if verify_block?(@user)
-      @user.update(api_token:SecureRandom.hex(16))
       render json: {errors: "账户被锁定，请联系管理员"}, status: 406
       return false
     end
+
+    return error_json("api_token_wrong") if @user.blank?
     @user
   end
 
@@ -60,7 +61,7 @@ class Api::V1::ApplicationController < ApplicationController
 
     if verify_block?(@admin)
       return error_json "账户被锁定，请联系管理员"
-    elsif @admin.admin_type != "ticket_checker" 
+    elsif @admin.admin_type != "ticket_checker"
       return error_json "账户无验票权限"
     end
   end
