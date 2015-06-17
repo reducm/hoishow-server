@@ -27,6 +27,7 @@ class Operation::StadiumsController < Operation::ApplicationController
   end
 
   def edit
+    @city = @stadium.city
   end
 
   def update
