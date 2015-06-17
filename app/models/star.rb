@@ -53,7 +53,7 @@ class Star < ActiveRecord::Base
   end
 
   def vote_count
-    concerts.map{|relation| relation.voters_count}.inject(&:+) || 0
+    concerts.map{|concert| concert.voters_count}.inject(&:+) || 0
   end
 
   def status_cn

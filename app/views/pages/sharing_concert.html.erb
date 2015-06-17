@@ -1,26 +1,47 @@
-<div class="sharing_concert">
-  <div class="top">
-    <%= image_tag(@concert.poster_url) %>
-    <div class="voters_count"><%= @concert.followers_count%></div>
-  </div>
-  <div class="content">
-    <div class="intro text-center">
-      <div class='concert_city_rank'><label>Hoishow城市排名</label></div>
+<div class="fixedbg">
+  <div class="shareconcert onepage-wrapper">
+    <div class="sharing_concert page">
+      <div class="top" id="top">
+        <%= image_tag(@concert.poster_url) %>
+        <div class="voters_count"><%= @concert.followers_count%></div>
+      </div>
+      <div class="content">
+        <div class="intro text-center">
+          <div class='concert_city_rank'><label>Hoishow城市排名</label></div>
+        </div>
+        <div class="city_rank_info toprank">
+          <ul class="list-group">
+            <%temp = 1%>
+              <%@cities.each do |city|%>
+                <% if temp < 4 %>
+                  <li class="list-group-item">
+                  <div class="city_name"><%=city["name"]%></div>
+                  <div id='city_<%=temp%>' class="progress_bar"></div>
+                  <div id='city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
+                  </li>
+                  <%temp = temp+1%>
+                <%end%>
+              <% end %>
+          </ul>
+        </div>
+        <div class="city_rank_info allrank">
+          <ul class="list-group">
+            <%temp = 1%>
+            <%@cities.each do |city|%>
+            <li class="list-group-item">
+            <div class="city_name"><%=city["name"]%></div>
+            <div id='city_<%=temp%>' class="progress_bar"></div>
+            <div id='city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
+            </li>
+            <%temp = temp+1%>
+            <%end%>
+          </ul>
+        </div>
+      </div>
+      <div class="detailrank">详细排名</div>
+      <div class="doubledown"><i class="fa fa-3x fa-angle-double-down"></i></div>
     </div>
-    <div class="city_rank_info">
-      <ul class="list-group">
-        <%temp = 1%>
-        <%@cities.each do |city|%>
-        <li class="list-group-item">
-        <div class="city_name"><%=city["name"]%></div>
-        <div id='city_<%=temp%>' class="progress_bar"></div>
-        <div id='city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
-        </li>
-        <%temp = temp+1%>
-        <%end%>
-      </ul>
-    </div>
-    <div class="text-center vote_part">
+    <div class="page text-center vote_part">
       <img src="/web_index_pic/img_logo.png"/>
       <p>想偶像来你的城市开Show?投出你的一票,一起来Show吧!</p>
       <%= link_to "投票", "/mobile/download", class: 'btn btn-success vote_button' %>
