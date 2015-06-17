@@ -8,12 +8,12 @@ class VideoUploader < CarrierWave::Uploader::Base
     storage :file
   end
 
-  ImgUpyunSetting = UpyunSetting["hoishow-file"]
+  FileUpyunSetting = UpyunSetting['hoishow-file']
 
-  self.upyun_username = ImgUpyunSetting["upyun_username"]
-  self.upyun_password = ImgUpyunSetting["upyun_password"]
-  self.upyun_bucket = ImgUpyunSetting["upyun_bucket"]
-  self.upyun_bucket_domain = ImgUpyunSetting["upyun_bucket_domain"]
+  self.upyun_username = FileUpyunSetting['upyun_username']
+  self.upyun_password = FileUpyunSetting['upyun_password']
+  self.upyun_bucket = FileUpyunSetting['upyun_bucket']
+  self.upyun_bucket_domain = FileUpyunSetting['upyun_bucket_domain']
 
   def store_dir
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
