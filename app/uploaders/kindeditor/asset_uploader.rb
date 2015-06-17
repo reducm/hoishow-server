@@ -4,16 +4,16 @@ require 'carrierwave/processing/mime_types'
 
 class Kindeditor::AssetUploader < ImageUploader
 
-  EXT_NAMES = {:image => RailsKindeditor.upload_image_ext,
-               :flash => RailsKindeditor.upload_flash_ext,
-               :media => RailsKindeditor.upload_media_ext,
-               :file  => RailsKindeditor.upload_file_ext}
+  EXT_NAMES = { image: RailsKindeditor.upload_image_ext,
+                flash: RailsKindeditor.upload_flash_ext,
+                media: RailsKindeditor.upload_media_ext,
+                file:  RailsKindeditor.upload_file_ext }
 
   def store_dir
     if Kindeditor::AssetUploader.save_upload_info?
-      "#{RailsKindeditor.upload_store_dir}/#{model.asset_type.to_s.underscore.gsub(/(kindeditor\/)|(_uploader)/, '')}/#{model.created_at.strftime("%Y%m")}"
+      "#{RailsKindeditor.upload_store_dir}/#{model.asset_type.to_s.underscore.gsub(/(kindeditor\/)|(_uploader)/, '')}/#{model.created_at.strftime('%Y%m')}"
     else
-      "#{RailsKindeditor.upload_store_dir}/#{self.class.to_s.underscore.gsub(/(kindeditor\/)|(_uploader)/, '')}/#{Time.now.strftime("%Y%m")}"
+      "#{RailsKindeditor.upload_store_dir}/#{self.class.to_s.underscore.gsub(/(kindeditor\/)|(_uploader)/, '')}/#{Time.now.strftime('%Y%m')}"
     end
   end
 

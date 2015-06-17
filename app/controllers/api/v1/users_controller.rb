@@ -47,11 +47,19 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     else
       code = find_or_create_code(mobile)
 
-      #TODO production 发短信
-      if true #ChinaSMS.to(mobile, "手机验证码为#{code}【单车电影】")[:success]
-        render json: {msg: "ok"}, status: 200
+      # production 发短信
+      if Rails.env.production?
+        if ChinaSMS.to(mobile, "手机验证码为#{code}【Hoishow】")[:success]
+          render json: {msg: "ok"}, status: 200
+        else
+          return error_json "短信发送失败，请再次获取"
+        end
       else
-        return error_json "短信发送失败，请再次获取"
+        if true
+          render json: {msg: "ok"}, status: 200
+        else
+          return error_json "短信发送失败，请再次获取"
+        end
       end
     end
   end
@@ -120,10 +128,10 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_comment
-    params[:content] = replace_sensitive_words(params[:content])
+    content = replace_sensitive_words(params[:content])
     @topic = Topic.where(id: params[:topic_id]).first
     if @topic.present?
-      @comment = @user.create_comment(@topic, params[:parent_id], params[:content])
+      @comment = @user.create_comment(@topic, params[:parent_id], content)
       if @comment.errors.any?
         return error_json("comment create_error: #{@comment.errors.full_messages}")
       end
@@ -165,9 +173,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   def create_topic
-    params[:content] = replace_sensitive_words(params[:content])
-    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: Base64.encode64(params[:content]))
-    @topic.city_id = params[:city_id] if params[:city_id]
+    content = replace_sensitive_words(params[:content])
+    @topic = @user.topics.new(creator_type: User.name, subject_type: params[:subject_type], subject_id: params[:subject_id], content: Base64.encode64(content))
     if !@topic.save
       return error_json(@topic.errors.full_messages)
     end
@@ -241,7 +248,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     end
     address = params[:province] + params[:city] + params[:district] + params[:user_address]
     if @order.update(user_address: address, user_mobile: params[:user_mobile], user_name: params[:user_name])
-        render json: {msg: "ok"}, status: 200
+      render json: {msg: "ok"}, status: 200
     end
   end
 
@@ -261,10 +268,11 @@ class Api::V1::UsersController < Api::V1::ApplicationController
   end
 
   private
+
   def replace_sensitive_words(content)
     sensitive_words = File.read("public/keywords.txt").split("\n")
     sensitive_words.each do |word|
-      content.gsub! word, "*" 
+      content.gsub! word, "*"
     end
     return content
   end

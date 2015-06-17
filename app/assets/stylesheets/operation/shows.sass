@@ -1,2 +1,62 @@
 .show-form
   margin-bottom: 20px
+
+
+
+// 选座图
+.seats-info
+  position: relative
+  .header
+    h3
+      input
+        width: 85px
+    .box-size
+      input
+        width: 40px
+  .nav-control
+    position: fixed
+    top: 8%
+    width: 100px
+    padding: 10px
+    select
+      margin: 10px
+    a
+      margin: 10px
+      color: #fff
+    .set_avaliable
+      background-color: green
+    .set_locked
+      background-color: black
+    .set_unused
+      background-color: grey
+  .seats-box
+    overflow: auto
+    white-space: nowrap
+    .front
+      h4
+        display: inline-block
+        width: 180px
+        height: 30px
+        line-height: 30px
+        background-color: rgb(182, 179, 179)
+    .seats
+      .seat
+        border: 1px solid #000
+        width: 20px
+        height: 20px
+        display: inline-block
+        margin-right: 5px
+      .ui-selecting
+        background-color: #FECA40
+      .ui-selected
+        background-color: #FADAAD
+      .avaliable
+        background-color: green
+      .locked
+        background-color: black
+      .unused
+        background-color: grey
+      .alert
+        border-color: red
+    .submit_seats
+      width: 180px

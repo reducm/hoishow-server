@@ -21,19 +21,12 @@ class ImageUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
-  #def default_url
-  #  # 搞一个大一点的默认图片取名 blank.png 用 FTP 传入图片空间，用于作为默认图片
-  #  # 由于有自动的缩略图处理，小图也不成问题
-  #  # Setting.upload_url 这个是你的图片空间 URL
-  #  "#{UpyunSetting["upyun_upload_url"]}/default.gif#{version_name}"
-  #end
-
   # 覆盖 url 方法以适应“图片空间”的缩略图命名
   def url(version_name = "")
     @url ||= super({})
     version_name = version_name.to_s
     return @url if version_name.blank?
-    if not version_name.in?(image_version_name)
+    unless version_name.in?(image_version_name)
       # 故意在调用了一个没有定义的“缩略图版本名称”的时候抛出异常，以便开发的时候能及时看到调错了
       raise "ImageUploader version_name:#{version_name} not allow."
     end

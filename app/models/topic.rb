@@ -83,12 +83,9 @@ class Topic < ActiveRecord::Base
     end
   end
 
-  def get_user_voted_city_name(user)
-    if relation = user.user_vote_concerts.first
+  def get_user_voted_city_name
+    if creator_type == CREATOR_USER && relation = creator.user_vote_concerts.first
       City.find_by_id(relation.city_id).name
-    else
-      ''
-    end
+    end rescue ''
   end
-
 end
