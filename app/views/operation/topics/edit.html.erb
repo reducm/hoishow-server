@@ -36,7 +36,7 @@
     <h2>回复列表</h2>
     <a data-toggle="modal" data-target="#newModal">新建回复</a>
     <div class="comments_list">
-      <%= render partial: 'operation/comments/table', locals: {comments: @comments} %>
+      <%= render partial: 'operation/comments/table', locals: {comments: @comments, stars: @stars} %>
     </div>
   </div>
   <%= hidden_field_tag "topic_id", @topic.id %>
