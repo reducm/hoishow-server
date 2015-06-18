@@ -1,22 +1,22 @@
 <%# encoding: utf-8 %>
-<div class="header"><h2>查询结果</h2></div>
-<div class="content">
-  <div class='row'>
-    <span class="delivery-name col-xs-4 col-md-4">顺丰速运</span>
-    <span class="delivery-id col-xs-8 col-md-8"><%= @result["delivery_id"] if @result.any? %></span>
+<body class='express_detail'>
+  <div class='content'>
+    <% if @result.any? %>
+      <h2>物流详情</h2>
+      <table>
+        <% @result['router'].each do |router| %>
+          <tr>
+            <td></td>
+            <td class='detail'>
+              <p><%= raw(router['statue_message']) %></p>
+              <p><%= router['time'] %></p>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+      <%= hidden_field_tag 'status', @result['delivery_status'] %>
+    <% else %>
+      <h2>暂无此运单信息，只支持三个月内的运单信息查询</h2>
+    <% end %>
   </div>
-
-  <% if @result.any? %>
-    <table class="table">
-      <% @result["router"].each do |router| %>
-        <tr class="<%= cycle("odd", "even") %>">
-          <td class="col1"><%= router["time"] %></td>
-          <td class="colstatus"></td>
-          <td class="col2"><%= raw(router["statue_message"]) %></td>
-        </tr>
-      <% end %>
-    </table>
-  <% else %>
-    <h3 class='text-center'>单号有误,请重试</h3>
-  <% end %>
-</div>
+</body>
