@@ -9,5 +9,5 @@ $ ->
     if $('#status').val() == '3'
       $('table tr:last').find('td:first').addClass('step-finish')
 
-    td_width = $('body').width() * 0.85
+    td_width = $('body').width() * 0.75
     $('.detail').css('max-width': td_width)
