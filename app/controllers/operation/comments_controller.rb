@@ -6,6 +6,7 @@ class Operation::CommentsController < Operation::ApplicationController
   def index
     params[:page] ||= 1
     @comments = Comment.page(params[:page]).order("created_at desc")
+    @stars = Star.all
   end
 
 end

@@ -7,6 +7,8 @@ $ ->
     refresh_comments_list(topic_id)
 
   $("#newModal").on "click", ".add_comment", (e) ->
+    $("#newModal").on "hidden.bs.modal", () ->
+      location.reload()
     e.preventDefault()
     content = $("#comment_content").val()
     if content.length < 1
@@ -18,6 +20,8 @@ $ ->
       ) # 新建comment
 
   $(".comments_list").on "click", ".reply_btn", ()->
+    $("#replyModal").on "hidden.bs.modal", () ->
+      location.reload()
     $("#replyModal").modal('show')
     $("#parent_id").val($(this).parent().data("id"))
     $("#replyModal .add_comment").on "click", (e) ->
@@ -41,19 +45,21 @@ $ ->
 
   # 回复topic
   $(".topics").on "click", ".reply_btn", ()->
-      $("#replyModal").modal('show')
-      topic_id = $(this).parent().data("id")
-      city_id = $("#city_topics").data('id')
-      $("#replyModal .add_comment").on "click", (e) ->
-        e.preventDefault()
-        content = $("#reply_content").val()
-        if content.length < 1
-          alert("不能发空回复")
-        else
-          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
-            if data.success
-              location.reload()
-          )
+    $("#replyModal").on "hidden.bs.modal", () ->
+      location.reload()
+    $("#replyModal").modal('show')
+    topic_id = $(this).parent().data("id")
+    city_id = $("#city_topics").data('id')
+    $("#replyModal .add_comment").on "click", (e) ->
+      e.preventDefault()
+      content = $("#reply_content").val()
+      if content.length < 1
+        alert("不能发空回复")
+      else
+        $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
+          if data.success
+            location.reload()
+        )
 
   # 删除topic
   $(".topics_index_list").on "click", ".del_topic", ()->

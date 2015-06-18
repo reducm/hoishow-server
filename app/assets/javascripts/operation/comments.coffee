@@ -1,5 +1,7 @@
 $ ->
   $(".comments_index_list").on "click", ".reply_btn", ()->
+    $("#replyModal").on "hidden.bs.modal", () ->
+      location.reload()
     $("#replyModal").modal('show')
     topic_id = $(this).parent().data("topic-id")
     $("#parent_id").val($(this).parent().data("id"))
@@ -24,3 +26,4 @@ $ ->
       )  # 删除comment
 
 
+  
