@@ -16,9 +16,12 @@ class Operation::SessionsController < Operation::ApplicationController
         session[:admin_id] = admin.id
 
         redirect_to operation_root_url
+      else
+        flash[:alert] = '密码错误, 请重新输入'
+        redirect_to operation_signin_url
       end
     else
-      flash[:alert] = "账号或密码错误"
+      flash[:alert] = "账号不存在，请重新输入"
       redirect_to operation_signin_url
     end
   end
