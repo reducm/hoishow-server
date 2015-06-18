@@ -35,7 +35,12 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def new
     @concert = Concert.new
-    @star = Star.find(params[:star_id])
+    if Star.first
+      @star = params[:star_id] ? Star.find(params[:star_id]) : Star.first 
+    else
+      flash[:alert] = "尚未有艺人，请先新建艺人" 
+      redirect_to new_operation_star_url
+    end
   end
 
   def create

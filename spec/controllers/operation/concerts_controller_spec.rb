@@ -36,4 +36,10 @@ RSpec.describe Operation::ConcertsController, :type => :controller do
     end
   end
 
+  context "#new" do
+    it "should redirect to star's new page if no stars in database" do
+      get :new
+      expect(response).to redirect_to new_operation_star_path
+    end
+  end
 end
