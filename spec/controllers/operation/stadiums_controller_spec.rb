@@ -14,9 +14,9 @@ RSpec.describe Operation::StadiumsController, :type => :controller do
   end
 
   context '#index' do
-    it "should get 10 stadiums" do
+    it "should get 10 stadiums per page" do
       get :index, city_id: @city.id
-      expect(assigns(:stadiums).size).to eq 30
+      expect(assigns(:stadiums).size).to eq 10
       expect(response).to render_template("index")
     end
   end
