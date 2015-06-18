@@ -38,10 +38,10 @@ class Comment < ActiveRecord::Base
 
   def subject
     begin
-      Object::const_get(subject_type).where(id: subject_id).first
+      Object::const_get(topic.subject_type).where(id: topic.subject_id).first
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
-      Rails.logger.fatal("subject wrong, comment_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
+      Rails.logger.fatal("subject wrong, comment_id: #{ id }, subject_type: #{topic.subject_type}, subject_id: #{topic.subject_id}")
       nil
     end
   end
