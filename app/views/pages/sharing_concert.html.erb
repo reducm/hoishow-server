@@ -1,6 +1,6 @@
 <div class="fixedbg">
   <div class="shareconcert onepage-wrapper">
-    <div class="sharing_concert page">
+    <div class="sharing_concert section">
       <div class="top" id="top">
         <%= image_tag(@concert.poster_url) %>
         <div class="voters_count"><%= @concert.followers_count%></div>
@@ -41,10 +41,10 @@
       <div class="detailrank">详细排名</div>
       <div class="doubledown"><i class="fa fa-3x fa-angle-double-down"></i></div>
     </div>
-    <div class="page text-center vote_part">
-      <img src="/web_index_pic/img_logo.png"/>
+    <div class="section text-center vote_part">
+      <img src="/web_index_pic/white_logo.png"/>
       <p>想偶像来你的城市开Show?投出你的一票,一起来Show吧!</p>
-      <%= link_to "投票", "/mobile/download", class: 'btn btn-success vote_button' %>
+      <%= link_to "投票", "/mobile/download", class: 'btn btn-success hshow_btn' %>
     </div>
   </div>
 </div>
