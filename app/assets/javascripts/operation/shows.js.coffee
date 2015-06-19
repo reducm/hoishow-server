@@ -145,13 +145,13 @@ $ ->
 
     #设置座位状态
     $('.set_avaliable').on 'click', ()->
-      $('.ui-selected').data('status', 'avaliable').addClass('avaliable').removeClass('locked unused ui-selected blank alert')
+      $('.ui-selected').data('status', 'avaliable').addClass('avaliable').removeClass('locked unused ui-selected blank no-status')
 
     $('.set_locked').on 'click', ()->
-      $('.ui-selected').data('status', 'locked').addClass('locked').removeClass('avaliable unused ui-selected blank alert')
+      $('.ui-selected').data('status', 'locked').addClass('locked').removeClass('avaliable unused ui-selected blank no-status')
 
     $('.set_unused').on 'click', ()->
-      $('.ui-selected').data('status', 'unused').addClass('unused').removeClass('locked avaliable ui-selected blank alert')
+      $('.ui-selected').data('status', 'unused').addClass('unused').removeClass('locked avaliable ui-selected blank no-status')
 
     #设置座位号
     $(".set_seat_no").on 'click', ()->
@@ -184,6 +184,6 @@ $ ->
         return false
       else if $('.blank').length > 0
         alert('还有座位没有设置状态')
-        $('.blank').addClass('alert')
+        $('.blank').addClass('no-status')
       else
         get_seats_info()
