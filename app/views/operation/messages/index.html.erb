@@ -3,7 +3,7 @@
 <div class="nav">
   <h1 class="pull-left">推送通知</h1>
 </div>
-<%= link_to "新建消息推送", new_operation_message_url, class: 'btn btn-success' %>
+<%= link_to "新建消息推送", new_operation_message_url, class: 'btn btn-primary' %>
 
 <div class="messages_list">
   <%= render partial: "table", locals: {messages: @messages} %>
