@@ -55,21 +55,28 @@ $ ->
 
 #show new form
   if $(".new_show").length > 0
-    PICS = {}
+    $('#show_stadium_select').prev().after("<a class='add_stadium' target='_blank'>添加场馆</a>")
     $("#show_city_select").attr("data-live-search", true)
     $("#show_city_select").selectpicker("refresh")
     $("#show_city_select").on "change", (e) ->
       select = $(e.currentTarget)
       selected_option = select.find("option:selected")
       city_id = selected_option.val()
+      $('.add_stadium').attr('href', "/operation/stadiums/new?city_id=#{city_id}")
       $.get("/operation/shows/get_city_stadiums", {city_id: city_id}, (data)->
         result = ""
         for stadium in data
           result += "<option value='#{stadium.id}'>#{stadium.name}</option>"
-        $("#show_stadium_select").html(result)
+
+        if result
+          $("#show_stadium_select").html(result)
+        else
+          $('#show_stadium_select').html('<option>所选城市暂无场馆</option>')
+
         $("#show_stadium_select").attr("data-live-search", true)
         $("#show_stadium_select").selectpicker("refresh")
       )
+
     $(".submit-form").on('click', (e) ->
       e.preventDefault()
       if $("#show_stadium_select").val().length < 1

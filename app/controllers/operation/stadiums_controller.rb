@@ -15,6 +15,7 @@ class Operation::StadiumsController < Operation::ApplicationController
 
   def new
     @stadium = Stadium.new
+    @city = City.find_by_id(params[:city_id])
   end
 
   def create
