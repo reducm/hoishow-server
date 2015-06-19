@@ -37,6 +37,18 @@ class Ability
         can :create, Area
         can :update, Area
 
+        # Banner
+        can :create, Banner
+        can :update, Banner
+
+        # Order
+        can :create, Order
+        can :update, Order
+
+        # Startup
+        can :create, Startup
+        can :update, Startup
+
         basic_read_only
       end
     else
@@ -61,5 +73,15 @@ class Ability
     can :read, City
 
     can :read, Stadium
+
+    can :read, Topic
+
+    can :read, Comment
+
+    can :read, Message
+
+    can :read, Startup
+
+    can :read, Banner
   end
 end
