@@ -17,6 +17,8 @@ $ ->
   star_id = $("#star_id").val()
   if star_id
     $(".add_topic").on "click", ()->
+      $("#topicModal").on "hidden.bs.modal", () ->
+        location.reload()
       $("#topicModal").modal('show')
       $("#topicModal .create_topic").on "click", (e)->
         e.preventDefault()
@@ -31,6 +33,8 @@ $ ->
     # 创建topic
 
     $("#star_topics").on "click", ".reply_btn", ()->
+      $("#replyModal").on "hidden.bs.modal", () ->
+        location.reload()
       $("#replyModal").modal('show')
       topic_id = $(this).parent().data("id")
       $("#replyModal .add_comment").on "click", (e) ->

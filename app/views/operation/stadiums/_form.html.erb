@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
   <%= simple_form_for [:operation, stadium] do |f| %>
-    <%= f.association :city, label_method: :name, value_method: :id, label: '城市', input_html: {id: 'stadium_city_select'} %>
+    <%= f.association :city, label_method: :name, value_method: :id, label: '城市', input_html: {id: 'stadium_city_select'}, selected: @city.try(:id) %>
     <%= f.input :name, label: '场馆名' %>
     <div class="form-group">
       <%= f.label :address, '场馆地址' %>
@@ -22,7 +22,7 @@
       <%= f.submit "提交", class: 'btn btn-primary' %>
     </div>
   <% end %>
-  <%= hidden_field_tag 'city_name', (@city.name if @city) %>
+  <%= hidden_field_tag 'city_name', @city.try(:name) %>
 
   <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=798886ba701989c1cbcf271aaa944ccc"></script>
 

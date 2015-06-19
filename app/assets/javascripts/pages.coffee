@@ -38,5 +38,6 @@ $ ->
     $('.toprank').hide()
     $('.allrank').show()
 
+
   $(".doubledown i").click ->
     $.fn.fullpage.moveSectionDown()
