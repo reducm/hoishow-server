@@ -1,9 +1,22 @@
 <%# encoding: utf-8 %>
 
-<div class="nav">
+<div class="nav edit_show">
   <h2>编辑演出</h2>
   <h4>演出名称: <%= @show.name %></h4>
   <%= hidden_field_tag "show_id", @show.id %>
+  <div>
+    <label>参演艺人</label>
+    <div class='stars'>
+      <% @show.stars.each do |star| %>
+        <span data-id="<%= star.id %>" class='btn btn-default'><%= star.name %></span>
+        <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-info del_star' %>
+      <% end %>
+    </div>
+    <div class="form-group">
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
+      <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-success add_star' %>
+    </div>
+  </div>
   <%= simple_form_for [:operation, @show], html: {class: 'show-form'} do |f| %>
     <div class='form-group'>
       <%= f.check_box :is_display %>
@@ -12,21 +25,21 @@
       <%= f.label :ticket_type, @show.ticket_type_cn %>
     </div>
     <%= f.input :name, label: "演出名称" %>
-    <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
     <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: @show.status, label: '演出购票状态' %>
-      <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
+    <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
+    <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
     <div class="form-group">
-      <%if @show.poster_url%>
+      <% if @show.poster_url %>
         <%= label_tag "当前演出海报" %>
         <%= image_tag(@show.poster_url, size: "400x300")  %>
-      <%end%>
+      <% end %>
       <%= f.input :poster, label: "上传演出海报" %>
     </div>
     <div class="form-group">
-      <%if @show.ticket_pic_url%>
+      <% if @show.ticket_pic_url %>
         <%= label_tag "当前门票图片" %>
         <%= image_tag(@show.ticket_pic_url, size: "400x300")  %>
-      <%end%>
+      <% end %>
       <%= f.input :ticket_pic, label: "上传门票图片" %>
     </div>
     <div class="form-group">
@@ -36,10 +49,10 @@
     <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
     <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true, label: '场馆' %>
     <div class="form-group">
-      <%if @show.stadium_map_url %>
+      <% if @show.stadium_map_url %>
         <%= label_tag "当前场馆地图" %>
         <%= image_tag(@show.stadium_map, size: "400x200") %>
-    <%end%>
+    <% end %>
     </div>
     <%= f.input :stadium_map, label: '上传场馆地图' %>
     <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: @show.seat_type, label: '选座设置' %>
@@ -68,29 +81,3 @@
     </table>
   </div>
 </div>
-
-
-<script type="text/javascript">
-  (function($){
-    $('.add_area').on("click", function(){
-      name = prompt("请输入区域名称")
-      $.post("/operation/shows/<%= @show.id %>/new_area", {area_name: name}, function(data){
-        $(".areas tbody").html(data)
-      })
-    })
-
-    $('.areas').on("click", ".del_area", function(){
-      if(confirm("确定要删除该区域吗?")){
-        area_id = $(this).parent().data('id')
-        if(area_id){
-          $.post("/operation/shows/<%= @show.id %>/del_area", {area_id: area_id, _method: 'delete'}, function(data){
-            $(".areas tbody").html(data)
-          })
-        }
-        else{
-          $(this).parents('tr').remove()
-        }
-      }
-    })
-  })(jQuery);
-</script>

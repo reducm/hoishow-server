@@ -55,6 +55,20 @@ $ ->
 
 #show new form
   if $(".new_show").length > 0
+    $('.add_star').on 'click', ()->
+      $selected = $('#select_star option:selected')
+      if $selected.val()
+        star_id = $selected.val()
+        star_name = $selected.text()
+        $selected.remove()
+        $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-info'>删除</a>")
+
+    $('.stars').on 'click', '.del_star', ()->
+      $span = $(this).prev()
+      $('#select_star').append("<option value='#{$span.data('id')}'>#{$span.text()}</option>")
+      $span.remove()
+      $(this).remove()
+
     $('#show_stadium_select').prev().after("<a class='add_stadium' target='_blank'>添加场馆</a>")
     $("#show_city_select").attr("data-live-search", true)
     $("#show_city_select").selectpicker("refresh")
@@ -77,36 +91,75 @@ $ ->
         $("#show_stadium_select").selectpicker("refresh")
       )
 
-    $(".submit-form").on('click', (e) ->
+    $(".submit-form").on 'click', (e) ->
       e.preventDefault()
       if $("#show_stadium_select").val().length < 1
         alert('场馆不能为空，请重新选择')
       else
-        $(this).parents('form').submit()
-    )
+        ids = $('.stars span').map(()->
+          return $(this).data('id')
+        ).toArray().join(',')
+        $form = $(this).parents('form')
+        $form.append("<input type='hidden' value='#{ids}' name='star_ids'/>")
+        $form.submit()
 
-  #change area data
-  $("#show_areas").on "click", ".change_show_area_data", () ->
-    area_id = $(this).parent().data("id")
+  if $('.edit_show').length > 0
     show_id = $("#show_id").val()
-    price = $(".price_#{area_id} input").val()
-    area_name = $(".area_name_#{area_id} input").val()
-    seats_count = $(".seats_count_#{area_id} input").val()
-    sold_tickets = $(".sold_tickets_#{area_id}").text()
-    if (parseFloat(price) <= 0)
-      alert("价格必须为数字")
-      return false
-    if (parseInt(seats_count) <= 0)
-      alert("座位数必须为整数")
-      return false
-    if parseInt(seats_count) < parseInt(sold_tickets)
-      alert("座位数不能少于售出票数")
-    else
-      $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
-        $("#show_area").html(data)
-        alert("修改成功")
-      )
 
+    $('.add_star').on 'click', ()->
+      star_id = $("#select_star").val()
+      $.post("/operation/shows/#{show_id}/add_star", {star_id: star_id}, (data)->
+        if data.success
+          location.reload()
+      )
+    $('.stars').on 'click', '.del_star', ()->
+      star_id = $(this).data("id")
+      if confirm('确定要删除该艺人吗')
+        $.post("/operation/shows/#{show_id}/del_star", {star_id: star_id, _method: 'delete'}, (data)->
+          if data.success
+            location.reload()
+        )
+
+
+    $('.add_area').on 'click', ()->
+      name = prompt('请输入区域名称')
+      if name.length > 0
+        $.post("/operation/shows/#{show_id}/new_area", {area_name: name}, (data)->
+          $('.areas tbody').html(data)
+        )
+      else
+        alert('区域名不能为空')
+
+    $('.areas').on 'click', '.del_area', ()->
+      if confirm('确定要删除该区域吗')
+        area_id = $(this).parent().data('id')
+        if area_id
+          $.post("/operation/shows/#{show_id}/del_area", {area_id: area_id, _method: 'delete'}, (data)->
+            $('.areas tbody').html(data)
+          )
+        else
+          $(this).parents('tr').remove()
+
+    #change area data
+    $("#show_areas").on "click", ".change_show_area_data", () ->
+      area_id = $(this).parent().data("id")
+      price = $(".price_#{area_id} input").val()
+      area_name = $(".area_name_#{area_id} input").val()
+      seats_count = $(".seats_count_#{area_id} input").val()
+      sold_tickets = $(".sold_tickets_#{area_id}").text()
+      if (parseFloat(price) <= 0)
+        alert("价格必须为数字")
+        return false
+      if (parseInt(seats_count) <= 0)
+        alert("座位数必须为整数")
+        return false
+      if parseInt(seats_count) < parseInt(sold_tickets)
+        alert("座位数不能少于售出票数")
+      else
+        $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
+          $("#show_area").html(data)
+          alert("修改成功")
+        )
 
   # 删除topic
   $(".show_show_topics_list").on "click", ".del_topic", ()->
