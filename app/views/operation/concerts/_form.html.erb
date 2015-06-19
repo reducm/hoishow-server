@@ -8,6 +8,7 @@
       <span class="btn btn-default"><%= star[0] + " "%></span><button data-star-id="<%= star[1] %>" class="btn btn-info remove_star" data-confirm="确定删除此艺人吗？">删除</button>
     <%end%>
   </div>
+  <p></p>
   <div>
     <div class="form-group">
       <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}, ([star.name, star.id] if params[:action] == 'new')) , class: "form-control chooselist" %>
