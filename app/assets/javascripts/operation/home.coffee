@@ -1,52 +1,42 @@
+set_recent_data = (users_array, votes_array, orders_array) ->
+  option =
+    title :
+      text: '近期数据汇总'
+    tooltip :
+      trigger: 'axis'
+    legend:
+      data:['新增用户量','成交总金额','新增投票数']
+    calculable : false
+    xAxis : [
+      type : 'category'
+      data : ['6天前','5天前','4天前','3天前','2天前','昨天','今天']
+    ]
+    yAxis : [
+      type : 'value'
+    ]
+    series : [
+      {
+      name:'新增用户量'
+      type:'line'
+      data:users_array
+      },
+      {
+      name:'成交总金额'
+      type:'line'
+      data:orders_array
+      },
+      {
+      name:'新增投票数'
+      type:'line'
+      data:votes_array
+      }
+    ]
+
+  homeChart = echarts.init(document.getElementById("recent_data"))
+  homeChart.setOption(option)
+
 $ ->
-  if $('#home').length > 0
-    # comment回复
-    $(".home_comments_list").on "click", ".reply_btn", ()->
-      $("#replyModal").modal('show')
-      topic_id = $(this).parent().data("topic-id")
-      $("#parent_id").val($(this).parent().data("id"))
-      $("#topic_id").val(topic_id)
-      $("#replyModal .add_comment").on "click", (e) ->
-        e.preventDefault()
-        content = $("#reply_content").val()
-        if content.length < 1
-          alert("不能发空回复")
-        else
-          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val(), parent_id: $("#parent_id").val()}, (data)->
-            if data.success
-              location.reload()
-          )
-
-    # 删除comment
-    $(".home_comments_list").on "click", ".del_comment", ()->
-      if confirm("确定要删除?")
-        topic_id = $(this).parent().data("topic-id")
-        $.post("/operation/topics/#{topic_id}/destroy_comment", {_method: 'delete', comment_id: $(this).parent().data("id")}, (data)->
-          if data.success
-            location.reload()
-        )
-
-    # 回复topic
-    $(".home_topics_list").on "click", ".reply_btn", ()->
-      $("#replyModal").modal('show')
-      topic_id = $(this).parent().data("topic-id")
-      $("#topic_id").val(topic_id)
-      $("#replyModal .add_comment").on "click", (e) ->
-        e.preventDefault()
-        content = $("#reply_content").val()
-        if content.length < 1
-          alert("不能发空回复")
-        else
-          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val() }, (data)->
-            if data.success
-              location.reload()
-          )
-
-    # 删除topic
-    $(".home_topics_list").on "click", ".del_topic", ()->
-      if confirm("确定要删除?")
-        topic_id = $(this).parent().data("topic-id")
-        $.post("/operation/topics/#{topic_id}/destroy_topic", {_method: 'delete'}, (data)->
-          if data.success
-            location.reload()
-        )
+  users_array = $("#recent_data").data("users")
+  orders_array = $("#recent_data").data("orders")
+  votes_array = $("#recent_data").data("votes")
+  set_recent_data(users_array, orders_array, votes_array)
