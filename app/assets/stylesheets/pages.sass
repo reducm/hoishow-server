@@ -1,5 +1,14 @@
 $green: #73CC20
 $gray: #6A6A6A
+.hshow_btn
+  font-size: 20px
+  width: 80%
+  background: $green
+  border: $green
+  border-radius: 6px
+  color: white
+  padding: 10px 0
+
 .sharing_show
   position: relative
   z-index: 1
@@ -10,7 +19,7 @@ $gray: #6A6A6A
   .content
     .intro
       padding-top: 10px
-      margin-bottom: 10%
+      margin-bottom: 5%
       div
         margin: 5px
       label
@@ -43,6 +52,7 @@ $gray: #6A6A6A
     .description
       color: #838383
       display: none
+      text-align: left
   .bottom
     color: #fff
     width: 100%
@@ -50,140 +60,124 @@ $gray: #6A6A6A
     font-size: 20px
     padding-bottom: 10%
     div
-      margin-bottom: 10px
+      margin-bottom: 5%
     h3
       font-size: 18px
       font-weight: normal
       margin-bottom: 15px
     .download-btn
-      border-radius: 6px
       background-color: rgba(255, 157, 2, 0.9)
-      font-size: 18px
-      color: #fff
-      padding: 2% 20%
-      display: block
-      width: 70%
-      margin: 0 auto
-.fixbg
-  background: url(/img_background.png) center top black no-repeat
-  background-size: 100%
-  background-attachment: fixed
-  position: fixed
-  top: 0
-  bottom: 0
-  left: 0
-  width: 100%
-  height: 100%
 
 .fixedbg
   width: 100%
   height: 100%
-  background: url(/img_background.png) top center no-repeat
+  background: url(/img_background.png) center center no-repeat
   background-size: cover
-  background-attachment: fixed
-  .shareconcert
-    .sharing_concert
+  overflow: auto
+
+.shareconcert
+  .sharing_concert
+    position: relative
+    .top
       position: relative
-      .top
-        position: relative
-        img
-          width: 100%
-      .content
-        .intro
-          .concert_city_rank
-            margin: 10%
-            color: #fff
-            label
-              font-size: 25px
-              font-weight: normal
-        .city_rank_info
-          width: 90%
-          margin: auto
-          ul li.list-group-item
-            background-color: rgba(255,255,255,0.8) !important
-            border: none
-            border-bottom: 1px solid rgba(106, 106, 106,.3)
-            margin-bottom: 0
-            color: $gray
-            .city_name
-              font-size: 16px
-              text-align: center
-              display: inline-block
-              width: 25%
-            .vote_count
-              font-size: 15px
-              display: inline-block
-              margin-left: 3px
-            .progress_bar
-              display: inline-block
-              width: 45%
-              height: 13px
-              background-color: $green
-              border-radius: 4px
-        .allrank
-          display: none
-      .detailrank
-        width: 70%
-        margin: 0 auto
-        color: white
-        background: #40209B
-        height: 40px
-        line-height: 40px
-        letter-spacing: 4px
-        border-radius: 6px
-        text-align: center
-        font-size: 18px
-      .doubledown
-        width: 100%
-        position: absolute
-        bottom: 2%
-        text-align: center
-        color: #8B8B8B
-    .vote_part
-      padding-top: 20%
       img
-        width: 46%
-        margin-bottom: 5%
-      p
-        margin: auto
-        margin-top: 10%
+        width: 100%
+    .content
+      .intro
+        padding: 10% 0
+        .concert_city_rank
+          color: #fff
+          label
+            font-size: 25px
+            font-weight: normal
+      .city_rank_info
         width: 90%
-        font-size: 18px
-        color: #fff
-      .vote_button
-        font-size: 20px
-        width: 70%
-        margin-top: 20%
-        background: $green
-        border: $green
-        border-radius: 6px
+        margin: auto
+        ul li.list-group-item
+          background-color: rgba(255,255,255,0.8) !important
+          border: none
+          border-bottom: 1px solid rgba(106, 106, 106,.3)
+          margin-bottom: 0
+          color: $gray
+          .city_name
+            font-size: 16px
+            text-align: center
+            display: inline-block
+            width: 25%
+          .vote_count
+            font-size: 15px
+            display: inline-block
+            margin-left: 3px
+          .progress_bar
+            display: inline-block
+            width: 45%
+            height: 13px
+            background-color: $green
+            border-radius: 4px
+      .allrank
+        display: none
+    .detailrank
+      width: 70%
+      margin: 0 auto
+      color: white
+      background: #40209B
+      height: 40px
+      line-height: 40px
+      letter-spacing: 4px
+      border-radius: 6px
+      text-align: center
+      font-size: 18px
+    .doubledown
+      width: 100%
+      position: absolute
+      bottom: 2%
+      text-align: center
+      color: #8B8B8B
+  .vote_part
+    padding-top: 20%
+    img
+      width: 46%
+      margin-bottom: 5%
+    p
+      margin: auto
+      margin-top: 10%
+      width: 90%
+      font-size: 18px
+      color: #fff
+    .hshow_btn
+      margin-top: 20%
 
 .download_app
   width: 100%
   height: 100%
   position: absolute
-  background: url(/img_downloadbackground.png)
+  background: url(/img_downloadbackground.png) center top
   background-repeat: no-repeat
   background-size: cover
   .icon_img
     margin-top: 20%
     .hoishow_icon_img
       width: 35%
+      margin-bottom: 5%
     p
-      font-size: 1.5em
+      font-size: 1.3em
       color: #fff
-    .download_button
-      font-size: 1.5em
-      width: 50%
+    .hshow_btn
+      margin: 10% 0
+
   .star_icon
-    margin-top: 10%
     p
       font-size: 1.5em
       color: #fff
+      margin-bottom: 5%
     .star_icon_div
-      img
-        width: 20%
-        margin: 2%
+      .photodiv
+        width: 25%
+        float: left
+        text-align: center
+        img
+          width: 62px
+          height: 62px
 
 .page_index
   .page1
