@@ -45,13 +45,21 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   def create
     @concert = Concert.new(concert_attributes)
-    star = Star.find(params[:star_id])
-    if @concert.save && star
-      star.hoi_concert(@concert)
+    if @concert.save
+      params[:star_ids].split(',').to_a.each do |star_id|
+        star = Star.find(star_id)
+        if star
+          star.hoi_concert(@concert)
+        else
+          flash[:alert] = "获取艺人失败" 
+          render action: 'new'
+        end
+      end
+      redirect_to action: :index
     else
       flash[:alert] = @concert.errors.full_messages
+      render action: 'new'
     end
-    redirect_to action: :index
   end
 
   def edit
@@ -170,7 +178,7 @@ class Operation::ConcertsController < Operation::ApplicationController
 
   private
   def concert_attributes
-    params.require(:concert).permit(:name, :is_show, :status, :description, :poster, :description_time)
+    params.require(:concert).permit(:name, :is_show, :status, :description, :poster, :description_time, :star_ids)
   end
 
   def get_concert
