@@ -372,6 +372,8 @@ $ ->
 
     $("#profile").on "click", ".add_topic", (e)->
       e.preventDefault()
+      $("#topicModal").on "hidden.bs.modal", () ->
+        location.reload()
       $("#topicModal").modal('show')
       city_id = $("#city_topics").data("id")
       $("#topicModal .create_topic").on "click", (e)->
@@ -385,22 +387,6 @@ $ ->
               location.reload()
           )
     # 创建topic
-
-    # 回复topic
-    $(".topics").on "click", ".reply_btn", ()->
-      $("#replyModal").modal('show')
-      topic_id = $(this).parent().data("id")
-      city_id = $("#city_topics").data('id')
-      $("#replyModal .add_comment").on "click", (e) ->
-        e.preventDefault()
-        content = $("#reply_content").val()
-        if content.length < 1
-          alert("不能发空回复")
-        else
-          $.post("/operation/topics/#{topic_id}/add_comment", {content: content, creator: $("#reply_creator").val()}, (data)->
-            if data.success
-              location.reload()
-          )
 
     # 删除topic
     $(".city_voted_data_topics_list").on "click", ".del_topic", ()->

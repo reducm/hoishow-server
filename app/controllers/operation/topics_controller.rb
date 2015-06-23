@@ -8,6 +8,7 @@ class Operation::TopicsController < Operation::ApplicationController
   def index
     params[:page] ||= 1
     @topics = Topic.page(params[:page])
+    @stars = Star.all
   end
 
   def create

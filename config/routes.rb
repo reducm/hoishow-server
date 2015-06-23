@@ -148,6 +148,8 @@ Rails.application.routes.draw do
         get :seats_info
         post :update_seats_info
         post :send_create_message
+        post :add_star
+        delete :del_star
       end
     end
     resources :orders do
