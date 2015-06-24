@@ -4,14 +4,14 @@
   <div id="delete_star">
     <% stars = concert.stars.pluck(:name, :id)%>
     <% stars.each do |star| %>
-      <span class="btn btn-default"><%= star[0] + " "%></span><button data-star-id="<%= star[1] %>" class="btn btn-info remove_star" data-confirm="确定删除此艺人吗？">删除</button>
+      <span class="btn btn-default"><%= star[0] + " "%></span><button data-star-id="<%= star[1] %>" class="btn btn-info remove_star">删除</button>
     <%end%>
   </div>
 <div>
 <p></p>
 <p></p>
     <div class="form-group">
-      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}, ([star.name, star.id] if params[:action] == 'new')) , class: "form-control chooselist" %>
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}, ([star.name, star.id] if params[:action] == 'new')) , class: "form-control chooselist", id: "ddl_stars" %>
       <a class="btn btn-success" id="add_star">添加选中艺人</a>
     </div>
   </div>
@@ -19,6 +19,7 @@
 
 <p></p>
 <%= simple_form_for [:operation, concert ] do |f| %>
+  <%= hidden_field_tag "concert_id", concert.id %>
   <%= f.input :name, required: false, label: "投票名称" %>
   <%= f.input :description_time, label: "投票时间描述" %>
   <%= f.input :status, label: "投票状态", as: :select, default: ( params[:action] == 'edit' ? concert.status_cn : "投票中" ), collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
@@ -30,8 +31,13 @@
   <% end %>
 </div>
   <%= f.input :poster, label: "上传演出海报" %>
-  <%= hidden_field_tag "star_id",  params[:star_id] %>
+  <% if params[:action] == "new" && params[:star_id].present? %>
+    <%= hidden_field_tag "default_star_id", star.id, id: 'hf_default_sid' %>
+    <%= hidden_field_tag "default_star_name", star.name, id: 'hf_default_sname' %>
+  <% end %>
+  <%= hidden_field_tag "star_id", params[:star_id] %>
+  <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
   <%= f.kindeditor :description %>
-  <%= f.button :submit, "确认更新",class: 'marginspace' %>
+  <%= f.button :submit, "确认更新", class: 'marginspace', id: 'submit_concert' %>
 <%end%>
 
