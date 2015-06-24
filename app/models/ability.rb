@@ -8,6 +8,7 @@ class Ability
     elsif user.class.to_s == "Admin"
       if user.admin?
         can :manage, :all
+        can :set_channels
       elsif user.operator?
         # Star
         can :create, Star

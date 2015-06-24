@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150615082015) do
+ActiveRecord::Schema.define(version: 20150624024849) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -190,6 +190,7 @@ ActiveRecord::Schema.define(version: 20150615082015) do
     t.string   "name",       limit: 255
     t.decimal  "price",                    precision: 10, scale: 2
     t.integer  "order_id",   limit: 4
+    t.string   "channels",   limit: 255
   end
 
   add_index "seats", ["show_id", "area_id"], name: "index_seats_on_show_id_and_area_id", using: :btree
@@ -197,11 +198,12 @@ ActiveRecord::Schema.define(version: 20150615082015) do
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
-    t.decimal  "price",                 precision: 6, scale: 2
-    t.datetime "created_at",                                                    null: false
-    t.datetime "updated_at",                                                    null: false
-    t.boolean  "is_sold_out", limit: 1,                         default: false
+    t.decimal  "price",                   precision: 6, scale: 2
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+    t.boolean  "is_sold_out", limit: 1,                           default: false
     t.integer  "seats_count", limit: 4
+    t.string   "channels",    limit: 255
   end
 
   add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree

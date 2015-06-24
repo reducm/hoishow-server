@@ -34,7 +34,7 @@ get_seats_info = ()->
     $li = $(this)
     row_seats = []
     $li.children().each(()->
-      row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price')})
+      row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price'), channel_ids: $(this).data('channel-ids')})
     )
     seats.push(row_seats)
   )
@@ -157,8 +157,47 @@ $ ->
         alert("座位数不能少于售出票数")
       else
         $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
-          $("#show_area").html(data)
+          $('.areas tbody').html(data)
           alert("修改成功")
+        )
+
+    #设置渠道
+    $('.areas').on 'click', '.set_channel', ()->
+      $td = $(this).parent()
+      $('#area_id').val($td.data('id'))
+      $('.channels input[type="checkbox"]').each(()->
+        if $td.data('channels').indexOf($(this).val()) > -1
+          $(this).prop('checked', true)
+        else
+          $(this).prop('checked', false)
+      )
+      $('#setChannelModal').modal('show')
+
+    #全选
+    $('#setChannelModal').on 'click', '#check_all', ()->
+      $('.channels input[type="checkbox"]').prop('checked', $(this).prop('checked'))
+
+    $('#setChannelModal').on 'click', '.channels input[type="checkbox"]', ()->
+      $('#check_all').prop('checked', $('.channels input[type="checkbox"]:checked').length == $('.channels input[type="checkbox"]').length)
+
+    #反选
+    $('#setChannelModal').on 'click', '#anti_all', ()->
+      $('.channels input[type="checkbox"]').each(()->
+        $(this).prop('checked', !this.checked)
+      )
+
+    $('#setChannelModal').on 'click', '.submit_channel', (e)->
+      e.preventDefault()
+      if $('.channels input[type="checkbox"]:checked').length < 1
+        alert('请选择一个渠道')
+      else
+        ids = $('.channels input[type="checkbox"]:checked').map(()->
+                return $(this).val()
+              ).toArray()
+        $.post("/operation/shows/#{show_id}/set_area_channels", {area_id: $('#area_id').val(), ids: ids}, (data)->
+          $('#setChannelModal').modal('hide')
+          $('.areas tbody').html(data)
+          alert('渠道设置成功')
         )
 
   # 删除topic
@@ -231,7 +270,43 @@ $ ->
         else
           alert('价格必须为数字')
 
-    #提交
+    #设置渠道
+    $('.set_channel').on 'click', ()->
+      $seats = $('.ui-selected')
+      if $seats.length < 1
+        alert('必须选中座位才能设置渠道')
+      else
+        $('#setChannelModal').modal('show')
+
+    #全选
+    $('#setChannelModal').on 'click', '#check_all', ()->
+      $('.channels input[type="checkbox"]').prop('checked', $(this).prop('checked'))
+
+    $('#setChannelModal').on 'click', '.channels input[type="checkbox"]', ()->
+      $('#check_all').prop('checked', $('.channels input[type="checkbox"]:checked').length == $('.channels input[type="checkbox"]').length)
+
+    #反选
+    $('#setChannelModal').on 'click', '#anti_all', ()->
+      $('.channels input[type="checkbox"]').each(()->
+        $(this).prop('checked', !this.checked)
+      )
+
+    $('#setChannelModal').on 'click', '.submit_channel', (e)->
+      e.preventDefault()
+      if $('.channels input[type="checkbox"]:checked').length < 1
+        alert('请选择一个渠道')
+      else
+        ids = $('.channels input[type="checkbox"]:checked').map(()->
+                return $(this).val()
+              ).toArray()
+
+        $('.ui-selected').each(()->
+          $(this).data('channel-ids', ids)
+        )
+        $('#setChannelModal input[type="checkbox"]').prop('checked', false)
+        $('#setChannelModal').modal('hide')
+
+    #提交选座图
     $('.submit_seats').on 'click', ()->
       if $('ul.seats span').length < 1
         return false

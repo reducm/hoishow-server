@@ -2,7 +2,7 @@
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search]
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     params[:page] ||= 1
@@ -57,6 +57,16 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
+  def set_area_channels
+    relation = @show.show_area_relations.where(area_id: params[:area_id]).first
+    relation.channels = params[:ids]
+    if relation.save
+      render partial: "area_table", locals:{show: @show}
+    else
+      render json: {success: false}
+    end
+  end
+
   def send_create_message
     concert = @show.concert
     city = City.find(@show.city_id)
@@ -93,7 +103,7 @@ class Operation::ShowsController < Operation::ApplicationController
     relation = @show.show_area_relations.where(area_id: area.id).first_or_create
     relation.update(price: params[:price], seats_count: params[:seats_count])
 
-    render partial: "area_table", locals:{show: @show, stadium: @show.stadium}
+    render partial: "area_table", locals:{show: @show}
   end
 
   def del_area
@@ -106,6 +116,7 @@ class Operation::ShowsController < Operation::ApplicationController
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
     @seats = @area.seats.where(show_id: @show.id)
+    @channels = ApiAuth.other_channels
   end
 
   def update_seats_info
@@ -176,7 +187,7 @@ class Operation::ShowsController < Operation::ApplicationController
     seats_info['seats'].each do |row|
       columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
       row.each do |s|
-        @seat = @show.seats.where(area_id: @area.id).create(row: s['row'], column: s['column'], status: s['seat_status'])
+        @seat = @show.seats.where(area_id: @area.id).create(row: s['row'], column: s['column'], status: s['seat_status'], channels: s['channel_ids'])
         if @seat.status != 'unused'
           if s['seat_no'].blank?
             @seat.update(name: "#{rowId}排#{columnId}座", price: s['price'])

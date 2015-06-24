@@ -150,6 +150,7 @@ Rails.application.routes.draw do
         post :send_create_message
         post :add_star
         delete :del_star
+        post :set_area_channels
       end
     end
     resources :orders do
