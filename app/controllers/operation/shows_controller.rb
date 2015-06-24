@@ -9,13 +9,6 @@ class Operation::ShowsController < Operation::ApplicationController
     @shows = Show.page(params[:page]).order("created_at desc")
   end
 
-  def new
-    @show = Show.new
-    if params[:concert_id]
-      @concert = Concert.find(params[:concert_id])
-    end
-  end
-
   def search
     params[:page] ||= 1
     star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
@@ -24,15 +17,26 @@ class Operation::ShowsController < Operation::ApplicationController
     render :index
   end
 
+  def new
+    @show = Show.new
+    if params[:concert_id]
+      @concert = Concert.find(params[:concert_id])
+    end
+  end
+
   def create
     @show = Show.new(show_params)
-    concert = Concert.find(params[:show][:concert_id])
-    if @show.save! && concert
-      flash[:notice] = "演出创建成功"
-      redirect_to operation_shows_url
+    if params[:show][:concert_id]
+      concert = Concert.find(params[:show][:concert_id])
+      if @show.save! && concert
+        flash[:notice] = "演出创建成功"
+        redirect_to operation_shows_url
+      else
+        flash[:alert] = @show.errors.full_messages
+        redirect_to new_operation_show_url(concert_id: @show.concert_id)
+      end
     else
-      flash[:alert] = @show.errors.full_messages
-      redirect_to new_operation_show_url(concert_id: @show.concert_id)
+      #TODO 直接调用concert那边的逻辑
     end
   end
 
@@ -133,6 +137,28 @@ class Operation::ShowsController < Operation::ApplicationController
       @show.update(is_top: true)
     end
     redirect_to operation_shows_url
+  end
+
+  def add_star
+    @concert = @show.concert
+    star = Star.find_by_id([params[:star_id]])
+    if star
+      star.hoi_concert(@concert)
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
+  end
+
+  def del_star
+    @concert = @show.concert
+    relation = @concert.star_concert_relations.where(star_id: params[:star_id]).first
+    if relation
+      relation.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
+    end
   end
 
   protected

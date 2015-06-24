@@ -22,22 +22,22 @@ $ ->
       direction: "vertical"
     })
 
-  if $('.shareconcert').length > 0
-    $('.shareconcert').onepage_scroll
-      sectionContainer: '.page'
-      pagination: 'false'
-      beforeMove: (index) ->
-        switch index
-          when 1
-           $(".top").show()
-           $(".detailrank").show()
-           $('.toprank').show()
-           $('.allrank').hide()
-        return
+  $(".shareconcert").fullpage({
+    verticalCentered: false
+    afterLoad: (anchorLink, index) ->
+      if index == 2
+        $(".top").show()
+        $(".detailrank").show()
+        $('.toprank').show()
+        $('.allrank').hide()
+  })
 
-    $('.detailrank').click ->
-      $('#top').slideUp()
-      $('.detailrank').hide()
-      $('.toprank').hide()
-      $('.allrank').show()
+  $('.detailrank').click ->
+    $('#top').slideUp()
+    $('.detailrank').hide()
+    $('.toprank').hide()
+    $('.allrank').show()
 
+
+  $(".doubledown i").click ->
+    $.fn.fullpage.moveSectionDown()
