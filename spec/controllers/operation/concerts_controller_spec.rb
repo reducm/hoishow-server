@@ -23,17 +23,20 @@ RSpec.describe Operation::ConcertsController, :type => :controller do
 
   context "#create" do
     before('each') do
-      star = create :star
-      show = create :show
-      user = create :user
-      user.follow_star(star)
+      @star = create :star
     end
 
     it "saves the new concert in the database" do
       expect{
-        post :create, concert: attributes_for(:concert), star_id: 1
+        post :create, concert: attributes_for(:concert), star_ids: @star.id 
       }.to change(Concert, :count).by(1)
     end
   end
 
+  context "#new" do
+    it "should redirect to star's new page if no stars in database" do
+      get :new
+      expect(response).to redirect_to new_operation_star_path
+    end
+  end
 end

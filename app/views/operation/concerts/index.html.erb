@@ -10,9 +10,11 @@
       <%= submit_tag "搜索", class: 'btn btn-default' %>
     <% end %>
   </div>
-</div>
+
+<%= link_to "发布新投票", new_operation_concert_url, class: 'btn btn-primary add-concert' %>
 
 <% if @concerts.any? %>
+<hr />
 <p>
 下载:
   <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
@@ -22,4 +24,5 @@
 
 <div class="concerts_list">
   <%= render partial: "table", locals: {concerts: @concerts} %>
+</div>
 </div>

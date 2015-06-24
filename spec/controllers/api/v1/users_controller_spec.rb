@@ -234,6 +234,14 @@ describe Api::V1::UsersController do
   end
 
   context "#create_comment" do
+    it "should not replace normal words" do
+      normal_content = "通常对包含关键词的信息进行阻断连接、取消或延后显示、替换、人工周杰伦干预等处理。"
+      @topic = create(:topic)
+      @comment = create(:comment)
+      post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: normal_content, format: :json )
+      expect(JSON.parse(response.body)["content"]).to eq normal_content 
+    end
+
     it "should replace sensitive_words" do
       sensitive_content = "通常对包含关键词的信息进行阻断连接、取消或延后显示、替换、人工老江干预等处理。"
       @topic = create(:topic)
