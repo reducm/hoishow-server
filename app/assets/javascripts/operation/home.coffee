@@ -1,4 +1,4 @@
-set_recent_data = (users_array, votes_array, orders_array) ->
+set_recent_data = (users_array, votes_array, orders_array, time_array) ->
   option =
     title :
       text: '近期数据汇总'
@@ -9,7 +9,7 @@ set_recent_data = (users_array, votes_array, orders_array) ->
     calculable : false
     xAxis : [
       type : 'category'
-      data : ['6天前','5天前','4天前','3天前','2天前','昨天','今天']
+      data : time_array
     ]
     yAxis : [
       type : 'value'
@@ -32,11 +32,19 @@ set_recent_data = (users_array, votes_array, orders_array) ->
       }
     ]
 
-  homeChart = echarts.init(document.getElementById("recent_data"))
+  homeChart = echarts.init(document.getElementById("data_collection"))
   homeChart.setOption(option)
 
 $ ->
-  users_array = $("#recent_data").data("users")
-  orders_array = $("#recent_data").data("orders")
-  votes_array = $("#recent_data").data("votes")
-  set_recent_data(users_array, orders_array, votes_array)
+  $.get("/operation/home/get_graphic_data", {time: "this_month"}, (data)->
+    if data.success
+      $(".display-time").text(data.time_type)
+      set_recent_data(data.users_array, data.votes_array, data.orders_array, data.time_array)
+  )
+  $(".select-begin-time a").on "click", ()->
+    id_value = $(this).attr("id")
+    $.get("/operation/home/get_graphic_data", {time: id_value}, (data)->
+      if data.success
+        $(".display-time").text(data.time_type)
+        set_recent_data(data.users_array, data.votes_array, data.orders_array, data.time_array)
+    )
