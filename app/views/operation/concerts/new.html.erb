@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 <div class="nav">
-  <h1><%= @star.name rescue nil %> 发布新投票</h1>
+  <h1><%= @star.name if params[:star_id] %> 发布新投票</h1>
 </div>
 <div class="concert_new_form">
   <%= render partial: "form", locals: {concert: @concert, star: @star} %>
