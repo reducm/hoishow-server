@@ -1,13 +1,18 @@
 #encoding: UTF-8
 class ApiAuth < ActiveRecord::Base
+  APP_IOS = 'hoishowIOS'
+  APP_ANDROID = 'hoishowAndroid'
+
   validates :user, presence: true
   validates :key, presence: true, uniqueness: true
   before_validation :create_key
 
+  scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
+
   def app_platform
-    if self.user == "hoishowAndroid"
+    if self.user == APP_ANDROID
       "android"
-    elsif self.user == "hoishowIOS"
+    elsif self.user == APP_IOS
       "ios"
     end
   end

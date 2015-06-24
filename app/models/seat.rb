@@ -1,4 +1,6 @@
 class Seat < ActiveRecord::Base
+  serialize :channels
+
   belongs_to :show
   belongs_to :area
   belongs_to :order

@@ -15,7 +15,11 @@
             <span class="row-bar pull-left"><%= row + 1 %></span>
             <li>
               <% @seats.where(row: row + 1).each do |seat| %>
-                <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+                <% if seat.channels.present? && !seat.channels.include?('hoishow') %>
+                  <span><i class="locked" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+                <% else %>
+                  <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+                <% end %>
               <% end %>
             </li>
           <% end %>

@@ -3,19 +3,19 @@
 <table class="table table-hover shows">
   <thead>
     <tr>
-      <th>演出艺人</th>
-      <th>演出名称</th>
-      <th>是否显示</th>
-      <th>选座类型</th>
-      <th>购票状态</th>
-      <th>票的类型</th>
-      <th>演出地点</th>
-      <th>演出时间</th>
-      <th>售出票数／总票数</th>
-      <th>操作</th>
+      <th class='text-center'>演出艺人</th>
+      <th class='text-center'>演出名称</th>
+      <th class='text-center'>是否显示</th>
+      <th class='text-center'>选座类型</th>
+      <th class='text-center'>购票状态</th>
+      <th class='text-center'>票的类型</th>
+      <th class='text-center'>演出地点</th>
+      <th class='text-center'>演出时间</th>
+      <th class='text-center'>售出票数／总票数</th>
+      <th class='text-center'>操作</th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class='text-center'>
     <% shows.each do|show| %>
       <% tickets = show.tickets %>
       <tr>
