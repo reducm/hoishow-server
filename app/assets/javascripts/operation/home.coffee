@@ -36,11 +36,12 @@ set_recent_data = (users_array, votes_array, orders_array, time_array) ->
   homeChart.setOption(option)
 
 $ ->
-  $.get("/operation/home/get_graphic_data", {time: "this_month"}, (data)->
-    if data.success
-      $(".display-time").text(data.time_type)
-      set_recent_data(data.users_array, data.votes_array, data.orders_array, data.time_array)
-  )
+  if $("#home").length > 0
+    $.get("/operation/home/get_graphic_data", {time: "this_month"}, (data)->
+      if data.success
+        $(".display-time").text(data.time_type)
+        set_recent_data(data.users_array, data.votes_array, data.orders_array, data.time_array)
+    )
   $(".select-begin-time a").on "click", ()->
     id_value = $(this).attr("id")
     $.get("/operation/home/get_graphic_data", {time: id_value}, (data)->
