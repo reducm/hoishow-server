@@ -1,5 +1,4 @@
 <%# encoding: utf-8 %>
-<%if params[:action] == 'edit'%>
 <div>
   <%= label_tag "star", "参演艺人" %>
   <div id="delete_star">
@@ -16,7 +15,6 @@
     </div>
   </div>
 </div>
-<%end%>
 
 <%= simple_form_for [:operation, concert ] do |f| %>
   <%= hidden_field_tag "concert_id", concert.id %>
@@ -38,6 +36,6 @@
   <%= hidden_field_tag "star_id", params[:star_id] %>
   <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
   <%= f.kindeditor :description %>
-  <%= f.button :submit, "确认更新", class: 'marginspace', id: 'submit_concert' %>
+  <%= f.button :submit, "提交", class: 'marginspace', id: 'submit_concert' %>
 <%end%>
 

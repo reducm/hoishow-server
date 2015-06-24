@@ -36,9 +36,9 @@ class Operation::ConcertsController < Operation::ApplicationController
   def new
     @concert = Concert.new
     if Star.first
-      @star = params[:star_id] ? Star.find(params[:star_id]) : Star.first 
+      @star = params[:star_id] ? Star.find(params[:star_id]) : Star.first
     else
-      flash[:alert] = "尚未有艺人，请先新建艺人" 
+      flash[:alert] = "尚未有艺人，请先新建艺人"
       redirect_to new_operation_star_url
     end
   end
@@ -46,15 +46,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   def create
     @concert = Concert.new(concert_attributes)
     if @concert.save
-      params[:star_ids].split(',').to_a.each do |star_id|
-        star = Star.find(star_id)
-        if star
-          star.hoi_concert(@concert)
-        else
-          flash[:alert] = "获取艺人失败" 
-          render action: 'new'
-        end
-      end
+      Star.where('id in (?)', params[:star_ids].split(',')).each{|star| star.hoi_concert(@concert)}
+      flash[:notice] = '投票创建成功'
       redirect_to action: :index
     else
       flash[:alert] = @concert.errors.full_messages

@@ -11,18 +11,18 @@
     <% end %>
   </div>
 
-<%= link_to "发布新投票", new_operation_concert_url, class: 'btn btn-primary add-concert' %>
+  <%= link_to "发布新投票", new_operation_concert_url, class: 'btn btn-primary add-concert' %>
 
-<% if @concerts.any? %>
-<hr />
-<p>
-下载:
-  <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
-  <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
-</p>
-<% end %>
+  <% if @concerts.any? %>
+    <hr />
+    <p>
+      下载:
+      <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
+      <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
+    </p>
+  <% end %>
 
-<div class="concerts_list">
-  <%= render partial: "table", locals: {concerts: @concerts} %>
-</div>
+  <div class="concerts_list">
+    <%= render partial: "table", locals: {concerts: @concerts} %>
+  </div>
 </div>
