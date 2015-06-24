@@ -113,7 +113,7 @@ $ ->
           location.reload()
       )
     $('.stars').on 'click', '.del_star', ()->
-      star_id = $(this).data("id")
+      star_id = $(this).prev().data("id")
       if confirm('确定要删除该艺人吗')
         $.post("/operation/shows/#{show_id}/del_star", {star_id: star_id, _method: 'delete'}, (data)->
           if data.success

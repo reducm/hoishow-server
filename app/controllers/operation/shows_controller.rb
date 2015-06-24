@@ -26,7 +26,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def create
     @show = Show.new(show_params)
-    if params[:show][:concert_id]
+    if params[:show][:concert_id].present?
       concert = Concert.find(params[:show][:concert_id])
       if @show.save! && concert
         flash[:notice] = "演出创建成功"
@@ -36,7 +36,19 @@ class Operation::ShowsController < Operation::ApplicationController
         redirect_to new_operation_show_url(concert_id: @show.concert_id)
       end
     else
-      #TODO 直接调用concert那边的逻辑
+      concert = Concert.create(name: "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
+      stars = Star.where('id in (?)', params[:star_ids].split(','))
+      binding.pry
+      stars.each {|star| star.hoi_concert(concert)}
+
+      @show.concert_id = concert.id
+      if @show.save! && concert
+        flash[:notice] = "演出创建成功"
+        redirect_to operation_shows_url
+      else
+        flash[:alert] = @show.errors.full_messages
+        redirect_to new_operation_show_url(concert_id: @show.concert_id)
+      end
     end
   end
 
