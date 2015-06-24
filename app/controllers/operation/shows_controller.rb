@@ -37,9 +37,7 @@ class Operation::ShowsController < Operation::ApplicationController
       end
     else
       concert = Concert.create(name: "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
-      stars = Star.where('id in (?)', params[:star_ids].split(','))
-      binding.pry
-      stars.each {|star| star.hoi_concert(concert)}
+      Star.where('id in (?)', params[:star_ids].split(',')).each {|star| star.hoi_concert(concert)}
 
       @show.concert_id = concert.id
       if @show.save! && concert
