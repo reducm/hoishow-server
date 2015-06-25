@@ -261,7 +261,7 @@ $ ->
     dsname = $("#hf_default_sname").val()
     star_ids.push(dsid)
     $("<span>#{dsname}</span>").addClass("btn btn-default").appendTo("#delete_star")
-    $("<button>删除</button>").addClass("btn btn-info remove_star").appendTo("#delete_star")
+    $("<button data-star-id='#{dsid}'>删除</button>").addClass("btn btn-info remove_star").appendTo("#delete_star")
 
 #提交时，将艺人id数组组装成字符串，并传入hidden field
   $("#submit_concert").on "click", (e) ->
@@ -273,7 +273,7 @@ $ ->
     e.preventDefault()
     star_name = $("#ddl_stars option:selected").text()
     star_id = $("#ddl_stars option:selected").val()
-    if concert_id != ""
+    if concert_id
       $.post("/operation/concerts/#{concert_id}/add_star", { star_id: star_id}, (data)->
         if data.success
           location.reload()
@@ -283,15 +283,15 @@ $ ->
         alert("该艺人已选，请不要重复添加")
       else
         $("<span>#{star_name}</span>").addClass("btn btn-default").appendTo("#delete_star")
-        $("<button>删除</button>").addClass("btn btn-info remove_star").appendTo("#delete_star")
+        $("<button data-star-id='#{star_id}'>删除</button>").addClass("btn btn-info remove_star").appendTo("#delete_star")
         star_ids.push(star_id)
-      
+
   #删除明星
   $("#delete_star").on "click", ".remove_star", (e) ->
     e.preventDefault()
     star_id = $(this).data("star-id")
-    if confirm('确定删除此艺人?')
-      if concert_id != ""
+    if concert_id
+      if confirm('确定删除此艺人?')
         $.post("/operation/concerts/#{concert_id}/remove_star", {star_id: star_id, _method: 'delete'}, (data)->
           if data.success
             location.reload()
@@ -349,7 +349,7 @@ $ ->
       refresh_topic_list(concert_id, city_id)
     #查看互动
 
-    
+
 
 
     #更改底数

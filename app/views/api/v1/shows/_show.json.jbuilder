@@ -22,7 +22,7 @@ json.stadium_map show.stadium_map_url || ''
 json.is_followed show.id.in?(@followed_shows)
 json.is_voted @voted_show ? true : false
 json.voters_count show.voters_count
-json.sharing_page mobile_shows_sharing_path(show_id: show.id)
+json.sharing_page mobile_shows_sharing_url(show_id: show.id)
 
 if need_concert
   json.concert { json.partial!("api/v1/concerts/concert", {concert: show.concert}) }
