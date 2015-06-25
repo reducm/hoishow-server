@@ -12,6 +12,14 @@ class Admin < ActiveRecord::Base
     ticket_checker: 2
   }
 
+  def sign_in_api
+    return if self.api_token.present?
+
+    self.api_token = SecureRandom.hex(16)
+    self.last_sign_in_at = DateTime.now
+    save!
+  end
+
   def type_cn
     case admin_type
     when 'admin'

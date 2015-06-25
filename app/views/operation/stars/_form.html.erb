@@ -29,11 +29,6 @@
   <%= f.input :poster, label: "上传海报" %>
 
 <div class="form-group">
-  <%= label_tag "图文编辑" %>
-  <%= f.kindeditor :description %>
-</div>
-
-<div class="form-group">
   <% if star.videos.any? %>
     <% if star.videos.first.valid? %>
       <%= label_tag "视频列表" %>

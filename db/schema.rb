@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624024849) do
+ActiveRecord::Schema.define(version: 20150624091401) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20150624024849) do
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
     t.boolean  "is_block",           limit: 1,   default: false
+    t.string   "api_token",          limit: 255
   end
 
   create_table "api_auths", force: :cascade do |t|
