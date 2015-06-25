@@ -6,6 +6,7 @@ FactoryGirl.define do
     encrypted_password "sha1:oZVXi9YEwM+1ALyFIPA8Zc+KNZsoK6fd\n"
     salt "gtXTUNfxsPc6xuWZqz/m7RK+4geGBnAX"
     last_sign_in_at Time.now
+    api_token "123"
     factory :operator do
       admin_type 1
     end

@@ -27,7 +27,6 @@ Rails.application.routes.draw do
       resources :admins do
         collection do
           post "sign_in"
-          patch "check_tickets"
         end
       end
 
@@ -76,7 +75,12 @@ Rails.application.routes.draw do
       resources :cities
       resources :stadiums
       resources :messages
-      resources :tickets
+      resources :tickets do
+        collection do
+          patch :check_tickets
+          get :get_ticket
+        end
+      end
       resources :areas
       resources :orders, only: [:index, :show] do
         collection do

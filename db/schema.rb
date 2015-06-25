@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20150625034502) do
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
     t.boolean  "is_block",           limit: 1,   default: false
+    t.string   "api_token",          limit: 255
   end
 
   create_table "api_auths", force: :cascade do |t|
