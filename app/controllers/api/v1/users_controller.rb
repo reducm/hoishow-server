@@ -205,6 +205,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         else
           @order = @user.orders.init_from_show(@show)
           @order.set_tickets_and_price(relations)
+          @order.update(buy_origin: @auth.app_platform)
           @relation.reload
           if @show.area_seats_left(@relation.area) == 0
             @relation.update_attributes(is_sold_out: true)
@@ -224,7 +225,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
               seat.with_lock do
                 seat.update(status: :locked, order_id: @order.id)
                 @order.set_tickets_info(seat)
-                @order.update(amount: @order.tickets.sum(:price))
+                @order.update(amount: @order.tickets.sum(:price), buy_origin: @auth.app_platform)
               end
             end
           end

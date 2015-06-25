@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150624024849) do
+ActiveRecord::Schema.define(version: 20150625034502) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -155,6 +155,8 @@ ActiveRecord::Schema.define(version: 20150624024849) do
     t.string   "user_name",    limit: 255
     t.string   "user_mobile",  limit: 255
     t.text     "remark",       limit: 65535
+    t.string   "out_trade_no", limit: 255
+    t.string   "buy_origin",   limit: 255
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
