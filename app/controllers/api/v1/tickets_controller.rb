@@ -13,7 +13,7 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
       if @tickets.any?
         check_ticket_status_and_update
       else
-        return error_json "门票已使用或已过期"
+        return error_json "获取门票失败"
       end
     else
       return error_json "获取票码失败"
@@ -22,9 +22,11 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
 
   private
   def check_ticket_status_and_update
-    @tickets.each do |ticket|
-      unless ticket.update(status: "used", checked_at: Time.now, admin_id: @admin.id) 
-        error_json "网络错误，请重试"
+    Ticket.transaction do
+      @tickets.each do |ticket|
+        unless ticket.update(status: "used", checked_at: Time.now, admin_id: @admin.id) 
+          error_json "网络错误，请重试"
+        end
       end
     end
     render json: {msg: "ok"}, status: 200

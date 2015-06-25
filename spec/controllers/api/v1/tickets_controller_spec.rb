@@ -28,6 +28,11 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
       patch :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
       expect(response.status).to eq 200 
       expect(response.body).to include "ok"
+      @tickets.each do |ticket|
+        ticket.reload
+        expect(ticket.admin_id).to eq @admin.id 
+        expect(ticket.status).to eq "used" 
+      end
     end
 
     it "should fail if ticket is used or refund" do
@@ -35,7 +40,7 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
       @tickets.last.update(status: 3)
       patch :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
       expect(response.status).to eq 403 
-      expect(response.body).to include "门票已使用或已过期"
+      expect(response.body).to include "获取门票失败"
     end
 
     it "should fail if not getting admin" do

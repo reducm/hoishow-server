@@ -70,7 +70,7 @@ type: `GET`
 
 ```
 
-成功时返回Order对象:
+成功时返回Ticket对象:
 ```javascript
   {参考Ticket对象}
 ```
