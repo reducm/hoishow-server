@@ -96,13 +96,19 @@ describe User do
 
     it "user reply comment should create 0 message success " do
       comment = create :comment
-      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")     
+      @user.create_comment(create(:topic), comment.id, "fuck jassssssssss")
       expect(@user.messages.count).to eq 0
     end
 
     it "user reply topic should create 0 message success " do
       comment = create :comment
-      @user.create_comment(create(:topic), nil, "fuck jassssssssss")     
+      @user.create_comment(create(:topic), nil, "fuck jassssssssss")
+      expect(@user.messages.count).to eq 0
+    end
+
+    it 'user reply self should not create message' do
+      topic = create :topic, creator_id: @user.id, creator_type: 'User'
+      @user.create_comment(topic, nil, 'test')
       expect(@user.messages.count).to eq 0
     end
   end

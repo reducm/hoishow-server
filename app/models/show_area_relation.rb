@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class ShowAreaRelation < ActiveRecord::Base
+  serialize :channels
+
   belongs_to :show
   belongs_to :area
 

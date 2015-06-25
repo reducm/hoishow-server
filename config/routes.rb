@@ -96,6 +96,7 @@ Rails.application.routes.draw do
 
   namespace :operation do
     root to: "home#index"
+    match "/home/get_graphic_data" => "home#get_graphic_data", via: [:get]
     mount Sidekiq::Web => '/sidekiq'
     resources :sessions, only: [:new, :create, :destroy]
     match "/signin" => "sessions#new", via: [:get]
@@ -154,6 +155,7 @@ Rails.application.routes.draw do
         post :send_create_message
         post :add_star
         delete :del_star
+        post :set_area_channels
       end
     end
     resources :orders do
