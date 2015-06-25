@@ -40,7 +40,7 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
       @order.set_tickets
       @admin = create(:admin, admin_type: 2)
 
-      get :show_for_qr_scan, name: @admin.name, id: @order.out_id, format: :json
+      get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
       expect(assigns(:order)).to eq @order
       expect(response.body).to include("tickets")
       expect(JSON.parse(response.body)["tickets"].count > 0).to be true
@@ -53,7 +53,7 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
       @order.set_tickets
       @admin = create(:admin, admin_type: 1)
 
-      get :show_for_qr_scan, name: @admin.name, id: @order.out_id, format: :json
+      get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
       expect(response.status).to eq 403
     end
   end
