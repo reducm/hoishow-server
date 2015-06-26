@@ -13,7 +13,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
   end
 
   def orders_for_soon
-    @orders = @user.orders.joins(:show).where("shows.show_time > ? and shows.show_time < ?", Time.now, Time.now.tomorrow.end_of_day).order('shows.show_time')
+    @orders = @user.orders.joins(:show).where("shows.show_time > ? and shows.show_time < ? and orders.status != ?", Time.now, Time.now.tomorrow.end_of_day, 4).order('shows.show_time')
   end
 
   def show_for_qr_scan
