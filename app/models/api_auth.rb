@@ -3,7 +3,7 @@ class ApiAuth < ActiveRecord::Base
   APP_IOS = 'hoishowIOS'
   APP_ANDROID = 'hoishowAndroid'
 
-  validates :user, presence: true
+  validates :user, presence: true, uniqueness: true
   validates :key, presence: true, uniqueness: true
   before_validation :create_key
 
