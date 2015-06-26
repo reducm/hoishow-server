@@ -21,11 +21,17 @@ class Ticket < ActiveRecord::Base
 
   scope :sold_tickets, ->{ where("status != ?", statuses[:pending] ) }
   before_create :set_status
+  before_save :generate_code, unless: :pending?
 
   paginates_per 10
 
   def self.sold_tickets_count
     sold_tickets.count
+  end
+
+  protected
+  def set_status
+    self.status = :pending if self.status.blank?
   end
 
   def generate_code
@@ -41,11 +47,6 @@ class Ticket < ActiveRecord::Base
       end
     end
     self.code
-  end
-
-  protected
-  def set_status
-    self.status = :pending if self.status.blank?
   end
 
   def search(q)

@@ -1,6 +1,6 @@
 module ApiAuthHelper
   def default_key
-    ApiAuth.create(user: "fuck").key
+    ApiAuth.where(user: "fuck").first_or_create.key
   end
 
   def with_key(hash = {})

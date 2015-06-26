@@ -32,8 +32,8 @@ class Order < ActiveRecord::Base
   }
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
-  scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, Order.statuses[:pending]) }
-  scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, Order.statuses[:success]) }
+  scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
+  scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, statuses[:success]) }
 
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
@@ -79,15 +79,19 @@ class Order < ActiveRecord::Base
   end
 
   def set_tickets
-    tickets.each do |ticket|
-      ticket.generate_code
-      ticket.status = :success
-      ticket.save!
+    begin
+      Order.transaction do
+        tickets.update_all(status: Ticket::statuses['success'])
+        self.success!
+      end
+    rescue => e
+      Rails.logger.fatal("*** errors: #{e.message}")
+      nil
     end
   end
 
   def refund_tickets
-    tickets.update_all(status: 3)
+    tickets.update_all(status: Ticket::statuses['refund'])
   end
 
   def tickets_count
@@ -103,8 +107,8 @@ class Order < ActiveRecord::Base
   end
 
   def outdate_others
-    tickets.update_all(status: 4)
-    seats.update_all(status: 0)
+    tickets.update_all(status: Ticket::statuses['outdate'])
+    seats.update_all(status: Seat::statuses['avaliable'])
   end
 
   def already_paid?

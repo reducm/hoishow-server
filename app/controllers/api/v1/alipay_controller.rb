@@ -55,7 +55,6 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
         )
         if @order.paid?
           @order.set_tickets
-          @order.update(status: :success)
         end
         wp_print("after order: #{@order}, #{@order.attributes}")
       end
