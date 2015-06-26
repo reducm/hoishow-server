@@ -77,7 +77,7 @@ Rails.application.routes.draw do
       resources :messages
       resources :tickets do
         collection do
-          patch :check_tickets
+          post :check_tickets
           get :get_ticket
         end
       end

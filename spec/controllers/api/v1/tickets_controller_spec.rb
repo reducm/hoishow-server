@@ -25,7 +25,7 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
     end
 
     it "should success if information correct and intact" do
-      patch :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
+      post :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
       expect(response.status).to eq 200 
       expect(response.body).to include "ok"
       @tickets.each do |ticket|
@@ -38,20 +38,20 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
     it "should fail if ticket is used or refund" do
       @tickets.update_all(status: 2)
       @tickets.last.update(status: 3)
-      patch :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
+      post :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
       expect(response.status).to eq 403 
       expect(response.body).to include "获取门票失败"
     end
 
     it "should fail if not getting admin" do
-      patch :check_tickets, codes: @codes, format: :json
+      post :check_tickets, codes: @codes, format: :json
       expect(response.status).to eq 403 
       expect(response.body).to include "获取验票员信息异常，请重新登陆"
     end
 
     it "should return 406 if admin is blocked" do
       @admin.update(is_block: true)
-      patch :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
+      post :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
       expect(response.status).to eq 406
       expect(response.body).to include "账户被锁定，请联系管理员"
     end
