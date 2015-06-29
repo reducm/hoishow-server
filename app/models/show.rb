@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Show < ActiveRecord::Base
+  include ModelAttrI18n
   belongs_to :concert
   belongs_to :city
   belongs_to :stadium
@@ -77,44 +78,33 @@ class Show < ActiveRecord::Base
     else
       "不显示"
     end
+    # true and false 直接调用会有问题
+    # tran("is_display")
   end
 
   def ticket_type_cn
-    case ticket_type
-    when "e_ticket"
-      "电子票"
-    when "r_ticket"
-      "实体票"
-    end
+    # e_ticket: "电子票"
+    # r_ticket: "实体票"
+    tran("ticket_type")
   end
 
   def seat_type_cn
-    case seat_type
-    when "selectable"
-      "可以选座"
-    when "selected"
-      "只能选区"
-    end
+    # selectable: "可以选座"
+    # selected: "只能选区"
+    tran("seat_type")
   end
 
   def mode_cn
-    case mode
-    when "voted_users"
-      "只有参与投票的用户才能买"
-    when "all_users"
-      "全部用户都能购买"
-    end
+    # voted_users: "只有参与投票的用户才能买"
+    # all_users: "全部用户都能购买"
+    tran("mode")
   end
 
   def status_cn
-    case status
-    when "selling"
-      "开放购票中"
-    when "sell_stop"
-      "购票结束"
-    when "going_to_open"
-      "即将开放"
-    end
+    # selling: "开放购票中"
+    # sell_stop: "购票结束"
+    # going_to_open: "即将开放"
+    tran("status")
   end
 
   paginates_per 10
