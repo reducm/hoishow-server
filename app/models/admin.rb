@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Admin < ActiveRecord::Base
+  include ModelAttrI18n
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
 
@@ -21,14 +22,10 @@ class Admin < ActiveRecord::Base
   end
 
   def type_cn
-    case admin_type
-    when 'admin'
-      '管理员'
-    when 'operator'
-      '运营'
-    when 'ticket_checker'
-      '验票员'
-    end
+    # admin: '管理员'
+    # operator: '运营'
+    # ticket_checker: '验票员'
+    tran("admin_type")
   end
 
   def avatar_url

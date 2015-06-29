@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Concert < ActiveRecord::Base
+  include ModelAttrI18n
   default_scope {order('concerts.is_top DESC, concerts.created_at DESC')}
 
   has_many :videos
@@ -65,21 +66,15 @@ class Concert < ActiveRecord::Base
   end
 
   def is_show_cn
-    case is_show
-    when "showing"
-      "显示中"
-    when "hidden"
-      "隐藏中"
-    end
+    # showing: "显示中"
+    # hidden: "隐藏中"
+    tran("is_show")
   end
 
   def status_cn
-    case status
-    when "voting"
-      "投票中"
-    when "finished"
-      "投票完结"
-    end
+    # voting: "投票中"
+    # finished: "投票完结"
+    tran("status")
   end
 
   def shows_count

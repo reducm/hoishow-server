@@ -9,6 +9,7 @@
     <div class="form-group">
     <div class="col-xs-4">
     <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
+
     </div>
     </div>
     <div class="hidden editor"><%= f.kindeditor :description %></div>
@@ -18,7 +19,7 @@
       <%= image_tag(banner.poster_url, width: "700px") %>
     <% end %>
     </div>
-    <%= f.input :poster %>
+    <%= f.input :poster, label:"海报 (建议大小:750x472)" %>
     <div class="form-group">
       <%= f.submit class: 'btn btn-primary' %>
     </div>

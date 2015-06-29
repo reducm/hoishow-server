@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Star < ActiveRecord::Base
+  include ModelAttrI18n
   default_scope {order(:position)}
   has_many :videos
   accepts_nested_attributes_for :videos, allow_destroy: true
@@ -74,6 +75,7 @@ class Star < ActiveRecord::Base
     else
       "不显示"
     end
+    # tran("is_display")
   end
 
   def hoi_concert(concert)

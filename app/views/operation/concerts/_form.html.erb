@@ -28,7 +28,7 @@
       <%= image_tag(concert.poster_url, size: "700x500") %>
     <% end %>
   </div>
-  <%= f.input :poster, label: "上传演出海报" %>
+  <%= f.input :poster, label: "上传演出海报(建议大小:700x382)" %>
   <% if params[:action] == "new" && params[:star_id].present? %>
     <%= hidden_field_tag "default_star_id", star.id, id: 'hf_default_sid' %>
     <%= hidden_field_tag "default_star_name", star.name, id: 'hf_default_sname' %>
