@@ -18,34 +18,29 @@ RSpec.describe Api::V1::TicketsController, :type => :controller do
       #验票员
       @admin = create(:admin, admin_type: 2)
       5.times do
-        create :ticket
-      end 
+        create :ticket, status: :success
+      end
       @tickets = Ticket.all
-      @codes = @tickets.pluck(:code)
+      @codes = @tickets.pluck(:code).join(',')
     end
 
     it "should success if information correct and intact" do
       post :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
-      expect(response.status).to eq 200 
+      expect(response.status).to eq 200
       expect(response.body).to include "ok"
-      @tickets.each do |ticket|
-        ticket.reload
-        expect(ticket.admin_id).to eq @admin.id 
-        expect(ticket.status).to eq "used" 
-      end
     end
 
     it "should fail if ticket is used or refund" do
       @tickets.update_all(status: 2)
       @tickets.last.update(status: 3)
       post :check_tickets, codes: @codes, name: @admin.name, api_token: @admin.api_token, format: :json
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
       expect(response.body).to include "获取门票失败"
     end
 
     it "should fail if not getting admin" do
       post :check_tickets, codes: @codes, format: :json
-      expect(response.status).to eq 403 
+      expect(response.status).to eq 403
       expect(response.body).to include "获取验票员信息异常，请重新登陆"
     end
 
