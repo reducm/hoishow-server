@@ -1,0 +1,8 @@
+app:
+  mch_id: "example_mch_id"
+  app_id: "example_app_id"
+  app_secret: "example_app_secret"
+  app_key: "example_app_key"
+  pay_api_key: "example_app_pay_api_key"
+  partner_id: "example_partner_id"
+  partner_key: "example_partner_key"
