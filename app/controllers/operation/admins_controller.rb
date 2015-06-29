@@ -29,9 +29,15 @@ class Operation::AdminsController < Operation::ApplicationController
   end
 
   def update
-    @admin.set_password(params[:pw1])
-    if @admin.save!
+    if params[:pw1] && params[:pw2]
+      @admin.set_password(params[:pw1])
+    end
+    if @admin.update!(admin_type: params[:type].to_i)
+      flash[:notice] = '修改成功'
       redirect_to operation_admins_url
+    else
+      flash[:alert] = @admin.errors.full_messages
+      render :update
     end
   end
 
@@ -46,5 +52,4 @@ class Operation::AdminsController < Operation::ApplicationController
   def find_admin
     @admin = Admin.find params[:id]
   end
-
 end

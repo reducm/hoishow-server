@@ -40,14 +40,10 @@ class User < ActiveRecord::Base
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
 
   def sex_cn
-    case sex
-    when 'male'
-      '男'
-    when 'female'
-      '女'
-    when 'secret'
-      '保密'
-    end
+    # male: '男'
+    # female: '女'
+    # secret: '保密'
+    tran("sex")
   end
 
   def avatar_url

@@ -3,20 +3,27 @@ require 'rails_helper'
 RSpec.describe Api::V1::TicketsController, :type => :controller do
   render_views
 
+  before('each') do
+    @admin = create(:admin, admin_type: 2)
+  end
+
   context "#get_ticket" do
     it "should get the same object" do
       create :ticket
-      @admin = create(:admin, admin_type: 2)
       @ticket = Ticket.first
       get :get_ticket, name: @admin.name, api_token: @admin.api_token, code: @ticket.code, format: :json
       expect(assigns(:ticket)).to eq @ticket
+    end
+
+    it "should get error if can not find ticket" do
+      get :get_ticket, name: @admin.name, api_token: @admin.api_token, code: 'xxxxxxx', format: :json
+      expect(response.status).to eq 403
+      expect(response.body).to include '获取门票失败'
     end
   end
 
   context "#check_tickets" do
     before('each') do
-      #验票员
-      @admin = create(:admin, admin_type: 2)
       5.times do
         create :ticket, status: :success
       end

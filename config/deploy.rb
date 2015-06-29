@@ -8,7 +8,7 @@ set :whenever_roles, ->{ [:db, :app] }
 set :sidekiq_monit_default_hooks, false
 set :pty, false
 
-set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml config/settings/wx_pay.yml config/settings/alipay.yml}
 # set the locations that we will look for changed assets to determine whether to precompile
 set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
 

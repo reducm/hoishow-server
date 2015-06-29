@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class Banner < ActiveRecord::Base
+  include ModelAttrI18n
   default_scope {order(:position)}
   belongs_to :admin
   mount_uploader :poster, ImageUploader
@@ -28,16 +29,11 @@ class Banner < ActiveRecord::Base
   end
 
   def subject_type_cn
-    case subject_type
-    when "Star"
-      "明星"
-    when "Concert"
-      "投票"
-    when "Show"
-      "演出"
-    when "Article"
-      "图文"
-    end
+    # Star: "明星"
+    # Concert: "投票"
+    # Show: "演出"
+    # Article: "图文"
+    tran("subject_type")
   end
 
   def is_article?

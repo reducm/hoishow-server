@@ -1,6 +1,7 @@
 #encoding: UTF-8
 include UmengMessage
 class Message < ActiveRecord::Base
+  include ModelAttrI18n
   default_scope {order('created_at DESC')}
 
   has_many :user_message_relations
@@ -30,20 +31,13 @@ class Message < ActiveRecord::Base
   end
 
   def send_type_cn
-    case send_type
-    when 'new_show'
-      '发布新演出时'
-    when 'all_users_buy'
-      '开放所有用户购买'
-    when 'new_concert'
-      '发布新投票时'
-    when 'comment_reply'
-      '评论有新的回覆时'
-    when 'topic_reply'
-      '主题有新的回覆时'
-    when 'manual'
-      '手动推送'
-    end
+    # new_show: '发布新演出时'
+    # all_users_buy: '开放所有用户购买'
+    # new_concert: '发布新投票时'
+    # comment_reply: '评论有新的回覆时'
+    # topic_reply: '主题有新的回覆时'
+    # manual: '手动推送'
+    tran("send_type")
   end
 
   def creator_name
@@ -67,20 +61,13 @@ class Message < ActiveRecord::Base
 
   #creator_type作用是显示头像
   def creator_type_cn
-    case creator_type
-    when 'All'
-      '全部用户'
-    when 'Concert'
-      '关注投票的用户'
-    when 'Show'
-      '关注演出的用户'
-    when 'Star'
-      '关注艺人的用户'
-    when 'Admin'
-      '创建评论的管理员'
-    when 'User'
-      '创建评论的用户'
-    end
+    # All: '全部用户'
+    # Concert: '关注投票的用户'
+    # Show: '关注演出的用户'
+    # Star: '关注艺人的用户'
+    # Admin: '创建评论的管理员'
+    # User: '创建评论的用户'
+    tran("creator_type")
   end
 
   def subject

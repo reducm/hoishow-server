@@ -1,6 +1,7 @@
 #encoding: UTF-8
 class Order < ActiveRecord::Base
   include Operation::OrdersHelper
+  include ModelAttrI18n
 
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
@@ -116,18 +117,12 @@ class Order < ActiveRecord::Base
   end
 
   def status_cn
-    case status
-    when 'pending'
-      '未支付'
-    when 'paid'
-      '已支付'
-    when 'success'
-      '已出票'
-    when 'refund'
-      '已退款'
-    when 'outdate'
-      '已过期'
-    end
+    # pending: '未支付'
+    # paid: '已支付'
+    # success: '已出票'
+    # refund: '已退款'
+    # outdate: '已过期'
+    tran("status")
   end
 
   def payment_body
