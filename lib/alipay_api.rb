@@ -4,8 +4,7 @@ require 'base64'
 logger = Logger.new(File.join(Rails.root, 'log', 'alipay_api.log'))
 
 module AlipayApi
-  CONFIGFILE = File.join "#{Rails.root}", "config", "alipay.yml"
-  Settings = YAML.load_file(CONFIGFILE)[Rails.env || "development"]
+  Settings = YAML.load_file(File.join "#{Rails.root}", "config", "settings", "alipay.yml")
 
   #支付宝公众账号开发者验证
   def alipublic_develop_vefify(content)
@@ -74,7 +73,7 @@ module AlipayApi
 
   #即时到账批量退款接口 orders 最大支持1000笔
   def refund_fastpay(orders, settings=Settings)
-    #TODO 参数检查 
+    #TODO 参数检查
     options = {
       service: "refund_fastpay_by_platform_nopwd",
       partner: settings["pid"],
@@ -82,11 +81,11 @@ module AlipayApi
       sign_type: "MD5",
       notify_url: settings["refund_url"] ,
       seller_email: settings["email"],
-      seller_user_id: settings["pid"], 
+      seller_user_id: settings["pid"],
       refund_date: Time.now.strftime("%Y-%m-%d %H:%M:%S"),
       batch_no: create_batch_no,
       batch_num: orders.length,
-      detail_data: create_refund_detail(orders) 
+      detail_data: create_refund_detail(orders)
     }
     options.merge!({
       sign:generate_md5_sign(options)
@@ -103,7 +102,7 @@ module AlipayApi
     if xml.css("is_success").first.content == "T"
       return true
     else
-      return xml.css("error").first.content 
+      return xml.css("error").first.content
     end
   end
 
@@ -116,7 +115,7 @@ module AlipayApi
 
   def create_refund_detail(orders)
     # 单笔数据集格式为: 第一笔交易退款数据集#第二笔交易退款数据集...#第 N 笔交易退款数据集
-    # 交易退款数据集的格式为: 原付款支付宝交易号^退款总金额^退款理由;  
+    # 交易退款数据集的格式为: 原付款支付宝交易号^退款总金额^退款理由;
     detail = []
     for order in orders
       #TODO 检验trade_no 已经 amount不存在的情况
@@ -146,7 +145,7 @@ module AlipayApi
 
     request_url = "#{settings["wap_api_url"]}?#{options.to_query}"
     puts request_url
-    begin 
+    begin
       response =  RestClient.post request_url, nil
       puts URI.decode response
       #获取request_token
@@ -255,7 +254,7 @@ module AlipayApi
       #user_id:"2088102008238264", #TODO 不建议使用user_id,优先使用out_trade_no
       out_trade_no: order.out_id,
       partner_id: settings["alipass_partner_id"],
-      serial_number: order.alipass_serial, 
+      serial_number: order.alipass_serial,
       status: "USED",
       verify_type: "wave",
     }
@@ -317,7 +316,7 @@ module AlipayApi
     puts rsa_verify?(for_sign_string,options[:sign],settings["alipass_rsa_pub_key"])
     response =  RestClient.post settings["online_api_url"], options
     puts response
-    
+
   end
 
   def create_alipass_content(order)
@@ -332,11 +331,11 @@ module AlipayApi
     #下载strip图片 到shared/alipass目录下
     #strip_path = "#{Rails.root}/shared/alipass/#{order.show.film.id}.strip"
     strip_path = "#{Rails.root}/tmp/alipass/#{order.film_id}.strip"
-    %x(wget -O "#{strip_path}" "#{order.film.poster("small")}" ) unless File.exist?(strip_path) 
-    %x(cp "#{strip_path}" "#{Rails.root}/tmp/alipass/strip.png" )  
+    %x(wget -O "#{strip_path}" "#{order.film.poster("small")}" ) unless File.exist?(strip_path)
+    %x(cp "#{strip_path}" "#{Rails.root}/tmp/alipass/strip.png" )
 
-    #自动生成SHA1 签名后的sigature 
-    pass_sha1 = OpenSSL::Digest::SHA1.new(pass_str).to_s 
+    #自动生成SHA1 签名后的sigature
+    pass_sha1 = OpenSSL::Digest::SHA1.new(pass_str).to_s
     strip_sha1 = %x(shasum "#{Rails.root}/tmp/alipass/strip.png").split(" ")[0]
     signature_hash = {
       "logo.png" => "a5354808d1da4696339be82034c345c2a1b7f3e0",
@@ -364,7 +363,7 @@ module AlipayApi
   #公众账户向用户发送消息接口
   def public_message_push(order, settings=Settings)
     alipay_uid = order.user.authentications.where(provider:"alipay").first.uid rescue nil
-    if alipay_uid.nil?      
+    if alipay_uid.nil?
       Rails.logger.fatal("------------alipay push nil error -----------")
       return false
     else
@@ -406,13 +405,13 @@ module AlipayApi
         <ToUserId><![CDATA[#{alipay_uid}]]></ToUserId>
         <AppId><![CDATA[#{settings["#{respond_to?(:prefix_path) ? prefix_path : ''}_app_id"]}]]></AppId>
         <CreateTime>#{Time.now.to_ms}</CreateTime>
-        <MsgType><![CDATA[image-text]]></MsgType> 
+        <MsgType><![CDATA[image-text]]></MsgType>
         <ArticleCount>1</ArticleCount>
         <Articles>
           <Item>
-            <Title><![CDATA[#{title}]]></Title> 
-            <Desc><![CDATA[#{desc}]]></Desc> 
-            <ImageUrl><![CDATA[#{image_url}]]></ImageUrl> 
+            <Title><![CDATA[#{title}]]></Title>
+            <Desc><![CDATA[#{desc}]]></Desc>
+            <ImageUrl><![CDATA[#{image_url}]]></ImageUrl>
             <Url><![CDATA[#{respond_to?(:prefix_path) ? send(prefix_path + '_order_url',order.out_id) : order_url(order.out_id)}]]></Url>
           </Item>
         </Articles>
@@ -520,7 +519,7 @@ module AlipayApi
   end
 
   def get_ip
-    request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip 
+    request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip
   end
 
   def alipay_pay_url(order, notify_url = alipay_notify_url, return_url = alipay_return_url, settings=Settings)
