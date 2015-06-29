@@ -33,6 +33,7 @@ class Operation::AdminsController < Operation::ApplicationController
       @admin.set_password(params[:pw1])
     end
     if @admin.update!(admin_type: params[:type].to_i)
+      flash[:notice] = '修改成功'
       redirect_to operation_admins_url
     else
       flash[:alert] = @admin.errors.full_messages
