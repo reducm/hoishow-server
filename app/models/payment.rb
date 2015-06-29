@@ -8,7 +8,12 @@ class Payment < ActiveRecord::Base
   }
 
   def purchase
-    model = Object::const_get(purchase_type)
-    obj = Object::const_get(purchase_type).find_by_id(purchase_id)
+    begin
+     Object::const_get(purchase_type).where(id: purchase_id).first
+   rescue => e
+     ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
+     Rails.logger.fatal("purcharse wrong, payment_id: #{ id }, purchase_type: #{purchase_type}, purchase_id: #{purchase_id}")
+     nil
+    end
   end
 end

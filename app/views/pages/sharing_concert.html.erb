@@ -30,8 +30,8 @@
             <%@cities.each do |city|%>
             <li class="list-group-item">
             <div class="city_name"><%=city["name"]%></div>
-            <div id='city_<%=temp%>' class="progress_bar"></div>
-            <div id='city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
+            <div id='all_city_<%=temp%>' class="progress_bar"></div>
+            <div id='all_city_count_<%=temp%>' class="vote_count"><%=city["vote_count"]%></div>
             </li>
             <%temp = temp+1%>
             <%end%>
