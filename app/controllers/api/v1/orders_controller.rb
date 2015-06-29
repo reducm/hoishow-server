@@ -38,20 +38,18 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
 
     case @payment_type  #传入一个支付类型
     when 'alipay'
-      if @auth.app_platform == "android"
-        options = {
-          partner:         AlipaySetting["pid"],
-          seller_id:       AlipaySetting["email"],
-          out_trade_no:    @order.out_id,
-          subject:         @order.payment_body,
-          total_fee:       @order.amount.to_s,
-          notify_url:      api_v1_alipay_notify_url,
-          service:         "mobile.securitypay.pay",
-          payment_type:    "1",
-          _input_charset:  "utf-8",
-          it_b_pay:        "10m"
-        }
-      end
+      options = {
+        partner:         AlipaySetting["pid"],
+        seller_id:       AlipaySetting["email"],
+        out_trade_no:    @order.out_id,
+        subject:         @order.payment_body,
+        total_fee:       @order.amount.to_s,
+        notify_url:      api_v1_alipay_notify_url,
+        service:         "mobile.securitypay.pay",
+        payment_type:    "1",
+        _input_charset:  "utf-8",
+        it_b_pay:        "10m"
+      }
       sign_string = Alipay::Utils.app_hash_to_string(options)
       options.merge!(sign: CGI.escape(Alipay::Sign.rsa_sign(sign_string, Alipay::Sign.pri_app_key_file)), sign_type: "RSA")
       @query_string = Alipay::Utils.app_hash_to_string(options)
