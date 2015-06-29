@@ -33,14 +33,14 @@
         <%= label_tag "当前演出海报" %>
         <%= image_tag(@show.poster_url, size: "400x300")  %>
       <% end %>
-      <%= f.input :poster, label: "上传演出海报" %>
+      <%= f.input :poster, label: "上传演出海报(建议大小:700x382)" %>
     </div>
     <div class="form-group">
       <% if @show.ticket_pic_url %>
         <%= label_tag "当前门票图片" %>
         <%= image_tag(@show.ticket_pic_url, size: "400x300")  %>
       <% end %>
-      <%= f.input :ticket_pic, label: "上传门票图片" %>
+      <%= f.input :ticket_pic, label: "上传门票图片(建议大小:258x258)" %>
     </div>
     <div class="form-group">
       <%= label_tag("图文描述") %>

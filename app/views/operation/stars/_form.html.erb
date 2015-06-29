@@ -18,7 +18,7 @@
     <%= image_tag(star.avatar_url, size: "80x80")  %>
   <% end %>
 </div>
-  <%= f.input :avatar, label: "上传头像" %>
+  <%= f.input :avatar, label: "上传头像 (建议大小:180x180)" %>
 
 <div class="form-group">
   <% if star.poster_url %>
@@ -26,7 +26,7 @@
     <%= image_tag(star.poster_url, size: "700x500") %>
   <% end %>
 </div>
-  <%= f.input :poster, label: "上传海报" %>
+  <%= f.input :poster, label: "上传海报(建议大小:700x382)" %>
 
 <div class="form-group">
   <% if star.videos.any? %>
@@ -39,7 +39,7 @@
 
 <div class="form-group">
   <%= link_to "上传视频", new_operation_video_path(star_id: @star.id), class: "btn btn-default" %>
-  <%= label_tag "(单个文件最大30mb，只支持mp4格式)" %>
+  <%= label_tag "(单个文件最大30mb，只支持mp4格式, 建议分辨率:750x522)" %>
 </div>
 
 <div class="form-group">
