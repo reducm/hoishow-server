@@ -2,7 +2,7 @@
 
 <div class="nav">
   <h2>修改密码</h2>
-  <%= form_tag(operation_admin_path(@admin), method: "put", class: "form-horizontal") do %>
+  <%= simple_form_for [:operation, @admin], html: { class: 'form-horizontal'  } do|f| %>
 
     <div class="form-group">
       <%= label_tag(:name, "用户名称", class: "col-sm-2 control-label")%>
@@ -22,7 +22,14 @@
         <%= password_field_tag(:pw2, "", placeholder: "Password", class: "form-control")%>
       </div>
     </div>
-
+    <div class="form-group">
+        <div class="col-sm-2 control-label">
+          <%= label_tag :type, "类型"%>
+        </div>
+        <div class="col-sm-2">
+          <%= select_tag :type, options_for_select([ ["管理员", 0], ["运营", 1], ["验票员", 2] ], @admin[:admin_type]) , class: 'form-control' %>
+        </div>
+      </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <%= submit_tag("确认", id: "submit", class: "btn btn-default")%>
