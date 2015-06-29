@@ -86,7 +86,7 @@ type: `PATCH`
 
 ```javascript
   {
-    codes: ["票码",...], //勾选门票或人工输入票码 
+    codes: "123,456,789",..., //勾选门票或人工输入票码
     name: "吴彦祖", //验票员账户
     api_token: "ASDKAJSDKASJDLAKSD"
   }
