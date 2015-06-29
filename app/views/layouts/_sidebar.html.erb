@@ -47,37 +47,37 @@
           </li>
           <li>
             <%= link_to operation_stars_path do %>
-              <i class="fa fa-star fa-fw"></i> 艺人列表
+              <i class="fa fa-star fa-fw"></i> 艺人
             <% end %>
           </li>
           <li>
             <%= link_to operation_concerts_path do %>
-              <i class="fa fa-file fa-fw"></i> 投票列表
+              <i class="fa fa-file fa-fw"></i> 投票
             <% end %>
           </li>
           <li>
             <%= link_to operation_shows_path do %>
-              <i class="fa fa-file fa-fw"></i> 演出列表
+              <i class="fa fa-file fa-fw"></i> 演出
             <% end %>
           </li>
           <li>
             <%= link_to operation_orders_path do %>
-              <i class="fa fa-file fa-fw"></i> 订单列表
+              <i class="fa fa-file fa-fw"></i> 订单
             <% end %>
           </li>
           <li>
             <%= link_to operation_users_path do %>
-              <i class="fa fa-users fa-fw"></i> 用户列表
+              <i class="fa fa-users fa-fw"></i> 用户
             <% end %>
           </li>
           <li>
             <%= link_to operation_topics_path do %>
-              <i class="fa fa-users fa-fw"></i> 互动列表
+              <i class="fa fa-users fa-fw"></i> 互动
             <% end %>
           </li>
           <li>
             <%= link_to operation_comments_path do %>
-              <i class="fa fa-users fa-fw"></i> 评论列表
+              <i class="fa fa-users fa-fw"></i> 评论
             <% end %>
           </li>
           <li>
@@ -87,12 +87,12 @@
           </li>
           <li>
             <%= link_to operation_messages_path do %>
-              <i class="fa fa-file fa-fw"></i> 推送通知
+              <i class="fa fa-file fa-fw"></i> 推送
             <% end %>
           </li>
           <li>
             <%= link_to operation_tickets_path do %>
-              <i class="fa fa-mobile fa-fw"></i> 验票详情
+              <i class="fa fa-mobile fa-fw"></i> 验票
             <% end %>
           </li>
           <li>
@@ -101,12 +101,12 @@
             <% end %>
           </li>
           <li>
-            <a href="#"><i class="fa fa-cog fa-fw"></i> 系统管理 <span class="fa arrow"></span></a>
+            <a href="#"><i class="fa fa-cog fa-fw"></i> 系统<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <% if can? :manage, current_admin %>
               <li>
                 <%= link_to operation_admins_path do %>
-                  <i class="fa fa-bicycle fa-fw"></i> 系统用户管理
+                  <i class="fa fa-bicycle fa-fw"></i> 系统用户
                 <% end %>
               </li>
               <% end %>
