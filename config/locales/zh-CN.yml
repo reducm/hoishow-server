@@ -231,12 +231,70 @@ zh-CN:
     models:
       admin: 管理员
     attributes:
+      admin/admin_type:
+        admin: '管理员'
+        operator: '运营'
+        ticket_checker: '验票员'
       banner:
         poster: 海报
         subject_type: 主体类型
         subject_id: 主体
         description: 图文内容
         slogan: 标语
+      banner/subject_type:
+        Star: "明星"
+        Concert: "投票"
+        Show: "演出"
+        Article: "图文"
+      concerts/is_show:
+        showing: "显示中"
+        hidden: "隐藏中"
+      concerts/status:
+        voting: "投票中"
+        finished: "投票完结"
+      message/send_type:
+        new_show: '发布新演出时'
+        all_users_buy: '开放所有用户购买'
+        new_concert: '发布新投票时'
+        comment_reply: '评论有新的回覆时'
+        topic_reply: '主题有新的回覆时'
+        manual: '手动推送'
+      message/creator_type:
+        All: '全部用户'
+        Concert: '关注投票的用户'
+        Show: '关注演出的用户'
+        Star: '关注艺人的用户'
+        Admin: '创建评论的管理员'
+        User: '创建评论的用户'
+      order/status:
+        pending: '未支付'
+        paid: '已支付'
+        success: '已出票'
+        refund: '已退款'
+        outdate: '已过期'
+      show/is_display:
+        true: '显示'
+        false: '不显示'
+      show/ticket_type:
+        e_ticket: "电子票"
+        r_ticket: "实体票"
+      show/seat_type:
+        selectable: "可以选座"
+        selected: "只能选区"
+      show/status:
+        selling: "开放购票中"
+        sell_stop: "购票结束"
+        going_to_open: "即将开放"
+      show/mode:
+        voted_users: "只有参与投票的用户才能买"
+        all_users: "全部用户都能购买"
+      star/is_display:
+        true: '显示'
+        false: '不显示'
+      user/sex:
+        male: '男'
+        female: '女'
+        secret: '保密'
       video:
         star_id: 艺人id
         source: 视频
