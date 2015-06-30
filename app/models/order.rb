@@ -2,6 +2,7 @@
 class Order < ActiveRecord::Base
   include Operation::OrdersHelper
   include ModelAttrI18n
+  include AASM
 
   belongs_to :user
   #Order创建的时候，要保存concert, stadium,city,show的name和id，用冗余避免多表查询
@@ -35,6 +36,97 @@ class Order < ActiveRecord::Base
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
   scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, statuses[:success]) }
+
+  # state_machine
+  aasm :column => 'status', :whiny_transitions => false do
+    state :pending, :initial => true # toDo 把 create 后要做的事情可以加进来
+    state :paid
+    state :success
+    state :refund
+    state :outdate
+
+    event :pre_pay, :after => :set_payment_to_success do
+      transitions :from => :pending, :to => :paid
+    end
+
+    event :success_pay, :after => :set_tickets_to_success do
+      transitions :from => :paid, :to => :success
+    end
+
+    # event :cancel do
+    #   transitions :from => :paid, :to => :cancel
+    # end
+
+    event :refunds, :after => [:set_payment_to_refund, :set_tickets_to_refund] do
+      transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
+    end
+
+    event :overtime, :after => :handle_seats_and_tickets do
+      transitions :from => :pending, :to => :outdate
+    end
+  end
+
+  def set_payment_to_success *args
+    options = args.extract_options!
+    # 根据类型来找到 payment, alipay 或者 wxpay
+    # logger.error() if options[:payment_type].nil?
+
+    # order controller pay 的时候已经有 payment_type , 这里
+    # 还是否需要更新这个？
+    query_options = {
+      purchase_type: self.class.name,
+      purchase_id:   self.id,
+      payment_type:  options[:payment_type]
+    }
+
+    payment = payments.where(query_options).first
+    unless payment.nil?
+      payment.update(
+        trade_id: options[:trade_id],
+        status: :success,
+        pay_at: Time.now
+      )
+    end
+  end
+
+  def set_payment_to_refund *args
+    options = args.extract_options!
+
+    payment = options[:payment]
+    payment.update(status: :refund, refund_amount: options[:refund_amount], refund_at: Time.now)
+  end
+
+  def set_tickets_to_success *args
+  # transaction 这些是否要加 rollback 处理 ?
+    begin
+      Order.transaction do
+        self.tickets.update_all(status: Ticket::statuses['success'])
+      end
+    rescue => e
+      Rails.logger.fatal("*** errors: #{e.message}")
+    end
+  end
+
+  def set_tickets_to_refund *args
+    begin
+      Order.transaction do
+        self.tickets.update_all(status: Ticket::statuses['refund'])
+      end
+    rescue => e
+      Rails.logger.fatal("*** errors: #{e.message}")
+    end
+  end
+
+  def handle_seats_and_tickets
+    begin
+      Order.transaction do
+        self.tickets.update_all(status: Ticket::statuses['outdate'])
+        self.seats.update_all(status: Seat::statuses['avaliable'])
+      end
+    rescue => e
+      Rails.logger.fatal("*** errors: #{e.message}")
+    end
+  end
 
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
@@ -79,37 +171,16 @@ class Order < ActiveRecord::Base
     tickets.create(area_id: seat.area_id, show_id: seat.show_id, price: seat.price, seat_name: seat.name)
   end
 
-  def set_tickets
-    begin
-      Order.transaction do
-        tickets.update_all(status: Ticket::statuses['success'])
-        self.success!
-      end
-    rescue => e
-      Rails.logger.fatal("*** errors: #{e.message}")
-      nil
-    end
-  end
-
-  def refund_tickets
-    tickets.update_all(status: Ticket::statuses['refund'])
-  end
-
   def tickets_count
     tickets.count
   end
 
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
-      outdate!
-      outdate_others
+      # 状态机
+      self.overtime!
     end
     outdate?
-  end
-
-  def outdate_others
-    tickets.update_all(status: Ticket::statuses['outdate'])
-    seats.update_all(status: Seat::statuses['avaliable'])
   end
 
   def already_paid?
@@ -136,26 +207,6 @@ class Order < ActiveRecord::Base
 
   def show_time
     show.show_time
-  end
-
-  def alipay_pay
-    query_options = {
-      purchase_type: self.class.name,
-      purchase_id:   self.id,
-      payment_type:  "alipay"
-    }
-
-    payment = payments.where(query_options).first
-  end
-
-  def wxpay_pay
-    query_options = {
-      purchase_type: self.class.name,
-      purchase_id:   self.id,
-      payment_type:  "wxpay"
-    }
-
-    payment = payments.where(query_options).first
   end
 
   private
