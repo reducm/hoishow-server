@@ -13,6 +13,7 @@ GIT
 GEM
   remote: http://ruby.taobao.org/
   specs:
+    aasm (4.2.0)
     actionmailer (4.2.0)
       actionpack (= 4.2.0)
       actionview (= 4.2.0)
@@ -359,6 +360,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm (~> 4.1)
   awesome_print
   bootstrap-sass
   byebug

@@ -116,3 +116,6 @@ gem "yell-rails"
 
 # 短信平台接口
 gem 'china_sms', git: "git://github.com/villins/china_sms.git"
+
+# state mechine
+gem 'aasm', '~> 4.1'
