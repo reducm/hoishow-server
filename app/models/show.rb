@@ -73,13 +73,8 @@ class Show < ActiveRecord::Base
   end
 
   def is_display_cn
-    if is_display
-      "显示"
-    else
-      "不显示"
-    end
-    # true and false 直接调用会有问题
-    # tran("is_display")
+    # is_display ? "显示" : "不显示"
+    tran("is_display")
   end
 
   def ticket_type_cn

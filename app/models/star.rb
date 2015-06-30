@@ -70,12 +70,8 @@ class Star < ActiveRecord::Base
   end
 
   def is_display_cn
-    if is_display
-      "显示"
-    else
-      "不显示"
-    end
-    # tran("is_display")
+    # is_display ? "显示" : "不显示"
+    tran("is_display")
   end
 
   def hoi_concert(concert)
