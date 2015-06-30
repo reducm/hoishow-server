@@ -37,7 +37,7 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
       @order = Order.first
       3.times { create(:show_area_relation) }
       @order.set_tickets_and_price(ShowAreaRelation.all)
-      @order.set_tickets
+      @order.success_pay!
       @admin = create(:admin, admin_type: 2)
 
       get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
       @order = Order.first
       3.times { create(:show_area_relation) }
       @order.set_tickets_and_price(ShowAreaRelation.all)
-      @order.set_tickets
+      @order.success_pay!
       @admin = create(:admin, admin_type: 1)
 
       get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
