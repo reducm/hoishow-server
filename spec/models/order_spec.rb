@@ -105,4 +105,95 @@ describe Order do
     #end
 
   end
+
+  describe  'test for state machine' do
+    let(:new_order) { create(:pending_order_with_payment, city: @city, concert: @concert,
+      stadium: @stadium, show: @show, user: @user) }
+    let(:payment) { new_order.payments.first }
+    let(:area) { @stadium.areas.first }
+    let(:sar) { ShowAreaRelation.where(show_id: @show.id, area_id: area.id).all }
+
+    before do
+      new_order.set_tickets_and_price(sar)
+    end
+
+    let(:t) { new_order.tickets.first }
+
+    # let(:payment) { build(:payment, purchase_type: 'Order',
+    #     purchase_id:  new_order.id, payment_type:  ['alipay', 'wxpay'].sample,
+    #     amount: new_order.amount, paid_origin: ['ios', "android"].sample, trade_id: nil) }
+
+    context "pre_pay" do
+      it 'will set payment info after update status' do
+        expect(new_order.status).to eq 'pending'
+        expect(new_order.payments.to_a).not_to be_blank
+        expect(payment.trade_id).to be_nil
+
+        expect{new_order.pre_pay!({payment_type: 'alipay', trade_id: "examle_trade_no"})}
+          .to change(new_order.payments, :count).by(0)
+        payment.reload
+        expect(payment.trade_id).to eq "examle_trade_no"
+        expect(payment.status).to eq 'success'
+        expect(payment.payment_type).to eq 'alipay'
+        expect(payment.pay_at).not_to be_nil
+        expect(new_order.reload.status).to eq 'paid'
+      end
+    end
+
+    context "success_pay" do
+      before do
+        new_order.pre_pay!({payment_type: 'alipay', trade_id: "examle_trade_no"})
+        new_order.reload
+      end
+
+      it 'will set tickets info after update status' do
+        expect(new_order.status).to eq 'paid'
+        expect(payment.trade_id).not_to be_nil
+        expect(t.status).to eq 'pending'
+
+        new_order.success_pay!({payment: payment})
+        expect(t.reload.status).to eq 'success'
+      end
+    end
+
+    context "refunds" do
+      before do
+        new_order.pre_pay!({payment_type: 'alipay', trade_id: "examle_trade_no"})
+        new_order.success_pay!({payment: payment})
+        new_order.reload
+      end
+
+      it 'will set tickets info and payment info after update status' do
+        expect(new_order.status).to eq 'success'
+        expect(payment.trade_id).not_to be_nil
+        expect(payment.status).to eq 'success'
+        expect(t.status).to eq 'success'
+
+        new_order.refunds!({payment: payment, refund_amount: '100'})
+        expect(t.reload.status).to eq 'refund'
+        payment.reload
+        expect(payment.status).to eq 'refund'
+        expect(payment.refund_amount).to eq 100
+        expect(payment.refund_at).not_to be_nil
+      end
+    end
+
+    context 'overtime' do
+      before do
+        @seat = area.seats.create
+        @seat.update_attributes(status: :locked, order_id: new_order.id)
+      end
+
+      it 'will set tickets info and seat info after update status' do
+        expect(@seat.status).to eq 'locked'
+
+        new_order.overtime!
+        expect(@seat.reload.status).to eq 'avaliable'
+        expect(t.reload.status).to eq 'outdate'
+      end
+
+      #toDo 测试多张票和座位的情况
+    end
+
+  end
 end
