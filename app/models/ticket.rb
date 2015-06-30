@@ -25,10 +25,6 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 10
 
-  def self.sold_tickets_count
-    sold_tickets.count
-  end
-
   protected
   def set_status
     self.status = :pending if self.status.blank?
