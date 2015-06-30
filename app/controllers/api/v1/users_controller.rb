@@ -235,7 +235,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
       end
     end
     if @order.amount < 0.01
-      @order.success!
+      @order.set_tickets
     end
   end
 
