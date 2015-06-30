@@ -19,7 +19,7 @@ class Ticket < ActiveRecord::Base
     outdate: 4 #超时
   }
 
-  scope :sold_tickets, ->{ where("status != ?", statuses[:pending] ) }
+  scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
   before_create :set_status
   before_save :generate_code, unless: :pending?
 
