@@ -24,7 +24,8 @@
 #= require operation/startup
 #= require dataTables/jquery.dataTables
 #= require operation/notify
-#= require jquery-fileupload 
+#= require jquery-fileupload/basic
+#= require jquery-fileupload/vendor/tmpl
 #= require dropzone
 #= require operation/videos
 
