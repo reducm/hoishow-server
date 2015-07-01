@@ -274,8 +274,8 @@ zh-CN:
         refund: '已退款'
         outdate: '已过期'
       show/is_display:
-        true: '显示'
-        false: '不显示'
+        'true': '显示'
+        'false': '不显示'
       show/ticket_type:
         e_ticket: "电子票"
         r_ticket: "实体票"
@@ -290,8 +290,8 @@ zh-CN:
         voted_users: "只有参与投票的用户才能买"
         all_users: "全部用户都能购买"
       star/is_display:
-        true: '显示'
-        false: '不显示'
+        'true': '显示'
+        'false': '不显示'
       user/sex:
         male: '男'
         female: '女'

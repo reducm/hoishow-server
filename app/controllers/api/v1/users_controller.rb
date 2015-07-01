@@ -234,6 +234,9 @@ class Api::V1::UsersController < Api::V1::ApplicationController
         error_json("不能提交空订单")
       end
     end
+    if @order.amount < 0.01
+      @order.set_tickets
+    end
   end
 
   def update_express_info

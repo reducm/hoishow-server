@@ -9,10 +9,12 @@ class Operation::StartupController < Operation::ApplicationController
   end
 
   def create
-    @startup = Startup.new(startup_params)
-    @startup.save
-
-    render json: {success: true}
+    if @startup = Startup.create(startup_params)
+      flash[:notice] = '上传成功'
+      render json: {success: true}
+    else
+      flash[:alert] = @startup.errors.full_messages.to_sentence
+    end
   end
 
   def update
