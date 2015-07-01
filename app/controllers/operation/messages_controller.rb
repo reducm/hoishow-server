@@ -15,6 +15,7 @@ class Operation::MessagesController < Operation::ApplicationController
       flash[:alert] = result
     end
 
+    @message.save!
     flash[:notice] = "消息创建成功"
     redirect_to operation_messages_url
   end
