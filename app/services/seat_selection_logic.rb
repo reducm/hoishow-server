@@ -2,14 +2,15 @@ class SeatSelectionLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :auth, :error_msg, :order
+  attr_reader :show, :options, :response, :user, :app_platform, :error_msg, :order
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
     @show = show
     @options = options
     @user = options[:user]
-    @auth = options[:auth]
+    @app_platform = options[:app_platform] # 这个可能要改成 channel
+    raise RuntimeError, 'SeatSelectionLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
   end
 
   def success?
@@ -43,7 +44,7 @@ class SeatSelectionLogic
         @order = user.orders.init_from_show(show)
         # 设置 tickets 信息,考虑放到 state_machine init 的 callback
         @order.set_tickets_and_price(relations)
-        @order.update(buy_origin: auth.app_platform)
+        @order.update(buy_origin: app_platform)
         relation.reload
         if show.area_seats_left(relation.area) == 0
           relation.update_attributes(is_sold_out: true)
@@ -69,7 +70,7 @@ class SeatSelectionLogic
             seat.with_lock do
               seat.update(status: :locked, order_id: @order.id)
               order.set_tickets_info(seat)
-              order.update(amount: order.tickets.sum(:price), buy_origin: auth.app_platform)
+              order.update(amount: order.tickets.sum(:price), buy_origin: app_platform)
             end
           end
         end

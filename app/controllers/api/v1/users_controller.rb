@@ -190,7 +190,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @show = Show.find(params[:show_id])
     options = params.slice(:area_id, :quantity, :areas)
     options[:user] = @user
-    options[:auth] = @auth
+    options[:app_platform] = @auth.app_platform
     # 用 SeatSelectionLogic 这个 service 去跑
     ss_logic = SeatSelectionLogic.new(@show, options)
     ss_logic.execute
