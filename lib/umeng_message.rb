@@ -4,16 +4,31 @@ require 'httpi'
 require 'json'
 
 module UmengMessage
+  def get_appkey(platform)
+    if platform == 'ios'
+      UmengMessageSetting["ios_appkey"]
+    else
+      UmengMessageSetting["android_appkey"]
+    end
+  end
+
+  def get_app_master_secret(platform)
+    if platform == 'ios'
+      UmengMessageSetting["ios_app_master_secret"]
+    else
+      UmengMessageSetting["android_app_master_secret"]
+    end
+  end
 
   #生成签名
-  def generate_sign(method, url, post_body, app_master_secret)
-    Digest::MD5.hexdigest([method, url, post_body, app_master_secret].join)
+  def generate_sign(platform, url, post_body)
+   Digest::MD5.hexdigest('POST' + url + post_body + get_app_master_secret(platform))
   end
 
   #内容有中文的时候要用这个
   def string_convert_ascii(str)
     ascii = ""
-    length = str.size 
+    length = str.size
     for i in 0...length do
       s = str[i]
       if !s.blank?
@@ -31,21 +46,19 @@ module UmengMessage
     ascii
   end
 
-  def check_status(task_id = "uc50221143203989777000")
-    appkey = UmengMessageSetting["umeng_app_key"] 
-    time_stamp = Time.now.to_i.to_s
+  def check_status(platform, task_id)
     option = {
-      appkey: appkey,
-      timestamp: time_stamp,
+      appkey: get_appkey(platform),
+      timestamp: Time.now.to_i.to_s,
       task_id: task_id
     }
     status_url = UmengMessageSetting["umeng_status_url"]
-    post_body = string_convert_ascii( option.to_json )
-    response = httpi_send(status_url, post_body)
+    post_body = string_convert_ascii(option.to_json)
+    httpi_send(platform, status_url, post_body)
   end
 
-  def httpi_send(url, post_body)
-    sign = generate_sign("POST", url, post_body, UmengMessageSetting["umeng_app_master_secret"])
+  def httpi_send(platform, url, post_body)
+    sign = generate_sign(platform, url, post_body)
     request = HTTPI::Request.new
     request.open_timeout = 5 # seconds
     request.read_timeout = 5 # seconds
@@ -61,79 +74,66 @@ module UmengMessage
       e.response
       return "httpi_send  fail"
     end
+    Rails.logger.debug "****************---send: #{response.body}"
+    response
   end
 
-  def android_send_message(content, notification_text, title, text)
-#upload_file
-    time_stamp = ( Time.now + 1.minutes ).to_i.to_s
-    appkey = UmengMessageSetting["umeng_app_key"] 
+  def send_message(platform, targets, ticker, title, text)
     option = {
-      appkey: appkey,
-      timestamp: time_stamp,
-      content: content
+      appkey: get_appkey(platform),
+      timestamp: Time.now.to_i.to_s,
+      content: targets
     }
-    post_body = string_convert_ascii( option.to_json )
+    post_body = string_convert_ascii(option.to_json)
     upload_url = UmengMessageSetting["umeng_upload_url"]
-    response = httpi_send(upload_url, post_body)
+    response = httpi_send(platform, upload_url, post_body)
     if response.code == 200
       file_id = response.raw_body[36..55]
     else
-      puts "upload_file fail"
+      Rails.logger.debug "****************error: #{response.body}"
       return false
     end
-#send_message_with_file_id
-    option = {
-      appkey: appkey,
-      timestamp: time_stamp,
-      type: "customizedcast",
+
+    base_params = {
+      appkey: get_appkey(platform),
+      timestamp: Time.now.to_i.to_s,
+      type: 'customizedcast',
+      alias_type: 'mobile',
       file_id: file_id,
-      alias_type: "mobile",
-      payload: {
-        display_type: "notification",
-        body: {
-          ticker: notification_text, 
-          title: title,
-          text: text,
-          after_open:"go_activity",
-          activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
+      description: title
+    }
+
+    if platform == 'ios'
+      ios_payload = {
+        payload: {
+          aps: {
+            alert: text
+          }
         }
       }
-    }
-    send_url = UmengMessageSetting["umeng_send_url"]
-    post_body = string_convert_ascii( option.to_json )
-    response = httpi_send(send_url, post_body)
-    if response.code == 200
-      task_id = response.raw_body[36..57]
+      base_params.merge!(ios_payload)
     else
-      puts "send_message_with_file_id  fail"
-      return false
-    end
-  end
-
-  def send_message_for_reply_comment(user_mobile, title, text)
-    time_stamp = ( Time.now + 1.minutes ).to_i.to_s
-    appkey = UmengMessageSetting["umeng_app_key"]
-    option = {
-      appkey: appkey,
-      timestamp: time_stamp,
-      type: "customizedcast",
-      alias: user_mobile,
-      alias_type: "mobile",
-      payload: {
-        display_type: "notification",
-        body: {
-          ticker: "你有新的回复！", 
-          title: title,
-          text: text,
-          after_open:"go_activity",
-          activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
+      android_payload = {
+        payload: {
+          display_type: "notification",
+          body: {
+            ticker: ticker,
+            title: title,
+            text: text,
+            after_open: "go_activity",
+            activity: "us.bestapp.hoishow.ui.me.MessagesActivity"
+          }
         }
       }
-    }
+      base_params.merge!(android_payload)
+    end
     send_url = UmengMessageSetting["umeng_send_url"]
-    post_body = string_convert_ascii( option.to_json )
-    response = httpi_send(send_url, post_body)
+    post_body = string_convert_ascii(base_params.to_json)
+    Rails.logger.debug "****************send: #{post_body}"
+    httpi_send(platform, send_url, post_body)
   end
 
-
+  def push(targets, ticker, title, text)
+    %w(ios android).each{|platform| send_message(platform, targets, ticker, title, text)}
+  end
 end

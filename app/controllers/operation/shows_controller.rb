@@ -93,7 +93,7 @@ class Operation::ShowsController < Operation::ApplicationController
     else
       flash[:alert] = "推送发送失败"
     end
-    render :show
+    redirect_to operation_show_url(@show)
   end
 
   def get_city_stadiums

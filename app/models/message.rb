@@ -94,7 +94,7 @@ class Message < ActiveRecord::Base
     if ( users_array.count > 0 ) &&  message.save!
       if !Rails.env.test?
         content = message.create_relation_with_users(users_array)
-        task_id = message.android_send_message(content, message.notification_text, message.title, message.content)
+        task_id = message.push(content, message.notification_text, message.title, message.content)
         if task_id
           message.update!(task_id: task_id)
           s = "success"
