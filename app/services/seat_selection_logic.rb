@@ -37,7 +37,7 @@ class SeatSelectionLogic
 
     relation.with_lock do
       if relation.is_sold_out
-        return @response, @error_msg = 2, "你所买的区域暂时不能买票, 请稍后再试"
+        @response, @error_msg = 2, "你所买的区域暂时不能买票, 请稍后再试"
       else
         # create_order and callback
         @order = user.orders.init_from_show(show)
