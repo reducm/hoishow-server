@@ -30,10 +30,10 @@ class Operation::MessagesController < Operation::ApplicationController
   def send_umeng_message_again
     @message = Message.find(params[:id])
     users_array = get_users(@message)
-    if ( result = @message.send_umeng_message(users_array)) != "success"
-      flash[:alert] = result
-    else
+    if @message.send_umeng_message(users_array) == "success"
       flash[:notice] = "推送发送成功"
+    else
+      flash[:alert] = "推送发送失败"
     end
     redirect_to operation_messages_url
   end
