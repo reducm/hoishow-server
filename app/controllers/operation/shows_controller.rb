@@ -85,8 +85,8 @@ class Operation::ShowsController < Operation::ApplicationController
     star_followers = concert.stars.map{|star| star.followers}.flatten
     concert_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
     star_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你关注的艺人发布新演出咯！", title: "新演唱会通知", content: "你关注的艺人将参与在#{city.name}开演的#{@show.name},快来支持你偶像吧！")
-    result_1 = concert_message.send_umeng_message(users_array, concert_message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
-    result_2 = star_message.send_umeng_message(star_followers, star_message, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
+    result_1 = concert_message.send_umeng_message(users_array, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
+    result_2 = star_message.send_umeng_message(star_followers, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
 
     if result_1 == "success" && result_2 == "success"
       flash[:notice] = "推送发送成功"
