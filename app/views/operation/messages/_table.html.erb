@@ -8,7 +8,7 @@
       <th>通知栏内容</th>
       <th>消息标题</th>
       <th>消息内容</th>
-      <th>推送发送数</th>
+      <th>推送用户数</th>
       <th>发送时间</th>
       <th>操作</th>
     </tr>
@@ -23,7 +23,7 @@
         <td width="500px"><%= message.content %></td>
         <td><%= message.users.count%></td>
         <td><%= message.created_at.try(:strfcn_time) %></td>
-        <td><%= link_to "发送推送", send_umeng_message_again_operation_message_path(message), method: "post"%></td>
+        <td><%= link_to "发送推送", send_umeng_message_again_operation_message_path(message), method: "post" %></td>
       </tr>
     <% end %>
   </tbody>

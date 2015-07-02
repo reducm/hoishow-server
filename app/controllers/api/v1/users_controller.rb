@@ -199,6 +199,9 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     else
       error_json(ss_logic.error_msg)
     end
+    if @order.amount < 0.01
+      @order.set_tickets
+    end
   end
 
   def update_express_info

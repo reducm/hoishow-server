@@ -1,6 +1,8 @@
 development: &DEFAULT
-  umeng_app_key: "554b1a5367e58efdbb0042e2"
-  umeng_app_master_secret: "taf8adv3zzqx1gckxalzpxtiolzwj8lf"
+  android_appkey: "554b1a5367e58efdbb0042e2"
+  android_app_master_secret: "taf8adv3zzqx1gckxalzpxtiolzwj8lf"
+  ios_appkey: '' #TODO 等待ios生成key
+  ios_app_master_secret: ''
   umeng_send_url: "http://msg.umeng.com/api/send"
   umeng_upload_url: "http://msg.umeng.com/upload"
   umeng_status_url: "http://msg.umeng.com/api/status"

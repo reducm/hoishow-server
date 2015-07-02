@@ -23,11 +23,11 @@ type: `POST`
 
 ```javascript
   {
-    id: "2",
+    id: 2,
     name: "吴彦祖",
     admin_type: "ticket_checker", //验票员
     email: "xxx@ooo.com" or "", //没有email返回空字符串
-    last_sign_in_at: "201504102140270000",
+    last_sign_in_at: 201504102140270000,
     api_token: "ASDKAJSDKASJDLAKSD"
   }
 ```
@@ -92,4 +92,4 @@ type: `PATCH`
   }
 ```
 
-成功时返回: `{msg: "ok"}` 返回状态码200或201
+成功时返回: `{msg: "ok"}` 返回状态码200

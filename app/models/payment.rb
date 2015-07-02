@@ -1,6 +1,8 @@
 #encoding: UTF-8
 class Payment < ActiveRecord::Base
 
+  belongs_to :order
+
   enum status: {
     pending: 0, #待支付
     success: 1, #支付成功
