@@ -72,7 +72,7 @@ module UmengMessage
       response = HTTPI.post(request)
     rescue Exception => e
       e.response
-      return "httpi_send  fail"
+      return "httpi_send  #{e.response}"
     end
     Rails.logger.debug "****************---send: #{response.body}"
     response
@@ -134,6 +134,6 @@ module UmengMessage
   end
 
   def push(targets, ticker, title, text)
-    %w(ios android).each{|platform| send_message(platform, targets, ticker, title, text)}
+    %w(ios android).map{|platform| send_message(platform, targets, ticker, title, text)}
   end
 end
