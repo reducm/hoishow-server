@@ -91,7 +91,7 @@ module UmengMessage
       file_id = response.raw_body[36..55]
     else
       Rails.logger.debug "****************error: #{response.body}"
-      return false
+      return nil
     end
 
     base_params = {
@@ -130,7 +130,12 @@ module UmengMessage
     send_url = UmengMessageSetting["umeng_send_url"]
     post_body = string_convert_ascii(base_params.to_json)
     Rails.logger.debug "****************send: #{post_body}"
-    httpi_send(platform, send_url, post_body)
+    response = httpi_send(platform, send_url, post_body)
+    if response.code == 200
+      response.raw_body[36..57]
+    else
+      return nil
+    end
   end
 
   def push(targets, ticker, title, text)

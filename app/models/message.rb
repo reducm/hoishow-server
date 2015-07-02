@@ -1,6 +1,7 @@
 #encoding: UTF-8
 include UmengMessage
 class Message < ActiveRecord::Base
+  serialize :task_id
   include ModelAttrI18n
   default_scope {order('created_at DESC')}
 
@@ -81,6 +82,7 @@ class Message < ActiveRecord::Base
   end
 
   def creator
+    return Admin.first if creator_type == 'All'
     begin
       Object::const_get(creator_type).where(id: creator_id).first
     rescue => e
@@ -92,12 +94,13 @@ class Message < ActiveRecord::Base
 
   def send_umeng_message(users_array, none_follower: "关注用户数为0，消息创建失败")
     if users_array.count > 0 && self.save! && !Rails.env.test?
-      content = create_relation_with_users(users_array)
-      result = push(content, notification_text, title, content)
-      if result.include?(false)
-        return result
+      targets = create_relation_with_users(users_array)
+      result = push(targets, notification_text, title, content)
+      if result.all? {|r| r.nil?}
+        return 'fail'
       else
-        return "success"
+        self.update(task_id: result)
+        return 'success'
       end
     else
       none_follower

@@ -9,12 +9,12 @@ class Api::V1::MessagesController < Api::V1::ApplicationController
         render json: {msg: "yes"}, status: 200
       else
         render json: {msg: "no"}, status: 200
-      end     
+      end
     else
       if params[:type] == "system"
-        @messages = @user.messages.system_messages
+        @messages = @user.messages.system_messages.page(params[:page])
       elsif params[:type] == "reply"
-        @messages = @user.messages.reply_messages
+        @messages = @user.messages.reply_messages.page(params[:page])
       else
         error_json("传递参数出现不匹配")
       end
