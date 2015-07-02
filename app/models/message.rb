@@ -95,7 +95,7 @@ class Message < ActiveRecord::Base
       content = create_relation_with_users(users_array)
       result = push(content, notification_text, title, content)
       if result.include?(false)
-        return "fail"
+        return result
       else
         return "success"
       end

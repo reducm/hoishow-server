@@ -10,12 +10,15 @@ class Operation::MessagesController < Operation::ApplicationController
   def create
     @message = Message.new(message_params)
     users_array = get_users(@message)
+    result = @message.send_umeng_message(users_array)
 
-    if ( result = @message.send_umeng_message(users_array)) != "success"
-      flash[:alert] = result
+    if result == "success"
+      @message.save
+      flash[:notice] = "消息推送成功"
+    else
+      flash[:alert] = "消息推送失败"
     end
 
-    flash[:notice] = "消息创建成功"
     redirect_to operation_messages_url
   end
 
