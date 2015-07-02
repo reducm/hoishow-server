@@ -28,7 +28,7 @@ class Api::V1::ApplicationController < ApplicationController
     @user = get_user_from_params(params[:api_token], params[:mobile])
 
     if verify_block?(@user)
-      render json: {errors: "账户被锁定，请联系管理员"}, status: 406
+      render json: {errors: "你的账户由于安全原因暂时不能登录，如有疑问请致电400-880-5380"}, status: 406
       return false
     end
 
@@ -58,7 +58,7 @@ class Api::V1::ApplicationController < ApplicationController
     else
       @admin = Admin.where(api_token: params[:api_token], name: params[:name]).first
       if @admin.blank?
-        return error_json "账户不存在" 
+        return error_json "账户不存在"
       elsif verify_block?(@admin)
         render json: {errors: "账户被锁定，请联系管理员"}, status: 406
       elsif @admin.admin_type != "ticket_checker"
