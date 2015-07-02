@@ -82,7 +82,7 @@ class Operation::TopicsController < Operation::ApplicationController
             title = @comment.creator.nickname + "回复了你的评论"
           end
           message.user_message_relations.where(user: creator).first_or_create!
-          message.send_message_for_reply_comment(creator.mobile, title, message.content)
+          message.push(creator.mobile, '你有新的回复', title, message.content)
         end
       end
 

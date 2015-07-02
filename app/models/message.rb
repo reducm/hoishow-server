@@ -90,20 +90,17 @@ class Message < ActiveRecord::Base
     end
   end
 
-  def send_umeng_message(users_array, message, get_task_id_fail: "task_id获取失败，消息创建成功，推送发送失败", none_follower: "关注用户数为0，消息创建失败")
-    if ( users_array.count > 0 ) &&  message.save!
-      if !Rails.env.test?
-        content = message.create_relation_with_users(users_array)
-        task_id = message.android_send_message(content, message.notification_text, message.title, message.content)
-        if task_id
-          message.update!(task_id: task_id)
-          s = "success"
-        else
-          get_task_id_fail
-        end
+  def send_umeng_message(users_array, none_follower: "关注用户数为0，消息创建失败")
+    if users_array.count > 0 && self.save! && !Rails.env.test?
+      content = create_relation_with_users(users_array)
+      result = push(content, notification_text, title, content)
+      if result.include?(false)
+        return result
       else
-        none_follower
+        return "success"
       end
+    else
+      none_follower
     end
   end
 
