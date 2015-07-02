@@ -1,6 +1,7 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
   include Operation::ApplicationHelper
+  include ModelAttrI18n
   has_many :orders
   has_many :expresses
 
