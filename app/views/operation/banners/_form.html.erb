@@ -2,15 +2,14 @@
 <div class="centerbox">
   <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
     <div class="form-group">
-    <div class="col-xs-1">
-    <%= f.input :subject_type, collection: [["明星", "Star"], ["投票", "Concert"], ["演出", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
-    </div>
+      <div class="col-xs-1">
+        <%= f.input :subject_type, collection: [["明星", "Star"], ["投票", "Concert"], ["演出", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
+      </div>
     </div>
     <div class="form-group">
-    <div class="col-xs-4">
-    <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
-
-    </div>
+      <div class="col-xs-4">
+        <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
+      </div>
     </div>
     <div class="hidden editor"><%= f.kindeditor :description %></div>
     <div class="form-group">
@@ -28,6 +27,7 @@
 <%= content_tag :div, id: "hoishow", data: {
   stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
   concerts: ( Concert.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
-  shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } )
+  shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } ),
+  articles: [{name: '图文主体', id: 1}]
 } do %>
 <% end %>

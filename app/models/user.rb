@@ -1,6 +1,7 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
   include Operation::ApplicationHelper
+  include ModelAttrI18n
   has_many :orders
   has_many :expresses
 
@@ -117,7 +118,7 @@ class User < ActiveRecord::Base
           title = comment.creator.show_name + "回复了你的评论"
           message = Message.create(send_type: "comment_reply", creator_type: "User", creator_id: self.id, subject_type: "Topic", subject_id: topic.id, title: "你有新的回覆", content: r_content)
           creator.user_message_relations.where(message: message).first_or_create!
-          message.send_message_for_reply_comment(creator.mobile, title, message.content)
+          message.push(creator.mobile, '你有新的回复', title, message.content)
         end
       end
       if topic.creator_type == "User" && topic.creator != self
