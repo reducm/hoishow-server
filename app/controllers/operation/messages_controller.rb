@@ -13,7 +13,6 @@ class Operation::MessagesController < Operation::ApplicationController
     result = @message.send_umeng_message(users_array)
 
     if result == "success"
-      @message.save
       flash[:notice] = "消息推送成功"
     else
       flash[:alert] = "消息推送失败"
