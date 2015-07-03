@@ -21,7 +21,7 @@ description: 获取全部的场馆
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     [{
      id: 1, //场馆id
@@ -46,7 +46,7 @@ description: 获取全部的演出
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     [{
       id:  //show_id,
@@ -90,7 +90,7 @@ description: 获取全部的区域
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     [{
       id: 1, //area对象的id
@@ -126,7 +126,7 @@ description: 获取全部的区域
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     [{
       id: 1, //seat对象id
@@ -153,7 +153,7 @@ description: 获取指定场馆的详情
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     {
       id: 1, //场馆id
@@ -179,7 +179,7 @@ description: 获取指定演出的详情
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     {
       id:  //show_id,
@@ -217,7 +217,7 @@ description: 获取指定区域的详情
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     {
       id: 1, //area对象的id
@@ -246,7 +246,7 @@ description: 获取指定座位的详情
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     {
       id: 1, //seat对象id
@@ -274,7 +274,7 @@ description: 查询订单最新信息
 
 ```javascript
   {
-    user_id: 1, //用户id
+    user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
   }
 ```
@@ -283,7 +283,7 @@ description: 查询订单最新信息
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     data:
     {
       out_id: 123,
@@ -329,7 +329,7 @@ description: 创建订单并锁座
 ```javascript
   {
     show_id: 1, //演出id
-    user_id: 1, //用户id
+    user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
 
     #选区
@@ -374,7 +374,7 @@ description: 订单超时或退款的时候更新订单状态并解锁座位
 
 ```javascript
   {
-    result: 0,
+    result_code: 0,
     message: '请求成功'
   }
 ```
@@ -392,7 +392,7 @@ description: 订单支付成功确认出票
 
 ```javascript
   {
-    user_id: 1, //用户id
+    user_id: 1, //渠道用户id
     mobile: '13333333333' //用户手机号
   }
 ```
@@ -411,7 +411,7 @@ description: 订单支付成功确认出票
 
 ###生成签名
 
-sign生成方法: MD5加密('api_key=api_key&timestamp=123456')
+sign生成方法: MD5加密('api_key=api_key&timestamp=123456ecretcode')
 
 ----
 
