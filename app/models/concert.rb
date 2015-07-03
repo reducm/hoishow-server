@@ -66,14 +66,14 @@ class Concert < ActiveRecord::Base
   end
 
   def is_show_cn
-    # Showing: "显示中"
-    # Hidden: "隐藏中"
+    # showing: "显示中"
+    # hidden: "隐藏中"
     tran("is_show")
   end
 
   def status_cn
-    # Voting: "投票中"
-    # Finished: "投票完结"
+    # voting: "投票中"
+    # finished: "投票完结"
     tran("status")
   end
 

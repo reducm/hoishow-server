@@ -12,7 +12,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
           #TODO method and view jbuild
           @user = User.find_mobile(params[:mobile])
           if verify_block?(@user)
-            return error_json "您的账户由于安全问题暂时不能登录，请稍后再试"
+            render json: {errors: "你的账户由于安全原因暂时不能登录，如有疑问请致电400-880-5380"}, status: 406
+            return false
           else
             @user.sign_in_api
             Rails.cache.delete(cache_key(params[:mobile])) if @user.mobile != "13435858622"
