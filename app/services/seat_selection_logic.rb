@@ -10,7 +10,7 @@ class SeatSelectionLogic
     @options = options
     @user = options[:user]
     @app_platform = options[:app_platform] # 这个可能要改成 channel
-    raise RuntimeError, 'SeatSelectionLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
+    # raise RuntimeError, 'SeatSelectionLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
   end
 
   def success?
@@ -40,11 +40,14 @@ class SeatSelectionLogic
       if relation.is_sold_out
         @response, @error_msg = 2, "你所买的区域暂时不能买票, 请稍后再试"
       else
-        # create_order and callback
-        @order = user.orders.init_from_show(show)
-        # 设置 tickets 信息,考虑放到 state_machine init 的 callback
-        @order.set_tickets_and_price(relations)
-        @order.update(buy_origin: app_platform)
+        # create_order
+        create_order!
+        # update order amount
+        @order.update_attributes(amount: relations.map{|relation| relation.price}.inject(&:+))
+        # create_tickets callback
+        @order.create_tickets_by_relations(relations)
+
+        # update relation info
         relation.reload
         if show.area_seats_left(relation.area) == 0
           relation.update_attributes(is_sold_out: true)
@@ -58,27 +61,23 @@ class SeatSelectionLogic
   def create_order_with_selectable
     if options[:areas] && options[:areas].present?
       # create_order and callback
-      @order = user.orders.init_from_show(show)
-      @order.save
+      create_order!
       # 设置座位信息, 考虑放到 state_machine init 的 callback
       areas = JSON.parse options[:areas]
-      areas.each do |area_array|
-        area = show.areas.find_by_id(area_array['area_id'])
-        Seat.transaction do
-          area_array['seats'].each do |seat_array|
-            seat = area.seats.find_by_id(seat_array['id'])
-            seat.with_lock do
-              seat.update(status: :locked, order_id: @order.id)
-              order.set_tickets_info(seat)
-              order.update(amount: order.tickets.sum(:price), buy_origin: app_platform)
-            end
-          end
-        end
-      end
+      # create_tickets callback
+      @order.create_tickets_by_seats(areas)
+      # set amount by tickets prices
+      @order.update_attributes(amount: @order.tickets.sum(:price))
 
       @response = 0
     else
       @response, @error_msg = 3, "不能提交空订单"
     end
+  end
+
+  def create_order!
+    @order = user.orders.init_from_show(show)
+    @order.buy_origin = app_platform
+    @order.save!
   end
 end
