@@ -391,6 +391,8 @@ ActiveRecord::Schema.define(version: 20150703083705) do
     t.boolean  "is_block",           limit: 1,   default: false
   end
 
+  add_index "users", ["mobile"], name: "index_users_on_mobile", using: :btree
+
   create_table "videos", force: :cascade do |t|
     t.string   "url",        limit: 255
     t.integer  "star_id",    limit: 4
