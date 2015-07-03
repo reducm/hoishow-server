@@ -10,6 +10,28 @@
 
 -----------------------------------
 
+###城市列表
+[/api/open/v1/cities]()
+
+type `GET`
+
+description: 获取全部的城市
+
+成功时返回
+
+```javascript
+  {
+    result_code: 0,
+    data:
+    [{
+      id: 1, //城市id
+      name: 1, //城市名称
+    },.....]
+  }
+```
+
+-----------------------------------
+
 ###场馆列表
 [/api/open/v1/stadiums]()
 
@@ -411,7 +433,7 @@ description: 订单支付成功确认出票
 
 ###生成签名
 
-sign生成方法: MD5加密('api_key=api_key&timestamp=123456ecretcode')
+sign生成方法: MD5加密('api_key=api_key&timestamp=123456secretcode')
 
 ----
 
