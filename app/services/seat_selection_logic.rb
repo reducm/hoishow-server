@@ -1,3 +1,24 @@
+# 生成订单统一接口，各种渠道的订单生成的业务全部在这里管理
+# Hoishow App 端生成订单的调用方法：
+# - 选区
+#   所需参数 对应的 show, 一个 user, 区域id area_id, 该区域数量 quantity, 渠道 app_platform
+#   options = {user: user, area_id: area_id, quantity: quantity, app_platform: app_platform}
+# - 选座
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 app_platform
+#   options = {user: user, areas: areas, quantity: quantity, app_platform: app_platform}
+
+# 单车电影端生成订单的调用方法：
+# - 选区
+#   所需参数 对应的 show, 一个 user_mobile, 区域id area_id, 该区域数量 quantity, 渠道 app_platform
+#   options = {user_mobile: user_mobile, area_id: area_id, quantity: quantity, app_platform: app_platform}
+# - 选座
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 app_platform
+#   options = {user_mobile: user_mobile, areas: areas, quantity: quantity, app_platform: app_platform}
+
+# 然后统一跑
+#   ss_logic = SeatSelectionLogic.new(@show, options)
+#   ss_logic.execute
+# 判断 ss_logic.succeess? 是否为 true, 如果不是 ss_logic.error_msg 里面有错误信息
 class SeatSelectionLogic
   # toDo:
   # 一些错误处理和日志
@@ -76,7 +97,15 @@ class SeatSelectionLogic
   end
 
   def create_order!
-    @order = user.orders.init_from_show(show)
+    # 按渠道来生成订单
+    if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(app_platform)
+      @order = user.orders.init_from_show(show)
+    elsif 'Bike' == app_platform
+      @order = Order.init_from_show(show)
+      @order.user_mobile = options[:user_mobile]
+      # 看还有那些 user 的参数需要设置
+    end
+
     @order.buy_origin = app_platform
     @order.save!
   end

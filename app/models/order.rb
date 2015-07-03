@@ -39,16 +39,19 @@ class Order < ActiveRecord::Base
 
   # state_machine
   aasm :column => 'status', :whiny_transitions => false do
-    state :pending, :initial => true # toDo 把 create 后要做的事情可以加进来
+    state :pending, :initial => true # 调用 SeatSelectionLogic
     state :paid
     state :success
     state :refund
     state :outdate
 
+    # Wxpay调用方法  order.pre_pay!({payment_type: 'wxpay', trade_id: query_params["transaction_id"]})
+    # Alipay调用方法 order.pre_pay!({payment_type: 'alipay', trade_id: alipay_params["trade_no"]})
     event :pre_pay, :after => :set_payment_to_success do
       transitions :from => :pending, :to => :paid
     end
 
+    # 调用方法 order.success_pay!
     event :success_pay, :after => :set_tickets_to_success do
       transitions :from => :paid, :to => :success
     end
@@ -57,10 +60,12 @@ class Order < ActiveRecord::Base
     #   transitions :from => :paid, :to => :cancel
     # end
 
+    # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment})
     event :refunds, :after => [:set_payment_to_refund, :set_tickets_to_refund] do
       transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
     end
 
+    # 调用方法 order.overtime!
     event :overtime, :after => :handle_seats_and_tickets do
       transitions :from => :pending, :to => :outdate
     end
