@@ -5,9 +5,19 @@ class ApiAuth < ActiveRecord::Base
 
   validates :user, presence: true, uniqueness: true
   validates :key, presence: true, uniqueness: true
+  validates :secretcode, presence: true, uniqueness: true, if: :is_other_channels?
   before_validation :create_key
+  before_validation :create_secretcode, if: :is_other_channels?
 
   scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
+
+  def is_other_channels?
+    unless self.user == APP_IOS || self.user == APP_ANDROID
+      true
+    else
+      false
+    end
+  end
 
   def app_platform
     if self.user == APP_ANDROID
@@ -20,5 +30,9 @@ class ApiAuth < ActiveRecord::Base
   protected
   def create_key
     self.key = SecureRandom.urlsafe_base64 if self.key.blank?
+  end
+
+  def create_secretcode
+    self.secretcode = SecureRandom.urlsafe_base64 if self.secretcode.blank?
   end
 end

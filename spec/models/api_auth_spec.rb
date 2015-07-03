@@ -13,5 +13,11 @@ describe ApiAuth do
       expect(a.valid?).to be_truthy
       expect(a.key.present?).to be_truthy
     end
+
+    it "secretcode should be presence after_create if other_channels" do
+      a = ApiAuth.create(user: "danche")
+      expect(a.valid?).to be_truthy
+      expect(a.secretcode.present?).to be_truthy
+    end
   end
 end
