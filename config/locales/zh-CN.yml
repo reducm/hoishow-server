@@ -247,12 +247,12 @@ zh-CN:
         Concert: "投票"
         Show: "演出"
         Article: "图文"
-      concerts/is_show:
-        Showing: "显示中"
-        Hidden: "隐藏中"
-      concerts/status:
-        Voting: "投票中"
-        Finished: "投票完结"
+      concert/is_show:
+        showing: "显示中"
+        hidden: "隐藏中"
+      concert/status:
+        voting: "投票中"
+        finished: "投票完结"
       message/send_type:
         new_show: '发布新演出时'
         all_users_buy: '开放所有用户购买'
