@@ -28,6 +28,10 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include ApiAuthHelper
   config.include SpecTestHelper
+  config.include Response::JsonHelpers, type: [:controller, :request]
+  config.include Response::XmlHelpers,  type: [:controller, :request]
+
+
   config.color = true
   config.tty = true
   config.order = "random"
