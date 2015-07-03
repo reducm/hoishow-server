@@ -53,6 +53,7 @@ describe Show do
         relation = create :show_area_relation, area: area, show: @show
         2.times do
           order = @user.orders.init_from_show(@show)
+          order.save
           order.set_tickets_and_price([relation, relation])
         end
       end

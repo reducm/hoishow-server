@@ -12,6 +12,7 @@ describe Order do
       @show.show_area_relations.create(area: area, price: rand(1..10))
     end
     @order = @user.orders.init_from_data(city: @city, concert: @concert, stadium: @stadium, show: @show)
+    @order.save
     @order.set_tickets_and_price(ShowAreaRelation.all)
   end
 
