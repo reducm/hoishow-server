@@ -70,9 +70,6 @@ class Order < ActiveRecord::Base
     options = args.extract_options!
     # 根据类型来找到 payment, alipay 或者 wxpay
     # logger.error() if options[:payment_type].nil?
-
-    # order controller pay 的时候已经有 payment_type , 这里
-    # 还是否需要更新这个？
     query_options = {
       purchase_type: self.class.name,
       purchase_id:   self.id,
@@ -159,16 +156,50 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def set_tickets_and_price(show_area_relations=[])
-    self.amount = show_area_relations.map{|relation| relation.price}.inject(&:+)
-    save!
+  def create_tickets_by_relations(show_area_relations=[])
     show_area_relations.each do |relation|
       tickets.create(area_id: relation.area_id, show_id: relation.show_id, price: relation.price)
     end
   end
 
-  def set_tickets_info(seat)
-    tickets.create(area_id: seat.area_id, show_id: seat.show_id, price: seat.price, seat_name: seat.name)
+  def create_tickets_by_seats(areas)
+    area_ids = areas.map do |a|
+      seat_ids << a['seats'].map { |s| s['id'] }
+      a['area_id']
+    end
+    # search all areas in one query
+    current_areas = self.show.areas.where(id: area_ids)
+
+    current_areas.each do |area|
+      p 'start one seat transition'
+      Seat.transaction do
+        # search all seats from this area
+        area_params = areas.select{ |a| a['area_id'] == area.id}
+        seat_ids = area_params[0]['seats'].map { |s| s['id'] }
+        p area_params
+        p seat_ids
+        seats = area.seats.where(id: seat_ids)
+        # update each seat
+        seats.each do |seat|
+          # 先查出来再 lock 需要检验一下是否能行
+          seat.with_lock do
+            # update seat status
+            seat.update(status: :locked, order_id: self.id)
+            # create ticket
+            self.tickets.create(area_id: seat.area_id, show_id: seat.show_id,
+              price: seat.price, seat_name: seat.name)
+          end
+        end
+      end
+    end
+  end
+
+  # tickets and price warpper
+  def set_tickets_and_price(show_area_relations=[])
+    # update price
+    self.update_attributes(amount: show_area_relations.map{|relation| relation.price}.inject(&:+))
+    # create_tickets
+    self.create_tickets_by_relations(show_area_relations)
   end
 
   def tickets_count
