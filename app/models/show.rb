@@ -49,6 +49,9 @@ class Show < ActiveRecord::Base
     selected: 1, #只能选区
   }
 
+  paginates_per 10
+
+  mount_uploader :ticket_pic, ImageUploader
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
@@ -101,11 +104,6 @@ class Show < ActiveRecord::Base
     # going_to_open: "即将开放"
     tran("status")
   end
-
-  paginates_per 10
-
-  mount_uploader :poster, ImageUploader
-  mount_uploader :ticket_pic, ImageUploader
 
   def topics
     Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
