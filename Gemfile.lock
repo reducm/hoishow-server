@@ -423,6 +423,3 @@ DEPENDENCIES
   whenever
   yell-rails
   zeus-parallel_tests
-
-BUNDLED WITH
-   1.10.5
