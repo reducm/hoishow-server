@@ -3,7 +3,7 @@ class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, only: [:new_show, :show, :edit, :update]
   before_action :get_videos, only: [:edit, :update]
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     @stars = Star.all
@@ -22,7 +22,7 @@ class Operation::StarsController < Operation::ApplicationController
 
   def new_show
     concert = Concert.create(name: @star.name + "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
-    @star.hoi_concert(concert) 
+    @star.hoi_concert(concert)
     begin
       redirect_to new_operation_show_url(concert_id: concert.id)
     rescue
@@ -40,7 +40,7 @@ class Operation::StarsController < Operation::ApplicationController
       flash[:alert] = @star.errors.full_messages.to_sentence
       @star.delete
       render action: 'new'
-    end 
+    end
   end
 
 
@@ -54,7 +54,7 @@ class Operation::StarsController < Operation::ApplicationController
       flash[:alert] = @star.errors.full_messages.to_sentence
       render action: 'edit'
     end
-  end    
+  end
 
   def sort
     if params[:star].present?

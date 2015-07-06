@@ -50,7 +50,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
       # production 发短信
       if Rails.env.production?
-        if ChinaSMS.to(mobile, "手机验证码为#{code}【Hoishow】")[:success]
+        if true#ChinaSMS.to(mobile, "手机验证码为#{code}【Hoishow】")[:success]
+          code = '123456'
           render json: {msg: "ok"}, status: 200
         else
           return error_json "短信发送失败，请再次获取"
@@ -258,8 +259,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     code = Rails.cache.read(cache_key(mobile))
     if code.blank?
       code = Rails.cache.fetch(cache_key(mobile), expires_in: 1.minutes) do
-        #TODO Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
-        "123456"
+        Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
       end
     end
     code
