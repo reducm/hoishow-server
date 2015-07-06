@@ -11,10 +11,8 @@ class ApiAuth < ActiveRecord::Base
 
   scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
 
-  alias_method :channel, :user
-
   def is_other_channels?
-    [APP_IOS, APP_ANDROID].exclude? self.channel
+    [APP_IOS, APP_ANDROID].exclude? self.user
   end
 
   def app_platform
