@@ -258,7 +258,8 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     code = Rails.cache.read(cache_key(mobile))
     if code.blank?
       code = Rails.cache.fetch(cache_key(mobile), expires_in: 1.minutes) do
-        Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
+        #TODO Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
+        "123456"
       end
     end
     code
