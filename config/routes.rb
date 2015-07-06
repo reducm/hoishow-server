@@ -1,6 +1,9 @@
 #encoding: UTF-8
+Dir.glob("#{Rails.root.to_s}/config/routes/**/*.rb").each {|route_file| load(route_file)}
 require 'sidekiq/web'
 Rails.application.routes.draw do
+  Routes::OpenRoutes.draw(self)
+
   root to: 'pages#index'
   get "/about" => 'pages#about'
 
