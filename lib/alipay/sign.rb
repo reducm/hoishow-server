@@ -46,15 +46,15 @@ module Alipay
     end
 
     def self.pri_key_file
-      File.read("#{Rails.root}/lib/rsa_private_key.pem")
+      File.read("#{Rails.root}/config/certs/rsa_private_key.pem")
     end
 
     def self.pub_key_file
-      File.read("#{Rails.root}/lib/alipay_public_key.pem")
+      File.open("#{Rails.root}/config/certs/alipay_public_key.pem")
     end
 
     def self.pri_app_key_file
-      File.read("#{Rails.root}/lib/app_private_key.pem")
+      File.read("#{Rails.root}/config/certs/app_private_key.pem")
     end
   end
 end
