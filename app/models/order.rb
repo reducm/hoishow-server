@@ -14,7 +14,7 @@ class Order < ActiveRecord::Base
   has_many :tickets, dependent: :destroy
   has_many :payments, -> { where purchase_type: 'Order' }, :foreign_key => 'purchase_id', dependent: :destroy
 
-  validates :user, presence: {message: "用户不能为空"}
+  # validates :user, presence: {message: "用户不能为空"}
 
   ASSOCIATION_ATTRS = [:city, :concert, :stadium, :show]
 
