@@ -2,7 +2,7 @@
 class Operation::UsersController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_user, except: [:index, :search]
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     @users = User.page(params[:page]).order("created_at desc")

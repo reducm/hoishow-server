@@ -50,6 +50,9 @@ class Ability
         can :create, Startup
         can :update, Startup
 
+        # Message
+        can :create, Message
+
         basic_read_only
       end
     else

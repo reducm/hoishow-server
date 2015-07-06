@@ -2,7 +2,7 @@
 class Operation::CitiesController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_city, except: [:index, :search]
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     params[:page] ||= 1
