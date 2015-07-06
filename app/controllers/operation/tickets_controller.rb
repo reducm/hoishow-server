@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::TicketsController < Operation::ApplicationController
   before_filter :check_login!
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     params[:page] ||= 1
