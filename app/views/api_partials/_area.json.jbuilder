@@ -9,6 +9,10 @@ relation = show.show_area_relations.where(area_id: area.id).first
 if show && relation
   json.price relation.price.to_f
   json.seats_left show.area_seats_left(area)
-  # 没设置 channel 
-  json.is_sold_out show.area_is_sold_out(area) && relation.channels.present? && relation.channels.include?('bike')
+  # 没设置 channel
+  json.is_sold_out show.area_is_sold_out(area) && (relation.channels.nil? || !relation.channels.include?('bike'))
+end
+
+json.seats do
+  json.array! area.seats, partial: "api_partials/seat", as: :seat
 end

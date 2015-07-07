@@ -11,7 +11,7 @@ module Routes
               resources :stadiums, only: [:index, :show]
               resources :shows, only: [:index, :show]
               resources :areas, only: [:index, :show]
-              resources :seats, only: [:index, :show]
+              # resources :seats, only: [:index, :show]
               # api about orders
               resources :orders, only: [:create] do
                 collection do
