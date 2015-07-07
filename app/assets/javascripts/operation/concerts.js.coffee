@@ -338,7 +338,7 @@ $ ->
         alert("该城市已经有用户投票，不能删除")
       else
         if confirm("确定要删除吗?")
-          $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
+          $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parents('td').data("id"), _method: 'delete'}, (data)->
             if data.success
               init_map_data(concert_id)
           ) #删除投票城市
