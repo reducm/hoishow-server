@@ -20,7 +20,7 @@ class Ticket < ActiveRecord::Base
   }
 
   scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
-  scope :unpaid_tickets, ->{ where("status != ? and status != ?", statuses[:success], statuses[:used] ) }
+  scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
   before_create :set_status
   before_save :generate_code, unless: :pending?
 
