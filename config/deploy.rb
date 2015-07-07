@@ -20,7 +20,6 @@ namespace :deploy do
       within release_path do
         with rails_env: fetch(:rails_env) do
           execute :rake, "assets:publish_assets"
-          execute :rake, "kindeditor:assets"
         end
       end
     end

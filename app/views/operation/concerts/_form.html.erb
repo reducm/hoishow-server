@@ -35,7 +35,7 @@
   <% end %>
   <%= hidden_field_tag "star_id", params[:star_id] %>
   <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
-  <%= f.kindeditor :description %>
+  <%= f.input :description, label: '图文描述' %>
   <%= f.button :submit, "提交", class: 'marginspace', id: 'submit_concert' %>
 <%end%>
 

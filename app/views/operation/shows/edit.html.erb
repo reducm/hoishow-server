@@ -43,8 +43,7 @@
       <%= f.input :ticket_pic, label: "上传门票图片(建议大小:258x258)" %>
     </div>
     <div class="form-group">
-      <%= label_tag("图文描述") %>
-      <%= f.kindeditor :description %>
+      <%= f.input :description, label: '图文描述' %>
     </div>
     <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
     <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true, label: '场馆' %>

@@ -251,9 +251,22 @@ autocomplete_city_name = (concert_id) ->
 
   $("#city_name").autocomplete("option", "appendTo", "#myModal")
 
+init_editor = ()->
+  editor = new Simditor({
+             textarea: $('#concert_description'),
+             upload: {
+               url: '/simditor_image',
+               connectionCount: 3,
+               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+             },
+             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
+             pasteImage: true
+           })
 $ ->
   concert_id = $("#concert_id").val()
   star_ids = []
+
+  init_editor() if $('#concert_description').length > 0
 
 #若从艺人那边新建投票，默认添加该艺人
   if $("form").has("#hf_default_sid").length && $("form").has("#hf_default_sname").length
@@ -348,9 +361,6 @@ $ ->
       city_id = $(this).parent().data("id")
       refresh_topic_list(concert_id, city_id)
     #查看互动
-
-
-
 
     #更改底数
     $("#profile").on "click", ".change_base_number", () ->

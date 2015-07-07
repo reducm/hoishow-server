@@ -11,7 +11,7 @@
         <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
       </div>
     </div>
-    <div class="hidden editor"><%= f.kindeditor :description %></div>
+    <div class="hidden editor"><%= f.input :description, label: '图文描述' %></div>
     <div class="form-group">
     <% if banner.poster_url %>
       <%= label_tag "当前海报" %>

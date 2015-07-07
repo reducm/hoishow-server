@@ -43,7 +43,20 @@ get_seats_info = ()->
     if data.success
       location.href = "/operation/shows/#{show_id}/edit"
   )
+
+init_editor = ()->
+  editor = new Simditor({
+             textarea: $('#show_description'),
+             upload: {
+               url: '/simditor_image',
+               connectionCount: 3,
+               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+             },
+             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
+             pasteImage: true
+           })
 $ ->
+  init_editor() if $('#show_description').length > 0
 #show show
   if $(".show_show").length > 0
     $("#pie_cake div").each(() ->
