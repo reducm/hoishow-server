@@ -4,11 +4,11 @@ json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadi
 json.poster order.show.poster_url || ''
 json.order_address order.user_address || ''
 json.tickets_count order.tickets_count
-json.show_time order.show.show_time.to_ms rescue nil
+json.show_time order.show.show_time.to_ms rescue ''
 json.ticket_type order.show.ticket_type rescue ''
 json.qr_url show_for_qr_scan_api_v1_order_path(order)
 # json.ticket_pic order.show.ticket_pic_url || ''
-json.valid_time order.valid_time.to_ms rescue nil
+json.valid_time order.valid_time.to_ms rescue ''
 
 # about express
 # json.express_id @express.id rescue ''
