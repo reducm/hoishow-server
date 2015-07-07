@@ -1,4 +1,4 @@
-set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
+set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) ->
     option =
       title:
         text: area_name + "区(共" + tickets_count + "张)"
@@ -11,6 +11,7 @@ set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
         radius: "55%"
         data: [
           {value: sold_count, name: "售出数量"}
+          {value: unpaid_count, name: "未支付数量"}
           {value: left_count, name: "剩余数量"}
         ]
       ]
@@ -49,11 +50,12 @@ $ ->
     $("#pie_cake div").each(() ->
       left_count = $(this).attr("left_count")
       sold_count = $(this).attr("sold_count")
+      unpaid_count = $(this).attr("unpaid_count")
       area_name = $(this).attr("id")
       tickets_count = $(this).attr("total_tickets")
       if tickets_count > 0
         $(this).width(300).height(300)
-        set_pie_cake(left_count, sold_count, area_name, tickets_count))
+        set_pie_cake(unpaid_count, left_count, sold_count, area_name, tickets_count))
 
 #show new form
   if $(".new_show").length > 0
