@@ -374,11 +374,13 @@ $ ->
       concert_id = $(this).data("concert-id")
       city_id = $(this).data("city-id")
       base_number = $("#base_number_value_#{city_id}").val()
-      $.post("/operation/concerts/#{concert_id}/update_base_number", {concert_id: concert_id, city_id: city_id, base_number: base_number }, (data)->
-        if data.success
-          init_map_data(concert_id)
-      )
-
+      if parseInt(base_number) >= 0
+        $.post("/operation/concerts/#{concert_id}/update_base_number", {concert_id: concert_id, city_id: city_id, base_number: base_number }, (data)->
+          if data.success
+            init_map_data(concert_id)
+        )
+      else
+        alert('底数必须是正整数')
 
     $("#profile").on "click", ".add_topic", (e)->
       e.preventDefault()
