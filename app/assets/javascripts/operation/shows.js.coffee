@@ -55,6 +55,22 @@ init_editor = ()->
              toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
              pasteImage: true
            })
+
+toggle_show_time = ()->
+  $('#show_status').on 'change', ()->
+    if $(this).val() == 'going_to_open'
+      $('.show_description_time').show()
+      $('.show_show_time').hide()
+    else
+      $('.show_description_time').hide()
+      $('.show_show_time').show()
+
+  if $('#show_status').val() == 'going_to_open'
+    $('.show_description_time').show()
+    $('.show_show_time').hide()
+  else
+    $('.show_description_time').hide()
+    $('.show_show_time').show()
 $ ->
   init_editor() if $('#show_description').length > 0
 #show show
@@ -70,6 +86,8 @@ $ ->
 
 #show new form
   if $(".new_show").length > 0
+    toggle_desc_time()
+
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
       if $selected.val()
@@ -125,6 +143,7 @@ $ ->
         $form.submit()
 
   if $('.edit_show').length > 0
+    toggle_desc_time()
     show_id = $("#show_id").val()
 
     $('.add_star').on 'click', ()->
