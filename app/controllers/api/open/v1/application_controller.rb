@@ -22,24 +22,7 @@ class Api::Open::V1::ApplicationController < ApplicationController
       return render json: {result_code: "1002", message: "签名验证不通过"}
     end
 
-    #文档中的必需参数
-    options = [
-      "api_key",
-      "timestamp",
-      "show_id",
-      "area_id",
-      "user_id",
-      "mobile",
-      "quantity",
-      "reason"
-    ]
-    #如果传入的参数是文档中规定的必需参数
-    #将其组成字符串，格式为"key1=value1&key2=value2&...secretcode"
-    #对字符串md5加密，加密后转成大写
-    options = params.select {|key,value| options.include? key}
-    signing_string = options.sort.to_h.map{|key, value| "#{key.to_s}=#{value}"}.join("&") << @auth.secretcode
-    signing_string = Digest::MD5.hexdigest(signing_string).upcase
-    if params[:sign] != signing_string
+    if params[:sign] != @auth.generated_sign(params) 
       return render json: {result_code: "1002", message: "签名验证不通过"}
     end
   end

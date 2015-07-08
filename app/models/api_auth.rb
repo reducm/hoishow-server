@@ -25,6 +25,27 @@ class ApiAuth < ActiveRecord::Base
     end
   end
 
+  #生成签名
+  def generated_sign(params = {})
+    #文档中的必需参数
+    options = [
+      "api_key",
+      "timestamp",
+      "show_id",
+      "area_id",
+      "user_id",
+      "mobile",
+      "quantity",
+      "reason"
+    ]
+    #如果传入的参数是文档中规定的必需参数
+    #将其组成字符串，格式为"key1=value1&key2=value2&...secretcode"
+    #对字符串md5加密，加密后转成大写
+    params = params.select {|key,value| options.include? key}
+    signing_string = params.sort.to_h.map{|key, value| "#{key.to_s}=#{value}"}.join("&") << self.secretcode
+    signing_string = Digest::MD5.hexdigest(signing_string).upcase
+  end
+
   protected
   def create_key
     self.key = SecureRandom.urlsafe_base64 if self.key.blank?
