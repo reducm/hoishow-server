@@ -29,10 +29,11 @@ class Operation::AdminsController < Operation::ApplicationController
   end
 
   def update
-    if params[:pw1] && params[:pw2]
+    if params[:pw1].present? && params[:pw1] == params[:pw2]
       @admin.set_password(params[:pw1])
     end
-    if @admin.update!(admin_type: params[:type].to_i)
+    @admin.admin_type = params[:type].to_i
+    if @admin.save
       flash[:notice] = '修改成功'
       redirect_to operation_admins_url
     else

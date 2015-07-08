@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::MessagesController < Operation::ApplicationController
   before_filter :check_login!
-  load_and_authorize_resource param_method: :message_params
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def new
     @message = Message.new
@@ -37,8 +37,6 @@ class Operation::MessagesController < Operation::ApplicationController
     redirect_to operation_messages_url
   end
 
-
-
   private
   def message_params
     params.require(:message).permit(:send_type, :creator_type, :creator_id, :notification_text, :title, :content, :subject_type, :subject_id)
@@ -56,5 +54,4 @@ class Operation::MessagesController < Operation::ApplicationController
       []
     end
   end
-
 end

@@ -29,30 +29,6 @@ class Star < ActiveRecord::Base
     self.position = Star.maximum("position").to_i + 1
   end
 
-  def avatar_url
-    if avatar.url.present?
-      if Rails.env.production?
-        avatar.url("avatar")
-      else
-        avatar.url
-      end
-    else
-      nil
-    end
-  end
-
-  def poster_url
-    if poster.url.present?
-      if Rails.env.production?
-        poster.url("800")
-      else
-        poster.url
-      end
-    else
-      nil
-    end
-  end
-
   def vote_count
     concerts.map{|concert| concert.voters_count}.inject(&:+) || 0
   end

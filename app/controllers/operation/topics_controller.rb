@@ -3,7 +3,7 @@ class Operation::TopicsController < Operation::ApplicationController
   include Operation::ApplicationHelper
   before_filter :check_login!
   before_action :get_topic, except: [:create, :index, :destroy_topic]
-  load_and_authorize_resource
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     params[:page] ||= 1

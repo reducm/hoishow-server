@@ -2,7 +2,6 @@
 #= require jquery-ui
 #= require jquery_ujs
 #= require bootstrap-sprockets
-#= require kindeditor
 #= require operation/sb-admin-2
 #= require operation/metisMenu/metisMenu
 #= require operation/bootstrap-select
@@ -28,6 +27,13 @@
 #= require dropzone
 #= require operation/videos
 
+#= require simditor/module
+#= require simditor/hotkeys
+#= require simditor/uploader
+#= require simditor/simditor
+#= require simditor/beautify-html
+#= require simditor/simditor-html
+
 #= require operation/jquery.datetimepicker
 
 #datetimepicker
@@ -47,4 +53,8 @@ $ ->
     update: ->
       $.post($(this).data('update-url'), $(this).sortable('serialize'))
       location.reload()
+  )
+
+  $('form').keypress((e)->
+    return false if e.which == '13'
   )

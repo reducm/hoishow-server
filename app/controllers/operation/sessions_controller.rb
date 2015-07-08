@@ -8,10 +8,14 @@ class Operation::SessionsController < Operation::ApplicationController
   def create
     admin = Admin.find_by_name(params[:session][:username])
     if admin
-      if verify_block?(admin)
+      case
+      when verify_block?(admin)
         flash[:alert] = "账户被锁定，请联系管理员"
         redirect_to operation_signin_url
-      elsif admin.password_valid?(params[:session][:password])
+      when admin.ticket_checker?
+        flash[:alert] = '验票账号没权限进入后台，请联系管理员'
+        redirect_to operation_signin_url
+      when admin.password_valid?(params[:session][:password])
         admin.update(last_sign_in_at: DateTime.now)
         session[:admin_id] = admin.id
 
@@ -28,6 +32,6 @@ class Operation::SessionsController < Operation::ApplicationController
 
   def destroy
     session[:admin_id] = nil
-    redirect_to operation_signin_url, :notice => "Logged out!"
+    redirect_to operation_signin_url, :notice => "登出成功!"
   end
 end
