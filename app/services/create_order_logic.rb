@@ -1,19 +1,19 @@
 # 生成订单统一接口，各种渠道的订单生成的业务全部在这里管理
 # Hoishow App 端生成订单的调用方法：
 # - 选区
-#   所需参数 对应的 show, 一个 user, 区域id area_id, 该区域数量 quantity, 渠道 app_platform
-#   options = {user: user, area_id: area_id, quantity: quantity, app_platform: app_platform}
+#   所需参数 对应的 show, 一个 user, 区域id area_id, 该区域数量 quantity, 渠道 channel
+#   options = {user: user, area_id: area_id, quantity: quantity, channel: channel}
 # - 选座
-#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 app_platform
-#   options = {user: user, areas: areas, quantity: quantity, app_platform: app_platform}
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 channel
+#   options = {user: user, areas: areas, quantity: quantity, channel: channel}
 
 # 单车电影端生成订单的调用方法：
 # - 选区
-#   所需参数 对应的 show, 一个 user_mobile, 区域id area_id, 该区域数量 quantity, 渠道 app_platform
-#   options = {user_mobile: user_mobile, area_id: area_id, quantity: quantity, app_platform: app_platform}
+#   所需参数 对应的 show, 一个 user_mobile, 区域id area_id, 该区域数量 quantity, 渠道 channel
+#   options = {user_mobile: user_mobile, area_id: area_id, quantity: quantity, channel: channel}
 # - 选座
-#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 app_platform
-#   options = {user_mobile: user_mobile, areas: areas, quantity: quantity, app_platform: app_platform}
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 channel
+#   options = {user_mobile: user_mobile, areas: areas, quantity: quantity, channel: channel}
 
 # 然后统一跑
 #   co_logic = CreateOrderLogic.new(@show, options)
@@ -23,15 +23,15 @@ class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :app_platform, :error_msg, :order
+  attr_reader :show, :options, :response, :user, :channel, :error_msg, :order
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
     @show = show
     @options = options
     @user = options[:user]
-    @app_platform = options[:app_platform] # 这个可能要改成 channel
-    # raise RuntimeError, 'CreateOrderLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
+    @channel = options[:channel]
+    # raise RuntimeError, 'CreateOrderLogic 缺少 user 或者 channel' if @user.nil? || @channel.nil?
   end
 
   def success?
@@ -102,15 +102,15 @@ class CreateOrderLogic
 
   def create_order!
     # 按渠道来生成订单
-    if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(app_platform)
+    if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(channel)
       @order = user.orders.init_from_show(show)
-    elsif ApiAuth::DANCHE_SERVER == app_platform
+    elsif ApiAuth::DANCHE_SERVER == channel
       @order = Order.init_from_show(show)
       @order.user_mobile = options[:user_mobile]
       # 看还有那些 user 的参数需要设置
     end
 
-    @order.buy_origin = app_platform
+    @order.buy_origin = channel
     @order.save!
   end
 end

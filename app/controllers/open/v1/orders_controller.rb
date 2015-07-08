@@ -19,7 +19,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
     options[:user] = User.find_mobile(order_params[:mobile])
     # set channel
-    options[:app_platform] = @auth.channel
+    options[:channel] = @auth.channel
     co_logic = CreateOrderLogic.new(@show, options)
     co_logic.execute
 
