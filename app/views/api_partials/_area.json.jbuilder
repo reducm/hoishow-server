@@ -13,6 +13,6 @@ if show && relation
   json.is_sold_out show.area_is_sold_out(area) && (relation.channels.nil? || !relation.channels.include?('bike'))
 end
 
-json.seats do
+json.seats_info do
   json.array! area.seats, partial: "api_partials/seat", as: :seat
 end

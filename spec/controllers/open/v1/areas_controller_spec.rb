@@ -37,11 +37,9 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
         expect(d[:is_sold_out]).to eq relation.is_sold_out && !relation.channels.include?('bike')
         expect(d[:seats_left]).to eq show.area_seats_left(a)
         expect(d[:seats_map]).to eq seats_map_path(show_id: show.id, area_id: a.id)
-        d[:seats].each do |s|
+        d[:seats_info].each do |s|
           seat = Seat.find(s[:id])
           expect(s[:name]).to eq seat.name
-          expect(s[:show_id]).to eq seat.show.id
-          expect(s[:area_id].to_d).to eq seat.area.id
           expect(s[:price]).to eq seat.price.to_f
           expect(s[:status]).to eq seat.status
           expect(s[:row]).to eq seat.row
