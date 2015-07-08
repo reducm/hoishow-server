@@ -251,9 +251,22 @@ autocomplete_city_name = (concert_id) ->
 
   $("#city_name").autocomplete("option", "appendTo", "#myModal")
 
+init_editor = ()->
+  editor = new Simditor({
+             textarea: $('#concert_description'),
+             upload: {
+               url: '/simditor_image',
+               connectionCount: 3,
+               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+             },
+             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
+             pasteImage: true
+           })
 $ ->
   concert_id = $("#concert_id").val()
   star_ids = []
+
+  init_editor() if $('#concert_description').length > 0
 
 #若从艺人那边新建投票，默认添加该艺人
   if $("form").has("#hf_default_sid").length && $("form").has("#hf_default_sname").length
@@ -325,7 +338,7 @@ $ ->
         alert("该城市已经有用户投票，不能删除")
       else
         if confirm("确定要删除吗?")
-          $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parent().data("id"), _method: 'delete'}, (data)->
+          $.post("/operation/concerts/#{concert_id}/remove_concert_city", {city_id: $this.parents('td').data("id"), _method: 'delete'}, (data)->
             if data.success
               init_map_data(concert_id)
           ) #删除投票城市
@@ -349,9 +362,6 @@ $ ->
       refresh_topic_list(concert_id, city_id)
     #查看互动
 
-
-
-
     #更改底数
     $("#profile").on "click", ".change_base_number", () ->
       concert_id = $(this).parent().parent().data("concert-id")
@@ -364,11 +374,13 @@ $ ->
       concert_id = $(this).data("concert-id")
       city_id = $(this).data("city-id")
       base_number = $("#base_number_value_#{city_id}").val()
-      $.post("/operation/concerts/#{concert_id}/update_base_number", {concert_id: concert_id, city_id: city_id, base_number: base_number }, (data)->
-        if data.success
-          init_map_data(concert_id)
-      )
-
+      if parseInt(base_number) >= 0
+        $.post("/operation/concerts/#{concert_id}/update_base_number", {concert_id: concert_id, city_id: city_id, base_number: base_number }, (data)->
+          if data.success
+            init_map_data(concert_id)
+        )
+      else
+        alert('底数必须是正整数')
 
     $("#profile").on "click", ".add_topic", (e)->
       e.preventDefault()

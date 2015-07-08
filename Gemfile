@@ -18,8 +18,6 @@ gem "rest-client"
 # Use CoffeeScript for .coffee assets and views
 
 #assets
-#editor
-gem 'rails_kindeditor'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'

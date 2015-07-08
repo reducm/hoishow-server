@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150703083705) do
+ActiveRecord::Schema.define(version: 20150707091309) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -239,6 +239,12 @@ ActiveRecord::Schema.define(version: 20150703083705) do
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
   add_index "shows", ["concert_id"], name: "index_shows_on_concert_id", using: :btree
   add_index "shows", ["stadium_id"], name: "index_shows_on_stadium_id", using: :btree
+
+  create_table "simditor_images", force: :cascade do |t|
+    t.string   "image",      limit: 255, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "stadiums", force: :cascade do |t|
     t.string   "name",        limit: 255

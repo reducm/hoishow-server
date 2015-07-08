@@ -1,3 +1,14 @@
+init_editor = ()->
+  editor = new Simditor({
+             textarea: $('#banner_description'),
+             upload: {
+               url: '/simditor_image',
+               connectionCount: 3,
+               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+             },
+             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
+             pasteImage: true
+           })
 $ ->
   data = $("#hoishow").data()
 
@@ -12,6 +23,7 @@ $ ->
     selected_option = select.find("option:selected")
     if selected_option.val() == "Article"
       $('.editor').removeClass('hidden')
+      init_editor()
     else
       $('.editor').addClass('hidden')
     key = selected_option.val().toLowerCase() + "s"
@@ -23,3 +35,4 @@ $ ->
 
   if $('#subject_type_select').val() == 'Article'
     $('.editor').removeClass('hidden')
+    init_editor()
