@@ -16,15 +16,15 @@ FactoryGirl.define do
     end
 
     trait :avaliable do
-      status 'avaliable'
+      status 0
     end
 
     trait :locked do
-      status 'locked'
+      status 1
     end
 
     trait :unused do
-      status 'unused'
+      status 2
     end
 
     factory :avaliable_seat, traits: [:avaliable]

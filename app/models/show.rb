@@ -49,20 +49,11 @@ class Show < ActiveRecord::Base
     selected: 1, #只能选区
   }
 
+  paginates_per 10
+
+  mount_uploader :ticket_pic, ImageUploader
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
-
-  def poster_url
-    if poster.url.present?
-      if Rails.env.production?
-        poster.url("800")
-      else
-        poster.url
-      end
-    else
-      nil
-    end
-  end
 
   def get_show_time
     if going_to_open?
@@ -102,19 +93,17 @@ class Show < ActiveRecord::Base
     tran("status")
   end
 
-  paginates_per 10
-
-  mount_uploader :poster, ImageUploader
-  mount_uploader :ticket_pic, ImageUploader
-
   def topics
     Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
   end
 
   def area_seats_left(area)
-    valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
-    count = area_seats_count(area) - valid_tickets.count
-    count > 0 ? count : 0
+    # find all valid tickets
+    valid_tickets_count = area.tickets.where(order_id: self.orders.valid_orders.pluck(:id)).count
+    # find the seats_count in this area
+    count = area_seats_count(area) - valid_tickets_count
+
+    [0, count].max
   end
 
   def area_is_sold_out(area)

@@ -18,8 +18,6 @@ gem "rest-client"
 # Use CoffeeScript for .coffee assets and views
 
 #assets
-#editor
-gem 'rails_kindeditor'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
@@ -116,6 +114,10 @@ gem "yell-rails"
 
 # 短信平台接口
 gem 'china_sms', git: "git://github.com/villins/china_sms.git"
+
+
+# state mechine
+gem 'aasm', '~> 4.1'
 
 #node
 gem 'execjs'

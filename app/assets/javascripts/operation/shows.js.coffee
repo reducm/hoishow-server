@@ -1,4 +1,4 @@
-set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
+set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) ->
     option =
       title:
         text: area_name + "区(共" + tickets_count + "张)"
@@ -11,6 +11,7 @@ set_pie_cake = (left_count, sold_count, area_name, tickets_count) ->
         radius: "55%"
         data: [
           {value: sold_count, name: "售出数量"}
+          {value: unpaid_count, name: "未支付数量"}
           {value: left_count, name: "剩余数量"}
         ]
       ]
@@ -43,20 +44,52 @@ get_seats_info = ()->
     if data.success
       location.href = "/operation/shows/#{show_id}/edit"
   )
+
+init_editor = ()->
+  editor = new Simditor({
+             textarea: $('#show_description'),
+             upload: {
+               url: '/simditor_image',
+               connectionCount: 3,
+               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
+             },
+             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
+             pasteImage: true
+           })
+
+toggle_show_time = ()->
+  $('#show_status').on 'change', ()->
+    if $(this).val() == 'going_to_open'
+      $('.show_description_time').show()
+      $('.show_show_time').hide()
+    else
+      $('.show_description_time').hide()
+      $('.show_show_time').show()
+
+  if $('#show_status').val() == 'going_to_open'
+    $('.show_description_time').show()
+    $('.show_show_time').hide()
+  else
+    $('.show_description_time').hide()
+    $('.show_show_time').show()
 $ ->
+  init_editor() if $('#show_description').length > 0
 #show show
   if $(".show_show").length > 0
     $("#pie_cake div").each(() ->
       left_count = $(this).attr("left_count")
       sold_count = $(this).attr("sold_count")
+      unpaid_count = $(this).attr("unpaid_count")
       area_name = $(this).attr("id")
       tickets_count = $(this).attr("total_tickets")
       if tickets_count > 0
         $(this).width(300).height(300)
-        set_pie_cake(left_count, sold_count, area_name, tickets_count))
+        set_pie_cake(unpaid_count, left_count, sold_count, area_name, tickets_count))
 
 #show new form
   if $(".new_show").length > 0
+    toggle_desc_time()
+
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
       if $selected.val()
@@ -112,6 +145,7 @@ $ ->
         $form.submit()
 
   if $('.edit_show').length > 0
+    toggle_desc_time()
     show_id = $("#show_id").val()
 
     $('.add_star').on 'click', ()->
