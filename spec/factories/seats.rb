@@ -4,16 +4,8 @@ FactoryGirl.define do
   factory :seat do
     row { rand(1..10) }
     column { rand(1..10) }
-    name "#{row}排#{column}座"
+    name "x排x座"
     price { rand(100..500) }
-
-    trait :row do
-      row { rand(1..10) }
-    end
-
-    trait :column do
-      column { rand(1..10) }
-    end
 
     trait :avaliable do
       status 0

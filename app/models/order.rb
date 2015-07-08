@@ -95,7 +95,9 @@ class Order < ActiveRecord::Base
     options = args.extract_options!
 
     payment = options[:payment]
-    payment.update(status: :refund, refund_amount: options[:refund_amount], refund_at: Time.now)
+    unless payment.nil?
+      payment.update(status: :refund, refund_amount: options[:refund_amount], refund_at: Time.now)
+    end
   end
 
   def set_tickets_to_success *args

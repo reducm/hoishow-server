@@ -104,7 +104,7 @@ class CreateOrderLogic
     # 按渠道来生成订单
     if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(app_platform)
       @order = user.orders.init_from_show(show)
-    elsif 'Bike' == app_platform
+    elsif 'moive' == app_platform
       @order = Order.init_from_show(show)
       @order.user_mobile = options[:user_mobile]
       # 看还有那些 user 的参数需要设置

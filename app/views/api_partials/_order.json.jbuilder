@@ -1,6 +1,7 @@
 @express = @user ? @user.expresses.last : nil
 
-json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id, :show_name, :show_id, :city_name, :city_id, :status)
+json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id,
+  :show_name, :show_id, :city_name, :city_id, :status, :user_mobile)
 json.poster order.show.poster_url || ''
 json.order_address order.user_address || ''
 json.tickets_count order.tickets_count
