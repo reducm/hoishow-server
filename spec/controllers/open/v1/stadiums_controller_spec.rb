@@ -48,7 +48,7 @@ RSpec.describe Open::V1::StadiumsController, :type => :controller do
     it 'will return error when stadium no found' do
       get :show, id: -1
 
-      expect(json[:result_code]).to eq 4004
+      expect(json[:result_code]).to eq 2001
       expect(json[:message]).to eq '找不到该场馆'
     end
   end

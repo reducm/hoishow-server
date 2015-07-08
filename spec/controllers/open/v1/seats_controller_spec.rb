@@ -45,14 +45,14 @@
 #     it 'will return error when show id was wrong' do
 #       get :index, show_id: -1
 #
-#       expect(json[:result_code]).to eq 4004
+#       expect(json[:result_code]).to eq 2001
 #       expect(json[:message]).to eq '找不到该演出'
 #     end
 #
 #     it 'will return error when area id was wrong' do
 #       get :index, area_id: -1, show_id: show.id
 #
-#       expect(json[:result_code]).to eq 4004
+#       expect(json[:result_code]).to eq 2001
 #       expect(json[:message]).to eq '找不到该区域'
 #     end
 #   end
@@ -79,21 +79,21 @@
 #     it 'will return error when area no found' do
 #       get :show, id: seat.id, area_id: -1, show_id: show.id
 #
-#       expect(json[:result_code]).to eq 4004
+#       expect(json[:result_code]).to eq 2001
 #       expect(json[:message]).to eq '找不到该区域'
 #     end
 #
 #     it 'will return error when show id was wrong' do
 #       get :show, id: seat.id, area_id: area.id, show_id: -1
 #
-#       expect(json[:result_code]).to eq 4004
+#       expect(json[:result_code]).to eq 2001
 #       expect(json[:message]).to eq '找不到该演出'
 #     end
 #
 #     it 'will return error when seat no found' do
 #       get :show, id: -1, area_id: area.id, show_id: show.id
 #
-#       expect(json[:result_code]).to eq 4004
+#       expect(json[:result_code]).to eq 2001
 #       expect(json[:message]).to eq '找不到该座位'
 #     end
 #   end

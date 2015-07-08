@@ -18,8 +18,13 @@ class Open::V1::ApplicationController < ApplicationController
     end
   end
 
+  # not_found warpper
   def not_found_respond(msg)
-    @error_code = 4004
+    error_respond(2001, msg)
+  end
+
+  def error_respond(code, msg)
+    @error_code = code
     @message = msg
     respond_to { |f| f.json }
   end
@@ -34,7 +39,8 @@ class Open::V1::ApplicationController < ApplicationController
       "user_id",
       "mobile",
       "quantity",
-      "reason"
+      "reason",
+      "areas"
      )
   end
 

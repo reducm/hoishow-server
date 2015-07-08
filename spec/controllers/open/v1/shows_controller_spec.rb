@@ -76,7 +76,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
     it 'will return error when show no found' do
       get :show, id: -1
 
-      expect(json[:result_code]).to eq 4004
+      expect(json[:result_code]).to eq 2001
       expect(json[:message]).to eq '找不到该演出'
     end
   end

@@ -9,12 +9,17 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def create
-    options = params.slice(:area_id, :quantity, :areas, :moive_user_id)
+    # 演出状态判断
+    # unless @show.is_display
+    #   error_respond(2002, '演出未开发购票')
+    # end
+
+    options = params.slice(:area_id, :quantity, :areas, :movie_user_id)
     options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
     options[:user] = User.find_mobile(order_params[:mobile])
     # set channel
-    options[:app_platform] = 'moive' # @auth.app_platform
+    options[:app_platform] = @auth.channel
     co_logic = CreateOrderLogic.new(@show, options)
     co_logic.execute
 
@@ -56,7 +61,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   def order_auth!
     @order = Order.where(out_id: order_params[:out_id], user_mobile: order_params[:mobile]).first
     if @order.nil?
-      not_found_respond('找不到该订单')
+      error_respond(3006, '订单不存在')
     end
   end
 
@@ -66,7 +71,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   def order_params
     params.permit(:out_id, :area_id, :quantity, :areas, :mobile, :reason,
       # for 单车电影的参数
-      :moive_user_id, :movie_out_id)
+      :bike_user_id, :bike_out_id)
   end
 
   def mobile_auth!

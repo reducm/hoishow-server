@@ -54,7 +54,7 @@ class CreateOrderLogic
     area_seats_left_result = show.area_seats_left(relation.area) - quantity
 
     if area_seats_left_result < 0
-      @response, @error_msg = 1, "购买票数大于该区剩余票数!"
+      @response, @error_msg = 2003, "购买票数大于该区剩余票数!"
       return
     end
 
@@ -104,7 +104,7 @@ class CreateOrderLogic
     # 按渠道来生成订单
     if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(app_platform)
       @order = user.orders.init_from_show(show)
-    elsif 'moive' == app_platform
+    elsif ApiAuth::DANCHE_SERVER == app_platform
       @order = Order.init_from_show(show)
       @order.user_mobile = options[:user_mobile]
       # 看还有那些 user 的参数需要设置

@@ -1,10 +1,18 @@
 require 'spec_helper'
 
+def sign_params(params)
+  params[:timestamp] = Time.now.to_i
+  params[:api_key] = auth.key
+  sign = params.sort.to_h.map{|key, value| "#{key.to_s}=#{value}"}.join("&") << auth.secretcode
+  sign = Digest::MD5.hexdigest(sign).upcase
+  params.tap { |p| p[:sign] = sign }
+end
+
 RSpec.describe Open::V1::OrdersController, :type => :controller do
   render_views
   before :each do
     request.env["HTTP_ACCEPT"] = 'application/json'
-    allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+    # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
   end
 
   let(:city) { create :city }
@@ -22,6 +30,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     o.save!
     o
   end
+  let(:auth) { ApiAuth.create(user: "dancheServer") }
 
   before :each do
     show.show_area_relations.create(area_id: area.id, channels: 'bike',
@@ -34,6 +43,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
     before :each do
       2.times { create :selectable_tickets, order: order, area: area, show: show }
+      allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
     end
 
     it 'should return current order info with current out_id' do
@@ -84,8 +94,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     it 'will return error when order no found' do
       get :show, out_id: -1, mobile: order.user_mobile # user id ?
 
-      expect(json[:result_code]).to eq 4004
-      expect(json[:message]).to eq '找不到该订单'
+      expect(json[:result_code]).to eq 3006
+      expect(json[:message]).to eq '订单不存在'
     end
 
     it 'will return error when user mobile was wrong' do
@@ -102,7 +112,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         movie_user_id = rand(2..10)
         params[:quantity] = 2
 
-        expect{post :create, params}.to change(show.orders, :count).by(1)
+        expect{post :create, sign_params(params)}.to change(show.orders, :count).by(1)
         expect(json[:result_code]).to eq 0
 
         order = Order.last
@@ -140,7 +150,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       it 'will return error whan seat left' do
         params[:quantity] = 5
 
-        post :create, params
+        post :create, sign_params(params)
         expect(json[:message]).to eq '购买票数大于该区剩余票数!'
       end
 
@@ -149,14 +159,14 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         relation.update_attributes is_sold_out: true
         params[:quantity] = 2
 
-        post :create, params
+        post :create, sign_params(params)
         expect(json[:message]).to eq '你所买的区域暂时不能买票, 请稍后再试'
       end
 
       it 'will return error when user phone was wrong' do
         params[:mobile] = 'xxx182939'
 
-        post :create, params
+        post :create, sign_params(params)
         expect(json[:message]).to eq '手机号不正确'
       end
     end
@@ -182,7 +192,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       end
 
       it 'will create order with current params' do
-        expect{post :create, params}.to change(show2.orders, :count).by(1)
+        expect{post :create, sign_params(params)}.to change(show2.orders, :count).by(1)
         expect(json[:result_code]).to eq 0
         order = Order.last
 
@@ -205,14 +215,14 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       it 'will return error when user phone was wrong' do
         params[:mobile] = 'xxx182939'
 
-        post :create, params
+        post :create, sign_params(params)
         expect(json[:message]).to eq '手机号不正确'
       end
 
       it 'will return error when miss params areas' do
         params.delete(:areas)
 
-        post :create, params
+        post :create, sign_params(params)
         expect(json[:message]).to eq '不能提交空订单'
       end
     end
@@ -220,6 +230,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
   context '# action unlock_seat' do
     let(:params) { { mobile: order.user_mobile, out_id: order.out_id } }
+    before do
+      allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+    end
 
     it 'will return success when unlock ok when outdate' do
       expect(order.status).to eq 'pending'
@@ -247,8 +260,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       params[:out_id] = -1
       get :unlock_seat, params# user id ?
 
-      expect(json[:result_code]).to eq 4004
-      expect(json[:message]).to eq '找不到该订单'
+      expect(json[:result_code]).to eq 3006
+      expect(json[:message]).to eq '订单不存在'
     end
 
     it 'will return error when user mobile was wrong' do
@@ -280,6 +293,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
   context '# action confirm' do
     let(:params) { { mobile: order.user_mobile, out_id: order.out_id } }
+    before do
+      allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+    end
 
     it 'will return success when confiemed' do
       expect(order.status).to eq 'pending'
@@ -295,8 +311,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
       get :show, params# user id ?
 
-      expect(json[:result_code]).to eq 4004
-      expect(json[:message]).to eq '找不到该订单'
+      expect(json[:result_code]).to eq 3006
+      expect(json[:message]).to eq '订单不存在'
     end
 
     it 'will return error when user mobile was wrong' do

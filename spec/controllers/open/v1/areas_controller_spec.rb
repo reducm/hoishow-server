@@ -52,7 +52,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     it 'will return error when show id was wrong' do
       get :index, show_id: -1
 
-      expect(json[:result_code]).to eq 4004
+      expect(json[:result_code]).to eq 2001
       expect(json[:message]).to eq '找不到该演出'
     end
   end
@@ -82,14 +82,14 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     it 'will return error when area no found' do
       get :show, id: -1, show_id: show.id
 
-      expect(json[:result_code]).to eq 4004
+      expect(json[:result_code]).to eq 2001
       expect(json[:message]).to eq '找不到该区域'
     end
 
     it 'will return error when show id was wrong' do
       get :show, id: -1, show_id: -1
 
-      expect(json[:result_code]).to eq 4004
+      expect(json[:result_code]).to eq 2001
       expect(json[:message]).to eq '找不到该演出'
     end
   end
