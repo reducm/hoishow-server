@@ -1,18 +1,20 @@
 #encoding: UTF-8
 class ApiAuth < ActiveRecord::Base
+  #channel
   APP_IOS = 'hoishowIOS'
   APP_ANDROID = 'hoishowAndroid'
+  DANCHE_SERVER = 'dancheServer'
 
   validates :user, presence: true, uniqueness: true
   validates :key, presence: true, uniqueness: true
-  validates :secretcode, presence: true, uniqueness: true, if: :is_other_channels?
+  validates :secretcode, presence: true, uniqueness: true, if: :require_secretcode?
   before_validation :create_key
-  before_validation :create_secretcode, if: :is_other_channels?
+  before_validation :create_secretcode, if: :require_secretcode?
 
   scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
 
-  def is_other_channels?
-    [APP_IOS, APP_ANDROID].exclude? self.user
+  def require_secretcode?
+    [DANCHE_SERVER].include? self.user
   end
 
   def app_platform

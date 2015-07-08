@@ -9,13 +9,19 @@ RSpec.describe Api::Open::V1::CitiesController, :type => :controller do
     end
 
     it "should get 30 cities" do
-      get :index, with_out_channel_params(format: :json)
+      @auth = ApiAuth.create(user: "dancheServer")
+      timestamp = Time.now.to_i
+      sign = (Digest::MD5.hexdigest("api_key=#{@auth.key}&timestamp=#{timestamp}#{@auth.secretcode}")).upcase
+      get :index, api_key: @auth.key, timestamp: timestamp, sign: sign, format: :json 
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 30
     end    
 
     it "should has attributes" do
-      get :index, with_out_channel_params(format: :json)
+      @auth = ApiAuth.create(user: "dancheServer")
+      timestamp = Time.now.to_i
+      sign = (Digest::MD5.hexdigest("api_key=#{@auth.key}&timestamp=#{timestamp}#{@auth.secretcode}")).upcase
+      get :index, api_key: @auth.key, timestamp: timestamp, sign: sign, format: :json 
       expect(response.body).to include("id")
       expect(response.body).to include("name")
     end
@@ -31,14 +37,14 @@ RSpec.describe Api::Open::V1::CitiesController, :type => :controller do
       expect(JSON.parse(response.body)["result_code"]).to eq "1001" 
     end
     it "should return code 1002 if request time has passed 10 minutes" do
-      @auth = ApiAuth.create(user: "jas")
+      @auth = ApiAuth.create(user: "dancheServer")
       timestamp = (Time.now - 601).to_i
       sign = Digest::MD5.hexdigest("api_key=#{@auth.key}&timestamp=#{timestamp}#{@auth.secretcode}")
       get :index, api_key: @auth.key, timestamp: timestamp, sign: sign, format: :json
       expect(JSON.parse(response.body)["result_code"]).to eq "1002" 
     end
     it "should return code 1002 if sign is not the same" do
-      @auth = ApiAuth.create(user: "jas")
+      @auth = ApiAuth.create(user: "dancheServer")
       timestamp = Time.now.to_i
       get :index, api_key: @auth.key, timestamp: timestamp, sign: "xxxxxxxx", format: :json
       expect(JSON.parse(response.body)["result_code"]).to eq "1002" 
