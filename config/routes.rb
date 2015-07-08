@@ -19,6 +19,12 @@ Rails.application.routes.draw do
   get "/mobile/concerts/sharing" => "pages#sharing_concert"
 
   namespace :api do
+    namespace :open do
+      namespace :v1 do
+        resources :cities, only: [:index]
+      end
+    end
+
     namespace :v1 do
       post "wxpay/notify" => "wxpay#notify"
       post "alipay/notify" => "alipay#notify"

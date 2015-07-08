@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150707091309) do
     t.string   "user",       limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "secretcode", limit: 255
   end
 
   create_table "areas", force: :cascade do |t|

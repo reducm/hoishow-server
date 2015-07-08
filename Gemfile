@@ -91,8 +91,6 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-nav'
   gem 'thin'
-  gem 'zeus-parallel_tests'
-  gem 'parallel_tests'
 end
 
 group :development do
