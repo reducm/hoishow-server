@@ -9,8 +9,6 @@ $ ->
 
   set_width(i) for i in [1..10]
 
-
-
   $("#showdesc").click ->
     $(".description").slideToggle("600")
 
@@ -22,15 +20,16 @@ $ ->
       direction: "vertical"
     })
 
-  $(".shareconcert").fullpage({
-    verticalCentered: false
-    afterLoad: (anchorLink, index) ->
-      if index == 2
-        $(".top").show()
-        $(".detailrank").show()
-        $('.toprank').show()
-        $('.allrank').hide()
-  })
+  if $(".shareconcert").length > 0
+    $(".shareconcert").fullpage({
+      verticalCentered: false
+      afterLoad: (anchorLink, index) ->
+        if index == 2
+          $(".top").show()
+          $(".detailrank").show()
+          $('.toprank').show()
+          $('.allrank').hide()
+    })
 
   $('.detailrank').click ->
     $('#top').slideUp()
