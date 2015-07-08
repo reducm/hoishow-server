@@ -3,6 +3,20 @@ class Api::Open::V1::ApplicationController < ApplicationController
   before_filter :api_verify
 
   protected
+  #文档中的必需参数
+  def auth_params
+    params.permit(  
+      "api_key",
+      "timestamp",
+      "show_id",
+      "area_id",
+      "user_id",
+      "mobile",
+      "quantity",
+      "reason"
+     ) 
+  end
+
   def api_verify
     return true if Rails.env.development?
 
@@ -18,11 +32,11 @@ class Api::Open::V1::ApplicationController < ApplicationController
     end
 
     #签名中的时间戳，有效时间为10分钟
-    if Time.now - Time.at(params[:timestamp].to_i) > 600
+    if Time.now - Time.at(params[:timestamp]) > 600
       return render json: {result_code: "1002", message: "签名验证不通过"}
     end
 
-    if params[:sign] != @auth.generated_sign(params) 
+    unless params[:sign] == @auth.generated_sign(auth_params) 
       return render json: {result_code: "1002", message: "签名验证不通过"}
     end
   end
