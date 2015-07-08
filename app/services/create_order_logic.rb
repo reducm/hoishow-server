@@ -16,10 +16,10 @@
 #   options = {user_mobile: user_mobile, areas: areas, quantity: quantity, app_platform: app_platform}
 
 # 然后统一跑
-#   ss_logic = SeatSelectionLogic.new(@show, options)
-#   ss_logic.execute
-# 判断 ss_logic.succeess? 是否为 true, 如果不是 ss_logic.error_msg 里面有错误信息
-class SeatSelectionLogic
+#   co_logic = CreateOrderLogic.new(@show, options)
+#   co_logic.execute
+# 判断 co_logic.succeess? 是否为 true, 如果不是 co_logic.error_msg 里面有错误信息
+class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
@@ -31,7 +31,7 @@ class SeatSelectionLogic
     @options = options
     @user = options[:user]
     @app_platform = options[:app_platform] # 这个可能要改成 channel
-    # raise RuntimeError, 'SeatSelectionLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
+    # raise RuntimeError, 'CreateOrderLogic 缺少 user 或者 app_platform' if @user.nil? || @app_platform.nil?
   end
 
   def success?
