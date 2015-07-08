@@ -274,9 +274,11 @@ description: 查询订单最新信息
       status: "pending" or "paid" or "success" or "refund"or "outdate", //分别表示“未支付”，“已支付”，“已出票”，“退款”，“过期”
       tickets_count: //票数
       ticket_type:  // e_ticket(电子票)/r_ticket(实体票),
+      ticketed_at:  // 出票时间,
       show_time: '201504102140270000' //show的演出时间
       tickets:
       [{
+        id: 11, //ticket的id
         area_name: 'A区', //区域名称
         price: 99.00, //价格
         code: 'xasxasasxa', //票码
@@ -290,7 +292,7 @@ description: 查询订单最新信息
 -----------------------------------
 
 ###订单锁座
-[/api/open/v1/orders/create_order]()
+[/api/open/v1/orders]()
 
 type `POST`
 
@@ -303,7 +305,7 @@ description: 创建订单并锁座
     show_id: 1, //演出id
     user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
-    out_id: '123' //渠道订单号
+    bike_out_id: '123' //渠道订单号
 
     #选区
     area_id: 1, //区域id
@@ -331,33 +333,6 @@ description: 创建订单并锁座
 ```
 
 -----------------------------------
-
-###订单解锁
-[/api/open/v1/orders/:out_id/unlock_seat]()
-
-type `POST`
-
-description: 订单超时或退款的时候更新订单状态并解锁座位
-
-必须参数
-
-```javascript
-  {
-    reason: 'outdate'/'refund' //原因
-  }
-```
-
-成功时返回
-
-```javascript
-  {
-    result_code: 0,
-    message: '请求成功'
-  }
-```
-
------------------------------------
-
 ###订单确认
 [/api/open/v1/orders/:out_id/confirm]()
 
@@ -388,7 +363,7 @@ description: 订单支付成功确认出票
 
 ###生成签名
 
-sign生成方法: 将所有参数拼接成字符串然后尾部加上secretcode进行MD5加密
+sign生成方法: 将所有参数排序然后拼接成字符串然后尾部加上secretcode进行MD5加密
 
 ----
 
