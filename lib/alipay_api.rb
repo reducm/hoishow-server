@@ -10,8 +10,7 @@ module AlipayApi
   def alipublic_develop_vefify(content)
     biz_content = Settings["rsa_pub_key"]
     sign_str =  "<success>true</success><biz_content>#{biz_content}</biz_content>"
-    pri_key = File.read("#{Rails.root}/lib/rsa_private_key.pem")
-    sign = rsa_sign(sign_str, pri_key)
+    sign = rsa_sign(sign_str, pri_key_file)
     response = <<-XML
       <?xml version="1.0" encoding="GBK"?><alipay><response><success>true</success><biz_content>#{biz_content}</biz_content></response><sign>#{sign}</sign><sign_type>RSA</sign_type></alipay>
     XML
@@ -229,10 +228,10 @@ module AlipayApi
     }
 
     #pri_key = File.read("#{Rails.root}/lib/rsa_test_pkcs8.txt")
-    pri_key = File.read("#{Rails.root}/lib/rsa_private_key.pem")
+    # pri_key = File.read("#{Rails.root}/lib/rsa_private_key.pem")
 
     options.merge!({
-      sign:rsa_sign(sort_options_to_str(options), pri_key),
+      sign:rsa_sign(sort_options_to_str(options), pri_key_file),
     })
 
     response =  RestClient.post settings["api_url"], options
@@ -488,15 +487,15 @@ module AlipayApi
   end
 
   def pri_key_file
-    File.read("#{Rails.root}/lib/rsa_private_key.pem")
+    File.read("#{Rails.root}/config/certs/rsa_private_key.pem")
   end
 
   def pri_app_key_file
-    File.read("#{Rails.root}/lib/rsa_private_key.pem")
+    File.read("#{Rails.root}/config/certs/app_private_key.pem")
   end
 
   def pub_key_file
-    File.open("#{Rails.root}/lib/alipay_public_key.pem")
+    File.open("#{Rails.root}/config/certs/alipay_public_key.pem")
   end
 
   def params_valid?(params)

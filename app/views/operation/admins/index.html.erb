@@ -20,7 +20,7 @@
             <td><%= admin.type_cn %></td>
             <td>
               <% if can? :update, admin %>
-                <%= link_to "编辑", edit_operation_admin_path(admin)%>
+                <%= link_to "编辑", edit_operation_admin_path(admin, set_type: 1) %>
               <% end %>
               <% if admin.is_block %>
                 <%= link_to "解除锁定", block_admin_operation_admin_path(admin, block: 0), method: 'post' %>
@@ -32,6 +32,6 @@
         <% end %>
       </tbody>
     </table>
-    <%= paginate @admins%>
+    <%= paginate @admins %>
   </div>
 </div>
