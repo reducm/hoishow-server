@@ -51,7 +51,9 @@ $ ->
       sold_count = $(this).attr("sold_count")
       area_name = $(this).attr("id")
       tickets_count = $(this).attr("total_tickets")
-      set_pie_cake(left_count, sold_count, area_name, tickets_count))
+      if tickets_count > 0
+        $(this).width(300).height(300)
+        set_pie_cake(left_count, sold_count, area_name, tickets_count))
 
 #show new form
   if $(".new_show").length > 0
