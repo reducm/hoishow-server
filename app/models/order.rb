@@ -39,7 +39,7 @@ class Order < ActiveRecord::Base
 
   # state_machine
   aasm :column => 'status', :whiny_transitions => false do
-    state :pending, :initial => true # 调用 SeatSelectionLogic
+    state :pending, :initial => true # 调用 CreateOrderLogic
     state :paid
     state :success
     state :refund

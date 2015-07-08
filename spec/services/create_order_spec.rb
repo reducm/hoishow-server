@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SeatSelectionLogic do
+describe CreateOrderLogic do
   before(:each) do
     @stadium = create(:stadium)
     @show1 = create(:show, stadium: @stadium, seat_type: Show.seat_types[:selected])
@@ -27,46 +27,46 @@ describe SeatSelectionLogic do
   context "create_order_with_selected" do
     it "should set response to 0 when execute successfully" do
       options = { user: user, quantity: 1, area_id: first_area.id, app_platform: @app_platform }
-      ss_logic = SeatSelectionLogic.new(@show1, options)
+      co_logic = CreateOrderLogic.new(@show1, options)
 
-      expect{ss_logic.execute}.to change(@show1.tickets, :count).by(1)
-      expect(ss_logic.response).to eq 0
-      expect(ss_logic.success?).to eq true
+      expect{co_logic.execute}.to change(@show1.tickets, :count).by(1)
+      expect(co_logic.response).to eq 0
+      expect(co_logic.success?).to eq true
     end
 
     it "should set response to 1 when quantity more than left seat in that area" do
       options = { user: user, quantity: 4, area_id: first_area.id, app_platform: @app_platform }
-      ss_logic = SeatSelectionLogic.new(@show1, options)
+      co_logic = CreateOrderLogic.new(@show1, options)
 
-      expect{ss_logic.execute}.to change(@show1.tickets, :count).by(0)
-      expect(ss_logic.response).to eq 1
-      expect(ss_logic.success?).to eq false
-      expect(ss_logic.error_msg).to eq "购买票数大于该区剩余票数!"
+      expect{co_logic.execute}.to change(@show1.tickets, :count).by(0)
+      expect(co_logic.response).to eq 1
+      expect(co_logic.success?).to eq false
+      expect(co_logic.error_msg).to eq "购买票数大于该区剩余票数!"
     end
 
     it "should set relation to is_sold_out when seats_count left" do
       options = { user: user, quantity: 2, area_id: first_area.id, app_platform: @app_platform }
-      ss_logic = SeatSelectionLogic.new(@show1, options)
+      co_logic = CreateOrderLogic.new(@show1, options)
 
-      expect{ss_logic.execute}.to change(@show1.tickets, :count).by(2)
-      expect(ss_logic.response).to eq 0
+      expect{co_logic.execute}.to change(@show1.tickets, :count).by(2)
+      expect(co_logic.response).to eq 0
       relation = ShowAreaRelation.where(show_id: @show1.id, area_id: first_area.id).first
       expect(relation.is_sold_out).to eq true
     end
 
     it "should set current order info when success" do
       options = { user: user, quantity: 2, area_id: first_area.id, app_platform: @app_platform }
-      ss_logic = SeatSelectionLogic.new(@show1, options)
+      co_logic = CreateOrderLogic.new(@show1, options)
 
-      expect{ss_logic.execute}.to change(user.orders, :count).by(1)
-      expect(ss_logic.response).to eq 0
+      expect{co_logic.execute}.to change(user.orders, :count).by(1)
+      expect(co_logic.response).to eq 0
 
       relation = ShowAreaRelation.where(show_id: @show1.id, area_id: first_area.id).first
       relations = []
       2.times { relations << relation }
       amount = relations.map{|relation| relation.price}.inject(&:+)
 
-      order = ss_logic.order
+      order = co_logic.order
       expect(order.amount).to eq amount
       expect(order.show).to eq @show1
       expect(order.stadium).to eq @show1.stadium
@@ -96,20 +96,20 @@ describe SeatSelectionLogic do
     end
 
     it "should set response to 0 when execute successfully" do
-      ss_logic = SeatSelectionLogic.new(@show2, options)
+      co_logic = CreateOrderLogic.new(@show2, options)
 
-      expect{ss_logic.execute}.to change(@show2.tickets, :count).by(@show2.seats.count)
-      expect(ss_logic.response).to eq 0
-      expect(ss_logic.success?).to eq true
-      expect(ss_logic.order.tickets.pluck(:status).uniq).to eq [0]
+      expect{co_logic.execute}.to change(@show2.tickets, :count).by(@show2.seats.count)
+      expect(co_logic.response).to eq 0
+      expect(co_logic.success?).to eq true
+      expect(co_logic.order.tickets.pluck(:status).uniq).to eq [0]
     end
 
     it "should set create a new order with tickets when execute successfully" do
-      ss_logic = SeatSelectionLogic.new(@show2, options)
+      co_logic = CreateOrderLogic.new(@show2, options)
 
-      expect{ss_logic.execute}.to change(user.orders, :count).by(1)
-      expect(ss_logic.response).to eq 0
-      order = ss_logic.order
+      expect{co_logic.execute}.to change(user.orders, :count).by(1)
+      expect(co_logic.response).to eq 0
+      order = co_logic.order
       expect(order.amount).to eq @show2.seats.sum(:price)
       expect(order.show).to eq @show2
       expect(order.stadium).to eq @show2.stadium
@@ -125,10 +125,10 @@ describe SeatSelectionLogic do
 
     it "will set response to 3 when params[:areas] was nil" do
       params = { user: user, quantity: 1, area_id: first_area.id, app_platform: @app_platform }
-      ss_logic = SeatSelectionLogic.new(@show2, params)
-      expect{ss_logic.execute}.to change(user.orders, :count).by(0)
-      expect(ss_logic.response).to eq 3
-      expect(ss_logic.error_msg).to eq "不能提交空订单"
+      co_logic = CreateOrderLogic.new(@show2, params)
+      expect{co_logic.execute}.to change(user.orders, :count).by(0)
+      expect(co_logic.response).to eq 3
+      expect(co_logic.error_msg).to eq "不能提交空订单"
     end
 
     # 关于 seat lock 的测试
