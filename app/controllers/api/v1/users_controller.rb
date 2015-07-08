@@ -192,13 +192,13 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     options = params.slice(:area_id, :quantity, :areas)
     options[:user] = @user
     options[:app_platform] = @auth.app_platform
-    # 用 SeatSelectionLogic 这个 service 去跑
-    ss_logic = SeatSelectionLogic.new(@show, options)
-    ss_logic.execute
-    if ss_logic.success?
-      @order = ss_logic.order
+    # 用 CreateOrderLogic 这个 service 去跑
+    co_logic = CreateOrderLogic.new(@show, options)
+    co_logic.execute
+    if co_logic.success?
+      @order = co_logic.order
     else
-      error_json(ss_logic.error_msg)
+      error_json(co_logic.error_msg)
     end
 
     # 这是神马情况，没改变 order 的 status 就直接将票设为成功？
