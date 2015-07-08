@@ -4,6 +4,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
   render_views
   before :each do
     request.env["HTTP_ACCEPT"] = 'application/json'
+    allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
   end
 
   let(:city) { create :city }
