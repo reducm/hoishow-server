@@ -49,13 +49,17 @@ class SeatSelectionLogic
     # 找出该演唱会区域信息
     relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
 
-    if show.area_seats_left(relation.area) - options[:quantity].to_i < 0
+    quantity = options[:quantity].to_i
+
+    area_seats_left_result = show.area_seats_left(relation.area) - quantity
+
+    if area_seats_left_result < 0
       @response, @error_msg = 1, "购买票数大于该区剩余票数!"
       return
     end
 
     relations ||= []
-    options[:quantity].to_i.times{relations.push relation}
+    quantity.times{relations.push relation}
 
     relation.with_lock do
       if relation.is_sold_out
@@ -64,13 +68,13 @@ class SeatSelectionLogic
         # create_order
         create_order!
         # update order amount
-        @order.update_attributes(amount: relations.map{|relation| relation.price}.inject(&:+))
+        @order.update_attributes(amount: relation.price * quantity)
         # create_tickets callback
         @order.create_tickets_by_relations(relations)
 
         # update relation info
         relation.reload
-        if show.area_seats_left(relation.area) == 0
+        if area_seats_left_result == 0
           relation.update_attributes(is_sold_out: true)
         end
 

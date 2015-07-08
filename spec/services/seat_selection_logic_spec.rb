@@ -16,6 +16,8 @@ describe SeatSelectionLogic do
       @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
       3.times { create(:seat, area_id: area.id, show: @show2) }
     end
+
+    @app_platform = ApiAuth::APP_IOS
   end
 
   let(:user) { create(:user) }
@@ -24,7 +26,7 @@ describe SeatSelectionLogic do
 
   context "create_order_with_selected" do
     it "should set response to 0 when execute successfully" do
-      options = { user: user, quantity: 1, area_id: first_area.id }
+      options = { user: user, quantity: 1, area_id: first_area.id, app_platform: @app_platform }
       ss_logic = SeatSelectionLogic.new(@show1, options)
 
       expect{ss_logic.execute}.to change(@show1.tickets, :count).by(1)
@@ -33,7 +35,7 @@ describe SeatSelectionLogic do
     end
 
     it "should set response to 1 when quantity more than left seat in that area" do
-      options = { user: user, quantity: 4, area_id: first_area.id }
+      options = { user: user, quantity: 4, area_id: first_area.id, app_platform: @app_platform }
       ss_logic = SeatSelectionLogic.new(@show1, options)
 
       expect{ss_logic.execute}.to change(@show1.tickets, :count).by(0)
@@ -43,7 +45,7 @@ describe SeatSelectionLogic do
     end
 
     it "should set relation to is_sold_out when seats_count left" do
-      options = { user: user, quantity: 2, area_id: first_area.id }
+      options = { user: user, quantity: 2, area_id: first_area.id, app_platform: @app_platform }
       ss_logic = SeatSelectionLogic.new(@show1, options)
 
       expect{ss_logic.execute}.to change(@show1.tickets, :count).by(2)
@@ -53,7 +55,7 @@ describe SeatSelectionLogic do
     end
 
     it "should set current order info when success" do
-      options = { user: user, quantity: 2, area_id: first_area.id }
+      options = { user: user, quantity: 2, area_id: first_area.id, app_platform: @app_platform }
       ss_logic = SeatSelectionLogic.new(@show1, options)
 
       expect{ss_logic.execute}.to change(user.orders, :count).by(1)
@@ -81,6 +83,7 @@ describe SeatSelectionLogic do
     let(:options) do
       {
         user: user, quantity: 1, area_id: first_area.id,
+        app_platform: @app_platform,
         areas: @show2.areas.map do |area|
           {
             area_id: area.id,
@@ -121,7 +124,7 @@ describe SeatSelectionLogic do
     end
 
     it "will set response to 3 when params[:areas] was nil" do
-      params = { user: user, quantity: 1, area_id: first_area.id }
+      params = { user: user, quantity: 1, area_id: first_area.id, app_platform: @app_platform }
       ss_logic = SeatSelectionLogic.new(@show2, params)
       expect{ss_logic.execute}.to change(user.orders, :count).by(0)
       expect(ss_logic.response).to eq 3

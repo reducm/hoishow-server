@@ -4,8 +4,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   include Operation::ConcertsHelper
   before_action :check_login!, except: [:get_city_voted_data, :get_cities]
   before_action :get_concert, except: [:index, :new, :create]
-  load_and_authorize_resource param_method: :concert_attributes
-  skip_authorize_resource :only => [:get_city_voted_data, :get_cities]
+  load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     params[:page] ||= 1
@@ -44,7 +43,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def create
-    @concert = Concert.new(concert_attributes)
+    @concert = Concert.new(concert_params)
     if @concert.save
       Star.where('id in (?)', params[:star_ids].split(',')).each{|star| star.hoi_concert(@concert)}
       flash[:notice] = '投票创建成功'
@@ -61,7 +60,8 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   def update
-    if @concert.update(concert_attributes)
+    if @concert.update(concert_params)
+      flash[:notice] = '投票修改成功'
       redirect_to operation_concerts_url
     else
       flash[:alert] = @concert.errors.full_messages
@@ -170,7 +170,7 @@ class Operation::ConcertsController < Operation::ApplicationController
   end
 
   private
-  def concert_attributes
+  def concert_params
     params.require(:concert).permit(:name, :is_show, :status, :description, :poster, :description_time, :star_ids)
   end
 
