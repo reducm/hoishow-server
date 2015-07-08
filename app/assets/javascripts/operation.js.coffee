@@ -54,3 +54,7 @@ $ ->
       $.post($(this).data('update-url'), $(this).sortable('serialize'))
       location.reload()
   )
+
+  $('form').keypress((e)->
+    return false if e.which == '13'
+  )

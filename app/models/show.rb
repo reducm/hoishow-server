@@ -98,8 +98,9 @@ class Show < ActiveRecord::Base
   end
 
   def area_seats_left(area)
-    valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
-    count = area_seats_count(area) - valid_tickets.count
+    valid_tickets_count = area.tickets.where(order_id: orders.valid_orders.pluck(:id)).count
+    #valid_tickets = orders.valid_orders.map{|o| o.tickets.where(area_id: area.id)}.flatten
+    count = area_seats_count(area) - valid_tickets_count
     count > 0 ? count : 0
   end
 
