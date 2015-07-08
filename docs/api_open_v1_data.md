@@ -73,7 +73,6 @@ description: 获取全部的演出
     [{
       id:  //show_id,
       name:  //Show名称,
-      concert_name:  //concert名称,
       city_id:  //city_id,
       city_name: //city名称,
       stadium_id:  //stadium_id,
@@ -81,7 +80,7 @@ description: 获取全部的演出
       show_time:  //开show时间,
       poster:  //海报url,
       ticket_pic:  //门票图片url,
-      description:  //图文介绍的url,
+      description:  //图文介绍,
       description_time:  //当show的status为going_to_open时显示这个时间替代show_time,
       is_top: "true or false" //是否置顶,
       status:  // selling(售票中)/sell_stop(售票结束)/going_to_open(即将开放),
@@ -123,43 +122,15 @@ description: 获取全部的区域
       price: 1,  //票价
       seats_left: 10,  //剩余票数
       is_sold_out: false   //是否卖完
-      seats_map: 'xxx' //选座图url
+      seats_info:
+      [{
+        row: 1,
+        column: 1,
+        status: 'avaliable',
+        seat_name: '1排1座',
+        price: 100
+      }, ...]      //座位信息
      },.....]
-```
-
------------------------------------
-
-###座位列表
-[/api/open/v1/seats]()
-
-type `GET`
-
-description: 获取全部的区域
-
-必须参数
-```javascript
-  {
-    show_id: 1,
-    area_id: 1
-  }
-```
-
-成功时返回
-
-```javascript
-  {
-    result_code: 0,
-    data:
-    [{
-      id: 1, //seat对象id
-      show_id: 1, //演出id
-      area_id: 1, //区域id
-      row: 1, //行
-      column: 1, //列
-      status: 'avaliable'/'locked'/'unused', //座位状态
-      name: '1排1座', //座位名称
-      price: 1 //价格
-    },.....]
 ```
 
 -----------------------------------
@@ -214,7 +185,7 @@ description: 获取指定演出的详情
       show_time:  //开show时间,
       poster:  //海报url,
       ticket_pic:  //门票图片url,
-      description:  //图文介绍的url,
+      description:  //图文介绍,
       description_time:  //当show的status为going_to_open时显示这个时间替代show_time,
       is_top: "true or false" //是否置顶,
       status:  // selling(售票中)/sell_stop(售票结束)/going_to_open(即将开放),
@@ -250,35 +221,14 @@ description: 获取指定区域的详情
       price: 1,  //票价
       seats_left: 10,  //剩余票数
       is_sold_out: false   //是否卖完
-      seats_map: 'xxx' //选座图url
-    }
-  }
-```
-
------------------------------------
-
-###座位信息查询
-[/api/open/v1/seats/:id]()
-
-type `GET`
-
-description: 获取指定座位的详情
-
-成功时返回
-
-```javascript
-  {
-    result_code: 0,
-    data:
-    {
-      id: 1, //seat对象id
-      show_id: 1, //演出id
-      area_id: 1, //区域id
-      row: 1, //行
-      column: 1, //列
-      status: 'avaliable'/'locked'/'unused', //座位状态
-      name: '1排1座', //座位名称
-      price: 1 //价格
+      seats_info:
+      [{
+        row: 1,
+        column: 1,
+        status: 'avaliable',
+        seat_name: '1排1座',
+        price: 100
+      }, ...]      //座位信息
     }
   }
 ```
@@ -353,6 +303,7 @@ description: 创建订单并锁座
     show_id: 1, //演出id
     user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
+    out_id: '123' //渠道订单号
 
     #选区
     area_id: 1, //区域id
@@ -363,7 +314,11 @@ description: 创建订单并锁座
     [
       {
         area_id: 1, //区域id
-        seats: [1,2,3]  //座位id
+        seats:
+        [{
+          row: 1,
+          column:1
+        },....]
       }
     ]
   }
@@ -433,7 +388,7 @@ description: 订单支付成功确认出票
 
 ###生成签名
 
-sign生成方法: MD5加密('api_key=api_key&timestamp=123456secretcode')
+sign生成方法: 将所有参数拼接成字符串然后尾部加上secretcode进行MD5加密
 
 ----
 
