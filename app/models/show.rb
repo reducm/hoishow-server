@@ -55,18 +55,6 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
-  def poster_url
-    if poster.url.present?
-      if Rails.env.production?
-        poster.url("800")
-      else
-        poster.url
-      end
-    else
-      nil
-    end
-  end
-
   def get_show_time
     if going_to_open?
       description_time

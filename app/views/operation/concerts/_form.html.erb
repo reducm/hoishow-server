@@ -25,7 +25,7 @@
   <div class="form-group">
     <% if concert.poster_url %>
       <%= label_tag "当前海报" %>
-      <%= image_tag(concert.poster_url, size: "700x500") %>
+      <%= image_tag(concert.poster_url, size: "700x382") %>
     <% end %>
   </div>
   <%= f.input :poster, label: "上传演出海报(建议大小:700x382)" %>
@@ -35,7 +35,7 @@
   <% end %>
   <%= hidden_field_tag "star_id", params[:star_id] %>
   <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
-  <%= f.kindeditor :description %>
+  <%= f.input :description, label: '图文描述' %>
   <%= f.button :submit, "提交", class: 'marginspace', id: 'submit_concert' %>
 <%end%>
 
