@@ -14,7 +14,7 @@ class ApiAuth < ActiveRecord::Base
   scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
 
   def user
-    super
+    read_attribute(:user)
   end
   alias :channel :user
 

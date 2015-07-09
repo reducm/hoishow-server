@@ -1,6 +1,7 @@
 # encoding: utf-8
 class Open::V1::ApplicationController < ApplicationController
   before_filter :api_verify
+  skip_before_filter :verify_authenticity_token
 
   protected
   def show_auth!
@@ -52,8 +53,8 @@ class Open::V1::ApplicationController < ApplicationController
     end
 
     #签名中的时间戳，有效时间为10分钟
-    if Time.now - Time.at(params[:timestamp].to_i) > 600
-      return render json: {result_code: "1002", message: "签名验证不通过"}
+    if Time.now.to_i - params[:timestamp].to_i > 600
+      return render json: {result_code: "1004", message: "请求因超时而失效"}
     end
 
     unless params[:sign] == @auth.generated_sign(auth_params)
