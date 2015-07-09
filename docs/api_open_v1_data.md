@@ -206,6 +206,13 @@ type `GET`
 
 description: 获取指定区域的详情
 
+必须参数
+```javascript
+  {
+    show_id: 1
+  }
+```
+
 成功时返回
 
 ```javascript

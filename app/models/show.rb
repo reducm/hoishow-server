@@ -151,7 +151,11 @@ class Show < ActiveRecord::Base
   end
 
   def set_mode_after_create
-    self.mode = :voted_users if self.mode.blank?
+    if self.concert.auto_hide?
+      self.mode = :all_users
+    elsif self.mode.blank?
+      self.mode = :voted_users
+    end
     save!
   end
 end
