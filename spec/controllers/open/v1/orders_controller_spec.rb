@@ -174,6 +174,15 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         post :create, sign_params(params)
         expect(json[:message]).to eq '手机号不正确'
       end
+
+      it 'will return error whan show was sold out' do
+        show.update_attributes status: 1
+        params[:quantity] = 2
+
+        post :create, sign_params(params)
+        expect(json[:result_code]).to eq 2002
+        expect(json[:message]).to eq '购票结束'
+      end
     end
 
     context 'selectable' do
@@ -229,7 +238,15 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         params.delete(:areas)
 
         post :create, sign_params(params)
-        expect(json[:message]).to eq '不能提交空订单'
+        expect(json[:message]).to eq '缺少 areas 参数'
+      end
+
+      it 'will return error when can not find user' do
+        params.delete(:bike_user_id)
+
+        post :create, sign_params(params)
+        expect(json[:result_code]).to eq 3004
+        expect(json[:message]).to eq '找不到该用户'
       end
     end
   end

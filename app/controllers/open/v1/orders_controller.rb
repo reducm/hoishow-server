@@ -10,17 +10,19 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   def create
     # 演出状态判断
-    # unless @show.is_display
-    #   error_respond(2002, '演出未开发购票')
-    # end
+    unless @show.status == 'selling'
+      error_respond(2002, @show.status_cn)
+    end
     # bike_out_id 表示 单车过来的 out_id, 用于对账
     options = params.slice(:area_id, :quantity, :areas, :bike_out_id)
 
     options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
-    error_respond(3013, '缺少 bike_user_id 参数') if order_params[:bike_user_id].nil?
-    options[:user] = User.find_or_create_bike_user(order_params[:mobile],
+    user = User.find_or_create_bike_user(order_params[:mobile],
       order_params[:bike_user_id])
+    error_respond(3004, '找不到该用户') if order_params[:bike_user_id].nil?
+    options[:user] = user
+
     # set way
     options[:way] = @auth.channel
 

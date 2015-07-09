@@ -66,7 +66,7 @@ class CreateOrderLogic
 
     relation.with_lock do
       if relation.is_sold_out
-        @response, @error_msg = 2, "你所买的区域暂时不能买票, 请稍后再试"
+        @response, @error_msg = 3015, "你所买的区域暂时不能买票, 请稍后再试"
       else
         # create_order
         create_order!
@@ -106,7 +106,7 @@ class CreateOrderLogic
 
       @response = 0
     else
-      @response, @error_msg = 3, "不能提交空订单"
+      @response, @error_msg = 3014, "缺少 areas 参数"
     end
   end
 
