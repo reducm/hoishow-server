@@ -28,6 +28,7 @@
 </div>
   <%= f.input :poster, label: "上传海报(建议大小:750x522)" %>
 
+<% if params[:action] == "edit" %>
 <div class="form-group">
   <% if star.videos.any? %>
     <% if star.videos.first.valid? %>
@@ -41,6 +42,7 @@
   <%= link_to "上传视频", new_operation_video_path(star_id: @star.id), class: "btn btn-default" %>
   <%= label_tag "(单个文件最大30mb，只支持mp4格式, 建议分辨率:750x522)" %>
 </div>
+<% end %>
 
 <div class="form-group">
   <%= f.button :submit, class: "btn btn-primary" %>

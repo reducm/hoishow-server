@@ -1,13 +1,11 @@
 <%# encoding: utf-8 %>
 
-<h1>上传视频</h1>
+<div class="col-xs-3">
+  <h1>上传视频</h1>
 
-<%= simple_form_for([:operation, @video ], html: { class: 'dropzone form-horizontal', id: "dz-form", multipart: :true }) do |f| %>
-  <div class="form-group">
+  <%= simple_form_for([:operation, @video ], html: { class: 'dropzone', id: "dz-form", multipart: :true }) do |f| %>
     <%= f.hidden_field :star_id, value: @star.id %>
-  </div>
+  <% end %>
 
-  <div class="form-group">
-    <%= link_to "完成", edit_operation_star_path(@star), class: "btn btn-primary" %>
-  </div>
-<% end %>
+  <%= link_to "完成", edit_operation_star_path(@star), class: "btn btn-primary" %>
+</div>
