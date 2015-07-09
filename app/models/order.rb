@@ -32,6 +32,13 @@ class Order < ActiveRecord::Base
     refund: 3, #退款
     outdate: 4 #过期
   }
+
+  enum channel: {
+    ios: 0, # 客户端
+    android: 1, # 客户端
+    bike_ticket: 2 # 单车电影
+  }
+
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
@@ -52,7 +59,7 @@ class Order < ActiveRecord::Base
     end
 
     # 调用方法 order.success_pay!
-    event :success_pay, :after => :set_tickets_to_success do
+    event :success_pay, :after => [:set_tickets_to_success, :set_generate_ticket_time] do
       transitions :from => :paid, :to => :success
     end
 
@@ -101,7 +108,7 @@ class Order < ActiveRecord::Base
   end
 
   def set_tickets_to_success *args
-  # transaction 这些是否要加 rollback 处理 ?
+    # transaction 这些是否要加 rollback 处理 ?
     begin
       Order.transaction do
         self.tickets.update_all(status: Ticket::statuses['success'])
@@ -129,6 +136,15 @@ class Order < ActiveRecord::Base
       end
     rescue => e
       Rails.logger.fatal("*** errors: #{e.message}")
+    end
+  end
+
+  def set_generate_ticket_time
+    # 不查询，直接在 set_tickets_to_success
+    ticket_status = self.tickets.pluck(:status).uniq
+    # 当全部票的状态都为 success
+    if ticket_status.size == 1 && ticket_status[0] == Ticket::statuses['success']
+      self.update_attributes(generate_ticket_at: Time.now)
     end
   end
 

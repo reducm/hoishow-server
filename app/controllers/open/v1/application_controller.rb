@@ -40,7 +40,8 @@ class Open::V1::ApplicationController < ApplicationController
       "mobile",
       "quantity",
       "reason",
-      "areas"
+      "areas",
+      "out_id"
      )
   end
 
