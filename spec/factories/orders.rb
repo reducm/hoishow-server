@@ -26,5 +26,13 @@ FactoryGirl.define do
     factory :outdate_order do
       status Order.statuses[:outdate]
     end
+
+    factory :pending_order_with_payment do
+      after(:create) do |order, evaluator|
+        create(:payment, purchase_type: 'Order', purchase_id:  order.id,
+          payment_type:  'alipay', amount: order.amount,
+          paid_origin: ['ios', "android"].sample, trade_id: nil)
+      end
+    end
   end
 end
