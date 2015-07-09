@@ -34,6 +34,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     o
   end
   let(:auth) { ApiAuth.create(user: "dancheServer", secretcode: 'hehe') }
+  let(:user) { User.create(mobile: '15900001111', channel: 2, bike_user_id: 300) }
 
   before :each do
     show.show_area_relations.create(area_id: area.id, channels: 'bike',
@@ -110,11 +111,10 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
   context '# action create' do
     context 'selected' do
-      let(:params) { { show_id: show.id, area_id: area.id, mobile: '15900001111'} }
+      let(:params) { { show_id: show.id, area_id: area.id, mobile: '15900001111',
+        bike_user_id: user.bike_user_id } }
 
       it 'will create order with current params' do
-        movie_out_id = 'xxxhehehe'
-        movie_user_id = rand(2..10)
         params[:quantity] = 2
 
         expect{post :create, sign_params(params)}.to change(show.orders, :count).by(1)
@@ -185,6 +185,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       let(:params) do
         {
           mobile: '15900001111', quantity: 1, area_id: area2.id, show_id: show2.id,
+          bike_user_id: user.bike_user_id,
           areas: show2.areas.map do |area|
             {
               area_id: area2.id,

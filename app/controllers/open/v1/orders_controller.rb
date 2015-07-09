@@ -18,7 +18,9 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
     options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
-    options[:user] = User.find_mobile(order_params[:mobile])
+    error_respond(3013, '缺少 bike_user_id 参数') if order_params[:bike_user_id].nil?
+    options[:user] = User.find_or_create_bike_user(order_params[:mobile],
+      order_params[:bike_user_id])
     # set way
     options[:way] = @auth.channel
 
