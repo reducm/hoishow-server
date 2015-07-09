@@ -8,19 +8,12 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
       @order = Order.where(out_id: query_params["out_trade_no"]).lock(true).first
       return render text: "success" if @order.already_paid?
       if query_params["trade_state"].to_s == "0"
-        @order.update(status: :paid) if @order.pending?
-        @payment = @order.wxpay_pay
-        unless @payment.nil?
-          @payment.update(
-            trade_id: query_params["transaction_id"],
-            status: :success,
-            pay_at: Time.now
-          )
-        end
-        if @order.paid?
-          @order.set_tickets
-          @order.update(status: :success)
-        end
+        # 是否需要跑两步，先从 pending 到 paid, 再直接从 paid 到 success ？
+        @order.pre_pay!({payment_type: 'wxpay', trade_id: query_params["transaction_id"]})
+
+        # 更新 tickets 状态
+        @order.success_pay!
+
         wp_print("after order: #{@order}, #{@order.attributes}")
       end
       render text: "success"
@@ -34,4 +27,3 @@ class Api::V1::WxpayController < Api::V1::ApplicationController
     Rails.logger.info(str)
   end
 end
-
