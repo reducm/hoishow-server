@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709025124) do
+ActiveRecord::Schema.define(version: 20150709072846) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -398,8 +398,11 @@ ActiveRecord::Schema.define(version: 20150709025124) do
     t.string   "api_token",          limit: 255
     t.integer  "api_expires_in",     limit: 4
     t.boolean  "is_block",           limit: 1,   default: false
+    t.integer  "bike_user_id",       limit: 4
+    t.integer  "channel",            limit: 4
   end
 
+  add_index "users", ["bike_user_id"], name: "index_users_on_bike_user_id", using: :btree
   add_index "users", ["mobile"], name: "index_users_on_mobile", using: :btree
 
   create_table "videos", force: :cascade do |t|
