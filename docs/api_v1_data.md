@@ -368,6 +368,7 @@ type: `GET`
   is_followed: //是否被关注,
   is_voted: //是否被投票,
   is_top: "true or false", //是否置顶
+  is_show: "showing or hidden or auto_hide", //showing: 显示，hidden：不显示，auto_hide：直接开show不投票
   voted_city: {City对象}, //用户登录时对本concert投过票的城市
   stars: [Star对象列表], //当need_stars不为false的时候
   topics: [Topic对象列表], //当need_topics不为false的时候
