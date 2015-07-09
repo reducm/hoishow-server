@@ -1,15 +1,16 @@
 @express = @user ? @user.expresses.last : nil
 
 json.(order, :out_id, :amount, :concert_name, :concert_id, :stadium_name, :stadium_id,
-  :show_name, :show_id, :city_name, :city_id, :status, :user_mobile)
+  :show_name, :show_id, :city_name, :city_id, :status, :user_mobile, :bill_id)
 json.poster order.show.poster_url || ''
 json.order_address order.user_address || ''
 json.tickets_count order.tickets_count
-json.show_time order.show.show_time.to_ms rescue ''
+json.show_time order.show.show_time.to_i rescue ''
 json.ticket_type order.show.ticket_type rescue ''
 json.qr_url show_for_qr_scan_api_v1_order_path(order)
 # json.ticket_pic order.show.ticket_pic_url || ''
-json.valid_time order.valid_time.to_ms rescue ''
+# json.valid_time order.valid_time.to_ms rescue ''
+json.generate_ticket_at order.generate_ticket_at.to_i rescue ''
 
 # about express
 # json.express_id @express.id rescue ''

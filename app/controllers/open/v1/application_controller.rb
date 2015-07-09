@@ -31,16 +31,8 @@ class Open::V1::ApplicationController < ApplicationController
 
   #文档中的必需参数
   def auth_params
-    params.permit(
-      "api_key",
-      "timestamp",
-      "show_id",
-      "area_id",
-      "user_id",
-      "mobile",
-      "quantity",
-      "reason",
-      "areas"
+    params.permit("api_key", "timestamp", "show_id", "area_id", "user_id",
+      "mobile", "quantity", "reason","areas", "out_id", "bike_user_id", "bike_out_id"
      )
   end
 

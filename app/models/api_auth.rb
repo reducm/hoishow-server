@@ -3,7 +3,7 @@ class ApiAuth < ActiveRecord::Base
   #channel
   APP_IOS = 'hoishowIOS'
   APP_ANDROID = 'hoishowAndroid'
-  DANCHE_SERVER = 'dancheServer'
+  DANCHE_SERVER = 'bike_ticket'
 
   validates :user, presence: true, uniqueness: true
   validates :key, presence: true, uniqueness: true

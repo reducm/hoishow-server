@@ -1,19 +1,19 @@
 # 生成订单统一接口，各种渠道的订单生成的业务全部在这里管理
 # Hoishow App 端生成订单的调用方法：
 # - 选区
-#   所需参数 对应的 show, 一个 user, 区域id area_id, 该区域数量 quantity, 渠道 channel
-#   options = {user: user, area_id: area_id, quantity: quantity, channel: channel}
+#   所需参数 对应的 show, 一个 user, 区域id area_id, 该区域数量 quantity, 渠道 way
+#   options = {user: user, area_id: area_id, quantity: quantity, way: way}
 # - 选座
-#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 channel
-#   options = {user: user, areas: areas, quantity: quantity, channel: channel}
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 way
+#   options = {user: user, areas: areas, quantity: quantity, way: way}
 
 # 单车电影端生成订单的调用方法：
 # - 选区
-#   所需参数 对应的 show, 一个 user_mobile, 区域id area_id, 该区域数量 quantity, 渠道 channel
-#   options = {user_mobile: user_mobile, area_id: area_id, quantity: quantity, channel: channel}
+#   所需参数 对应的 show, 一个 user_mobile, 区域id area_id, 该区域数量 quantity, 渠道 way
+#   options = {user: user, user_mobile: user_mobile, area_id: area_id, quantity: quantity, way: way}
 # - 选座
-#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 channel
-#   options = {user_mobile: user_mobile, areas: areas, quantity: quantity, channel: channel}
+#   所需参数 对应的 show, 一个 user, 区域 areas, 该区域数量 quantity, 渠道 way
+#   options = {user: user, user_mobile: user_mobile, areas: areas, quantity: quantity, way: way}
 
 # 然后统一跑
 #   co_logic = CreateOrderLogic.new(@show, options)
@@ -23,15 +23,15 @@ class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :channel, :error_msg, :order
+  attr_reader :show, :options, :response, :user, :way, :error_msg, :order
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
     @show = show
     @options = options
     @user = options[:user]
-    @channel = options[:channel]
-    # raise RuntimeError, 'CreateOrderLogic 缺少 user 或者 channel' if @user.nil? || @channel.nil?
+    @way = options[:way]
+    # raise RuntimeError, 'CreateOrderLogic 缺少 user 或者 way' if @user.nil? || @way.nil?
   end
 
   def success?
@@ -58,12 +58,15 @@ class CreateOrderLogic
       return
     end
 
+    # 查询是否存在同一场演出的未支付 orders
+    pending_orders = get_pending_orders
+
     relations ||= []
     quantity.times{relations.push relation}
 
     relation.with_lock do
       if relation.is_sold_out
-        @response, @error_msg = 2, "你所买的区域暂时不能买票, 请稍后再试"
+        @response, @error_msg = 3015, "你所买的区域暂时不能买票, 请稍后再试"
       else
         # create_order
         create_order!
@@ -81,10 +84,15 @@ class CreateOrderLogic
         @response = 0
       end
     end
+
+    batch_overtime(pending_orders) unless pending_orders.blank?
   end
 
   def create_order_with_selectable
     if options[:areas] && options[:areas].present?
+      # 查询是否存在同一场演出的未支付 orders
+      pending_orders = get_pending_orders
+
       # create_order and callback
       create_order!
       # 设置座位信息, 考虑放到 state_machine init 的 callback
@@ -94,23 +102,39 @@ class CreateOrderLogic
       # set amount by tickets prices
       @order.update_attributes(amount: @order.tickets.sum(:price))
 
+      batch_overtime(pending_orders) unless pending_orders.blank?
+
       @response = 0
     else
-      @response, @error_msg = 3, "不能提交空订单"
+      @response, @error_msg = 3014, "缺少 areas 参数"
     end
   end
 
   def create_order!
     # 按渠道来生成订单
-    if [ApiAuth::APP_IOS, ApiAuth::APP_ANDROID].include?(channel)
-      @order = user.orders.init_from_show(show)
-    elsif ApiAuth::DANCHE_SERVER == channel
-      @order = Order.init_from_show(show)
+    @order = user.orders.init_from_show(show)
+    @order.channel = Order.channels[way]
+
+    if ['ios', 'android'].include?(way) # app 端
+      @order.buy_origin = way
+    elsif 'bike_ticket' == way # 单车电影
+      # bill_id for 对账
+      @order.bill_id = options[:bike_out_id]
       @order.user_mobile = options[:user_mobile]
-      # 看还有那些 user 的参数需要设置
     end
 
-    @order.buy_origin = channel
     @order.save!
+  end
+
+  def get_pending_orders
+    # 查出是同一场 show 是否存在未支付 orders, 存在的话则将其 overtime
+    user.orders.where(status: Order.statuses[:pending],
+      show_id: show.id, channel: way)
+  end
+
+  def batch_overtime(pending_orders)
+    pending_orders.each do |o|
+      o.overtime!
+    end
   end
 end

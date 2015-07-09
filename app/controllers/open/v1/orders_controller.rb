@@ -10,16 +10,22 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   def create
     # 演出状态判断
-    # unless @show.is_display
-    #   error_respond(2002, '演出未开发购票')
-    # end
+    unless @show.status == 'selling'
+      error_respond(2002, @show.status_cn)
+    end
+    # bike_out_id 表示 单车过来的 out_id, 用于对账
+    options = params.slice(:area_id, :quantity, :areas, :bike_out_id)
 
-    options = params.slice(:area_id, :quantity, :areas, :movie_user_id)
     options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
-    options[:user] = User.find_mobile(order_params[:mobile])
-    # set channel
-    options[:channel] = @auth.channel
+    user = User.find_or_create_bike_user(order_params[:mobile],
+      order_params[:bike_user_id])
+    error_respond(3004, '找不到该用户') if order_params[:bike_user_id].nil?
+    options[:user] = user
+
+    # set way
+    options[:way] = @auth.channel
+
     co_logic = CreateOrderLogic.new(@show, options)
     co_logic.execute
 
@@ -59,7 +65,8 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   private
   def order_auth!
-    @order = Order.where(out_id: order_params[:out_id], user_mobile: order_params[:mobile]).first
+    @order = Order.where(out_id: order_params[:out_id], user_mobile: order_params[:mobile],
+      channel: Order.channels["#{@auth.channel}"]).first
     if @order.nil?
       error_respond(3006, '订单不存在')
     end

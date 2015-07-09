@@ -1,5 +1,6 @@
 json.(area, :id, :name, :stadium_id)
 json.seats_count area.seats_count.to_i
+json.show_id show.id
 # json.created_at area.created_at.to_ms
 # json.updated_at area.updated_at.to_ms
 json.seats_map seats_map_path(show_id: show.id, area_id: area.id)

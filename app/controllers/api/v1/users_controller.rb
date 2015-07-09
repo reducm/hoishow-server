@@ -191,7 +191,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     @show = Show.find(params[:show_id])
     options = params.slice(:area_id, :quantity, :areas)
     options[:user] = @user
-    options[:channel] = @auth.app_platform
+    options[:way] = @auth.app_platform
     # 用 CreateOrderLogic 这个 service 去跑
     co_logic = CreateOrderLogic.new(@show, options)
     co_logic.execute
@@ -200,11 +200,6 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     else
       error_json(co_logic.error_msg)
     end
-
-    # 这是神马情况，没改变 order 的 status 就直接将票设为成功？
-    # if @order.amount < 0.01
-    #   @order.set_tickets
-    # end
   end
 
   def update_express_info
