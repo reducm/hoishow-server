@@ -60,6 +60,7 @@ class CreateOrderLogic
 
     # 查询是否存在同一场演出的未支付 orders
     pending_orders = get_pending_orders
+    batch_overtime(pending_orders) unless pending_orders.blank?
 
     relations ||= []
     quantity.times{relations.push relation}
@@ -85,13 +86,13 @@ class CreateOrderLogic
       end
     end
 
-    batch_overtime(pending_orders) unless pending_orders.blank?
   end
 
   def create_order_with_selectable
     if options[:areas] && options[:areas].present?
       # 查询是否存在同一场演出的未支付 orders
       pending_orders = get_pending_orders
+      batch_overtime(pending_orders) unless pending_orders.blank?
 
       # create_order and callback
       create_order!
@@ -102,7 +103,6 @@ class CreateOrderLogic
       # set amount by tickets prices
       @order.update_attributes(amount: @order.tickets.sum(:price))
 
-      batch_overtime(pending_orders) unless pending_orders.blank?
 
       @response = 0
     else
@@ -129,7 +129,7 @@ class CreateOrderLogic
   def get_pending_orders
     # 查出是同一场 show 是否存在未支付 orders, 存在的话则将其 overtime
     user.orders.where(status: Order.statuses[:pending],
-      show_id: show.id, channel: way)
+      show_id: show.id, channel: Order.channels[way])
   end
 
   def batch_overtime(pending_orders)

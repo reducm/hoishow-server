@@ -4,6 +4,8 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm]
   before_action :show_auth!, only: :create
   before_action :order_auth!, only: [:show, :unlock_seat, :confirm]
+  before_action :replay_create_auth!, only: [:create] # 重复提交同一 bike_out_id 的订单
+
   # 订单信息查询
   def show
   end
@@ -73,6 +75,19 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def user_auth!
+  end
+
+  def replay_create_auth!
+    channel = @auth.channel
+    case channel
+    when 'bike_ticket'
+      tag = params[:bike_out_id]
+    end
+
+    if Order.where(bill_id: tag, channel: Order.channels[channel],
+      status: Order.statuses[:pending]).exists?
+      error_respond(3016, '重复创建订单')
+    end
   end
 
   def order_params
