@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :messages, through: :user_message_relations, source: :message
 
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
+  validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
 
   mount_uploader :avatar, ImageUploader
 
@@ -36,6 +37,12 @@ class User < ActiveRecord::Base
     male: 0,
     female: 1,
     secret: 2
+  }
+
+  enum channel: {
+    ios: 0,
+    android: 1,
+    bike_ticket: 2 # 单车电影
   }
 
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
@@ -140,6 +147,10 @@ class User < ActiveRecord::Base
     a
   end
 
+  def is_bike_ticket?
+    self.channel == 'bike_ticket'
+  end
+
   class << self
     def find_mobile(mobile="")
       where(mobile: mobile).first_or_create!
@@ -147,6 +158,33 @@ class User < ActiveRecord::Base
 
     def search(q)
       where("nickname like ? or mobile like ?", "%#{q}%", "%#{q}%")
+    end
+
+    def find_or_create_bike_user(mobile="", bike_user_id) # 创建单车电影过来的用户
+      channel = self.channels[:bike_ticket]
+      bike_user = self.where(bike_user_id: bike_user_id).first
+
+      if bike_user.nil? # hoishow 不存在该 bike_user_id 的用户
+        # 查询是否存在这个电话号码的用户
+        hoishow_user = self.where(mobile: mobile).first
+
+        if hoishow_user.nil?
+          # 不存在则创建新用户
+          return_user = self.create(mobile: mobile, bike_user_id: bike_user_id, channel: channel)
+        else
+          # 存在则关联到本地用户
+          hoishow_user.update_attributes(bike_user_id: bike_user_id)
+          return_user = hoishow_user
+        end
+      else
+        if bike_user.mobile != mobile && bike_user.channel == 'bike_ticket'
+          # 渠道为单车电影的用户电话号码有修改, 则修改该用户的电话号码，其他渠道暂时不修改电话号码
+          bike_user.update_attributes(mobile: mobile)
+        end
+        return_user = bike_user
+      end
+
+      return_user
     end
   end
 end

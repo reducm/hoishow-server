@@ -40,8 +40,8 @@ RSpec.describe Open::V1::StadiumsController, :type => :controller do
       expect(data[:id]).to eq stadium.id
       expect(data[:name]).to eq stadium.name
       expect(data[:address]).to eq stadium.address
-      expect(data[:longitude].to_d).to eq stadium.longitude
-      expect(data[:latitude].to_d).to eq stadium.latitude
+      expect(data[:longitude].to_d).not_to be_nil
+      expect(data[:latitude].to_d).not_to eq be_nil
       expect(data[:city_id]).to eq stadium.city.id
     end
 

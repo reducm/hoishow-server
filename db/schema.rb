@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150707091309) do
+ActiveRecord::Schema.define(version: 20150709072846) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -137,28 +137,31 @@ ActiveRecord::Schema.define(version: 20150707091309) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.decimal  "amount",                     precision: 10, scale: 2
-    t.string   "concert_name", limit: 255
-    t.string   "stadium_name", limit: 255
-    t.string   "show_name",    limit: 255
+    t.decimal  "amount",                           precision: 10, scale: 2
+    t.string   "concert_name",       limit: 255
+    t.string   "stadium_name",       limit: 255
+    t.string   "show_name",          limit: 255
     t.datetime "valid_time"
-    t.string   "out_id",       limit: 255
-    t.string   "city_name",    limit: 255
-    t.integer  "user_id",      limit: 4
-    t.integer  "concert_id",   limit: 4
-    t.integer  "city_id",      limit: 4
-    t.integer  "stadium_id",   limit: 4
-    t.integer  "show_id",      limit: 4
-    t.integer  "status",       limit: 4
-    t.datetime "created_at",                                          null: false
-    t.datetime "updated_at",                                          null: false
-    t.string   "express_id",   limit: 255
-    t.string   "user_address", limit: 255
-    t.string   "user_name",    limit: 255
-    t.string   "user_mobile",  limit: 255
-    t.text     "remark",       limit: 65535
-    t.string   "out_trade_no", limit: 255
-    t.string   "buy_origin",   limit: 255
+    t.string   "out_id",             limit: 255
+    t.string   "city_name",          limit: 255
+    t.integer  "user_id",            limit: 4
+    t.integer  "concert_id",         limit: 4
+    t.integer  "city_id",            limit: 4
+    t.integer  "stadium_id",         limit: 4
+    t.integer  "show_id",            limit: 4
+    t.integer  "status",             limit: 4
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.string   "express_id",         limit: 255
+    t.string   "user_address",       limit: 255
+    t.string   "user_name",          limit: 255
+    t.string   "user_mobile",        limit: 255
+    t.text     "remark",             limit: 65535
+    t.string   "out_trade_no",       limit: 255
+    t.string   "buy_origin",         limit: 255
+    t.integer  "channel",            limit: 4
+    t.string   "bill_id",            limit: 255
+    t.datetime "generate_ticket_at"
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -395,8 +398,11 @@ ActiveRecord::Schema.define(version: 20150707091309) do
     t.string   "api_token",          limit: 255
     t.integer  "api_expires_in",     limit: 4
     t.boolean  "is_block",           limit: 1,   default: false
+    t.integer  "bike_user_id",       limit: 4
+    t.integer  "channel",            limit: 4
   end
 
+  add_index "users", ["bike_user_id"], name: "index_users_on_bike_user_id", using: :btree
   add_index "users", ["mobile"], name: "index_users_on_mobile", using: :btree
 
   create_table "videos", force: :cascade do |t|

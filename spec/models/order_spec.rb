@@ -149,11 +149,13 @@ describe Order do
 
       it 'will set tickets info after update status' do
         expect(new_order.status).to eq 'paid'
+        expect(new_order.generate_ticket_at).to be_nil
         expect(payment.trade_id).not_to be_nil
         expect(t.status).to eq 'pending'
 
         new_order.success_pay!({payment: payment})
         expect(t.reload.status).to eq 'success'
+        expect(new_order.generate_ticket_at).not_to be_nil
       end
     end
 

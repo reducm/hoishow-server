@@ -3,7 +3,7 @@ class ApiAuth < ActiveRecord::Base
   #channel
   APP_IOS = 'hoishowIOS'
   APP_ANDROID = 'hoishowAndroid'
-  DANCHE_SERVER = 'dancheServer'
+  DANCHE_SERVER = 'bike_ticket'
 
   validates :user, presence: true, uniqueness: true
   validates :key, presence: true, uniqueness: true
@@ -14,7 +14,7 @@ class ApiAuth < ActiveRecord::Base
   scope :other_channels, -> {where('user != ? and user != ?', APP_ANDROID, APP_IOS)}
 
   def user
-    super
+    read_attribute(:user)
   end
   alias :channel :user
 

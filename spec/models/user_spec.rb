@@ -122,4 +122,42 @@ describe User do
       expect(@user.avatar.url.present?).to be true
     end
   end
+
+  context "find_or_create_bike_user method" do
+    let(:mobile) { '15900001111' }
+    let(:bike_user_id) { 300 }
+
+    it 'will create new user when can not find user by bike_user_id and mobile' do
+      expect{User.find_or_create_bike_user(mobile, bike_user_id)}.to change(User, :count).by(1)
+      u = User.last
+      expect(u.mobile).to eq mobile
+      expect(u.bike_user_id).to eq 300
+      expect(u.channel).to eq 'bike_ticket'
+    end
+
+    it 'will association hoishow user when can not find user by bike_user_id' do
+      hoishow_user = User.create(mobile: mobile, channel: 'ios')
+      expect(hoishow_user.bike_user_id).to be_nil
+      expect{User.find_or_create_bike_user(mobile, bike_user_id)}.to change(User, :count).by(0)
+      hoishow_user.reload
+      expect(hoishow_user.mobile).to eq mobile
+      expect(hoishow_user.bike_user_id).to eq 300
+      expect(hoishow_user.channel).to eq 'ios'
+    end
+
+    it 'will return current user when can find user by bike_user_id' do
+      bike_ticket_user = User.create(mobile: mobile, channel: 'bike_ticket', bike_user_id: bike_user_id)
+      u = User.find_or_create_bike_user(mobile, bike_ticket_user.id)
+      expect(u).to eq bike_ticket_user
+      expect{User.find_or_create_bike_user(mobile, bike_user_id)}.to change(User, :count).by(0)
+    end
+
+    it 'will update the mobile when user channel was bike_ticket and mobile changed' do
+      bike_ticket_user = User.create(mobile: mobile, channel: 'bike_ticket', bike_user_id: bike_user_id)
+      u = User.find_or_create_bike_user('13800138000', bike_ticket_user.id)
+      expect(u.mobile).to eq '13800138000'
+      expect(u.bike_user_id).to eq bike_ticket_user.id
+      expect{User.find_or_create_bike_user(mobile, bike_user_id)}.to change(User, :count).by(0)
+    end
+  end
 end
