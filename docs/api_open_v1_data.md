@@ -253,7 +253,7 @@ description: 查询订单最新信息
 
 ```javascript
   {
-    user_id: 1, //渠道用户id
+    bike_user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
   }
 ```
@@ -310,7 +310,7 @@ description: 创建订单并锁座
 ```javascript
   {
     show_id: 1, //演出id
-    user_id: 1, //渠道用户id
+    bike_user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
     bike_out_id: '123' //渠道订单号
 
@@ -351,8 +351,21 @@ description: 订单支付成功确认出票
 
 ```javascript
   {
-    user_id: 1, //渠道用户id
+    bike_user_id: 1, //渠道用户id
     mobile: '13333333333' //用户手机号
+  }
+```
+
+可选参数 //实体票需要更新收货信息
+
+```javascript
+  {
+    user_name: 1, //收货人
+    user_mobile: '13333333333' //收货手机
+    province: '广东省'
+    city: '广州市'
+    district: '海珠区'
+    address: '新港东路2433号'
   }
 ```
 
