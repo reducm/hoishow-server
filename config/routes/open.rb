@@ -17,7 +17,7 @@ module Routes
                 collection do
                   # use out_id to replace id for query
                   get ':out_id' => 'orders#show'
-                  post ':out_id/unlock_seat' => 'orders#unlock_seat'
+                  # post ':out_id/unlock_seat' => 'orders#unlock_seat'
                   post ':out_id/confirm' => 'orders#confirm'
                 end
               end

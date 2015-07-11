@@ -39,29 +39,40 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     end
   end
 
-  def unlock_seat
-    if ['outdate', 'refund'].exclude?(order_params[:reason])
-      @error_code = 3011
-      @message = '解锁原因错误'
-      return
-    end
-
-    if order_params[:reason] == 'outdate'
-      result = @order.overtime!
-    elsif order_params[:reason] == 'refund'
-      result = @order.refunds!
-    end
-
-    unless result
-      @error_code = 3008
-      @message = '订单解锁失败'
-    end
-  end
+  # def unlock_seat
+  #   if ['outdate', 'refund'].exclude?(order_params[:reason])
+  #     @error_code = 3011
+  #     @message = '解锁原因错误'
+  #     return
+  #   end
+  #
+  #   if order_params[:reason] == 'outdate'
+  #     result = @order.overtime!
+  #   elsif order_params[:reason] == 'refund'
+  #     result = @order.refunds!
+  #   end
+  #
+  #   unless result
+  #     @error_code = 3008
+  #     @message = '订单解锁失败'
+  #   end
+  # end
 
   def confirm
     if !@order.pre_pay! || !@order.success_pay!
       @error_code = 3012
       @message = '订单确认失败'
+    end
+
+    # 实体票的话，可更新快递信息
+    if @order.user_address.nil? && @order.show.ticket_type == 'r_ticket'
+      # user_name 暂时就不关联到 bike_ticket_user
+      return if expresses_params.blank?
+      address = expresses_params.slice(:province, :city, :district, :address).values.join
+      express_attr = expresses_params.slice(:user_name, :user_mobile).tap do |p|
+        p[:user_address] = address
+      end
+      @order.update_attributes!(express_attr)
     end
   end
 
@@ -94,6 +105,10 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     params.permit(:out_id, :area_id, :quantity, :areas, :mobile, :reason,
       # for 单车电影的参数
       :bike_user_id, :bike_out_id)
+  end
+
+  def expresses_params
+    params.permit(:user_name, :user_mobile, :province, :city, :district, :address)
   end
 
   def mobile_auth!

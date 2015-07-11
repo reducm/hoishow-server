@@ -53,8 +53,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     it 'should return current order info with current out_id' do
-      params = { out_id: order.out_id, mobile: order.user_mobile }  # user id ?}
-      get :show, sign_params(params)
+      params = sign_params({ mobile: order.user_mobile })
+      params[:out_id] = order.out_id  # user id ?}
+      get :show, params
 
       expect(json[:result_code]).to eq 0
       d = json[:data]
@@ -98,7 +99,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     it 'will return error when order no found' do
-      get :show, sign_params({out_id: -1, mobile: order.user_mobile}) # user id ?
+      params = sign_params({mobile: order.user_mobile})
+      params[:out_id] = -1
+      get :show, params# user id ?
 
       expect(json[:result_code]).to eq 3006
       expect(json[:message]).to eq '订单不存在'
@@ -251,78 +254,81 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
   end
 
-  context '# action unlock_seat' do
-    let(:params) { { mobile: order.user_mobile, out_id: order.out_id } }
-    before do
-      # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
-    end
-
-    it 'will return success when unlock ok when outdate' do
-      expect(order.status).to eq 'pending'
-      params[:reason] = 'outdate'
-      post :unlock_seat, sign_params(params)
-
-      expect(json[:result_code]).to eq 0
-      order.reload
-      expect(order.status).to eq 'outdate'
-    end
-
-    it 'will return success when unlock ok when refund' do
-      order.pre_pay!
-      order.success_pay!
-      expect(order.status).to eq 'success'
-      params[:reason] = 'refund'
-      post :unlock_seat, sign_params(params) # user id ?
-
-      expect(json[:result_code]).to eq 0
-      order.reload
-      expect(order.status).to eq 'refund'
-    end
-
-    it 'will return error when order no found' do
-      params[:out_id] = -1
-      get :unlock_seat, sign_params(params)# user id ?
-
-      expect(json[:result_code]).to eq 3006
-      expect(json[:message]).to eq '订单不存在'
-    end
-
-    it 'will return error when user mobile was wrong' do
-      params[:mobile] = 'xxx182939'
-
-      post :unlock_seat, sign_params(params)
-      expect(json[:message]).to eq '手机号不正确'
-    end
-
-    it 'will return error when unlock fail' do
-      allow_any_instance_of(Order).to receive(:overtime!) do
-        false
-      end
-      params[:reason] = 'outdate'
-
-      post :unlock_seat, sign_params(params)
-      expect(json[:result_code]).to eq 3008
-      expect(json[:message]).to eq '订单解锁失败'
-    end
-
-    it 'will return error when params reason was wrong' do
-      params[:reason] = 'heheh'
-
-      post :unlock_seat, sign_params(params)
-      expect(json[:result_code]).to eq 3011
-      expect(json[:message]).to eq '解锁原因错误'
-    end
-  end
+  # context '# action unlock_seat' do
+  #   let(:params) { { mobile: order.user_mobile, out_id: order.out_id } }
+  #   before do
+  #     # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+  #   end
+  #
+  #   it 'will return success when unlock ok when outdate' do
+  #     expect(order.status).to eq 'pending'
+  #     params[:reason] = 'outdate'
+  #     post :unlock_seat, sign_params(params)
+  #
+  #     expect(json[:result_code]).to eq 0
+  #     order.reload
+  #     expect(order.status).to eq 'outdate'
+  #   end
+  #
+  #   it 'will return success when unlock ok when refund' do
+  #     order.pre_pay!
+  #     order.success_pay!
+  #     expect(order.status).to eq 'success'
+  #     params[:reason] = 'refund'
+  #     post :unlock_seat, sign_params(params) # user id ?
+  #
+  #     expect(json[:result_code]).to eq 0
+  #     order.reload
+  #     expect(order.status).to eq 'refund'
+  #   end
+  #
+  #   it 'will return error when order no found' do
+  #     params[:out_id] = -1
+  #     get :unlock_seat, sign_params(params)# user id ?
+  #
+  #     expect(json[:result_code]).to eq 3006
+  #     expect(json[:message]).to eq '订单不存在'
+  #   end
+  #
+  #   it 'will return error when user mobile was wrong' do
+  #     params[:mobile] = 'xxx182939'
+  #
+  #     post :unlock_seat, sign_params(params)
+  #     expect(json[:message]).to eq '手机号不正确'
+  #   end
+  #
+  #   it 'will return error when unlock fail' do
+  #     allow_any_instance_of(Order).to receive(:overtime!) do
+  #       false
+  #     end
+  #     params[:reason] = 'outdate'
+  #
+  #     post :unlock_seat, sign_params(params)
+  #     expect(json[:result_code]).to eq 3008
+  #     expect(json[:message]).to eq '订单解锁失败'
+  #   end
+  #
+  #   it 'will return error when params reason was wrong' do
+  #     params[:reason] = 'heheh'
+  #
+  #     post :unlock_seat, sign_params(params)
+  #     expect(json[:result_code]).to eq 3011
+  #     expect(json[:message]).to eq '解锁原因错误'
+  #   end
+  # end
 
   context '# action confirm' do
-    let(:params) { { mobile: order.user_mobile, out_id: order.out_id } }
+    let(:params) do
+      sign_params({ mobile: order.user_mobile }).tap { |p| p[:out_id] = order.out_id }
+    end
+
     before do
       # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
     end
 
     it 'will return success when confiemed' do
       expect(order.status).to eq 'pending'
-      post :confirm, sign_params(params) # user id ?
+      post :confirm, params # user id ?
 
       expect(json[:result_code]).to eq 0
       order.reload
@@ -332,16 +338,17 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     it 'will return error when order no found' do
       params[:out_id] = -1
 
-      get :show, sign_params(params)# user id ?
+      get :show, params# user id ?
 
       expect(json[:result_code]).to eq 3006
       expect(json[:message]).to eq '订单不存在'
     end
 
     it 'will return error when user mobile was wrong' do
-      params[:mobile] = 'xxx182939'
+      wrong_params = { mobile: 'xxx182939' }
+      pa = sign_params(wrong_params).tap { |p| p[:out_id] = order.out_id }
 
-      post :confirm, sign_params(params)
+      post :confirm, pa
       expect(json[:message]).to eq '手机号不正确'
     end
 
@@ -350,9 +357,26 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         false
       end
 
-      post :confirm, sign_params(params)
+      post :confirm, params
       expect(json[:result_code]).to eq 3012
       expect(json[:message]).to eq '订单确认失败'
+    end
+
+    it 'will update order adderss if show ticket was r_ticket' do
+      show.update_attributes ticket_type: 'r_ticket'
+      new_params = { user_name: 'xx先生', user_mobile: '15900001111',
+       province: '广东省', city: '广州市', district: '海珠区', address: '呵呵',
+       mobile: order.user_mobile}
+      pa = sign_params(new_params).tap { |p| p[:out_id] = order.out_id }
+      expect(order.status).to eq 'pending'
+      post :confirm, pa # user id ?
+
+      expect(json[:result_code]).to eq 0
+      order.reload
+      expect(order.status).to eq 'success'
+      expect(order.user_name).to eq 'xx先生'
+      expect(order.user_mobile).to eq '15900001111'
+      expect(order.user_address).to eq '广东省广州市海珠区呵呵'
     end
   end
 end

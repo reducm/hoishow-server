@@ -34,6 +34,7 @@ class Open::V1::ApplicationController < ApplicationController
   def auth_params
     params.permit("api_key", "timestamp", "show_id", "area_id", "user_id",
       "mobile", "quantity", "reason","areas", "bike_user_id", "bike_out_id", # "out_id"
+      "user_name", "user_mobile", "province", "city", "district", "address"
      )
   end
 
