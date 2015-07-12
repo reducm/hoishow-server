@@ -325,8 +325,7 @@ description: 创建订单并锁座
         area_id: 1, //区域id
         seats:
         [{
-          row: 1,
-          column:1
+          id: 1 //座位id
         },....]
       }
     ]
