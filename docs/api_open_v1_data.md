@@ -298,6 +298,39 @@ description: 查询订单最新信息
 
 -----------------------------------
 
+###查询票量
+[/api/open/v1/orders/check_stock]()
+
+type `GET`
+
+description: 查询票务库存
+
+必须参数
+
+```javascript
+  {
+    show_id: 1, //演出id
+    bike_user_id: 1, //渠道用户id
+    mobile: '13333333333', //用户手机号
+    bike_out_id: '123' //渠道订单号
+
+    #选区
+    area_id: 1, //区域id
+    quantity: 1, //数量
+
+    #选座
+    seats: [1,2,3,4] //座位id
+  }
+```
+
+成功时返回
+
+```javascript
+  {message: 'ok'}
+```
+
+-----------------------------------
+
 ###订单锁座
 [/api/open/v1/orders]()
 
