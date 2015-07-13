@@ -299,7 +299,7 @@ description: 查询订单最新信息
 -----------------------------------
 
 ###查询票量
-[/api/open/v1/orders/check_stock]()
+[/api/open/v1/orders/check_inventory]()
 
 type `GET`
 
@@ -310,9 +310,6 @@ description: 查询票务库存
 ```javascript
   {
     show_id: 1, //演出id
-    bike_user_id: 1, //渠道用户id
-    mobile: '13333333333', //用户手机号
-    bike_out_id: '123' //渠道订单号
 
     #选区
     area_id: 1, //区域id
