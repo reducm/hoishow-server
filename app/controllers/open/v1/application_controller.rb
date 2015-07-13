@@ -36,7 +36,9 @@ class Open::V1::ApplicationController < ApplicationController
   end
 
   def api_verify
+
     return true if Rails.env.development?
+
     if params[:api_key].blank? || params[:sign].blank? || params[:timestamp].blank?
       return render json: {result_code: "1003", message: "缺少必要的参数"}
     end
