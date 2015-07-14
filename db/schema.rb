@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709072846) do
+ActiveRecord::Schema.define(version: 20150714071930) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -160,7 +160,7 @@ ActiveRecord::Schema.define(version: 20150709072846) do
     t.string   "out_trade_no",       limit: 255
     t.string   "buy_origin",         limit: 255
     t.integer  "channel",            limit: 4
-    t.string   "bill_id",            limit: 255
+    t.string   "open_trade_no",      limit: 255
     t.datetime "generate_ticket_at"
   end
 
