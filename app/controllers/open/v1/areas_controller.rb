@@ -8,9 +8,6 @@ class Open::V1::AreasController < Open::V1::ApplicationController
 
   # 区域信息查询
   def show
-    @area = @show.areas.includes(:seats).where(id: params[:id]).first
-    if @area.nil?
-      not_found_respond('找不到该区域')
-    end
+    @area = @show.areas.includes(:seats).find(params[:id])
   end
 end
