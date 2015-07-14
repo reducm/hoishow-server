@@ -19,6 +19,7 @@ module Routes
                   get ':out_id' => 'orders#show'
                   # post ':out_id/unlock_seat' => 'orders#unlock_seat'
                   post ':out_id/confirm' => 'orders#confirm'
+                  get :check_inventory
                 end
               end
             end

@@ -5,6 +5,11 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
   before :each do
     request.env["HTTP_ACCEPT"] = 'application/json'
     allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+    2.times do
+      star = create :star
+      StarConcertRelation.create(star_id: star.id, concert_id: concert.id)
+    end
+
   end
 
   let(:city) { create :city }
@@ -40,6 +45,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
         expect(d[:stadium_map]).to eq s.stadium_map_url
         expect(d[:seat_type]).to eq s.seat_type
         expect(d[:mode]).to eq s.mode
+        expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
       end
     end
   end
@@ -71,6 +77,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       expect(d[:stadium_map]).to eq s.stadium_map_url
       expect(d[:seat_type]).to eq s.seat_type
       expect(d[:mode]).to eq s.mode
+      expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
     end
 
     it 'will return error when show no found' do
