@@ -88,6 +88,7 @@ description: 获取全部的演出
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
+      stars: "陈奕迅 | 张敬轩"
     },.....]
 ```
 
@@ -193,6 +194,7 @@ description: 获取指定演出的详情
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
+      star: "陈奕迅 | 张敬轩"
     }
   }
 ```
