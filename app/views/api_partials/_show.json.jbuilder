@@ -8,3 +8,5 @@ json.show_time show.show_time.to_i
 json.poster show.poster_url || ''
 json.ticket_pic show.ticket_pic_url || ''
 json.stadium_map show.stadium_map_url || ''
+# 可能有效率问题，先用着
+json.stars show.concert.stars.pluck(:name).join(' | ')

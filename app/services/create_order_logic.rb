@@ -42,6 +42,39 @@ class CreateOrderLogic
   def execute
     send "create_order_with_#{show.seat_type}"
   end
+  # 可以抽象到选座 logic, 暂时不和下面的 create_order 共用一个判断
+  # 因为接口传入的参数有点不一样，一个是 seats 一个是 areas
+  def check_inventory
+    if show.selected?
+      relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
+
+      quantity = options[:quantity].to_i
+
+      area_seats_left_result = show.area_seats_left(relation.area) - quantity
+
+      if area_seats_left_result < 0
+        @response, @error_msg = 2003, "购买票数大于该区剩余票数!"
+        return
+      end
+
+      if relation.is_sold_out
+        @response, @error_msg = 3015, "你所买的区域暂时不能买票, 请稍后再试"
+      end
+
+    elsif show.selectable?
+      # 查出是否存在不可用的座位
+      unavaliable_seats = show.seats.where(id: JSON.parse(options[:seats]),
+        status: [Seat.statuses[:locked], Seat.statuses[:unused]]).select(:id, :status, :name)
+
+      if !unavaliable_seats.blank?
+        seat_msg = unavaliable_seats.pluck(:name).join(',')
+        @response, @error_msg = 2004, "#{seat_msg}已被锁定"
+      end
+
+    end
+
+    success?
+  end
 
   private
 
