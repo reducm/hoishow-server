@@ -105,7 +105,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       tag = params[:bike_out_id]
     end
 
-    if Order.where(bill_id: tag, channel: Order.channels[channel],
+    if Order.where(open_trade_no: tag, channel: Order.channels[channel],
       status: Order.statuses[:pending]).exists?
       error_respond(3016, '重复创建订单')
     end
