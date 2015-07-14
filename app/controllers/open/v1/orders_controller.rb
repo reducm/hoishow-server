@@ -17,7 +17,6 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     unless co_logic.check_inventory
       @error_code = co_logic.response
       @message = co_logic.error_msg
-      @unavaliable_seats = co_logic.unavaliable_seats if @error_code == 2004
     end
   end
 

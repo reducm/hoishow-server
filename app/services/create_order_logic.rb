@@ -23,7 +23,7 @@ class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :way, :error_msg, :order, :unavaliable_seats
+  attr_reader :show, :options, :response, :user, :way, :error_msg, :order
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
@@ -43,7 +43,7 @@ class CreateOrderLogic
     send "create_order_with_#{show.seat_type}"
   end
   # 可以抽象到选座 logic, 暂时不和下面的 create_order 共用一个判断
-  # 因为接口传入的参数有点不一样，一个是 seats 一个是 area
+  # 因为接口传入的参数有点不一样，一个是 seats 一个是 areas
   def check_inventory
     if show.selected?
       relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
@@ -67,8 +67,8 @@ class CreateOrderLogic
         status: [Seat.statuses[:locked], Seat.statuses[:unused]]).select(:id, :status, :name)
 
       if !unavaliable_seats.blank?
-        @response, @error_msg = 2004, "座位已被占"
-        @unavaliable_seats = unavaliable_seats
+        seat_msg = unavaliable_seats.pluck(:name).join(',')
+        @response, @error_msg = 2004, "#{seat_msg}已被锁定"
       end
 
     end
