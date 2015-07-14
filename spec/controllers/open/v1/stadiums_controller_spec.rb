@@ -14,7 +14,7 @@ RSpec.describe Open::V1::StadiumsController, :type => :controller do
     end
 
     it "should get all stadiums data" do
-      get :index
+      get :index, encrypted_params_in_open
 
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
@@ -33,7 +33,7 @@ RSpec.describe Open::V1::StadiumsController, :type => :controller do
   context "#action show" do
     it 'should return current stadium with current id' do
       stadium = create :stadium, city_id: @city.id
-      get :show, id: stadium.id
+      get :show, encrypted_params_in_open({id: stadium.id})
 
       expect(json[:result_code]).to eq 0
       data = json[:data]
@@ -46,10 +46,10 @@ RSpec.describe Open::V1::StadiumsController, :type => :controller do
     end
 
     it 'will return error when stadium no found' do
-      get :show, id: -1
+      get :show, encrypted_params_in_open({id: -1})
 
-      expect(json[:result_code]).to eq 2001
-      expect(json[:message]).to eq '找不到该场馆'
+      expect(response.status).to eq 404
+      expect(json[:message]).to eq '找不到该数据'
     end
   end
 end
