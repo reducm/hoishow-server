@@ -331,10 +331,7 @@ description: 查询票务库存
 ```javascript
   {
     result_code: 2004,
-    message: '座位已被占',
-    data: {
-      unavaliable_seats: [{ id: 1, name: '1排1座' }]
-    }
+    message: 'x排x座已被锁定',
   }
 ```
 
