@@ -32,7 +32,7 @@ class Open::V1::ApplicationController < ApplicationController
 
   #文档中的必需参数
   def auth_params
-    params.except('sign', 'action', 'controller')
+    params.except('sign', 'action', 'controller', 'out_id')
   end
 
   def api_verify
