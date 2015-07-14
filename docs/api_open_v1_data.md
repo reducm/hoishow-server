@@ -332,7 +332,9 @@ description: 查询票务库存
   {
     result_code: 2004,
     message: '座位已被占',
-    unavaliable_seats: [{ id: 1, name: '1排1座' }]
+    data: {
+      unavaliable_seats: [{ id: 1, name: '1排1座' }]
+    }
   }
 ```
 

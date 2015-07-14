@@ -440,10 +440,11 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         get :check_inventory, sign_params(params)
         expect(json[:result_code]).to eq 2004
         expect(json[:message]).to eq '座位已被占'
-        expect(json[:unavaliable_seats]).to be_a(Array)
         un_seat = show2.seats.first
-        expect(json[:unavaliable_seats][0][:id]).to eq un_seat.id
-        expect(json[:unavaliable_seats][0][:name]).to eq un_seat.name
+        d = json[:data][:unavaliable_seats]
+        expect(d).to be_a(Array)
+        expect(d[0][:id]).to eq un_seat.id
+        expect(d[0][:name]).to eq un_seat.name
       end
     end
   end
