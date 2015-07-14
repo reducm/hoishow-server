@@ -326,6 +326,16 @@ description: 查询票务库存
   {message: 'ok'}
 ```
 
+选座时座位有被占用的返回
+
+```javascript
+  {
+    result_code: 2004,
+    message: '座位已被占',
+    unavaliable_seats: [{ id: 1, name: '1排1座' }]
+  }
+```
+
 -----------------------------------
 
 ###订单锁座
