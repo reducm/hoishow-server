@@ -4,6 +4,8 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm]
   before_action :show_auth!, only: :create
   before_action :order_auth!, only: [:show, :unlock_seat, :confirm]
+  before_action :replay_create_auth!, only: [:create] # 重复提交同一 bike_out_id 的订单
+
   # 订单信息查询
   def show
   end
@@ -37,29 +39,40 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     end
   end
 
-  def unlock_seat
-    if ['outdate', 'refund'].exclude?(order_params[:reason])
-      @error_code = 3011
-      @message = '解锁原因错误'
-      return
-    end
-
-    if order_params[:reason] == 'outdate'
-      result = @order.overtime!
-    elsif order_params[:reason] == 'refund'
-      result = @order.refunds!
-    end
-
-    unless result
-      @error_code = 3008
-      @message = '订单解锁失败'
-    end
-  end
+  # def unlock_seat
+  #   if ['outdate', 'refund'].exclude?(order_params[:reason])
+  #     @error_code = 3011
+  #     @message = '解锁原因错误'
+  #     return
+  #   end
+  #
+  #   if order_params[:reason] == 'outdate'
+  #     result = @order.overtime!
+  #   elsif order_params[:reason] == 'refund'
+  #     result = @order.refunds!
+  #   end
+  #
+  #   unless result
+  #     @error_code = 3008
+  #     @message = '订单解锁失败'
+  #   end
+  # end
 
   def confirm
     if !@order.pre_pay! || !@order.success_pay!
       @error_code = 3012
       @message = '订单确认失败'
+    end
+
+    # 实体票的话，可更新快递信息
+    if @order.user_address.nil? && @order.show.ticket_type == 'r_ticket'
+      # user_name 暂时就不关联到 bike_ticket_user
+      return if expresses_params.blank?
+      address = expresses_params.slice(:province, :city, :district, :address).values.join
+      express_attr = expresses_params.slice(:user_name, :user_mobile).tap do |p|
+        p[:user_address] = address
+      end
+      @order.update_attributes!(express_attr)
     end
   end
 
@@ -75,10 +88,27 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   def user_auth!
   end
 
+  def replay_create_auth!
+    channel = @auth.channel
+    case channel
+    when 'bike_ticket'
+      tag = params[:bike_out_id]
+    end
+
+    if Order.where(bill_id: tag, channel: Order.channels[channel],
+      status: Order.statuses[:pending]).exists?
+      error_respond(3016, '重复创建订单')
+    end
+  end
+
   def order_params
     params.permit(:out_id, :area_id, :quantity, :areas, :mobile, :reason,
       # for 单车电影的参数
       :bike_user_id, :bike_out_id)
+  end
+
+  def expresses_params
+    params.permit(:user_name, :user_mobile, :province, :city, :district, :address)
   end
 
   def mobile_auth!

@@ -34,14 +34,11 @@ class Open::V1::ApplicationController < ApplicationController
 
   #文档中的必需参数
   def auth_params
-    params.permit("api_key", "timestamp", "show_id", "area_id", "user_id",
-      "mobile", "quantity", "reason","areas", "bike_user_id", "bike_out_id", # "out_id"
-     )
+    params.except('sign', 'action', 'controller')
   end
 
   def api_verify
     return true if Rails.env.development?
-
     if params[:api_key].blank? || params[:sign].blank? || params[:timestamp].blank?
       return render json: {result_code: "1003", message: "缺少必要的参数"}
     end
