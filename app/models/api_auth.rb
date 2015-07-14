@@ -30,6 +30,25 @@ class ApiAuth < ActiveRecord::Base
     end
   end
 
+  # open api 的验证流程
+  def open_api_auth(params)
+    if params[:api_key].blank? || params[:sign].blank? || params[:timestamp].blank?
+      return 1003, "缺少必要的参数"
+    end
+
+    #签名中的时间戳，有效时间为10分钟
+    if Time.now.to_i - params[:timestamp].to_i > 600
+      return 1004, "请求因超时而失效"
+    end
+
+    sign = params.delete(:sign)
+    unless sign == self.generated_sign(params)
+      return 1002, "签名验证不通过"
+    end
+
+    0
+  end
+
   #生成签名
   def generated_sign(params = {})
     #如果传入的参数是文档中规定的必需参数
