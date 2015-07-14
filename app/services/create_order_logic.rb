@@ -151,8 +151,8 @@ class CreateOrderLogic
     if ['ios', 'android'].include?(way) # app 端
       @order.buy_origin = way
     elsif 'bike_ticket' == way # 单车电影
-      # bill_id for 对账
-      @order.bill_id = options[:bike_out_id]
+      # open_trade_no for 对账
+      @order.open_trade_no = options[:bike_out_id]
       @order.user_mobile = options[:user_mobile]
     end
 
