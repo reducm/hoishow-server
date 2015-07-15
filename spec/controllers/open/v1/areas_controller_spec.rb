@@ -21,7 +21,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     end
 
     it "should get all areas data by show_id" do
-      get :index, show_id: show.id
+      get :index, encrypted_params_in_open({show_id: show.id})
 
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
@@ -50,10 +50,10 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     end
 
     it 'will return error when show id was wrong' do
-      get :index, show_id: -1
+      get :index, encrypted_params_in_open({show_id: -1})
 
-      expect(json[:result_code]).to eq 2001
-      expect(json[:message]).to eq '找不到该演出'
+      expect(response.status).to eq 404
+      expect(json[:message]).to eq '找不到该数据'
     end
   end
 
@@ -62,7 +62,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
       a = create :area, stadium: stadium
       show.show_area_relations.create(area_id: a.id, channels: 'bike', is_sold_out: [true, false].sample)
 
-      get :show, id: a.id, show_id: show.id
+      get :show, encrypted_params_in_open({id: a.id, show_id: show.id})
 
       expect(json[:result_code]).to eq 0
       d = json[:data]
@@ -80,17 +80,17 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     end
 
     it 'will return error when area no found' do
-      get :show, id: -1, show_id: show.id
+      get :show, encrypted_params_in_open({id: -1, show_id: show.id})
 
-      expect(json[:result_code]).to eq 2001
-      expect(json[:message]).to eq '找不到该区域'
+      expect(response.status).to eq 404
+      expect(json[:message]).to eq '找不到该数据'
     end
 
     it 'will return error when show id was wrong' do
-      get :show, id: -1, show_id: -1
+      get :show, encrypted_params_in_open({id: -1, show_id: -1})
 
-      expect(json[:result_code]).to eq 2001
-      expect(json[:message]).to eq '找不到该演出'
+      expect(response.status).to eq 404
+      expect(json[:message]).to eq '找不到该数据'
     end
   end
 end
