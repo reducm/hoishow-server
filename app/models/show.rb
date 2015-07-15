@@ -111,7 +111,11 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    show_area_relations.sum(:seats_count)
+    if self.selected? #选区
+      show_area_relations.sum(:seats_count)
+    elsif self.selectable? #选座
+      seats.where("status != 2").count
+    end
   end
 
   def area_seats_count(area)
