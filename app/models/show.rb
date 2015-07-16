@@ -127,7 +127,7 @@ class Show < ActiveRecord::Base
   end
 
   def get_show_base_number
-    if relation =ConcertCityRelation.where(concert_id: self.concert_id, city_id: self.city_id).first
+    if relation = ConcertCityRelation.where(concert_id: self.concert_id, city_id: self.city_id).first
       relation.base_number
     else
       0
