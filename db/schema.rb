@@ -160,7 +160,7 @@ ActiveRecord::Schema.define(version: 20150715032126) do
     t.string   "out_trade_no",       limit: 255
     t.string   "buy_origin",         limit: 255
     t.integer  "channel",            limit: 4
-    t.string   "bill_id",            limit: 255
+    t.string   "open_trade_no",      limit: 255
     t.datetime "generate_ticket_at"
   end
 

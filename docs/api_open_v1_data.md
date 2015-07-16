@@ -88,6 +88,7 @@ description: 获取全部的演出
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
+      stars: "陈奕迅 | 张敬轩"
     },.....]
 ```
 
@@ -193,6 +194,7 @@ description: 获取指定演出的详情
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
+      star: "陈奕迅 | 张敬轩"
     }
   }
 ```
@@ -298,6 +300,45 @@ description: 查询订单最新信息
 
 -----------------------------------
 
+###查询票量
+[/api/open/v1/orders/check_inventory]()
+
+type `GET`
+
+description: 查询票务库存
+
+必须参数
+
+```javascript
+  {
+    show_id: 1, //演出id
+
+    #选区
+    area_id: 1, //区域id
+    quantity: 1, //数量
+
+    #选座
+    seats: [1,2,3,4] //座位id
+  }
+```
+
+成功时返回
+
+```javascript
+  {message: 'ok'}
+```
+
+选座时座位有被占用的返回
+
+```javascript
+  {
+    result_code: 2004,
+    message: 'x排x座已被锁定',
+  }
+```
+
+-----------------------------------
+
 ###订单锁座
 [/api/open/v1/orders]()
 
@@ -325,8 +366,7 @@ description: 创建订单并锁座
         area_id: 1, //区域id
         seats:
         [{
-          row: 1,
-          column:1
+          id: 1 //座位id
         },....]
       }
     ]

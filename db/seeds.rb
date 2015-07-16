@@ -16,6 +16,9 @@ begin
             is_hot: city_json["hot"] || false
           )
         end
+        City.create(pinyin:"xianggang", name:"香港", code:"000", is_hot:false)
+        City.create(pinyin:"taiwan", name:"台湾", code:"000", is_hot:false)
+        City.create(pinyin:"aomen", name:"澳门", code:"000", is_hot:false)
       end
     end
   end

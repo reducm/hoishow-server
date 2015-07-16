@@ -13,7 +13,7 @@ RSpec.describe Open::V1::CitiesController, :type => :controller do
     end
 
     it "should get all cities data" do
-      get :index
+      get :index, encrypted_params_in_open
 
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
