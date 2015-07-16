@@ -239,7 +239,7 @@ describe Api::V1::UsersController do
       @topic = create(:topic)
       @comment = create(:comment)
       post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: normal_content, format: :json )
-      expect(JSON.parse(response.body)["content"]).to eq normal_content 
+      expect(JSON.parse(response.body)["content"]).to eq normal_content
     end
 
     it "should replace sensitive_words" do
@@ -452,7 +452,7 @@ describe Api::V1::UsersController do
       10.times{create :area, stadium: @stadium}
       @show = create :show, stadium: @stadium, seat_type: 1
       Area.all.each_with_index do |area, i|
-        @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+        @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2, left_seats: 2)
       end
       @areas = Area.all.to_a
     end
@@ -481,7 +481,7 @@ describe Api::V1::UsersController do
         10.times{create :area, stadium: @stadium}
         @show = create :show, stadium: @stadium, seat_type: 1
         Area.all.each_with_index do |area, i|
-          @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+          @show.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2, left_seats: 2)
         end
         @areas = Area.all.to_a
       end
@@ -491,7 +491,7 @@ describe Api::V1::UsersController do
         2.times do
           post :create_order, with_key(api_token: @user.api_token, mobile: @user.mobile, show_id: @show.id, area_id: Area.first.id, quantity: 2, format: :json)
         end
-        expect(response.body).to eq "{\"errors\":\"购买票数大于该区剩余票数!\"}"
+        expect(response.body).to eq "{\"errors\":\"你所买的区域的票已经卖完了！\"}"
       end
     end
   end

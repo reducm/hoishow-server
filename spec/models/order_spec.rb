@@ -6,10 +6,10 @@ describe Order do
     @city = create :city
     @concert = create :concert
     @stadium = create(:stadium, city: @city)
-    @show = create :show, concert: @concert, stadium: @stadium
+    @show = create :show, concert: @concert, stadium: @stadium, seat_type: 1
     3.times do|n|
       area =  create :area, stadium: @stadium
-      @show.show_area_relations.create(area: area, price: rand(1..10))
+      @show.show_area_relations.create(area: area, price: rand(1..10), seats_count: 2, left_seats: 2)
     end
     @order = @user.orders.init_from_data(city: @city, concert: @concert, stadium: @stadium, show: @show)
     @order.save
@@ -182,16 +182,21 @@ describe Order do
     end
 
     context 'overtime' do
-      before do
+      it 'selectable will set tickets info and seat info after update status' do
+        @show.update_attributes seat_type: 0
         @seat = area.seats.create
         @seat.update_attributes(status: :locked, order_id: new_order.id)
-      end
-
-      it 'will set tickets info and seat info after update status' do
         expect(@seat.status).to eq 'locked'
 
         new_order.overtime!
         expect(@seat.reload.status).to eq 'avaliable'
+        expect(t.reload.status).to eq 'outdate'
+      end
+
+      it 'selected will set show_area_relation left_seats' do
+        sar[0].update_attributes left_seats: 1
+        new_order.overtime!
+        expect(sar[0].reload.left_seats).to eq 2
         expect(t.reload.status).to eq 'outdate'
       end
 

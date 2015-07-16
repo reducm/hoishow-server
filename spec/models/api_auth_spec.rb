@@ -15,7 +15,7 @@ describe ApiAuth do
     end
 
     it "secretcode should be presence after_create if channel require_secretcode?" do
-      a = ApiAuth.create(user: "dancheServer")
+      a = ApiAuth.create(user: "bike_ticket")
       expect(a.valid?).to be_truthy
       expect(a.secretcode.present?).to be_truthy
     end
