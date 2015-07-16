@@ -7,11 +7,5 @@ describe Video do
       expect(video.valid?).to be_falsey
       expect(video).to have(1).error_on(:source)
     end
-
-    it "star_id should be presences" do
-      video = Video.new(source: "ooxx.mp4")
-      expect(video.valid?).to be_falsey
-      expect(video).to have(1).error_on(:star_id)
-    end
   end
 end

@@ -3,7 +3,6 @@ class Star < ActiveRecord::Base
   include ModelAttrI18n
   default_scope {order(:position)}
   has_many :videos, dependent: :destroy
-  #accepts_nested_attributes_for :videos, allow_destroy: true
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
 
@@ -11,7 +10,6 @@ class Star < ActiveRecord::Base
   has_many :concerts, through: :star_concert_relations
 
   validates :name, presence: {message: "姓名不能为空"}
-  validates :name, uniqueness: true
   validates :position, uniqueness: true
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
