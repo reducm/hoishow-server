@@ -26,7 +26,7 @@
 </div>
 <%= content_tag :div, id: "hoishow", data: {
   stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
-  concerts: ( Concert.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
+  concerts: ( Concert.concerts_without_auto_hide.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
   shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } ),
   articles: [{name: '图文主体', id: 1}]
 } do %>
