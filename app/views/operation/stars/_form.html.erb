@@ -29,6 +29,7 @@
 </div>
   <%= f.input :poster, label: "上传海报(建议大小:750x522)" %>
 
+<% if params[:action] == 'edit' %>
 <div class="form-group">
   <% if @videos_uploaded_before.any? %>
   <div class="alert alert-error">
@@ -43,6 +44,7 @@
     <% end %>
   <% end %>
 </div>
+<% end %>
 <!-- Button to trigger modal -->
 <div class="form-group">
   <a href="#videoModal" role="button" class="btn btn-default" data-toggle="modal">上传视频</a>
