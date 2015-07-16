@@ -5,7 +5,6 @@
       <tr>
         <th>视频</th>
         <th>创建时间</th>
-        <th>操作</th>
       </tr>
     </thead>
     <tbody id="videos_list">
@@ -22,21 +21,6 @@
             </video>
           </td>
           <td><%= video.created_at %></td>
-          <td>
-            <% if !video.is_main? %>
-              <%= link_to '设为主视频' , set_main_operation_video_path(video), method: 'PATCH' %>
-            <% else %>
-              已是主视频
-            <% end %>
-
-            <% if video.snapshot.present? %>
-              <%= link_to "更换截图", edit_operation_video_path(video) %>
-            <% else %>
-              <%= link_to "上传截图", edit_operation_video_path(video) %>
-            <% end %>
-
-            <%= link_to "删除", operation_video_path(video), method: :delete, data: { confirm: '确定要删?' } %>
-          </td>
         <%end%>
       <%end%>
     </tbody>

@@ -2,8 +2,7 @@
 class Star < ActiveRecord::Base
   include ModelAttrI18n
   default_scope {order(:position)}
-  has_many :videos
-  accepts_nested_attributes_for :videos, allow_destroy: true
+  has_many :videos, dependent: :destroy
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
 
@@ -12,7 +11,6 @@ class Star < ActiveRecord::Base
 
   validates :name, presence: {message: "姓名不能为空"}
   validates :position, uniqueness: true
-  validates_associated :videos
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
@@ -24,6 +22,10 @@ class Star < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
 
   paginates_per 10
+
+  def create_token
+    self.token = SecureRandom.urlsafe_base64 if self.token.blank?
+  end
 
   def set_position_for_new_record
     self.position = Star.maximum("position").to_i + 1

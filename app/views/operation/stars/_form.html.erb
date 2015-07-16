@@ -1,6 +1,7 @@
 <%# encoding: utf-8 %>
 
 <%= simple_form_for([:operation, star ], html: { class: 'form-horizontal', id: 'star-form', multipart: :true }) do |f| %>
+  <%= f.hidden_field :token, value: star.token %>
 <div class="form-group">
   <legend><%= star.name ? star.name : "新增艺人" %></legend>
 </div>
@@ -28,8 +29,17 @@
 </div>
   <%= f.input :poster, label: "上传海报(建议大小:750x522)" %>
 
-<% if params[:action] == "edit" %>
 <div class="form-group">
+  <% if @videos_uploaded_before.any? %>
+  <div class="alert alert-error">
+    <strong>视频上传成功，请点击页面下方“保存”按钮以完成操作。</strong>
+    <% if params[:action] == 'edit' || params[:action] == 'update' %>
+      <%= render partial: 'operation/videos/table', locals: { videos: @videos_uploaded_before } %>
+    <% elsif params[:action] == 'create' %>
+      <%= render partial: 'operation/videos/table_show_only', locals: { videos: @videos_uploaded_before } %>
+    <% end %>
+  </div>
+  <% end %>
   <% if star.videos.any? %>
     <% if star.videos.first.valid? %>
       <%= label_tag "视频列表" %>
@@ -37,14 +47,28 @@
     <% end %>
   <% end %>
 </div>
+<!-- Button to trigger modal -->
+<div class="form-group">
+  <a href="#videoModal" role="button" class="btn btn-default" data-toggle="modal">上传视频</a>
+</div>
 
 <div class="form-group">
-  <%= link_to "上传视频", new_operation_video_path(star_id: @star.id), class: "btn btn-default" %>
-  <%= label_tag "(单个文件最大30mb，只支持mp4格式, 建议分辨率:750x522)" %>
+  <%= submit_tag "保存", class: "btn btn-primary" %>
 </div>
 <% end %>
-
-<div class="form-group">
-  <%= f.button :submit, class: "btn btn-primary" %>
+<!-- Modal -->
+<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="topicModalLabel">上传视频</h4>
+      </div>
+      <div class="modal-body">
+        <%= simple_form_for([:operation, @video ], html: { class: 'dropzone', id: 'video-dz-form', multipart: :true }) do |f| %>
+          <%= f.hidden_field :star_token, value: star.token %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
-<% end %>
