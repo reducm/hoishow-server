@@ -35,7 +35,7 @@ class Ticket < ActiveRecord::Base
     if self.code.blank?
       loop do
         code = SecureRandom.hex(4)
-        if Ticket.where(code: code).blank?
+        unless Ticket.where(code: code).exists?
           self.update_attributes({
             code: code
           })

@@ -132,7 +132,18 @@ class Order < ActiveRecord::Base
     begin
       Order.transaction do
         self.tickets.update_all(status: Ticket::statuses['outdate'])
-        self.seats.update_all(status: Seat::statuses['avaliable'])
+
+        show = self.show
+
+        if show.selected? # 选区则要更新库存
+          area_id = self.tickets.pluck(:area_id).uniq
+          raise RuntimeError, 'area_id not uniq' if area_id.size != 1
+          relation = show.show_area_relations.where(area_id: area_id[0]).first
+          # update 库存
+          relation.increment(:left_seats, self.tickets.count).save!
+        elsif show.selectable? # 选座则要更新座位状态
+          self.seats.update_all(status: Seat::statuses['avaliable'])
+        end
       end
     rescue => e
       Rails.logger.fatal("*** errors: #{e.message}")
@@ -194,13 +205,13 @@ class Order < ActiveRecord::Base
     current_areas = self.show.areas.where(id: area_ids)
 
     current_areas.each do |area|
-      p 'start one seat transition'
+      # p 'start one seat transition'
       Seat.transaction do
         # search all seats from this area
-        area_params = areas.select{ |a| a['area_id'] == area.id}
+        area_params = areas.select{ |a| a['area_id'] == area.id.to_s}
         seat_ids = area_params[0]['seats'].map { |s| s['id'] }
-        p area_params
-        p seat_ids
+        # p area_params
+        # p seat_ids
         seats = area.seats.where(id: seat_ids)
         # update each seat
         seats.each do |seat|
