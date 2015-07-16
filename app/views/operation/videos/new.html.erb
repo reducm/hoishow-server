@@ -5,7 +5,9 @@
 
   <%= simple_form_for([:operation, @video ], html: { class: 'dropzone', id: "dz-form", multipart: :true }) do |f| %>
     <%= f.hidden_field :star_id, value: @star.id %>
+    <%= f.hidden_field :star_token, value: @star.token %>
   <% end %>
 
+  <% binding.pry %>
   <%= link_to "完成", edit_operation_star_path(@star), class: "btn btn-primary" %>
 </div>

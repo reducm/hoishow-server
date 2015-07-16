@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 20150715084358) do
     t.boolean  "is_display",  limit: 1,     default: false
     t.string   "poster",      limit: 255
     t.text     "description", limit: 65535
+    t.string   "token",       limit: 255
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
@@ -409,11 +410,12 @@ ActiveRecord::Schema.define(version: 20150715084358) do
     t.string   "url",        limit: 255
     t.integer  "star_id",    limit: 4
     t.integer  "concert_id", limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.boolean  "is_main",    limit: 1
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "is_main",    limit: 1,   default: false
     t.string   "source",     limit: 255
     t.string   "snapshot",   limit: 255
+    t.string   "star_token", limit: 255
   end
 
   add_index "videos", ["concert_id"], name: "index_videos_on_concert_id", using: :btree

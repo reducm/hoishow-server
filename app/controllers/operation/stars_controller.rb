@@ -2,7 +2,7 @@
 class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, only: [:new_show, :show, :edit, :update]
-  before_action :get_videos, only: [:edit, :update]
+  before_action :get_videos, only: [:edit]
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
@@ -18,6 +18,56 @@ class Operation::StarsController < Operation::ApplicationController
 
   def new
     @star = Star.new
+    @star.token = @star.create_token
+    @video = @star.videos.build
+    @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
+  end
+
+  def create
+    @star = Star.new(star_params)
+    if @star.save
+      videos = Video.where(star_token: @star.token, star_id: nil)
+      if videos.any?
+        videos.each do |video|
+          video.update_attributes(star_id: @star.id)
+        end
+        videos.first.update(is_main: true)
+        return redirect_to operation_star_url(@star), notice: '艺人新增成功。'
+      end
+      redirect_to operation_star_url(@star), notice: '艺人新增成功。'
+    else
+      @video = @star.videos.build
+      @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
+      flash[:alert] = @star.errors.full_messages.to_sentence
+      render action: 'new'
+    end
+  end
+
+  def edit
+    @video = @star.videos.build
+    @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
+  end
+
+  def update
+    if @star.update(star_params)
+      videos = Video.where(star_token: @star.token, star_id: nil)
+      if videos.any?
+        videos.each do |video|
+          video.update_attributes(star_id: @star.id)
+        end
+        unless @star.videos.is_main.count == 1
+          videos.first.update(is_main: true)
+        end
+        return redirect_to operation_star_url(@star), notice: '艺人更新成功。'
+      end
+      redirect_to operation_star_url(@star), notice: '艺人更新成功。'
+    else
+      get_videos
+      @video = @star.videos.build
+      @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
+      flash[:alert] = @star.errors.full_messages.to_sentence
+      render action: 'edit'
+    end
   end
 
   def new_show
@@ -29,30 +79,6 @@ class Operation::StarsController < Operation::ApplicationController
       concert.delete
       flash[:alert] = "发布新演出失败"
       render action: 'show'
-    end
-  end
-
-  def create
-    @star = Star.new(star_params)
-    if @star.save
-      redirect_to operation_star_url(@star), notice: '艺人新建成功。'
-    else
-      flash[:alert] = @star.errors.full_messages.to_sentence
-      @star.delete
-      render action: 'new'
-    end
-  end
-
-
-  def edit
-  end
-
-  def update
-    if @star.update(star_params)
-      redirect_to operation_star_url(@star), notice: '艺人更新成功。'
-    else
-      flash[:alert] = @star.errors.full_messages.to_sentence
-      render action: 'edit'
     end
   end
 
@@ -73,7 +99,7 @@ class Operation::StarsController < Operation::ApplicationController
 
   private
   def star_params
-    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position)
+    params.require(:star).permit(:name, :is_display, :avatar, :poster, :position, :token)
   end
 
   def get_star

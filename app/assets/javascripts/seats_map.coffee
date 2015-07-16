@@ -13,7 +13,7 @@ $ ->
     click_seat(show_id, 'avaliable', this)
 
   if $("#check_seats").data('check-seats')
-    check_seats = $('#check_seats').data('check-seats').split(",")
+    check_seats = $('#check_seats').data('check-seats').toString().split(",")
 
     $.each(check_seats, (idx, val)->
       $("[data-id='#{val}']").addClass('checked').removeClass('avaliable')
