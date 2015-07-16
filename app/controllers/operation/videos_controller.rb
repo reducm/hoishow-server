@@ -39,7 +39,7 @@ class Operation::VideosController < Operation::ApplicationController
   end
 
   def set_main 
-    @videos = @star.videos 
+    @videos = Video.where("star_token = ? OR star_id = ?", @star.token, @star.id)
     @videos.update_all(is_main: false)
     @video.update(is_main: true)
     redirect_to edit_operation_star_url(@star)

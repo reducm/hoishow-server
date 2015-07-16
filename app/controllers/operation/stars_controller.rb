@@ -20,6 +20,7 @@ class Operation::StarsController < Operation::ApplicationController
     @star = Star.new
     @star.token = @star.create_token
     @video = @star.videos.build
+    @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
   end
 
   def create
@@ -36,6 +37,7 @@ class Operation::StarsController < Operation::ApplicationController
       redirect_to operation_star_url(@star), notice: '艺人新增成功。'
     else
       @video = @star.videos.build
+      @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
       flash[:alert] = @star.errors.full_messages.to_sentence
       render action: 'new'
     end
@@ -62,6 +64,7 @@ class Operation::StarsController < Operation::ApplicationController
     else
       get_videos
       @video = @star.videos.build
+      @videos_uploaded_before = Video.star_id_not_set.where(star_token: @star.token)
       flash[:alert] = @star.errors.full_messages.to_sentence
       render action: 'edit'
     end

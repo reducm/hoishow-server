@@ -1,0 +1,28 @@
+<%# encoding: utf-8 %>
+<div class="videos_list">
+  <table class="table table-hover" id="videos">
+    <thead>
+      <tr>
+        <th>视频</th>
+        <th>创建时间</th>
+      </tr>
+    </thead>
+    <tbody id="videos_list">
+      <% videos.each do |video| %>
+        <%= content_tag_for(:tr, video) do %>
+          <td>
+            <video
+              controls preload="auto"
+              width="300"
+              height="200"
+              poster="<%= video.snapshot.url if video.snapshot_url %>">
+              <source src="<%= video.source.url.to_s rescue nil %>" />
+              Your browser does not support the <code>video</code> element.
+            </video>
+          </td>
+          <td><%= video.created_at %></td>
+        <%end%>
+      <%end%>
+    </tbody>
+  </table>
+</div>

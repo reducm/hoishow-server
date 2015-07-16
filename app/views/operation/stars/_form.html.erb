@@ -29,12 +29,15 @@
 </div>
   <%= f.input :poster, label: "上传海报(建议大小:750x522)" %>
 
-<% if params[:action] == 'edit' %>
 <div class="form-group">
   <% if @videos_uploaded_before.any? %>
   <div class="alert alert-error">
     <strong>视频上传成功，请点击页面下方“保存”按钮以完成操作。</strong>
-    <%= render partial: 'operation/videos/table', locals: { videos: @videos_uploaded_before } %>
+    <% if params[:action] == 'edit' || params[:action] == 'update' %>
+      <%= render partial: 'operation/videos/table', locals: { videos: @videos_uploaded_before } %>
+    <% elsif params[:action] == 'create' %>
+      <%= render partial: 'operation/videos/table_show_only', locals: { videos: @videos_uploaded_before } %>
+    <% end %>
   </div>
   <% end %>
   <% if star.videos.any? %>
@@ -44,7 +47,6 @@
     <% end %>
   <% end %>
 </div>
-<% end %>
 <!-- Button to trigger modal -->
 <div class="form-group">
   <a href="#videoModal" role="button" class="btn btn-default" data-toggle="modal">上传视频</a>
