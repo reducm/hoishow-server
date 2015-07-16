@@ -33,7 +33,7 @@
 <div class="form-group">
   <% if @videos_uploaded_before.any? %>
   <div class="alert alert-error">
-    <strong>请留意!</strong>发现有已上传但未保存的视频，如不需要请删除
+    <strong>视频上传成功，请点击页面下方“保存”按钮以完成操作。</strong>
     <%= render partial: 'operation/videos/table', locals: { videos: @videos_uploaded_before } %>
   </div>
   <% end %>
