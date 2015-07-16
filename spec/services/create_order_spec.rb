@@ -8,12 +8,12 @@ describe CreateOrderLogic do
 
     5.times{ create(:area, stadium: @stadium) }
     @stadium.areas.first(2).each_with_index do |area, i|
-      @show1.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+      @show1.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2, left_seats: 2)
       # 5.times { create(:seat, area_id: area.id) }
     end
 
     @stadium.areas.last(3).each_with_index do |area, i|
-      @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2)
+      @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 2, left_seats: 2)
       3.times { create(:seat, area_id: area.id, show: @show2) }
     end
 
@@ -104,7 +104,7 @@ describe CreateOrderLogic do
         way: @way,
         areas: @show2.areas.map do |area|
           {
-            area_id: area.id,
+            area_id: area.id.to_s,
             seats: area.seats.map do |s|
               { id: s.id, seat_no: s.name }
             end
@@ -145,8 +145,8 @@ describe CreateOrderLogic do
       params = { user: user, quantity: 1, area_id: first_area.id, way: @way }
       co_logic = CreateOrderLogic.new(@show2, params)
       expect{co_logic.execute}.to change(user.orders, :count).by(0)
-      expect(co_logic.response).to eq 3
-      expect(co_logic.error_msg).to eq "不能提交空订单"
+      expect(co_logic.response).to eq 3014
+      expect(co_logic.error_msg).to eq "缺少参数"
     end
 
     # 关于 seat lock 的测试
