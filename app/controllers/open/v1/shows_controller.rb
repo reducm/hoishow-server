@@ -7,9 +7,6 @@ class Open::V1::ShowsController < Open::V1::ApplicationController
 
   # 演出信息查询
   def show
-    @show = Show.where(id: params[:id]).first
-    if @show.nil?
-      not_found_respond('找不到该演出')
-    end
+    @show = Show.find(params[:id])
   end
 end

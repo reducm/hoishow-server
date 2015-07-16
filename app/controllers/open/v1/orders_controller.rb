@@ -2,12 +2,22 @@
 class Open::V1::OrdersController < Open::V1::ApplicationController
   # before_action :user_auth!
   before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm]
-  before_action :show_auth!, only: :create
+  before_action :show_auth!, only: [:check_inventory, :create]
+  before_action :show_status_auth!, only: [:check_inventory, :create]
   before_action :order_auth!, only: [:show, :unlock_seat, :confirm]
   before_action :replay_create_auth!, only: [:create] # 重复提交同一 bike_out_id 的订单
 
   # 订单信息查询
   def show
+  end
+
+  def check_inventory
+    options = params.slice(:quantity, :area_id, :seats)
+    co_logic = CreateOrderLogic.new(@show, options)
+    unless co_logic.check_inventory
+      @error_code = co_logic.response
+      @message = co_logic.error_msg
+    end
   end
 
   def create
@@ -95,7 +105,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       tag = params[:bike_out_id]
     end
 
-    if Order.where(bill_id: tag, channel: Order.channels[channel],
+    if Order.where(open_trade_no: tag, channel: Order.channels[channel],
       status: Order.statuses[:pending]).exists?
       error_respond(3016, '重复创建订单')
     end
@@ -116,6 +126,13 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       @error_code = 3005
       @message = '手机号不正确'
       respond_to { |f| f.json }
+    end
+  end
+
+  def show_status_auth!
+    # 演出状态判断
+    unless @show.status == 'selling'
+      error_respond(2002, @show.status_cn)
     end
   end
 end

@@ -5,6 +5,11 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
   before :each do
     request.env["HTTP_ACCEPT"] = 'application/json'
     allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
+    2.times do
+      star = create :star
+      StarConcertRelation.create(star_id: star.id, concert_id: concert.id)
+    end
+
   end
 
   let(:city) { create :city }
@@ -15,7 +20,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
     it "should get all shows data" do
       15.times { create :show, city: city, stadium: stadium, concert: concert }
 
-      get :index
+      get :index, encrypted_params_in_open
 
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
@@ -40,6 +45,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
         expect(d[:stadium_map]).to eq s.stadium_map_url
         expect(d[:seat_type]).to eq s.seat_type
         expect(d[:mode]).to eq s.mode
+        expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
       end
     end
   end
@@ -48,7 +54,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
     let(:s) { create :show, city: city, stadium: stadium, concert: concert }
 
     it 'should return current show with current id' do
-      get :show, id: s.id
+      get :show, encrypted_params_in_open({id: s.id})
 
       expect(json[:result_code]).to eq 0
       d = json[:data]
@@ -71,13 +77,14 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       expect(d[:stadium_map]).to eq s.stadium_map_url
       expect(d[:seat_type]).to eq s.seat_type
       expect(d[:mode]).to eq s.mode
+      expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
     end
 
     it 'will return error when show no found' do
-      get :show, id: -1
+      get :show, encrypted_params_in_open({id: -1})
 
-      expect(json[:result_code]).to eq 2001
-      expect(json[:message]).to eq '找不到该演出'
+      expect(response.status).to eq 404
+      expect(json[:message]).to eq '找不到该数据'
     end
   end
 end
