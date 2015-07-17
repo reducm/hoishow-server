@@ -8,17 +8,20 @@
     </div>
     <div class="form-group">
       <div class="col-xs-4">
-        <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]],  input_html: {id: "subject_id_select"} %>
+        <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]], input_html: {id: "subject_id_select"} %>
       </div>
     </div>
     <div class="hidden editor"><%= f.input :description, label: '图文描述' %></div>
     <div class="form-group">
     <% if banner.poster_url %>
       <%= label_tag "当前海报" %>
-      <%= image_tag(banner.poster_url, size: "750x472") %>
+      <%= image_tag(banner.poster_url, width: "750") %>
     <% end %>
     </div>
-    <%= f.input :poster, label:"海报 (建议大小:750x472)" %>
+    <%= f.input :poster, label:"海报 (建议大小:750x472)", input_html: {id: "poster_input"} %>
+    <div class="form-group">
+      <img id="poster_preview" src="#" />
+    </div>
     <div class="form-group">
       <%= f.submit class: 'btn btn-primary' %>
     </div>

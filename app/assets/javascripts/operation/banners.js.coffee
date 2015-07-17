@@ -10,6 +10,25 @@ init_editor = ()->
              pasteImage: true
            })
 $ ->
+  $('#poster_preview').hide()
+
+  readURL = (input) ->
+    if input.files and input.files[0]
+      reader = new FileReader
+
+      reader.onload = (e) ->
+        $('#poster_preview').attr 'src', e.target.result
+        return
+
+      reader.readAsDataURL input.files[0]
+    return
+
+  $('#poster_input').change ->
+    $('#poster_preview').show()
+    $('#poster_preview').css("width", "750")
+    readURL this
+    return
+
   data = $("#hoishow").data()
 
   generate_options = (subjects = [])->
