@@ -331,6 +331,11 @@ $ ->
     location.hash = id
 
   if concert_id
+    from_create = $("#from_create").val()
+    if from_create
+      $("#concert_edit_tabs a[href='#profile']").tab('show')
+      init_map(concert_id) #初始化地图标注
+
     $("#get_map").on "click", () ->
       init_map(concert_id) #初始化地图标注
 
