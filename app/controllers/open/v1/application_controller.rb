@@ -21,7 +21,7 @@ class Open::V1::ApplicationController < ApplicationController
   end
 
   def error_respond(code, msg)
-    render json: { result_code: code, message: msg }
+    render json: { result_code: code, message: msg }, status: 403
   end
 
   def unauth_respond(code, msg)
@@ -39,7 +39,7 @@ class Open::V1::ApplicationController < ApplicationController
     end
 
     unless @auth
-      render json: { result_code: 1001, message: "商户信息不存在" }, status: 404
+      render json: { result_code: 1001, message: "商户信息不存在" }, status: 403
     end
   end
 
