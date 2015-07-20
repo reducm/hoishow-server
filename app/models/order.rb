@@ -197,7 +197,7 @@ class Order < ActiveRecord::Base
       p 'start one seat transition'
       Seat.transaction do
         # search all seats from this area
-        area_params = areas.select{ |a| a['area_id'] == area.id.to_s}
+        area_params = areas.select{ |a| a['area_id'].to_s == area.id.to_s}
         seat_ids = area_params[0]['seats'].map { |s| s['id'] }
         p area_params
         p seat_ids
