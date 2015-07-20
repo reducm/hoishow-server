@@ -244,7 +244,7 @@ refresh_topic_list = (concert_id, city_id) ->
 
 autocomplete_city_name = (concert_id) ->
   $("#city_name").autocomplete({
-    mustMatch: true
+    autoFocus: true,
     source: (request, response)->
       $.get("/operation/concerts/#{concert_id}/get_cities", {term: request.term}, (data)->
         response(data)
