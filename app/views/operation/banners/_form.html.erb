@@ -18,10 +18,7 @@
       <%= image_tag(banner.poster_url, width: "750") %>
     <% end %>
     </div>
-    <%= f.input :poster, label:"海报 (建议大小:750x472)", input_html: {id: "poster_input"} %>
-    <div class="form-group">
-      <img id="poster_preview" src="#" />
-    </div>
+    <%= f.input :poster, label:"海报 (建议大小:750x472)", input_html: {class: "image-uploader"} %>
     <div class="form-group">
       <%= f.submit class: 'btn btn-primary' %>
     </div>
