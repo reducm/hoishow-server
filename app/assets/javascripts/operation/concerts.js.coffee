@@ -266,6 +266,9 @@ init_editor = ()->
              pasteImage: true
            })
 $ ->
+  $('.image-uploader').change ->
+    readURL this
+
   concert_id = $("#concert_id").val()
   star_ids = []
 
@@ -299,7 +302,9 @@ $ ->
         alert("该艺人已选，请不要重复添加")
       else
         $("<span>#{star_name}</span>").addClass("btn btn-default").appendTo("#delete_star")
-        $("<button data-star-id='#{star_id}'>删除</button>").addClass("btn btn-info remove_star").appendTo("#delete_star")
+        $("<button data-star-id='#{star_id}'>删除</button>").addClass("btn btn-danger remove_star").appendTo("#delete_star")
+        $(".remove_star").css("margin-left", "4px")
+        $(".remove_star").css("margin-right", "30px")
         star_ids.push(star_id)
 
   #删除明星
@@ -312,10 +317,10 @@ $ ->
           if data.success
             location.reload()
         )
-      else
-        $(this).prev().remove()
-        $(this).remove()
-        star_ids.pop(star_id)
+    else
+      $(this).prev().remove()
+      $(this).remove()
+      star_ids.pop(star_id)
 
   if location.hash
     $("#concert_edit_tabs a[href='" + location.hash + "']").tab('show')

@@ -1,7 +1,5 @@
 <%# encoding: utf-8 %>
-<div class="nav">
-  <h1><%= @star.try(:name) %> 发布新投票</h1>
-</div>
+
 <div class="concert_new_form">
   <%= render partial: "form", locals: {concert: @concert, star: @star} %>
 </div>
