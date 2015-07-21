@@ -10,9 +10,4 @@ class Seat < Ticket
   }
 
   skip_callback :save, :before, :generate_code
-
-  private
-  def set_status
-    self.status = :avaliable if self.status.blank?
-  end
 end
