@@ -111,7 +111,7 @@ class Operation::ShowsController < Operation::ApplicationController
     area.update(name: params[:area_name])
 
     relation = @show.show_area_relations.where(area_id: area.id).first_or_create
-    relation.update(price: params[:price], seats_count: params[:seats_count])
+    relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: params[:seats_count])
 
     render partial: "area_table", locals:{show: @show}
   end

@@ -5,6 +5,7 @@ FactoryGirl.define do
     association :show
     association :area
     price {Random.rand(10..100)}
-    seats_count {Random.rand(10..100)}
+    seats_count { 60 }
+    left_seats { 60 }
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715032126) do
+ActiveRecord::Schema.define(version: 20150715084358) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -211,10 +211,10 @@ ActiveRecord::Schema.define(version: 20150715032126) do
     t.boolean  "is_sold_out", limit: 1,                           default: false
     t.integer  "seats_count", limit: 4
     t.string   "channels",    limit: 255
+    t.integer  "left_seats",  limit: 4,                           default: 0
   end
 
-  add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree
-  add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
+  add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
     t.decimal  "min_price",                      precision: 10, scale: 2

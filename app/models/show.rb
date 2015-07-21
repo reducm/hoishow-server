@@ -99,11 +99,13 @@ class Show < ActiveRecord::Base
 
   def area_seats_left(area)
     # find all valid tickets
-    valid_tickets_count = area.tickets.where(order_id: self.orders.valid_orders.pluck(:id)).count
+    # valid_tickets_count = area.tickets.where(order_id: self.orders.valid_orders.pluck(:id)).count
     # find the seats_count in this area
-    count = area_seats_count(area) - valid_tickets_count
+    # count = area_seats_count(area) - valid_tickets_count
 
-    [0, count].max
+    # [0, count].max
+    relation = self.show_area_relations.where(area_id: area.id).first
+    relation.try(:left_seats) || 0
   end
 
   def area_is_sold_out(area)
