@@ -9,7 +9,7 @@ class Ticket < ActiveRecord::Base
 
   validates :area, presence: true
   validates :show, presence: true
-  validates :order, presence: true, if: :success?
+  validates :order, presence: true, unless: :is_a_seat?
 
   enum status: {
     pending: 0, # 演出生成
@@ -48,5 +48,11 @@ class Ticket < ActiveRecord::Base
 
   def search(q)
     where("nickname like ? or mobile like ?", "%#{q}%", "%#{q}%")
+  end
+
+  private
+  # is a seat ?
+  def is_a_seat?
+    is_a? Seat
   end
 end

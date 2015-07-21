@@ -9,9 +9,9 @@ class Seat < Ticket
     unused: 5      # 空白座位
   }
 
-  before_create :set_status
+  skip_callback :save, :before, :generate_code
 
-  protected
+  private
   def set_status
     self.status = :avaliable if self.status.blank?
   end
