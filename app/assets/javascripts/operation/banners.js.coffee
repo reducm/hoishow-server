@@ -9,25 +9,10 @@ init_editor = ()->
              toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
              pasteImage: true
            })
+
 $ ->
-  $('#poster_preview').hide()
-
-  readURL = (input) ->
-    if input.files and input.files[0]
-      reader = new FileReader
-
-      reader.onload = (e) ->
-        $('#poster_preview').attr 'src', e.target.result
-        return
-
-      reader.readAsDataURL input.files[0]
-    return
-
-  $('#poster_input').change ->
-    $('#poster_preview').show()
-    $('#poster_preview').css("width", "750")
+  $('.image-uploader').change ->
     readURL this
-    return
 
   data = $("#hoishow").data()
 

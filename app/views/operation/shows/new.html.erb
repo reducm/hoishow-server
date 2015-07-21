@@ -1,48 +1,78 @@
 <%# encoding: utf-8 %>
 
 <div class="nav new_show">
-  <h2>新建演出</h2>
-  <% if @concert %>
-    <h4>投票名称: <%= @concert.name %></h4>
-  <% end %>
-  <div>
+  <div class="row">
+    <h2>发布新演出</h2>
+    <% if @concert %>
+      <h4>投票名称: <%= @concert.name %></h4>
+    <% end %>
     <label>参演艺人</label>
     <div class='stars'>
       <% if @concert %>
         <% @concert.stars.each do |star| %>
           <span data-id="<%= star.id %>" class='btn btn-default'><%= star.name %></span>
-          <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-info del_star' %>
         <% end %>
       <% end %>
     </div>
     <div class="form-group">
       <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
-      <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-success add_star' %>
+      <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-primary add_star' %>
     </div>
   </div>
-  <%= simple_form_for [:operation, @show], html: {class: 'show-form'} do |f| %>
-    <%= f.input :is_display, label: "是否显示" %>
-    <%= f.input :name, label: "演出名称" %>
-    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: "开放购票中", label: 'show购票状态' %>
-    <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
-    <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
-    <%= f.input :poster, label: "上传演出海报(建议大小:700x382)" %>
-    <%= f.input :ticket_pic, label: "上传门票图片(建议大小:258x258)" %>
-    <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", as: :radio_buttons, label: "取票方式" %>
-    <%= f.input :description, label: '图文描述' %>
 
+  <%= simple_form_for [:operation, @show], html: {class: 'show-form form-horizontal'} do |f| %>
+    <%= f.input :is_display, label: "是否显示" %>
+  <div class="form-group">
+    <div class="col-xs-3">
+    <%= f.input :name, label: "演出名称" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-1">
+    <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: "开放购票中", label: '演出购票状态' %>
+   </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-1">
+    <%= f.input :show_time, label: "演出日期", as: :datetimepicker %>
+   </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-2">
+    <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
+    </div>
+  </div>
+  <%= f.input :poster, label: "上传演出海报(建议大小:700x382)", input_html: {class: "image-uploader"} %>
+  <%= f.input :ticket_pic, label: "上传门票图片(建议大小:258x258)", input_html: {class: "image-uploader"} %>
+  <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", as: :radio_buttons, label: "取票方式" %>
+  <%= f.input :description, label: '图文描述' %>
+
+  <div class="form-group">
+    <div class="col-xs-1">
     <% if @concert && @concert.cities.any? %>
       <%= f.input :city_id, collection: @concert.cities, input_html: {id: "show_city_select"}, label: '城市' %>
     <% else %>
       <%= f.input :city_id, collection: City.all, input_html: {id: "show_city_select"}, label: '城市' %>
     <% end %>
+   </div>
+  </div>
 
+  <div class="form-group">
+    <div class="col-xs-2">
     <%= f.input :stadium_id, required: false, as: :select, input_html: {id: "show_stadium_select"}, label: '场馆' %>
-    <%= f.input :stadium_map, label: '场馆地图' %>
+    </div>
+  </div>
+    <%= f.input :stadium_map, label: '场馆地图', input_html: {class: "image-input"} %>
+  <div class="form-group">
+    <div class="col-xs-1">
     <%= f.input :seat_type, collection:[["只能选区", "selectable"], ["可以选座", "selected"]], selected: "只能选区", label: '选座设置' %>
+   </div>
+  </div>
     <%= f.hidden_field :concert_id, value: @concert.try(:id) %>
-    <%= f.button :submit, "保存", class: 'submit-form' %>
+  <div class="row">
+    <%= f.button :submit, "保存", class: 'submit-form btn btn-primary' %>
+  </div>
   <% end %>
-  <img id="stadium_pic"  class="preview-pic">
+  <img id="stadium_pic" class="image-preview">
 </div>
 

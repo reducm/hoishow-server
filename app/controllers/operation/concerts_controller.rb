@@ -49,7 +49,7 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:notice] = '投票创建成功'
       redirect_to edit_operation_concert_url(@concert, from_create: 1)
     else
-      flash[:alert] = @concert.errors.full_messages
+      flash[:alert] = @concert.errors.full_messages.to_sentence
       render action: 'new'
     end
   end
@@ -64,7 +64,7 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:notice] = '投票修改成功'
       redirect_to operation_concerts_url
     else
-      flash[:alert] = @concert.errors.full_messages
+      flash[:alert] = @concert.errors.full_messages.to_sentence
       render :edit
     end
   end
