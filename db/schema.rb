@@ -286,9 +286,9 @@ ActiveRecord::Schema.define(version: 20150721062235) do
     t.integer  "order_id",        limit: 4
     t.string   "code",            limit: 255
     t.datetime "code_valid_time"
-    t.datetime "created_at",                                           null: false
-    t.datetime "updated_at",                                           null: false
-    t.integer  "status",          limit: 4
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.integer  "status",          limit: 4,                            default: 0
     t.integer  "admin_id",        limit: 4
     t.datetime "checked_at"
     t.string   "seat_name",       limit: 255
