@@ -1,5 +1,8 @@
 <%# encoding: utf-8 %>
 
+<%if params[:from_create]%>
+  <%= hidden_field_tag "is_from_create", params[:from_create], id: "from_create" %>
+<%end%>
 <div role="tabpanel">
 
   <!-- Nav tabs -->

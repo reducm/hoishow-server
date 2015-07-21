@@ -15,11 +15,11 @@ module Routes
               # api about orders
               resources :orders, only: [:create] do
                 collection do
+                  get :check_inventory
                   # use out_id to replace id for query
                   get ':out_id' => 'orders#show'
                   # post ':out_id/unlock_seat' => 'orders#unlock_seat'
                   post ':out_id/confirm' => 'orders#confirm'
-                  get :check_inventory
                 end
               end
             end

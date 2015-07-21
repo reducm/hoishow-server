@@ -218,9 +218,15 @@ init_map = (concert_id) ->
     ]
   $.get("/operation/concerts/#{concert_id}/get_city_voted_data", (data)->
     if data
-      option.series[0].markPoint.data = data
+      city_hash = option.series[0].geoCoord
+      city_array = []
+      city_filter(city_hash, i, city_array) for i in data
+      option.series[0].markPoint.data = city_array
       myChart.setOption(option)
   )
+
+city_filter = (city_hash, city, city_array) ->
+  if city_hash[city["name"]] then city_array.push(city)
 
 init_map_data = (concert_id) ->
   $.get("/operation/concerts/#{concert_id}/refresh_map_data", (data)->
@@ -331,6 +337,11 @@ $ ->
     location.hash = id
 
   if concert_id
+    from_create = $("#from_create").val()
+    if from_create
+      $("#concert_edit_tabs a[href='#profile']").tab('show')
+      init_map(concert_id) #初始化地图标注
+
     $("#get_map").on "click", () ->
       init_map(concert_id) #初始化地图标注
 
