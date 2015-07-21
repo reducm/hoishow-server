@@ -32,7 +32,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
     user = User.find_or_create_bike_user(order_params[:mobile],
       order_params[:bike_user_id])
-    error_respond(3004, '找不到该用户') if order_params[:bike_user_id].nil?
+    error_respond(3004, '找不到该用户') and return if order_params[:bike_user_id].nil?
     options[:user] = user
 
     # set way

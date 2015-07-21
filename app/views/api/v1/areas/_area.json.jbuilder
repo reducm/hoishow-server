@@ -9,8 +9,8 @@ relation = show.show_area_relations.where(area_id: area.id).first
 
 if show && relation
   json.price relation.price.to_f
-  json.seats_left show.area_seats_left(area)
-  json.is_sold_out show.area_is_sold_out(area) || relation.channels.present? && !relation.channels.include?('hoishow')
+  json.seats_left relation.left_seats
+  json.is_sold_out relation.is_sold_out || relation.channels.present? && !relation.channels.include?('hoishow')
 end
 
 if need_seats_map

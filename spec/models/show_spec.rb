@@ -56,6 +56,7 @@ describe Show do
           order.save
           order.set_tickets_and_price([relation, relation])
         end
+        relation.decrement(:left_seats, 4).save!
       end
     end
 
