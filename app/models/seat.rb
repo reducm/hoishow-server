@@ -1,15 +1,18 @@
-class Seat < ActiveRecord::Base
+# 兼容以前的 seat model,
+class Seat < Ticket
+  alias_attribute :name, :seat_name
   serialize :channels
 
-  belongs_to :show
-  belongs_to :area
-  belongs_to :order
-
   enum status: {
-    avaliable: 0,  #可选
-    locked: 1, #不可选
-    unused: 2 #空白
+    avaliable: 0,  # 可选, 对应 Ticket.statuses[:pending]
+    locked: 1,     # 不可选，对应 Ticket.statuses[:success]
+    unused: 5      # 空白座位
   }
 
-  scope :avaliable_seats, -> { where(status: statuses[:avaliable]) }
+  skip_callback :save, :before, :generate_code
+
+  private
+  def set_status
+    self.status = :avaliable if self.status.blank?
+  end
 end
