@@ -9,14 +9,14 @@ class Ticket < ActiveRecord::Base
 
   validates :area, presence: true
   validates :show, presence: true
-  validates :order, presence: true
+  validates :order, presence: true, if: :success?
 
   enum status: {
-    pending: 0, #未支付时没有code
-    success: 1, #可用
-    used: 2, #已用
-    refund: 3, #退款
-    outdate: 4 #超时
+    pending: 0, # 演出生成
+    success: 1, # 出票成功
+    used: 2,    # 已检票
+    refund: 3,  # 退款
+    outdate: 4, # 超时
   }
 
   scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
