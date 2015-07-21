@@ -47,7 +47,7 @@ class Operation::ConcertsController < Operation::ApplicationController
     if @concert.save
       Star.where('id in (?)', params[:star_ids].split(',')).each{|star| star.hoi_concert(@concert)}
       flash[:notice] = '投票创建成功'
-      redirect_to action: :index
+      redirect_to edit_operation_concert_url(@concert, from_create: 1)
     else
       flash[:alert] = @concert.errors.full_messages.to_sentence
       render action: 'new'

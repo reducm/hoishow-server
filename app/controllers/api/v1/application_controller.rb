@@ -27,12 +27,13 @@ class Api::V1::ApplicationController < ApplicationController
     end
     @user = get_user_from_params(params[:api_token], params[:mobile])
 
+    return error_json("api_token_wrong") if @user.blank?
+
     if verify_block?(@user)
       render json: {errors: "你的账户由于安全原因暂时不能登录，如有疑问请致电400-880-5380"}, status: 406
       return false
     end
 
-    return error_json("api_token_wrong") if @user.blank?
     @user
   end
 

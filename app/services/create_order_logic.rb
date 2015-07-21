@@ -45,6 +45,8 @@ class CreateOrderLogic
   # 可以抽象到选座 logic, 暂时不和下面的 create_order 共用一个判断
   # 因为接口传入的参数有点不一样，一个是 seats 一个是 areas
   def check_inventory
+    @response = 0
+
     if show.selected?
       relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
 
@@ -70,7 +72,6 @@ class CreateOrderLogic
         seat_msg = unavaliable_seats.pluck(:name).join(',')
         @response, @error_msg = 2004, "#{seat_msg}已被锁定"
       end
-
     end
 
     success?
