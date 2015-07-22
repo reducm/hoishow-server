@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150715032126) do
+ActiveRecord::Schema.define(version: 20150721062235) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -185,23 +185,6 @@ ActiveRecord::Schema.define(version: 20150715032126) do
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
 
-  create_table "seats", force: :cascade do |t|
-    t.integer  "show_id",    limit: 4
-    t.integer  "area_id",    limit: 4
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
-    t.text     "seats_info", limit: 65535
-    t.integer  "row",        limit: 4
-    t.integer  "column",     limit: 4
-    t.integer  "status",     limit: 4
-    t.string   "name",       limit: 255
-    t.decimal  "price",                    precision: 10, scale: 2
-    t.integer  "order_id",   limit: 4
-    t.string   "channels",   limit: 255
-  end
-
-  add_index "seats", ["show_id", "area_id"], name: "index_seats_on_show_id_and_area_id", using: :btree
-
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
@@ -211,10 +194,10 @@ ActiveRecord::Schema.define(version: 20150715032126) do
     t.boolean  "is_sold_out", limit: 1,                           default: false
     t.integer  "seats_count", limit: 4
     t.string   "channels",    limit: 255
+    t.integer  "left_seats",  limit: 4,                           default: 0
   end
 
-  add_index "show_area_relations", ["area_id"], name: "index_show_area_relations_on_area_id", using: :btree
-  add_index "show_area_relations", ["show_id"], name: "index_show_area_relations_on_show_id", using: :btree
+  add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
     t.decimal  "min_price",                      precision: 10, scale: 2
@@ -303,12 +286,15 @@ ActiveRecord::Schema.define(version: 20150715032126) do
     t.integer  "order_id",        limit: 4
     t.string   "code",            limit: 255
     t.datetime "code_valid_time"
-    t.datetime "created_at",                                           null: false
-    t.datetime "updated_at",                                           null: false
-    t.integer  "status",          limit: 4
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.integer  "status",          limit: 4,                            default: 0
     t.integer  "admin_id",        limit: 4
     t.datetime "checked_at"
     t.string   "seat_name",       limit: 255
+    t.integer  "row",             limit: 4
+    t.integer  "column",          limit: 4
+    t.string   "channels",        limit: 255
   end
 
   add_index "tickets", ["area_id"], name: "index_tickets_on_area_id", using: :btree
