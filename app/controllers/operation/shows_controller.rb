@@ -102,7 +102,10 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def new_area
-    @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name])
+    area = @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name])
+    if area
+      @show.show_area_relations.where(area_id: area.id).first.update(price: 0.0, seats_count: 0)
+    end
     render partial: "area_table", locals: {show: @show}
   end
 
@@ -110,8 +113,25 @@ class Operation::ShowsController < Operation::ApplicationController
     area = @show.areas.find_by_id(params[:area_id])
     area.update(name: params[:area_name])
 
-    relation = @show.show_area_relations.where(area_id: area.id).first_or_create
-    relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: params[:seats_count])
+    relation = @show.show_area_relations.where(area_id: area.id).first
+    old_seats_count = relation.seats_count
+    old_left_seats = relation.left_seats
+    seats_count = params[:seats_count].to_i
+
+    if old_seats_count > seats_count #减少了座位
+      rest_tickets = old_seats_count - seats_count
+      @show.seats.where(area_id: area.id).limit(rest_tickets).destroy_all
+      new_left_seats = old_left_seats - rest_tickets
+      relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: new_left_seats)
+      #如果new_left_seats为0的话
+      #需要update is_sold_out属性吗？
+    elsif old_seats_count < seats_count #增加了座位
+      rest_tickets = seats_count - old_seats_count
+      rest_tickets.times { @show.seats.where(area_id: area.id).create(status:Seat::statuses[:avaliable], name:"#{@show.stadium.name} - #{area.name} 区", price: params[:price]) }
+      relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
+    elsif old_seats_count == seats_count #座位不变
+      relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: old_left_seats)
+    end
 
     render partial: "area_table", locals:{show: @show}
   end

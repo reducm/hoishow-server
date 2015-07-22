@@ -1,7 +1,6 @@
 # 兼容以前的 seat model,
 class Seat < Ticket
   alias_attribute :name, :seat_name
-  serialize :channels
 
   enum status: {
     avaliable: 5,  # 可选, 对应 Ticket.statuses[:pending]
