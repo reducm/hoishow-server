@@ -4,6 +4,9 @@ refresh_topic_list = (star_id)->
   )
 # 刷新topic列表
 $ ->
+  $('.image-uploader').change ->
+    readURL this
+
   Dropzone.options.videoDzForm =
     acceptedFiles: ".mp4"
     dictDefaultMessage: "选择文件或直接拖进来"

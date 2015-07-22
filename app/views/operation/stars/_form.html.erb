@@ -19,7 +19,7 @@
     <%= image_tag(star.avatar_url, size: "80x80")  %>
   <% end %>
 </div>
-  <%= f.input :avatar, label: "上传头像 (建议大小:270x270)" %>
+<%= f.input :avatar, label: "上传头像 (建议大小:270x270)", input_html: {class: "image-uploader"} %>
 
 <div class="form-group">
   <% if star.poster_url %>
@@ -27,7 +27,7 @@
     <%= image_tag(star.poster_url, size: "750x522") %>
   <% end %>
 </div>
-  <%= f.input :poster, label: "上传海报(建议大小:750x522)" %>
+  <%= f.input :poster, label: "上传海报(建议大小:750x522)", input_html: {class: "image-uploader"} %>
 
 <div class="form-group">
   <% if @videos_uploaded_before.any? %>
