@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class Topic < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.week)
+
   default_scope {order('topics.is_top DESC, topics.created_at DESC')}
 
   SUBJECT_CONCERT = 'Concert'
