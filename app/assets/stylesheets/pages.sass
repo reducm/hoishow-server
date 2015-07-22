@@ -80,7 +80,7 @@ $gray: #6A6A6A
   height: 100%
   background: url(/img_background.png) center center no-repeat
   background-size: cover
-.sharingshow 
+.sharingshow
   overflow: auto
 
 .shareconcert
@@ -91,19 +91,13 @@ $gray: #6A6A6A
       img
         width: 100%
     .content
+      color: #fff
+      font-size: 20px
       .intro
         padding: 10% 0
-        .concert_city_rank
-          color: #fff
-          label
-            font-size: 24px
-            font-weight: normal
       @media screen and (max-width: 330px)
         .intro
-          padding: 5% 0
-          .concert_city_rank
-            label
-              font-size: 20px
+          padding: 3% 0
       .city_rank_info
         width: 90%
         margin: auto
@@ -135,7 +129,7 @@ $gray: #6A6A6A
     .doubledown
       width: 100%
       position: absolute
-      bottom: 2%
+      bottom: 1%
       text-align: center
       color: #8B8B8B
   .vote_part
@@ -239,7 +233,7 @@ $gray: #6A6A6A
 .voters_count
   position: absolute
   width: 100%
-  height: 30%
+  height: 20%
   background-color: rgba(0, 0, 0, 0.4)
   bottom: 0
   color: #fff
@@ -251,3 +245,6 @@ $gray: #6A6A6A
     display: inline-block
     height: 100%
     vertical-align: middle
+  label
+    padding-top: 1%
+    padding-left: 2%

@@ -3,7 +3,7 @@
     <div class="sharing_concert section">
       <div class="top" id="top">
         <%= image_tag(@concert.poster_url) %>
-        <div class="voters_count"><%= @concert.followers_count%></div>
+        <div class="voters_count"><label class='pull-left'><%= @concert.name %></label><%= @concert.followers_count%></div>
       </div>
       <div class="content">
         <div class="intro text-center">
