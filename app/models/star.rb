@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class Star < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.week)
+
   include ModelAttrI18n
   default_scope {order(:position)}
   has_many :videos, dependent: :destroy
