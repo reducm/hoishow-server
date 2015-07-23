@@ -12,12 +12,14 @@
   </div>
 </div>
 
+  <hr />
+
   <% if @orders.any? %>
-<p>
-  下载:
-  <%= link_to "CSV", operation_orders_path(format: "csv") %> |
-  <%= link_to "Excel", operation_orders_path(format: "xls") %>
-</p>
+    <p>
+      下载:
+      <%= link_to "CSV", operation_orders_path(params.merge(q: params[:q], q_express: params[:q_express], order_status_select: params[:order_status_select], page: 0, format: "csv")) %> |
+      <%= link_to "Excel", operation_orders_path(params.merge(q: params[:q], q_express: params[:q_express], order_status_select: params[:order_status_select], page: 0, format: "csv")) %>
+    </p>
   <% end %>
 
 <div class="orders_list">
