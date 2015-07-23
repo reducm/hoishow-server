@@ -77,4 +77,23 @@ RSpec.describe Api::V1::ShowsController, :type => :controller do
       expect(response.body).to include("show")
     end
   end
+
+  context "#seat_info" do
+    before('each') do
+      stadium = create :stadium
+      10.times{create :area, stadium: stadium}
+      @show = create :show, stadium: stadium
+      Area.all.each do |area|
+        relation = create :show_area_relation, area: area, show: @show
+      end
+      @area = Area.first
+      @relation = @show.show_area_relations.where(area_id: @area.id).first
+    end
+
+    it "area should has seat's info" do
+      get :seats_info, with_key(id: @show.id, area_id: @area.id, format: :json)
+      expect(json["seats_count"]).to eq @relation.seats_count 
+      expect(json["seats_left"]).to eq @relation.left_seats 
+    end   
+  end
 end
