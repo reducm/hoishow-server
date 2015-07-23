@@ -33,8 +33,8 @@ class Operation::OrdersController < Operation::ApplicationController
     unless params[:page] == "0" 
       params[:page] ||= 1
       @orders = @orders.page(params[:page])
-      @r_ticket_orders = Kaminari.paginate_array(@r_ticket_orders).page(params[:page]).per(10)
     end
+    @r_ticket_orders = Kaminari.paginate_array(@r_ticket_orders).page(params[:page]).per(10)
     #导出
     filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
