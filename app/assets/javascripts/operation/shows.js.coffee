@@ -192,10 +192,10 @@ $ ->
       area_name = $(".area_name_#{area_id} input").val()
       seats_count = $(".seats_count_#{area_id} input").val()
       sold_tickets = $(".sold_tickets_#{area_id}").text()
-      if (parseFloat(price) <= 0)
-        alert("价格必须为数字")
+      if (parseFloat(price) < 0.0)
+        alert("价格必须为数字且不能少于0")
         return false
-      if (parseInt(seats_count) <= 0)
+      if (parseInt(seats_count) < 0)
         alert("座位数必须为整数")
         return false
       if parseInt(seats_count) < parseInt(sold_tickets)

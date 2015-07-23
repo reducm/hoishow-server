@@ -142,7 +142,7 @@ class Order < ActiveRecord::Base
           # update 库存
           relation.increment(:left_seats, self.tickets.count).save!
         elsif show.selectable? # 选座则要更新座位状态
-          self.seats.update_all(status: Seat::statuses['avaliable'])
+          self.seats.update_all(status: Ticket::seat_types['avaliable'])
         end
       end
     rescue => e
