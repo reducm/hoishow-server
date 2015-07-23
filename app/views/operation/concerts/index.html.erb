@@ -13,12 +13,13 @@
 
   <%= link_to "发布新投票", new_operation_concert_url, class: 'btn btn-primary add-concert' %>
 
+  <hr />
+
   <% if @concerts.any? %>
-    <hr />
     <p>
       下载:
-      <%= link_to "CSV", operation_concerts_path(params.merge(format: "csv")) %> |
-      <%= link_to "Excel", operation_concerts_path(params.merge(format: "xls")) %>
+      <%= link_to "CSV", operation_concerts_path(params.merge(q: params[:q], concert_status_select: params[:concert_status_select], page: 0, format: "csv")) %> |
+      <%= link_to "Excel", operation_concerts_path(params.merge(q: params[:q], concert_status_select: params[:concert_status_select], page: 0, format: "xls")) %>
     </p>
   <% end %>
 
