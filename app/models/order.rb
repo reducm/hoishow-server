@@ -131,18 +131,26 @@ class Order < ActiveRecord::Base
   def handle_seats_and_tickets
     begin
       Order.transaction do
-        self.tickets.update_all(status: Ticket::statuses['outdate'])
+        self.tickets.update_all(status: :pending, seat_type: :avaliable, order_id: nil)
 
         show = self.show
+        area_ids = self.tickets.pluck(:area_id)
 
+        # 这些流程应该还是放到 ticket 的一些 callback 里面比较好
         if show.selected? # 选区则要更新库存
-          area_id = self.tickets.pluck(:area_id).uniq
+          area_id = area_ids.uniq
           raise RuntimeError, 'area_id not uniq' if area_id.size != 1
           relation = show.show_area_relations.where(area_id: area_id[0]).first
           # update 库存
           relation.increment(:left_seats, self.tickets.count).save!
-        elsif show.selectable? # 选座则要更新座位状态
-          self.seats.update_all(status: Seat::statuses['avaliable'])
+        elsif show.selectable? # 选座也要更新库存
+          # 跨区选择
+          relations = show.show_area_relations.where(area_id: area_ids)
+
+          relations.each do |relation|
+            relation.increment(:left_seats, self.tickets.where(area_id:
+              relation.area_id).count).save!
+          end
         end
       end
     rescue => e
@@ -190,41 +198,40 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def create_tickets_by_relations(show_area_relations=[])
-    show_area_relations.each do |relation|
-      tickets.create(area_id: relation.area_id, show_id: relation.show_id, price: relation.price)
+  def create_tickets_by_relations(relations, quantity)
+    Ticket.transaction do
+      # 更新状态，关联 order
+      Ticket.where(area_id: relation.area_id, show_id: relation.show_id,
+        price: relation.price, status: :pending, seat_type: :avaliable)
+        .limit(quantity).update_all(seat_type: :locked, order_id: self.id)
+
+      # update 库存
+      relation.decrement(:left_seats, quantity).save!
     end
   end
 
   def create_tickets_by_seats(areas)
-    area_ids = areas.map do |a|
-      seat_ids << a['seats'].map { |s| s['id'] }
-      a['area_id']
-    end
+    area_ids = areas.map { |a| a['area_id'] }
     # search all areas in one query
-    current_areas = self.show.areas.where(id: area_ids)
+    show = self.show
+    current_areas = show.areas.where(id: area_ids).order('id asc')
 
-    current_areas.each do |area|
-      # p 'start one seat transition'
-      Seat.transaction do
+    # p 'start one seat transition'
+    Seat.transaction do
+      current_areas.each do |area|
         # search all seats from this area
-        area_params = areas.select{ |a| a['area_id'].to_s == area.id.to_s}
+        area_params = areas.select{ |a| a['area_id'].to_i == area.id }
         seat_ids = area_params[0]['seats'].map { |s| s['id'] }
         # p area_params
         # p seat_ids
-        seats = area.seats.where(id: seat_ids)
-        # update each seat
-        seats.each do |seat|
-          # 先查出来再 lock 需要检验一下是否能行
-          seat.with_lock do
-            # update seat status
-            seat.update(status: :locked, order_id: self.id)
-            # create ticket
-            self.tickets.create(area_id: seat.area_id, show_id: seat.show_id,
-              price: seat.price, seat_name: seat.name)
-          end
-        end
+        tickets = area.tickets.where(id: seat_ids, status: :pending,
+          seat_type: :avaliable)
+
+        raise RuntimeError if tickets.size != seat_ids.size
+        # update ticket
+        tickets.update_all(seat_type: :locked, order_id: self.id)
       end
+      # 更新库存
     end
   end
 
