@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class ApiAuth < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.week)
+
   #channel
   APP_IOS = 'hoishowIOS'
   APP_ANDROID = 'hoishowAndroid'

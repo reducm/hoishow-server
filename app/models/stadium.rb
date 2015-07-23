@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class Stadium < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.week)
+
   has_many :areas
   has_many :shows
   belongs_to :city

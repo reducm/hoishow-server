@@ -1,7 +1,10 @@
 #encoding: UTF-8
 class User < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.week)
+
   include Operation::ApplicationHelper
   include ModelAttrI18n
+
   has_many :orders
   has_many :expresses
 

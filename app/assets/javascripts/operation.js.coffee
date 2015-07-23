@@ -36,8 +36,8 @@
 
 #= require operation/jquery.datetimepicker
 
-#datetimepicker
 $ ->
+  #datetimepicker
   $('div.datetimepicker input').datetimepicker({
     format: 'Y-m-d H:i',
     startDate: new Date(),
@@ -58,3 +58,27 @@ $ ->
   $('form').keypress((e)->
     return false if e.which == '13'
   )
+
+  # 图片上传预览
+  window.readURL = (input) ->
+    if input.files and input.files[0]
+      output_id = 'img-prv-' + $(input).attr('id')
+
+      unless $('img#' + output_id)[0]
+        $(input).after('<img id=' + output_id + ' src="#"></img>')
+
+      output = $('img#' + output_id)
+      reader = new FileReader
+
+      reader.onload = (e) ->
+        $(output).attr 'src', e.target.result
+
+        if $(output)[0].width > 700 or $(output)[0].height > 700
+          $(output).css({
+            'width' : '30%',
+            'height' : '30%'
+          })
+        return
+
+      reader.readAsDataURL input.files[0]
+    return

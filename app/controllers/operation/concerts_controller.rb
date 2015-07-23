@@ -7,14 +7,13 @@ class Operation::ConcertsController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    params[:page] ||= 1
     #有搜索关键字时
     if params[:q]
       star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
       concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
-      @concerts = Concert.concerts_without_auto_hide.where("name like ? or id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
+      @concerts = Concert.concerts_without_auto_hide.where("name like ? or id in (?)", "%#{params[:q]}%", concert_ids).order("created_at desc")
     else
-      @concerts = Concert.concerts_without_auto_hide.page(params[:page]).order("created_at desc")
+      @concerts = Concert.concerts_without_auto_hide.order("created_at desc")
     end
     #下拉框筛选
     case params[:concert_status_select]
@@ -22,6 +21,11 @@ class Operation::ConcertsController < Operation::ApplicationController
       @concerts = @concerts.where(status: 0)
     when "finished"
       @concerts = @concerts.where(status: 1)
+    end
+    #导出时不分页
+    unless params[:page] == "0" 
+      params[:page] ||= 1
+      @concerts = @concerts.page(params[:page])
     end
     #导出
     filename = Time.now.strfcn_time + '投票列表'
@@ -49,7 +53,7 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:notice] = '投票创建成功'
       redirect_to edit_operation_concert_url(@concert, from_create: 1)
     else
-      flash[:alert] = @concert.errors.full_messages
+      flash[:alert] = @concert.errors.full_messages.to_sentence
       render action: 'new'
     end
   end
@@ -64,7 +68,7 @@ class Operation::ConcertsController < Operation::ApplicationController
       flash[:notice] = '投票修改成功'
       redirect_to operation_concerts_url
     else
-      flash[:alert] = @concert.errors.full_messages
+      flash[:alert] = @concert.errors.full_messages.to_sentence
       render :edit
     end
   end

@@ -73,6 +73,9 @@ toggle_show_time = ()->
     $('.show_description_time').hide()
     $('.show_show_time').show()
 $ ->
+  $('.image-uploader').change ->
+    readURL this
+
   init_editor() if $('#show_description').length > 0
 #show show
   if $(".show_show").length > 0
@@ -96,7 +99,7 @@ $ ->
         star_id = $selected.val()
         star_name = $selected.text()
         $selected.remove()
-        $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-info'>删除</a>")
+        $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-danger'>删除</a>")
 
     $('.stars').on 'click', '.del_star', ()->
       $span = $(this).prev()
