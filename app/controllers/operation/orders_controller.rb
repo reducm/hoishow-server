@@ -4,18 +4,17 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    params[:page] ||= 1
     #搜索
     if params[:q]
       ids = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").map(&:id).compact
-      @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).page(params[:page]).order("created_at desc")
-      @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
-    elsif params[:q_express_express]
-      @orders = Order.page(params[:page]).order("created_at desc")
-      @r_ticket_orders = Kaminari.paginate_array(Order.where("user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%","%#{params[:q_express]}%", "%#{params[:q_express]}%").orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
+      @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).order("created_at desc")
+      @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+    elsif params[:q_express]
+      @orders = Order.order("created_at desc")
+      @r_ticket_orders = Order.where("user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%","%#{params[:q_express]}%", "%#{params[:q_express]}%").orders_with_r_tickets.select { |order| order.show.r_ticket? }
     else
-      @orders = Order.page(params[:page]).order("created_at desc")
-      @r_ticket_orders = Kaminari.paginate_array(Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }).page(params[:page]).per(10)
+      @orders = Order.order("created_at desc")
+      @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
     end
     #下拉框筛选
     case params[:order_status_select]
@@ -29,6 +28,12 @@ class Operation::OrdersController < Operation::ApplicationController
       @orders = @orders.where(status: 3)
     when "outdate"
       @orders = @orders.where(status: 4)
+    end
+    #导出时不分页
+    unless params[:page] == "0" 
+      params[:page] ||= 1
+      @orders = @orders.page(params[:page])
+      @r_ticket_orders = Kaminari.paginate_array(@r_ticket_orders).page(params[:page]).per(10)
     end
     #导出
     filename = Time.now.strfcn_time + '订单列表'
