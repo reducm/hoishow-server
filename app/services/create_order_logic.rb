@@ -89,25 +89,18 @@ class CreateOrderLogic
   def create_order_with_selected
     if check_inventory # 库存检查
       # 查询是否存在同一场演出的未支付 orders
+      # delay job
       pending_orders = get_pending_orders
       batch_overtime(pending_orders) unless pending_orders.blank?
 
-      relations ||= []
-      @quantity.times{relations.push @relation}
+      # count order amount
+      amount = @relation.price * @quantity
+      # create_order
+      create_order!(amount)
+      # create_tickets callback
+      @order.create_tickets_by_relations(@relation, @quantity)
 
-      @relation.with_lock do
-        # create_order
-        create_order!
-        # update order amount
-        @order.update_attributes(amount: @relation.price * @quantity)
-        # create_tickets callback
-        @order.create_tickets_by_relations(relations)
-
-        # update relation info
-        @relation.decrement(:left_seats, @quantity).save!
-
-        @response = 0
-      end
+      @response = 0
     end
 
   end
@@ -115,6 +108,7 @@ class CreateOrderLogic
   def create_order_with_selectable
     if check_inventory # 库存检查
       # 查询是否存在同一场演出的未支付 orders
+      # delay job
       pending_orders = get_pending_orders
       batch_overtime(pending_orders) unless pending_orders.blank?
 
@@ -130,10 +124,11 @@ class CreateOrderLogic
     end
   end
 
-  def create_order!
+  def create_order!(amount)
     # 按渠道来生成订单
     @order = user.orders.init_from_show(show)
     @order.channel = Order.channels[way]
+    @order.amount = amount
 
     if ['ios', 'android'].include?(way) # app 端
       @order.buy_origin = way
