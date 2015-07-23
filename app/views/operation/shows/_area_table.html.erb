@@ -16,7 +16,7 @@
       </td>
     <% elsif show.selectable? %>
       <td><%= area.name %></td>
-      <td><%= show.seats.where(area_id: area.id, status: Seat::statuses[:avaliable]).count %></td>
+      <td><%= show.seats.where(area_id: area.id, status: Ticket::seat_types[:avaliable]).count %></td>
       <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
       <td data-id="<%= area.id %>">
         <%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id), class: 'btn btn-default' %>
