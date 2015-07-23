@@ -19,6 +19,13 @@ class Ticket < ActiveRecord::Base
     outdate: 4, # 超时
   }
 
+  # 为了兼容以前的 seat 表
+  enum seat_type: {
+    avaliable: 0,  # 可选
+    locked: 1,     # 不可选
+    unused: 2      # 空白座位
+  }
+
   scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
   scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
   before_save :generate_code, unless: :pending?
