@@ -118,7 +118,7 @@ class Show < ActiveRecord::Base
     if self.selected? #选区
       show_area_relations.sum(:seats_count)
     elsif self.selectable? #选座
-      seats.where("status != 2").count
+      seats.where(status: [Ticket::seat_types[:avaliable],Ticket::seat_types[:locked]]).count
     end
   end
 
