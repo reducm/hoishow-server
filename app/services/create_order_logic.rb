@@ -23,7 +23,7 @@ class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :way, :error_msg, :order
+  attr_reader :show, :options, :response, :user, :way, :error_msg, :order, :relation
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
