@@ -32,6 +32,10 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 10
 
+  def self.default_scope
+    order('created_at DESC') if self == Ticket 
+  end
+
   protected
   def generate_code
     if self.code.blank?
