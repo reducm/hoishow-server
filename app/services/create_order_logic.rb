@@ -71,8 +71,8 @@ class CreateOrderLogic
 
       # 查出是否存在不可用的座位
       if !seat_ids.blank?
-        unavaliable_seats = show.seats.where(id: seat_ids, status: [Seat.statuses[:locked],
-          Seat.statuses[:unused]]).select(:id, :status, :name)
+        unavaliable_seats = show.seats.where(id: seat_ids, status: [Ticket.seat_types[:locked],
+          Ticket.seat_types[:unused]]).select(:id, :status, :name)
 
         if !unavaliable_seats.blank?
           seat_msg = unavaliable_seats.pluck(:name).join(',')
