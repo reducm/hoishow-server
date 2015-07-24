@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150723053327) do
+ActiveRecord::Schema.define(version: 20150724071644) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20150723053327) do
     t.integer  "channel",            limit: 4
     t.string   "open_trade_no",      limit: 255
     t.datetime "generate_ticket_at"
+    t.integer  "tickets_count",      limit: 4
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree

@@ -60,13 +60,16 @@ class CreateOrderLogic
       end
 
     elsif show.selectable?
-      if options[:seats].present?
+      @quantity = if options[:seats].present?
         seat_ids = JSON.parse(options[:seats])
+        seat_ids.size
       elsif options[:areas] && options[:areas].present?
         @areas = JSON.parse options[:areas]
         seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+        seat_ids.size
       else
         @response, @error_msg = 3014, "缺少参数"
+        0
       end
 
       # 查出是否存在不可用的座位
@@ -118,6 +121,7 @@ class CreateOrderLogic
       # create_tickets callback
       @order.create_tickets_by_seats(@areas)
       # set amount by tickets prices
+      # 稍后优化
       @order.update_attributes(amount: @order.tickets.sum(:price))
 
       @response = 0
@@ -129,6 +133,7 @@ class CreateOrderLogic
     @order = user.orders.init_from_show(show)
     @order.channel = Order.channels[way]
     @order.amount = @amount
+    @order.tickets_count = @quantity
 
     if ['ios', 'android'].include?(way) # app 端
       @order.buy_origin = way
