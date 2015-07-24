@@ -250,10 +250,6 @@ class Order < ActiveRecord::Base
     self.create_tickets_by_relations(show_area_relations[0], show_area_relations.size)
   end
 
-  def tickets_count
-    tickets.count
-  end
-
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
       # 状态机
