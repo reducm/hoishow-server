@@ -94,9 +94,9 @@ class CreateOrderLogic
       batch_overtime(pending_orders) unless pending_orders.blank?
 
       # count order amount
-      amount = @relation.price * @quantity
+      @amount = @relation.price * @quantity
       # create_order
-      create_order!(amount)
+      create_order!
       # create_tickets callback
       @order.create_tickets_by_relations(@relation, @quantity)
 
@@ -124,11 +124,11 @@ class CreateOrderLogic
     end
   end
 
-  def create_order!(amount)
+  def create_order!
     # 按渠道来生成订单
     @order = user.orders.init_from_show(show)
     @order.channel = Order.channels[way]
-    @order.amount = amount
+    @order.amount = @amount
 
     if ['ios', 'android'].include?(way) # app 端
       @order.buy_origin = way

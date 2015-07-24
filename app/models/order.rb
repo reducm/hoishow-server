@@ -227,16 +227,18 @@ class Order < ActiveRecord::Base
         # search all seats from this area
         area_params = areas.select{ |a| a['area_id'].to_i == area.id }
         seat_ids = area_params[0]['seats'].map { |s| s['id'] }
+        quantity = seat_ids.size
         # p area_params
         # p seat_ids
-        tickets = area.tickets.where(id: seat_ids, status: :pending,
-          seat_type: :avaliable)
+        tickets = area.tickets.avaliable_tickets.where(id: seat_ids)
 
-        raise RuntimeError if tickets.size != seat_ids.size
+        raise RuntimeError if tickets.size != quantity
         # update ticket
-        tickets.update_all(seat_type: :locked, order_id: self.id)
+        tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: self.id)
+        # 更新库存
+        ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
+          .decrement(:left_seats, quantity).save!
       end
-      # 更新库存
     end
   end
 
