@@ -39,7 +39,7 @@ if need_city
 end
 
 if need_tickets
-  json.tickets { json.array! order.tickets, partial: "api/v1/tickets/ticket", as: :ticket }
+  json.tickets { json.array! order.tickets.order('created_at DESC'), partial: "api/v1/tickets/ticket", as: :ticket }
 end
 
 json.created_at order.created_at.to_ms

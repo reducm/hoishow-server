@@ -155,7 +155,9 @@ class Operation::ShowsController < Operation::ApplicationController
     Seat.transaction do
       @show.seats.where(area_id: @area.id).delete_all
       set_seats(params[:seats_info])
-      @show.show_area_relations.where(area_id: @area.id).first.update(seats_count:@show.seats.where(status: [Ticket::seat_types[:avaliable], Ticket::seat_types[:locked]], area_id: @area.id).count,left_seats:@show.seats.where(status: Ticket::seat_types[:avaliable], area_id: @area.id).count)
+      seats_count = @show.seats.avaliable_and_locked_seats.where(area_id: @area.id).count
+      left_seats = @show.seats.avaliable_seats.where(area_id: @area.id).count
+      @show.show_area_relations.where(area_id: @area.id).first.update(seats_count: seats_count, left_seats: left_seats)
     end
     render json: {success: true}
   end

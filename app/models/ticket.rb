@@ -1,7 +1,6 @@
 #encoding: UTF-8
 class Ticket < ActiveRecord::Base
   serialize :channels
-  default_scope {order('created_at DESC')}
 
   belongs_to :area
   belongs_to :show
