@@ -28,9 +28,14 @@ class Ticket < ActiveRecord::Base
 
   scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
   scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
+  scope :avaliable_tickets, ->{ where(status: statuses[:pending], seat_type: seat_types[:avaliable] ) }
   before_save :generate_code, unless: :pending?
 
   paginates_per 10
+
+  def self.default_scope
+    order('created_at DESC') if self == Ticket 
+  end
 
   protected
   def generate_code

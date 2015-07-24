@@ -37,10 +37,15 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
   let(:user) { User.create(mobile: '15900001111', channel: 2, bike_user_id: 300) }
 
   before :each do
-    show.show_area_relations.create(area_id: area.id, channels: 'bike',
+    r1 = show.show_area_relations.create(area_id: area.id, channels: 'bike',
       is_sold_out: false, price: rand(300..500), seats_count: 2, left_seats: 2)
-    show2.show_area_relations.create(area_id: area2.id, channels: 'bike',
+    r2 = show2.show_area_relations.create(area_id: area2.id, channels: 'bike',
       is_sold_out: false, price: rand(300..500), seats_count: 2, left_seats: 2)
+
+    2.times do
+      create(:avaliable_seat, area_id: area.id, show: show, price: r1.price)
+      create(:avaliable_seat, area_id: area2.id, show: show2, price: r2.price)
+    end
 
     allow_any_instance_of(ApiAuth).to receive(:channel) { 'bike_ticket' }
   end
@@ -194,10 +199,10 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     context 'selectable' do
-      before do
-        show2.show_area_relations.create(area: area2, price: rand(300..500), seats_count: 2)
-        3.times { create(:seat, area_id: area2.id, show: show2) }
-      end
+      # before do
+        # show2.show_area_relations.create(area: area2, price: rand(300..500), seats_count: 3)
+        # 3.times { create(:seat, area_id: area2.id, show: show2) }
+      # end
 
       let(:params) do
         {
@@ -370,6 +375,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
     it 'will update order adderss if show ticket was r_ticket' do
       show.update_attributes ticket_type: 'r_ticket'
+      show.reload
       new_params = { user_name: 'xx先生', user_mobile: '15900001111',
        province: '广东省', city: '广州市', district: '海珠区', address: '呵呵',
        mobile: order.user_mobile}
