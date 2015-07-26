@@ -61,20 +61,20 @@ class CreateOrderLogic
 
     elsif show.selectable?
       @quantity = if options[:seats].present?
-        seat_ids = JSON.parse(options[:seats])
-        seat_ids.size
+        @seat_ids = JSON.parse(options[:seats])
+        @seat_ids.size
       elsif options[:areas] && options[:areas].present?
         @areas = JSON.parse options[:areas]
-        seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
-        seat_ids.size
+        @seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+        @seat_ids.size
       else
         @response, @error_msg = 3014, "缺少参数"
         0
       end
 
       # 查出是否存在不可用的座位
-      if !seat_ids.blank?
-        unavaliable_seats = show.seats.not_avaliable_seats.where(id: seat_ids).select(:id, :status, :name)
+      if !@seat_ids.blank?
+        unavaliable_seats = show.seats.not_avaliable_seats.where(id: @seat_ids).select(:id, :status, :name)
 
         if !unavaliable_seats.blank?
           seat_msg = unavaliable_seats.pluck(:name).join(',')
@@ -90,17 +90,15 @@ class CreateOrderLogic
 
   def create_order_with_selected
     if check_inventory # 库存检查
-      # 查询是否存在同一场演出的未支付 orders
-      # delay job
-      pending_orders = get_pending_orders
-      batch_overtime(pending_orders) unless pending_orders.blank?
+      # todo: callback style
+      # pending_orders = get_pending_orders_ids
 
-      # count order amount
-      @amount = @relation.price * @quantity
-      # create_order
-      create_order!
-      # create_tickets callback
-      @order.create_tickets_by_relations(@relation, @quantity)
+      # set order attr
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity})
+      # create_order and create_tickets callback
+      @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
+
+      # batch_overtime(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
@@ -109,50 +107,44 @@ class CreateOrderLogic
 
   def create_order_with_selectable
     if check_inventory # 库存检查
-      # 查询是否存在同一场演出的未支付 orders
-      # delay job
-      pending_orders = get_pending_orders
-      batch_overtime(pending_orders) unless pending_orders.blank?
+      # pending_orders = get_pending_orders_ids
 
-      # create_order and callback
-      create_order!
+      order_attrs = prepare_order_attrs({tickets_count: @quantity})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
-      # create_tickets callback
-      @order.create_tickets_by_seats(@areas)
-      # set amount by tickets prices
-      # 稍后优化
-      @order.update_attributes(amount: @order.tickets.sum(:price))
+      # create_order and create_tickets and callback
+      @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seat_ids)
+
+      # batch_overtime(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
   end
 
-  def create_order!
+  def prepare_order_attrs(attrs={})
+    attrs.merge!(channel: Order.channels[way], user_id: user.id)
     # 按渠道来生成订单
-    @order = user.orders.init_from_show(show)
-    @order.channel = Order.channels[way]
-    @order.amount = @amount
-    @order.tickets_count = @quantity
 
-    if ['ios', 'android'].include?(way) # app 端
-      @order.buy_origin = way
-    elsif 'bike_ticket' == way # 单车电影
-      # open_trade_no for 对账
-      @order.open_trade_no = options[:bike_out_id]
-      @order.user_mobile = options[:user_mobile]
+    attrs.tap do |p|
+      if ['ios', 'android'].include?(way) # app 端
+        p[:buy_origin] = way
+      elsif 'bike_ticket' == way # 单车电影
+        # open_trade_no for 对账
+        p[:open_trade_no] = options[:bike_out_id]
+        p[:user_mobile] = options[:user_mobile]
+      end
     end
-
-    @order.save!
   end
 
-  def get_pending_orders
+  # 查询是否存在同一场演出的未支付 orders
+  def pending_orders_ids
     # 查出是同一场 show 是否存在未支付 orders, 存在的话则将其 overtime
-    user.orders.where(status: Order.statuses[:pending],
-      show_id: show.id, channel: Order.channels[way])
+    @pending_orders_ids ||= user.orders.where(status: Order.statuses[:pending],
+      show_id: show.id, channel: Order.channels[way]).pluck(:id)
   end
 
-  def batch_overtime(pending_orders)
-    pending_orders.each do |o|
+  def batch_overtime!(pending_orders)
+    # delay job
+    user.orders.where(id: pending_orders).each do |o|
       o.overtime!
     end
   end
