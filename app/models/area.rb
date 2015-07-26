@@ -1,5 +1,7 @@
 #encoding: UTF-8
 class Area < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.day)
+
   belongs_to :stadium
 
   has_many :show_area_relations, dependent: :destroy
