@@ -409,3 +409,23 @@ type `GET`
 若type参数是all，成功时根据有无新消息返回不同msg
 有新消息`{msg: "yes"}` 返回状态码200
 没有新消息`{msg: "no"}` 返回状态码200
+
+
+-----------
+
+## 用户点赞topic
+[/api/v1/users/like_topic]()
+
+type `POST`
+
+必需参数
+```javascript
+  {
+    api_token: "users_token",
+    mobile: "users mobile",
+    topic_id: "Topic的id",   
+  }
+```
+
+成功时返回: `{msg: "ok"}` 返回状态码200或201
+

@@ -1,10 +1,10 @@
 # encoding: utf-8
 class Open::V1::OrdersController < Open::V1::ApplicationController
   # before_action :user_auth!
-  before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm]
+  before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm, :cancel_order]
   before_action :show_auth!, only: [:check_inventory, :create]
   before_action :show_status_auth!, only: [:check_inventory, :create]
-  before_action :order_auth!, only: [:show, :unlock_seat, :confirm]
+  before_action :order_auth!, only: [:show, :unlock_seat, :confirm, :cancel_order]
   before_action :replay_create_auth!, only: [:create] # 重复提交同一 bike_out_id 的订单
 
   # 订单信息查询
@@ -85,6 +85,21 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       @order.update_attributes!(express_attr)
     end
   end
+
+  def cancel_order
+    @result = false
+    Order.transaction do
+      if tickets = @order.tickets
+        tickets.update_all(status: Ticket::statuses['refund'])
+      end
+      @order.refund!
+      @result = true
+    end
+    unless @result
+      error_respond(3017, "取消订单失败")
+    end
+  end
+
 
   private
   def order_auth!
