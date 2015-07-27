@@ -235,15 +235,16 @@ describe Api::V1::UsersController do
 
   context "#create_comment" do
     it "should not replace normal words" do
-      normal_content = "通常对包含关键词的信息进行阻断连接、取消或延后显示、替换、人工周杰伦干预等处理。"
+      normal_content = "潘长江的表演很精彩，值回票价！"
+      words = "潘长江的表演很精彩，值回票价！"
       @topic = create(:topic)
       @comment = create(:comment)
       post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: normal_content, format: :json )
-      expect(JSON.parse(response.body)["content"]).to eq normal_content
+      expect(JSON.parse(response.body)["content"]).to eq words
     end
 
     it "should replace sensitive_words" do
-      sensitive_content = "通常对包含关键词的信息进行阻断连接、取消或延后显示、替换、人工老江干预等处理。"
+      sensitive_content = "老江发火"
       @topic = create(:topic)
       @comment = create(:comment)
       post :create_comment, with_key( api_token: @user.api_token, mobile: @user.mobile, topic_id: @topic.id, parent_id: @comment.id, content: sensitive_content, format: :json )

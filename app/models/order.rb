@@ -180,64 +180,72 @@ class Order < ActiveRecord::Base
     CSV.generate(options) do |csv|
       csv << ["订单号", "演出名称", "用户 / 手机号", "票的类型", "订单时间", "状态", "总价", "收货人姓名", "收货人电话", "收货人地址", "票的状态", "快递单号"]
       all.each do |o|
-        csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]
         if o.show.r_ticket?
-          csv << [o.user_name, o.user_mobile, o.user_address, o.express_id]
+          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount, o.user_name, o.user_mobile, o.user_address, o.express_id]
+        else
+          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]
         end
       end
     end
   end
 
   class << self
-    def init_from_show(show)
-      init_from_data(city: show.city, concert: show.concert, show: show, stadium: show.stadium)
+    def init_from_show(show, options={})
+      init_from_data(city: show.city, concert: show.concert, show: show, stadium: show.stadium, options: options)
     end
 
-    def init_from_data(city: nil, concert: nil, stadium: nil, show: nil )
+    def init_from_data(city: nil, concert: nil, stadium: nil, show: nil, options: {})
       #方便把参数_name设到model
       hash = {}
       ASSOCIATION_ATTRS.each do |sym|
         hash[( sym.to_s + "_name" ).to_sym] = eval(sym.to_s).name
         hash[( sym.to_s + "_id" ).to_sym] = eval(sym.to_s).id
       end
-      new(hash)
+      new(hash.merge(options))
     end
-  end
 
-  def create_tickets_by_relations(relation, quantity)
-    Ticket.transaction do
-      # 更新状态，关联 order
-      Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
-        price: relation.price).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: self.id)
+    def init_and_create_tickets_by_relations(show, order_attrs, relation)
+      Order.transaction do
+        # create order
+        order = Order.init_from_show(show, order_attrs)
+        order.save!
+        # 更新状态，关联 order
+        quantity = order_attrs[:tickets_count]
+        Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
+          price: relation.price).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
-      # update 库存
-      relation.decrement(:left_seats, quantity).save!
+        # update 库存
+        relation.decrement(:left_seats, quantity).save!
+
+        order
+      end
     end
-  end
 
-  def create_tickets_by_seats(areas)
-    area_ids = areas.map { |a| a['area_id'] }
-    # search all areas in one query
-    show = self.show
-    current_areas = show.areas.where(id: area_ids).order('id asc')
-
-    # p 'start one seat transition'
-    Seat.transaction do
-      current_areas.each do |area|
-        # search all seats from this area
-        area_params = areas.select{ |a| a['area_id'].to_i == area.id }
-        seat_ids = area_params[0]['seats'].map { |s| s['id'] }
+    def init_and_create_tickets_by_seats(show, order_attrs, seat_ids)
+      # seat_ids = [1, 2, 3, 4] 数组存放 seat 的 id
+      # p 'start one seat transition'
+      Order.transaction do
+        # count ticket count
         quantity = seat_ids.size
-        # p area_params
-        # p seat_ids
-        tickets = area.tickets.avaliable_tickets.where(id: seat_ids)
+        # search all avaliable_tickets
+        tickets = show.tickets.avaliable_tickets.where(id: seat_ids)
+        # set amount to order
+        order_attrs[:amount] = tickets.sum(:price)
+        # create order
+        order = Order.init_from_show(show, order_attrs)
+        order.save!
+        # 按 area_id 分组, 或者换种做法
+        area_ids_hash = tickets.group(:area_id).count
 
-        raise RuntimeError if tickets.size != quantity
+        raise RuntimeError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
         # update ticket
-        tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: self.id)
+        tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
         # 更新库存
-        ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
-          .decrement(:left_seats, quantity).save!
+        ShowAreaRelation.where(show_id: show.id, area_id: area_ids_hash.keys).each do |sar|
+          sar.decrement(:left_seats, area_ids_hash[sar.area_id]).save!
+        end
+
+        order
       end
     end
   end
