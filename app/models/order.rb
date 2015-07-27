@@ -180,9 +180,10 @@ class Order < ActiveRecord::Base
     CSV.generate(options) do |csv|
       csv << ["订单号", "演出名称", "用户 / 手机号", "票的类型", "订单时间", "状态", "总价", "收货人姓名", "收货人电话", "收货人地址", "票的状态", "快递单号"]
       all.each do |o|
-        csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]
         if o.show.r_ticket?
-          csv << [o.user_name, o.user_mobile, o.user_address, o.express_id]
+          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount, o.user_name, o.user_mobile, o.user_address, o.express_id]
+        else
+          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]
         end
       end
     end
