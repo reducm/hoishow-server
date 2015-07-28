@@ -198,7 +198,7 @@ class Api::V1::UsersController < Api::V1::ApplicationController
     if co_logic.success?
       @order = co_logic.order
       # 选区才返回这个，如果跨区域选择的情况，再考虑
-      @relation = co_logic.relation if @show.selected
+      @relation = co_logic.relation if @show.selected?
     else
       error_json(co_logic.error_msg)
     end
