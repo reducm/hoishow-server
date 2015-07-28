@@ -13,7 +13,7 @@ set :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 set :use_sudo, false
 set :user, 'deploy'
 set :rails_env, "production"
-set :deploy_to, '/data/deploy/hoishow-server-pt'
+set :deploy_to, '/data/deploy/hoishow-server-pressure-test'
 
 server '10.6.31.207', user: 'deploy', roles: %w{web app db}
 server '10.6.23.41', user: 'deploy', roles: %w{web app db}
