@@ -12,9 +12,12 @@ describe Order do
       sar = @show.show_area_relations.create(area: area, price: rand(1..10), seats_count: 2, left_seats: 2)
       2.times { create :avaliable_seat, show_id: @show.id, area_id: area.id, price: sar.price}
     end
-    @order = @user.orders.init_from_data(city: @city, concert: @concert, stadium: @stadium, show: @show)
+    relation = @show.show_area_relations.first
+    @order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: 2, amount: relation.price * 2}, relation)
+    #@order = @user.orders.init_from_data(city: @city, concert: @concert, stadium: @stadium, show: @show)
     @order.save
-    @order.create_tickets_by_relations(ShowAreaRelation.first, 2)
+    Ticket.update_all(order_id: @order.id)
+    #@order.create_tickets_by_relations(ShowAreaRelation.first, 2)
   end
 
   context "create order" do
@@ -116,9 +119,10 @@ describe Order do
     let(:sar) { ShowAreaRelation.where(show_id: @show.id, area_id: area.id).first }
 
     before do
-      2.times { create :avaliable_seat, show_id: @show.id, area_id: area.id, price: sar.price}
       sar.update_attributes(seats_count: 3, left_seats: 3)
-      new_order.create_tickets_by_relations(sar, 2)
+      # new_order买了2张票
+      2.times { create :avaliable_seat, show_id: @show.id, area_id: area.id, price: sar.price, order_id: new_order.id}
+      sar.update_attributes(left_seats: 1)
     end
 
     let(:t) { new_order.tickets.first }

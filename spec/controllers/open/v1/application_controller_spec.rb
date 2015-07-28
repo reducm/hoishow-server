@@ -9,12 +9,12 @@ describe Open::V1::ApplicationController do
     end
   end
 
-  specify "a custom action can be requested if routes are drawn manually" do
-    routes.draw { get "prepare_method" => "anonymous#prepare_method" }
+  #specify "a custom action can be requested if routes are drawn manually" do
+    #routes.draw { get "prepare_method" => "anonymous#prepare_method" }
 
-    get :prepare_method
-    expect(response.status).to be(404)
-  end
+    #get :prepare_method
+    #expect(response.status).to be(404)
+  #end
 
   before :each do
     request.env["HTTP_ACCEPT"] = 'application/json'
