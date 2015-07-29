@@ -211,11 +211,13 @@ class Order < ActiveRecord::Base
         order.save!
         # 更新状态，关联 order
         quantity = order_attrs[:tickets_count]
-        Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
-          price: relation.price).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
+        # Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
+        #   price: relation.price).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
         # update 库存
-        relation.decrement(:left_seats, quantity).save!
+        # 加乐观锁
+        # ShowAreaRelation.where(id: 1).where("left_seats > ?", 1).first.decrement(:left_seats, 1).save!
+        ActiveRecord::Base.connection.execute("UPDATE `show_area_relations` SET `left_seats` = `left_seats` - #{quantity}, `updated_at` = '2015-07-29 04:04:19.198592' WHERE `show_area_relations`.`id` = #{relation.id} AND `show_area_relations`.`left_seats` >= #{quantity}")
 
         order
       end

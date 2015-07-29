@@ -1,5 +1,6 @@
 #encoding: UTF-8
 class ShowAreaRelation < ActiveRecord::Base
+  acts_as_cached(:version => 1, :expires_in => 1.hour)
   serialize :channels
 
   belongs_to :show
