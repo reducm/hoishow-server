@@ -209,15 +209,26 @@ class Order < ActiveRecord::Base
         # create order
         order = Order.init_from_show(show, order_attrs)
         order.save!
-        # 更新状态，关联 order
         quantity = order_attrs[:tickets_count]
-        # Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
-        #   price: relation.price).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
         # update 库存
         # 加乐观锁
         # ShowAreaRelation.where(id: 1).where("left_seats > ?", 1).first.decrement(:left_seats, 1).save!
-        ActiveRecord::Base.connection.execute("UPDATE `show_area_relations` SET `left_seats` = `left_seats` - #{quantity}, `updated_at` = '2015-07-29 04:04:19.198592' WHERE `show_area_relations`.`id` = #{relation.id} AND `show_area_relations`.`left_seats` >= #{quantity}")
+        # 效果如 update_all, 不会更新 updated_at
+        ActiveRecord::Base.connection.update_sql(<<-EOQ
+          UPDATE `show_area_relations`
+          SET `left_seats` = `left_seats` - #{quantity}
+          WHERE `show_area_relations`.`id` = #{relation.id}
+          AND `show_area_relations`.`show_id` = #{relation.show_id}
+          AND `show_area_relations`.`area_id` = #{relation.area_id}
+          AND `show_area_relations`.`left_seats` >= #{quantity}
+          AND `show_area_relations`.`left_seats` > 0
+        EOQ
+        )
+
+        # 更新状态，关联 order
+        Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
+          ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
         order
       end
@@ -242,7 +253,7 @@ class Order < ActiveRecord::Base
         raise RuntimeError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
         # update ticket
         tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
-        # 更新库存
+        # 更新库存，这里可能会有瓶颈
         ShowAreaRelation.where(show_id: show.id, area_id: area_ids_hash.keys).each do |sar|
           sar.decrement(:left_seats, area_ids_hash[sar.area_id]).save!
         end
