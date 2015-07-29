@@ -219,10 +219,8 @@ class Order < ActiveRecord::Base
           UPDATE `show_area_relations`
           SET `left_seats` = `left_seats` - #{quantity}
           WHERE `show_area_relations`.`id` = #{relation.id}
-          AND `show_area_relations`.`show_id` = #{relation.show_id}
-          AND `show_area_relations`.`area_id` = #{relation.area_id}
-          AND `show_area_relations`.`left_seats` >= #{quantity}
-          AND `show_area_relations`.`left_seats` > 0
+          AND (`show_id` = #{relation.show_id} and `area_id` = #{relation.area_id})
+          AND (`left_seats` >= #{quantity} and `left_seats` > 0)
         EOQ
         )
 
