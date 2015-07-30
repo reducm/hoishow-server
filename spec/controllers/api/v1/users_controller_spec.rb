@@ -289,20 +289,18 @@ describe Api::V1::UsersController do
   context "#followed_stars" do
     before('each') do
       30.times {create :star}
-      Star.limit(29).each do |star|
+      # 测试收藏排序 
+      Star.unscoped.order(id: :desc).limit(29).each do |star|
         @user.follow_star(star)
       end
     end
 
-    it "should have 10 stars" do
+    it "should have 10 stars order by follow time and each star should has attributes" do
       post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
       expect(JSON.parse(response.body).size).to eq 10
-    end
-
-    it "should has attributes" do
-      post :followed_stars, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      expect(response.body).to include("id")
+      # 测试收藏排序 
+      expect(JSON.parse(response.body)[0]["id"] > JSON.parse(response.body)[1]["id"]).to eq true
       expect(response.body).to include("name")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
@@ -315,7 +313,7 @@ describe Api::V1::UsersController do
   context "#followed_shows" do
     before('each') do
       30.times {create :show}
-      Show.limit(25).each do |show|
+      Show.unscoped.order(id: :desc).limit(25).each do |show|
         @user.follow_show(show)
       end
     end
@@ -328,7 +326,7 @@ describe Api::V1::UsersController do
 
     it "should has attributes" do
       post :followed_shows, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      expect(response.body).to include("id")
+      expect(JSON.parse(response.body)[0]["id"] > JSON.parse(response.body)[1]["id"]).to eq true
       expect(response.body).to include("name")
       expect(response.body).to include("concert_id")
       expect(response.body).to include("city_id")
@@ -347,7 +345,7 @@ describe Api::V1::UsersController do
   context "#followed_concerts" do
     before('each') do
       30.times {create :concert}
-      Concert.limit(29).each do |concert|
+      Concert.unscoped.order(id: :desc).limit(29).each do |concert|
         @user.follow_concert(concert)
       end
     end
@@ -365,7 +363,7 @@ describe Api::V1::UsersController do
 
     it "should has attributes" do
       post :followed_concerts, with_key(api_token: @user.api_token, mobile: @user.mobile, format: :json)
-      expect(response.body).to include("id")
+      expect(JSON.parse(response.body)[0]["id"] > JSON.parse(response.body)[1]["id"]).to eq true
       expect(response.body).to include("name")
       expect(response.body).to include("description")
       expect(response.body).to include("status")
