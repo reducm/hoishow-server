@@ -131,8 +131,11 @@ $ ->
 
     $(".submit-form").on 'click', (e) ->
       e.preventDefault()
-      if $("#show_stadium_select").val().length < 1
+      stadium_select = $("#show_stadium_select").val()
+      if stadium_select == "" or stadium_select == null or stadium_select == "所选城市暂无场馆"
         alert('场馆不能为空，请重新选择')
+      else if $("#show_city_select").val() == ""
+        alert('城市不能为空，请重新选择')
       else if $("div.stars span").length < 1
         alert('艺人不能为空，请重新选择')
       else if $("#show_name").val().length < 1
