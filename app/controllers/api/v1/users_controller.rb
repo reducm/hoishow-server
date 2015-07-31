@@ -156,17 +156,18 @@ class Api::V1::UsersController < Api::V1::ApplicationController
 
   def followed_shows
     params[:page] ||= 1
-    @shows = @user.follow_shows.page(params[:page])
+    @shows = Show.unscoped.joins(:user_follow_shows).where(user_follow_shows: { user_id: @user.id }).order("user_follow_shows.created_at").page(params[:page])
   end
 
   def followed_stars
     params[:page] ||= 1
-    @stars = @user.follow_stars.page(params[:page])
+    @stars = Star.unscoped.joins(:user_follow_stars).where(user_follow_stars: { user_id: @user.id }).order("user_follow_stars.created_at").page(params[:page])
   end
 
+  # 还有收藏的投票吗？
   def followed_concerts
     params[:page] ||= 1
-    @concerts = @user.follow_concerts.page(params[:page])
+    @concerts = Concert.unscoped.joins(:user_follow_concerts).where(user_follow_concerts: { user_id: @user.id }).order("user_follow_concerts.created_at").page(params[:page])
   end
 
   def create_topic
