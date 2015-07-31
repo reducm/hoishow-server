@@ -88,7 +88,7 @@ class Operation::ShowsController < Operation::ApplicationController
     result_1 = concert_message.send_umeng_message(users_array, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
     result_2 = star_message.send_umeng_message(star_followers, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
 
-    if result_1 == "success" && result_2 == "success"
+    if result_1 == "success" || result_2 == "success"
       flash[:notice] = "推送发送成功"
     else
       flash[:alert] = "推送发送失败"

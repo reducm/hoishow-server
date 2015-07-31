@@ -123,7 +123,8 @@ class CreateOrderLogic
   end
 
   def create_order_with_selectable
-    if options[:areas] && options[:areas].present?
+    Rails.logger.debug "********************#{options}"
+    if options[:seats]
       # 查询是否存在同一场演出的未支付 orders
       pending_orders = get_pending_orders
       batch_overtime(pending_orders) unless pending_orders.blank?
@@ -131,9 +132,9 @@ class CreateOrderLogic
       # create_order and callback
       create_order!
       # 设置座位信息, 考虑放到 state_machine init 的 callback
-      areas = JSON.parse options[:areas]
+      seats = JSON.parse options[:seats]
       # create_tickets callback
-      @order.create_tickets_by_seats(areas)
+      @order.create_tickets_by_seats(seats)
       # set amount by tickets prices
       @order.update_attributes(amount: @order.tickets.sum(:price))
 
