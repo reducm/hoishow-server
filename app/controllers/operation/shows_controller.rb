@@ -79,19 +79,27 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def send_create_message
     concert = @show.concert
-    city = City.find(@show.city_id)
-    user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: city.id).pluck(:user_id)
-    users_array = User.where("id in (?)", user_ids)
-    star_followers = concert.stars.map{|star| star.followers}.flatten
-    concert_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你有可以优先购票的演唱会", title: "新演唱会购票通知", content: "#{@show.name}众筹成功，将在#{city.name}开演,作为忠粉的你可以优先购票啦！")
-    star_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "你关注的艺人发布新演出咯！", title: "新演唱会通知", content: "你关注的艺人将参与在#{city.name}开演的#{@show.name},快来支持你偶像吧！")
-    result_1 = concert_message.send_umeng_message(users_array, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
-    result_2 = star_message.send_umeng_message(star_followers, none_follower: "演唱会创建成功，但是因为关注演出的用户数为0，所以消息创建失败")
-
-    if result_1 == "success" || result_2 == "success"
-      flash[:notice] = "推送发送成功"
+    if concert.auto_hide?
+      show_message = Message.new(send_type: 'new_show', creator_type: 'Star', creator_id: @show.first_star.id, subject_type: 'Show', subject_id: @show.id, notification_text: '演出开放售票', title: '演出开放售票', content: "您关注的演出#{@show.name}正式开放售票!")
+      if (result = show_message.send_umeng_message(@show.show_followers, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
+        flash[:alert] = result
+      else
+        flash[:notice] = '推送发送成功'
+      end
     else
-      flash[:alert] = "推送发送失败"
+      user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: @show.city_id).pluck(:user_id)
+      users_array = User.where("id in (?)", user_ids)
+      star_followers = concert.stars.map{|star| star.followers}.flatten
+      concert_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "演出优先购票", title: "演出正式开展", content: "#{@show.name}将在#{@show.city.name}开展,作为忠实粉丝的您可以优先购票了!")
+      star_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "您关注的艺人发布了一个新演出", title: "新的演出", content: "你关注的艺人发布了一个新的演出'#{@show.name}'!")
+      result_1 = concert_message.send_umeng_message(users_array)
+      result_2 = star_message.send_umeng_message(star_followers)
+
+      if result_1 == "success" || result_2 == "success"
+        flash[:notice] = "推送发送成功"
+      else
+        flash[:alert] = "推送发送失败"
+      end
     end
     redirect_to operation_show_url(@show)
   end
@@ -142,9 +150,8 @@ class Operation::ShowsController < Operation::ApplicationController
   def update_mode
     @show = Show.find(params[:id])
     if @show.update(mode: params[:mode].to_i)
-      users_array = @show.show_followers
-      message = Message.new(send_type: "all_users_buy", creator_type: "Star", creator_id: @show.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "#{@show.name}已经开放购票啦～", title: "演唱会开放购买通知", content: "你关注的#{@show.name}已经开放购票了，快叫上小伙伴们一起来参与吧！")
-      if ( result = message.send_umeng_message(users_array, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
+      message = Message.new(send_type: "all_users_buy", creator_type: "Star", creator_id: @show.first_star.id, subject_type: "Show", subject_id: @show.id, notification_text: "演出开放售票", title: "演出开放售票", content: "你关注的演出'#{@show.name}'开放售票!")
+      if (result = message.send_umeng_message(@show.show_followers, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
         flash[:alert] = result
       end
     end
