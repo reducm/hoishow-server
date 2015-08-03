@@ -1,3 +1,5 @@
+# deploy 测试环境
+
 require "capistrano/rvm"
 require "capistrano/bundler"
 
