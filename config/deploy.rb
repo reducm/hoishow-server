@@ -11,6 +11,8 @@ set :pty, false
 set :linked_files, %w{config/database.yml config/settings/wx_pay.yml config/settings/alipay.yml
                       config/certs/rsa_private_key.pem config/certs/app_private_key.pem
                       config/certs/alipay_public_key.pem}
+
+set :linked_dirs, %w{tmp/pids tmp/cache tmp/sockets}
 # set the locations that we will look for changed assets to determine whether to precompile
 set :assets_dependencies, %w(app/assets lib/assets vendor/assets Gemfile.lock config/routes.rb)
 
@@ -27,16 +29,7 @@ def rsync(role, from, to)
 end
 
 namespace :deploy do
-  # desc 'Restart application'
-  # task :restart do
-  #   on roles(:app), in: :sequence, wait: 5 do
-  #     # Your restart mechanism here, for example:
-  #     execute :touch, current_path.join('tmp/restart.txt')
-  #   end
-  # end
-
   namespace :assets do
-
     def staged_assets_root_path
       Pathname.new(fetch(:staged_assets_path) || 'config/deploy/assets/')
     end
@@ -63,7 +56,7 @@ namespace :deploy do
         staged_asstes_path = staged_assets_root_path.join(fetch(:stage).to_s)
         execute :mkdir, '-p', staged_asstes_path
         execute :ln, '-s', staged_asstes_path.realpath, assets_path
-        with rails_env: 'development' do
+        with rails_env: fetch(:rails_env) do
           rake 'assets:precompile'
           rake 'assets:clean'
         end
@@ -80,7 +73,6 @@ namespace :deploy do
       assets_prefix = fetch(:assets_prefix)
       run_locally do
         roles(*fetch(:assets_roles)).each do |role|
-          p "release_path-----------#{release_path}\n"
           rsync role, "./public/#{assets_prefix}/",
                   "#{role.user}@#{role.hostname}:#{release_path}/public/#{assets_prefix}/"
         end
