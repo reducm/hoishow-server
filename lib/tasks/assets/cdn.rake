@@ -8,6 +8,11 @@ namespace :assets do
 
   desc 'api assts to upyun'
   task :publish_assets => :environment do
-    RailsAssetsForUpyun.publish UpyunSetting['upyun_bucket'], UpyunSetting['upyun_username'], UpyunSetting['upyun_password']
+    localpath = 'public'
+
+    Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
+      p "upload_local_assets_file#{file}"
+    end
+    # RailsAssetsForUpyun.publish UpyunSetting['upyun_bucket'], UpyunSetting['upyun_username'], UpyunSetting['upyun_password']
   end
 end
