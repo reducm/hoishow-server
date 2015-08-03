@@ -34,8 +34,9 @@ stadium = Stadium.where(name: '首都体育馆', address: '北京市海淀区中
 stars = ['Coldplay', 'Eminem', 'Jay-z', 'Maroon 5', 'Linkin Park']
 
 # star, concert, star_concert_relation, show
-stars.each do |star|
+stars.each_with_index do |star, index|
   star = Star.where(name: star).first_or_create
+  star.update_attributes!(position: index + 1)
 
   concert = Concert.where(name: "#{star.name}全球巡回演唱会", start_date: Time.now + 1.month, end_date: Time.now + 5.month, status: 0).first_or_create
   StarConcertRelation.where(star_id: star.id, concert_id: concert.id).first_or_create
