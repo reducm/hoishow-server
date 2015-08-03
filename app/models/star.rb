@@ -18,7 +18,7 @@ class Star < ActiveRecord::Base
 
   scope :is_display, -> { where(is_display: true) }
 
-  before_create :set_position_for_new_record
+  before_create :set_position
 
   mount_uploader :avatar, ImageUploader
   mount_uploader :poster, ImageUploader
@@ -27,10 +27,6 @@ class Star < ActiveRecord::Base
 
   def create_token
     self.token = SecureRandom.urlsafe_base64 if self.token.blank?
-  end
-
-  def set_position_for_new_record
-    self.position = Star.maximum("position").to_i + 1
   end
 
   def vote_count
@@ -63,13 +59,17 @@ class Star < ActiveRecord::Base
   end
 
   def shows
-    concert_ids = concerts.pluck(:id)
-    Show.where(concert_id: concert_ids)
+    Show.where(concert_id: concerts.pluck(:id))
   end
 
   class << self
     def search(q)
       where("name like ?", "%#{q}%")
     end
+  end
+
+  private
+  def set_position
+    self.position = Star.maximum("position").to_i + 1
   end
 end
