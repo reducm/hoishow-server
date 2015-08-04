@@ -160,6 +160,14 @@ describe CreateOrderLogic do
       expect(co_logic.error_msg).to eq "缺少参数"
     end
 
+    it "will set response to 3001 when params seats was wrong" do
+      params = { user: user, quantity: 1, seats: [100, 200].to_json, area_id: first_area.id, way: @way }
+      co_logic = CreateOrderLogic.new(@show2, params)
+      expect{co_logic.execute}.to change(user.orders, :count).by(0)
+      expect(co_logic.response).to eq 2001
+      expect(co_logic.error_msg).to eq "数据错误"
+    end
+
     # 关于 seat lock 的测试
   end
 end
