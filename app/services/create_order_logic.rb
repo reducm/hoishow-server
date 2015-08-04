@@ -117,7 +117,7 @@ class CreateOrderLogic
       rescue ArgumentError => e
         # 先放这里
         Rails.logger.error("create_order_logic error: #{e}")
-        @response, @error_msg = 2001, "数据错误"
+        @response, @error_msg = 3001, "下单锁座失败"
         return
       end
 
