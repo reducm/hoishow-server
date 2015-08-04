@@ -13,6 +13,14 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
       @tickets = Ticket.where(code: params[:codes].split(','), status: Ticket::statuses["success"])
       if @tickets.any?
         check_ticket_status_and_update
+
+        # Bike演出验票回调
+        if params[:notify_url]
+          url = "#{params[:notify_url]}?open_trade_no=#{@tickets.first.order.open_trade_no}"
+          RestClient.get(url)
+        end
+
+        render json: {msg: "ok"}, status: 200
       else
         return error_json "获取门票失败"
       end
@@ -30,6 +38,5 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
         end
       end
     end
-    render json: {msg: "ok"}, status: 200
   end
 end

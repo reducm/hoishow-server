@@ -142,6 +142,10 @@ class Show < ActiveRecord::Base
     UserVoteConcert.where(concert_id: concert_id, city_id: city_id).count + get_show_base_number
   end
 
+  def first_star
+    stars.first
+  end
+
   private
   def valids_price
     if min_price.present? && max_price.present?

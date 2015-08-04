@@ -2,8 +2,7 @@
 class Api::V1::StarsController < Api::V1::ApplicationController
   before_action :check_has_user
   def index
-    params[:page] ||= 1
-    @stars = Star.is_display.page(params[:page])
+    @stars = Star.is_display
   end
 
   def show

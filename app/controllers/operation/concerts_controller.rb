@@ -23,7 +23,7 @@ class Operation::ConcertsController < Operation::ApplicationController
       @concerts = @concerts.where(status: 1)
     end
     #导出时不分页
-    unless params[:page] == "0" 
+    unless params[:page] == "0"
       params[:page] ||= 1
       @concerts = @concerts.page(params[:page])
     end
@@ -77,8 +77,8 @@ class Operation::ConcertsController < Operation::ApplicationController
     users_array = @concert.stars.map{|star| star.followers}.flatten
     error = 0
     @concert.stars.each do |star|
-      message = Message.new(send_type: "new_concert", creator_type: "Star", creator_id: star.id, subject_type: "Concert", subject_id: @concert.id, notification_text: "你关注的艺人发布了一个新的演出众筹", title: "新的演出众筹", content: "#{star.name}刚刚发布了一个新的演出众筹，还等什么，快来投票吧！")
-      error += 1 if message.send_umeng_message(users_array, none_follower: "演出创建成功，但是因为艺人粉丝数为0，所以消息创建失败") != 'success'
+      message = Message.new(send_type: "new_concert", creator_type: "Star", creator_id: star.id, subject_type: "Concert", subject_id: @concert.id, notification_text: "你关注的艺人发布了一个新的投票", title: "新的投票", content: "您关注的艺人#{star.name}发布了一个新的投票'#{@concert.name}'")
+      error += 1 if message.send_umeng_message(users_array) != 'success'
     end
     if error > 0
       flash[:alert] = '推送发送失败'
