@@ -112,7 +112,14 @@ class CreateOrderLogic
       order_attrs = prepare_order_attrs({tickets_count: @quantity})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
       # create_order and create_tickets and callback
-      @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seat_ids)
+      begin
+        @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seat_ids)
+      rescue ArgumentError => e
+        # 先放这里
+        Rails.logger.error("create_order_logic error: #{e}")
+        @response, @error_msg = 3001, "下单锁座失败"
+        return
+      end
 
       # batch_overtime(pending_orders) unless pending_orders.blank?
 

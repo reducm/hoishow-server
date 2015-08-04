@@ -248,7 +248,7 @@ class Order < ActiveRecord::Base
         # 按 area_id 分组, 或者换种做法
         area_ids_hash = tickets.group(:area_id).count
 
-        raise RuntimeError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
+        raise ArgumentError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
         # update ticket
         tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
         # 更新库存，这里可能会有瓶颈
