@@ -4,7 +4,7 @@
 -----------------------------------
 
 ## 基础参数，错误返回码
-1. 所有api请求时，url后需要带api_key, timestamp, sign, [签名生成](#生成签名)
+1. 所有api请求时，url后需要带api_key, timestamp, sign, [查看签名生成方法](#生成签名)
 
 2. api成功返回时参照各api描述，失败时对照错误代码
 
@@ -421,9 +421,21 @@ description: 订单支付成功确认出票
 
 ----
 
-###生成签名
+###<a name="生成签名"></a>生成签名
 
-sign生成方法: 将所有参数排序然后拼接成字符串然后尾部加上secretcode进行MD5加密
+sign生成方法:
+
+1 将所有参数排序
+
+2 拼接成字符串
+
+3 尾部加上secretcode进行MD5加密
+
+4 加密后转成大写
+
+例如获取城市列表:
+
+GET http://服务器地址/api/open/v1/cities.json?api_key=FTpDcdRQj3WRUKny8QxEpw&timestamp=1438594945&sign=426B9D7335EB24D8541AB2ACD4BA914F
 
 ----
 
