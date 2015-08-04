@@ -33,25 +33,24 @@ RSpec.describe Api::V1::OrdersController, :type => :controller do
   end
 
   context "#show_for_qr_scan" do
+    before('each') do
+      @relation = create :show_area_relation, show: @show 
+      @order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: 3, amount: @relation.price * 3}, @relation)
+      3.times {create :ticket, order_id: @order.id}
+    end
+
     it "should return tickets" do
-      @order = Order.first
-      3.times { create(:show_area_relation) }
-      @order.set_tickets_and_price(ShowAreaRelation.all)
-      @order.success_pay!
       @admin = create(:admin, admin_type: 2)
 
       get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
       expect(assigns(:order)).to eq @order
       expect(response.body).to include("tickets")
-      expect(JSON.parse(response.body)["tickets"].count > 0).to be true
+      expect(JSON.parse(response.body)["tickets"].count).to eq 3 
     end
 
     it "should fail if admin is not ticket-checker" do
-      @order = Order.first
-      3.times { create(:show_area_relation) }
-      @order.set_tickets_and_price(ShowAreaRelation.all)
-      @order.success_pay!
       @admin = create(:admin, admin_type: 1)
+      @order.success_pay!
 
       get :show_for_qr_scan, name: @admin.name, api_token: @admin.api_token, id: @order.out_id, format: :json
       expect(response.status).to eq 403

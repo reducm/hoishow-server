@@ -23,7 +23,7 @@ class CreateOrderLogic
   # toDo:
   # 一些错误处理和日志
   # response 结果可以优化
-  attr_reader :show, :options, :response, :user, :way, :error_msg, :order
+  attr_reader :show, :options, :response, :user, :way, :error_msg, :order, :relation
 
   def initialize(show, options={})
     # 其他参数以 options 传进来是考虑到扩展问题
@@ -48,29 +48,38 @@ class CreateOrderLogic
     @response = 0
 
     if show.selected?
-      relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
+      @relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
 
-      quantity = options[:quantity].to_i
+      @quantity = options[:quantity].to_i
 
-      area_seats_left_result = show.area_seats_left(relation.area) - quantity
-
-      if area_seats_left_result < 0
+      # area_seats_left_result = show.area_seats_left(relation.area) - quantity
+      if @relation.is_sold_out
+        @response, @error_msg = 3015, "你所买的区域的票已经卖完了！"
+      elsif @relation.left_seats < @quantity
         @response, @error_msg = 2003, "购买票数大于该区剩余票数!"
-        return
-      end
-
-      if relation.is_sold_out
-        @response, @error_msg = 3015, "你所买的区域暂时不能买票, 请稍后再试"
       end
 
     elsif show.selectable?
-      # 查出是否存在不可用的座位
-      unavaliable_seats = show.seats.where(id: JSON.parse(options[:seats]),
-        status: [Seat.statuses[:locked], Seat.statuses[:unused]]).select(:id, :status, :name)
+      @quantity = if options[:seats].present?
+        @seat_ids = JSON.parse(options[:seats])
+        @seat_ids.size
+      elsif options[:areas] && options[:areas].present?
+        @areas = JSON.parse options[:areas]
+        @seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+        @seat_ids.size
+      else
+        @response, @error_msg = 3014, "缺少参数"
+        0
+      end
 
-      if !unavaliable_seats.blank?
-        seat_msg = unavaliable_seats.pluck(:name).join(',')
-        @response, @error_msg = 2004, "#{seat_msg}已被锁定"
+      # 查出是否存在不可用的座位
+      if !@seat_ids.blank?
+        unavaliable_seats = show.seats.not_avaliable_seats.where(id: @seat_ids).select(:id, :status, :name)
+
+        if !unavaliable_seats.blank?
+          seat_msg = unavaliable_seats.pluck(:name).join(',')
+          @response, @error_msg = 2004, "#{seat_msg}已被锁定"
+        end
       end
     end
 
@@ -80,94 +89,62 @@ class CreateOrderLogic
   private
 
   def create_order_with_selected
-    # 找出该演唱会区域信息
-    relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
+    if check_inventory # 库存检查
+      # todo: callback style
+      # pending_orders = get_pending_orders_ids
 
-    quantity = options[:quantity].to_i
+      # set order attr
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity})
+      # create_order and create_tickets callback
+      @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
-    area_seats_left_result = show.area_seats_left(relation.area) - quantity
+      # batch_overtime(pending_orders) unless pending_orders.blank?
 
-    if area_seats_left_result < 0
-      @response, @error_msg = 2003, "购买票数大于该区剩余票数!"
-      return
-    end
-
-    # 查询是否存在同一场演出的未支付 orders
-    pending_orders = get_pending_orders
-    batch_overtime(pending_orders) unless pending_orders.blank?
-
-    relations ||= []
-    quantity.times{relations.push relation}
-
-    relation.with_lock do
-      if relation.is_sold_out
-        @response, @error_msg = 3015, "你所买的区域暂时不能买票, 请稍后再试"
-      else
-        # create_order
-        create_order!
-        # update order amount
-        @order.update_attributes(amount: relation.price * quantity)
-        # create_tickets callback
-        @order.create_tickets_by_relations(relations)
-
-        # update relation info
-        relation.reload
-        if area_seats_left_result == 0
-          relation.update_attributes(is_sold_out: true)
-        end
-
-        @response = 0
-      end
+      @response = 0
     end
 
   end
 
   def create_order_with_selectable
-    if options[:areas] && options[:areas].present?
-      # 查询是否存在同一场演出的未支付 orders
-      pending_orders = get_pending_orders
-      batch_overtime(pending_orders) unless pending_orders.blank?
+    if check_inventory # 库存检查
+      # pending_orders = get_pending_orders_ids
 
-      # create_order and callback
-      create_order!
+      order_attrs = prepare_order_attrs({tickets_count: @quantity})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
-      areas = JSON.parse options[:areas]
-      # create_tickets callback
-      @order.create_tickets_by_seats(areas)
-      # set amount by tickets prices
-      @order.update_attributes(amount: @order.tickets.sum(:price))
+      # create_order and create_tickets and callback
+      @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seat_ids)
 
+      # batch_overtime(pending_orders) unless pending_orders.blank?
 
       @response = 0
-    else
-      @response, @error_msg = 3014, "缺少 areas 参数"
     end
   end
 
-  def create_order!
+  def prepare_order_attrs(attrs={})
+    attrs.merge!(channel: Order.channels[way], user_id: user.id)
     # 按渠道来生成订单
-    @order = user.orders.init_from_show(show)
-    @order.channel = Order.channels[way]
 
-    if ['ios', 'android'].include?(way) # app 端
-      @order.buy_origin = way
-    elsif 'bike_ticket' == way # 单车电影
-      # open_trade_no for 对账
-      @order.open_trade_no = options[:bike_out_id]
-      @order.user_mobile = options[:user_mobile]
+    attrs.tap do |p|
+      if ['ios', 'android'].include?(way) # app 端
+        p[:buy_origin] = way
+      elsif 'bike_ticket' == way # 单车电影
+        # open_trade_no for 对账
+        p[:open_trade_no] = options[:bike_out_id]
+        p[:user_mobile] = options[:user_mobile]
+      end
     end
-
-    @order.save!
   end
 
-  def get_pending_orders
+  # 查询是否存在同一场演出的未支付 orders
+  def pending_orders_ids
     # 查出是同一场 show 是否存在未支付 orders, 存在的话则将其 overtime
-    user.orders.where(status: Order.statuses[:pending],
-      show_id: show.id, channel: Order.channels[way])
+    @pending_orders_ids ||= user.orders.where(status: Order.statuses[:pending],
+      show_id: show.id, channel: Order.channels[way]).pluck(:id)
   end
 
-  def batch_overtime(pending_orders)
-    pending_orders.each do |o|
+  def batch_overtime!(pending_orders)
+    # delay job
+    user.orders.where(id: pending_orders).each do |o|
       o.overtime!
     end
   end

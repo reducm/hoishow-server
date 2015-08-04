@@ -50,8 +50,13 @@ end
 # area, show_area_relation
 ('a'..'e').to_a.each_with_index do |n, idx|
   area = Area.where(name: n, seats_count: 100, stadium_id: stadium.id).first_or_create
+  price = idx + 100
+  sar = ShowAreaRelation.where(show_id: Show.first.id, area_id: area.id, price: price,
+    seats_count: 1000, left_seats: 1000).first_or_create
 
-  ShowAreaRelation.where(show_id: Show.first.id, area_id: area.id, price: idx + 100, seats_count: 100).first_or_create
+  if sar.id == 1
+    1000.times do Seat.create(show_id: sar.show_id, area_id: sar.area_id, price: price) end
+  end
 end
 
 # admin
@@ -67,5 +72,6 @@ show = Show.first
   user = User.create(mobile: "1380982735#{i}")
   order = Order.create(user_id: user.id, city_id: city.id, city_name: city.name, stadium_id: stadium.id, stadium_name: stadium.name,
   concert_id: concert.id, concert_name: concert.name, show_id: show.id, show_name: show.name, amount: i + 100)
-  Ticket.create(area_id: Area.first.id, show_id: show.id, order_id: order.id, price: i + 10, code: SecureRandom.hex(6))
+  Ticket.create(area_id: Area.first.id, show_id: show.id, order_id: order.id, price: 100, code: SecureRandom.hex(6),
+  status: Ticket.statuses[:success], seat_type: Ticket.seat_types[:locked])
 end

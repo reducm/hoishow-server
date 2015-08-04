@@ -16,7 +16,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     before('each') do
       15.times do
         area = create :area, stadium: stadium
-        show.show_area_relations.create(area_id: area.id, channels: 'bike', is_sold_out: [true, false].sample)
+        show.show_area_relations.create(area_id: area.id, channels: 'bike', seats_count: 60, left_seats: 60)
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
   context "#action show" do
     it 'should return current area with current id' do
       a = create :area, stadium: stadium
-      show.show_area_relations.create(area_id: a.id, channels: 'bike', is_sold_out: [true, false].sample)
+      show.show_area_relations.create(area_id: a.id, channels: 'bike', seats_count: 60, left_seats: 60)
 
       get :show, encrypted_params_in_open({id: a.id, show_id: show.id})
 

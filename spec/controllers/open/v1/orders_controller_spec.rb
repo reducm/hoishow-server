@@ -37,10 +37,15 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
   let(:user) { User.create(mobile: '15900001111', channel: 2, bike_user_id: 300) }
 
   before :each do
-    show.show_area_relations.create(area_id: area.id, channels: 'bike',
-      is_sold_out: false, price: rand(300..500), seats_count: 2)
-    show2.show_area_relations.create(area_id: area2.id, channels: 'bike',
-      is_sold_out: false, price: rand(300..500), seats_count: 2)
+    r1 = show.show_area_relations.create(area_id: area.id, channels: 'bike',
+      is_sold_out: false, price: rand(300..500), seats_count: 2, left_seats: 2)
+    r2 = show2.show_area_relations.create(area_id: area2.id, channels: 'bike',
+      is_sold_out: false, price: rand(300..500), seats_count: 2, left_seats: 2)
+
+    2.times do
+      create(:avaliable_seat, area_id: area.id, show: show, price: r1.price)
+      create(:avaliable_seat, area_id: area2.id, show: show2, price: r2.price)
+    end
 
     allow_any_instance_of(ApiAuth).to receive(:channel) { 'bike_ticket' }
   end
@@ -118,6 +123,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         bike_user_id: user.bike_user_id } }
 
       it 'will create order with current params' do
+        sar = show.show_area_relations.where(area_id: area.id).first
+        expect(sar.left_seats).to eq 2
         params[:quantity] = 2
 
         expect{post :create, sign_params(params)}.to change(show.orders, :count).by(1)
@@ -153,6 +160,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
           expect(t[:seat_name]).to eq ticket.seat_name || ''
           expect(t[:status]).to eq ticket.status
         end
+
+        sar.reload
+        expect(sar.left_seats).to eq 0
       end
 
       it 'will return error whan seat left' do
@@ -164,11 +174,11 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
       it 'will return error whan show was sold out' do
         relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
-        relation.update_attributes is_sold_out: true
+        relation.update_attributes left_seats: 0
         params[:quantity] = 2
 
         post :create, sign_params(params)
-        expect(json[:message]).to eq '你所买的区域暂时不能买票, 请稍后再试'
+        expect(json[:message]).to eq '你所买的区域的票已经卖完了！'
       end
 
       it 'will return error when user phone was wrong' do
@@ -189,10 +199,10 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     context 'selectable' do
-      before do
-        show2.show_area_relations.create(area: area2, price: rand(300..500), seats_count: 2)
-        3.times { create(:seat, area_id: area2.id, show: show2) }
-      end
+      # before do
+        # show2.show_area_relations.create(area: area2, price: rand(300..500), seats_count: 3)
+        # 3.times { create(:seat, area_id: area2.id, show: show2) }
+      # end
 
       let(:params) do
         {
@@ -200,9 +210,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
           bike_user_id: user.bike_user_id,
           areas: show2.areas.map do |area|
             {
-              area_id: area2.id,
+              area_id: area2.id.to_s,
               seats: area2.seats.map do |s|
-                { id: s.id, seat_no: s.name }
+                { "id" => s.id.to_s, seat_no: s.name }
               end
             }
           end.to_json
@@ -210,7 +220,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       end
 
       it 'will create order with current params' do
-        expect{post :create, sign_params(params)}.to change(show2.orders, :count).by(1)
+        post :create, sign_params(params)
+        # expect{post :create, sign_params(params)}.to change(show2.orders, :count).by(1)
         expect(json[:result_code]).to eq 0
         order = Order.last
 
@@ -241,7 +252,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         params.delete(:areas)
 
         post :create, sign_params(params)
-        expect(json[:message]).to eq '缺少 areas 参数'
+        expect(json[:message]).to eq '缺少参数'
       end
 
       it 'will return error when can not find user' do
@@ -364,6 +375,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
     it 'will update order adderss if show ticket was r_ticket' do
       show.update_attributes ticket_type: 'r_ticket'
+      show.reload
       new_params = { user_name: 'xx先生', user_mobile: '15900001111',
        province: '广东省', city: '广州市', district: '海珠区', address: '呵呵',
        mobile: order.user_mobile}
@@ -401,12 +413,12 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
       it 'will return error whan show was sold out' do
         relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
-        relation.update_attributes is_sold_out: true
+        relation.update_attributes left_seats: 0
         params[:quantity] = 2
 
         get :check_inventory, sign_params(params)
         expect(json[:result_code]).to eq 3015
-        expect(json[:message]).to eq '你所买的区域暂时不能买票, 请稍后再试'
+        expect(json[:message]).to eq '你所买的区域的票已经卖完了！'
       end
 
       it 'will return error whan show was sold out' do

@@ -131,8 +131,33 @@ class Order < ActiveRecord::Base
   def handle_seats_and_tickets
     begin
       Order.transaction do
-        self.tickets.update_all(status: Ticket::statuses['outdate'])
-        self.seats.update_all(status: Seat::statuses['avaliable'])
+        show = self.show
+        area_ids = self.tickets.pluck(:area_id)
+        # 用 order 里面的 tickets_count
+        tickets_count = area_ids.size
+        # 释放 tickets
+        self.tickets.update_all(status: Ticket.statuses[:pending],
+          seat_type: Ticket.seat_types[:avaliable], order_id: nil)
+
+        # 这些流程应该还是放到 ticket 的一些 callback 里面比较好
+        if show.selected? # 选区则要更新库存
+          area_id = area_ids.uniq
+          raise RuntimeError, 'area_id not uniq' if area_id.size != 1
+          relation = show.show_area_relations.where(area_id: area_id[0]).first
+          # update 库存
+          relation.increment(:left_seats, tickets_count ).save!
+        elsif show.selectable? # 选座也要更新库存
+          # 跨区选择
+          relations = show.show_area_relations.where(area_id: area_ids)
+
+          relations.each do |relation|
+            area_id = relation.area_id
+            # 如 area_ids = [1, 1, 3]
+            # 则 relation area_id 为 1 的库存增加 2, area_id 为 3 的库存增加 1
+            # 更新相应的 left_seats 数量
+            relation.increment(:left_seats, area_ids.select{ |v| v == area_id }.size).save!
+          end
+        end
       end
     rescue => e
       Rails.logger.fatal("*** errors: #{e.message}")
@@ -165,55 +190,73 @@ class Order < ActiveRecord::Base
   end
 
   class << self
-    def init_from_show(show)
-      init_from_data(city: show.city, concert: show.concert, show: show, stadium: show.stadium)
+    def init_from_show(show, options={})
+      init_from_data(city: show.city, concert: show.concert, show: show, stadium: show.stadium, options: options)
     end
 
-    def init_from_data(city: nil, concert: nil, stadium: nil, show: nil )
+    def init_from_data(city: nil, concert: nil, stadium: nil, show: nil, options: {})
       #方便把参数_name设到model
       hash = {}
       ASSOCIATION_ATTRS.each do |sym|
         hash[( sym.to_s + "_name" ).to_sym] = eval(sym.to_s).name
         hash[( sym.to_s + "_id" ).to_sym] = eval(sym.to_s).id
       end
-      new(hash)
+      new(hash.merge(options))
     end
-  end
 
-  def create_tickets_by_relations(show_area_relations=[])
-    show_area_relations.each do |relation|
-      tickets.create(area_id: relation.area_id, show_id: relation.show_id, price: relation.price)
+    def init_and_create_tickets_by_relations(show, order_attrs, relation)
+      Order.transaction do
+        # create order
+        order = Order.init_from_show(show, order_attrs)
+        order.save!
+        quantity = order_attrs[:tickets_count]
+
+        # update 库存
+        # 加乐观锁
+        # ShowAreaRelation.where(id: 1).where("left_seats > ?", 1).first.decrement(:left_seats, 1).save!
+        # 效果如 update_all, 不会更新 updated_at
+        ActiveRecord::Base.connection.update_sql(<<-EOQ
+          UPDATE `show_area_relations`
+          SET `left_seats` = `left_seats` - #{quantity}
+          WHERE `show_area_relations`.`id` = #{relation.id}
+          AND (`show_id` = #{relation.show_id} and `area_id` = #{relation.area_id})
+          AND (`left_seats` >= #{quantity} and `left_seats` > 0)
+        EOQ
+        )
+
+        # 更新状态，关联 order
+        Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
+          ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
+
+        order
+      end
     end
-  end
 
-  def create_tickets_by_seats(areas)
-    area_ids = areas.map do |a|
-      seat_ids << a['seats'].map { |s| s['id'] }
-      a['area_id']
-    end
-    # search all areas in one query
-    current_areas = self.show.areas.where(id: area_ids)
+    def init_and_create_tickets_by_seats(show, order_attrs, seat_ids)
+      # seat_ids = [1, 2, 3, 4] 数组存放 seat 的 id
+      # p 'start one seat transition'
+      Order.transaction do
+        # count ticket count
+        quantity = seat_ids.size
+        # search all avaliable_tickets
+        tickets = show.tickets.avaliable_tickets.where(id: seat_ids)
+        # set amount to order
+        order_attrs[:amount] = tickets.sum(:price)
+        # create order
+        order = Order.init_from_show(show, order_attrs)
+        order.save!
+        # 按 area_id 分组, 或者换种做法
+        area_ids_hash = tickets.group(:area_id).count
 
-    current_areas.each do |area|
-      p 'start one seat transition'
-      Seat.transaction do
-        # search all seats from this area
-        area_params = areas.select{ |a| a['area_id'].to_s == area.id.to_s}
-        seat_ids = area_params[0]['seats'].map { |s| s['id'] }
-        p area_params
-        p seat_ids
-        seats = area.seats.where(id: seat_ids)
-        # update each seat
-        seats.each do |seat|
-          # 先查出来再 lock 需要检验一下是否能行
-          seat.with_lock do
-            # update seat status
-            seat.update(status: :locked, order_id: self.id)
-            # create ticket
-            self.tickets.create(area_id: seat.area_id, show_id: seat.show_id,
-              price: seat.price, seat_name: seat.name)
-          end
+        raise RuntimeError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
+        # update ticket
+        tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
+        # 更新库存，这里可能会有瓶颈
+        ShowAreaRelation.where(show_id: show.id, area_id: area_ids_hash.keys).each do |sar|
+          sar.decrement(:left_seats, area_ids_hash[sar.area_id]).save!
         end
+
+        order
       end
     end
   end
@@ -223,11 +266,7 @@ class Order < ActiveRecord::Base
     # update price
     self.update_attributes(amount: show_area_relations.map{|relation| relation.price}.inject(&:+))
     # create_tickets
-    self.create_tickets_by_relations(show_area_relations)
-  end
-
-  def tickets_count
-    tickets.count
+    self.create_tickets_by_relations(show_area_relations[0], show_area_relations.size)
   end
 
   def status_outdate?

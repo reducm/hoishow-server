@@ -23,4 +23,4 @@ json.generate_ticket_at order.generate_ticket_at.to_i rescue ''
 # json.city_address @express.city rescue ''
 
 # about tickets
-json.tickets { json.array! order.tickets, partial: "api_partials/ticket", as: :ticket }
+json.tickets { json.array! order.tickets.order('created_at DESC'), partial: "api_partials/ticket", as: :ticket }

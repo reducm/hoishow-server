@@ -54,8 +54,10 @@ describe Show do
         2.times do
           order = @user.orders.init_from_show(@show)
           order.save
-          order.set_tickets_and_price([relation, relation])
+          create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id
+          #order.set_tickets_and_price([relation, relation])
         end
+        relation.decrement(:left_seats, 4).save!
       end
     end
 
