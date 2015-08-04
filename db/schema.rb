@@ -293,10 +293,10 @@ ActiveRecord::Schema.define(version: 20150730093911) do
     t.integer  "admin_id",        limit: 4
     t.datetime "checked_at"
     t.string   "seat_name",       limit: 255
+    t.integer  "seat_type",       limit: 4,                            default: 0
     t.integer  "row",             limit: 4
     t.integer  "column",          limit: 4
     t.string   "channels",        limit: 255
-    t.integer  "seat_type",       limit: 4,                            default: 0
   end
 
   add_index "tickets", ["area_id"], name: "index_tickets_on_area_id", using: :btree
