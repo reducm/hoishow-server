@@ -26,7 +26,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       error_respond(2002, @show.status_cn)
     end
     # bike_out_id 表示 单车过来的 out_id, 用于对账
-    options = params.slice(:area_id, :quantity, :seats, :bike_out_id)
+    options = params.slice(:area_id, :quantity, :areas, :bike_out_id)
 
     options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user

@@ -186,17 +186,34 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def create_tickets_by_seats(seats)
-    seats = Seat.where(id: seat_ids)
-    # update each seat
-    seats.each do |seat|
-      # 先查出来再 lock 需要检验一下是否能行
-      seat.with_lock do
-        # update seat status
-        seat.update(status: :locked, order_id: self.id)
-        # create ticket
-        self.tickets.create(area_id: seat.area_id, show_id: seat.show_id,
-          price: seat.price, seat_name: seat.name)
+  def create_tickets_by_seats(areas)
+    area_ids = areas.map do |a|
+      seat_ids << a['seats'].map { |s| s['id'] }
+      a['area_id']
+    end
+    # search all areas in one query
+    current_areas = self.show.areas.where(id: area_ids)
+
+    current_areas.each do |area|
+      p 'start one seat transition'
+      Seat.transaction do
+        # search all seats from this area
+        area_params = areas.select{ |a| a['area_id'].to_s == area.id.to_s}
+        seat_ids = area_params[0]['seats'].map { |s| s['id'] }
+        p area_params
+        p seat_ids
+        seats = area.seats.where(id: seat_ids)
+        # update each seat
+        seats.each do |seat|
+          # 先查出来再 lock 需要检验一下是否能行
+          seat.with_lock do
+            # update seat status
+            seat.update(status: :locked, order_id: self.id)
+            # create ticket
+            self.tickets.create(area_id: seat.area_id, show_id: seat.show_id,
+              price: seat.price, seat_name: seat.name)
+          end
+        end
       end
     end
   end
