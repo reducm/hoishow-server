@@ -456,4 +456,35 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       end
     end
   end
+
+  context "# action cancel_order" do
+    let(:params) do
+      sign_params({ mobile: order.user_mobile }).tap { |p| p[:out_id] = order.out_id }
+    end
+
+    it 'will return refund when order be refunded' do
+      expect(order.status).to eq 'pending'
+      post :cancel_order, params
+      expect(json[:result_code]).to eq 0
+      order.reload
+      expect(order.status).to eq 'refund'
+    end
+
+    it 'will return error when order no found' do
+      params[:out_id] = -1
+
+      post :cancel_order, params
+
+      expect(json[:result_code]).to eq 3006
+      expect(json[:message]).to eq '订单不存在'
+    end
+
+    it 'will return error when user mobile was wrong' do
+      wrong_params = { mobile: 'xxx182939' }
+      pa = sign_params(wrong_params).tap { |p| p[:out_id] = order.out_id }
+
+      post :cancel_order, pa
+      expect(json[:message]).to eq '手机号不正确'
+    end
+  end
 end
