@@ -340,7 +340,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     it 'will return success when confiemed' do
       expect(order.status).to eq 'pending'
       post :confirm, params # user id ?
-
+      
       expect(json[:result_code]).to eq 0
       order.reload
       expect(order.status).to eq 'success'
@@ -467,7 +467,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       post :cancel_order, params
       expect(json[:result_code]).to eq 0
       order.reload
-      expect(order.status).to eq 'refund'
+      expect(order.status).to eq "refund"
     end
 
     it 'will return error when order no found' do
