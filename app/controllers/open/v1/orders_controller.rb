@@ -103,21 +103,6 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     end
   end
 
-  def cancel_order
-    @result = false
-    Order.transaction do
-      if tickets = @order.tickets
-        tickets.update_all(status: Ticket::statuses['refund'])
-      end
-      @order.refund!
-      @result = true
-    end
-    unless @result
-      error_respond(3017, "取消订单失败")
-    end
-  end
-
-
   private
   def order_auth!
     @order = Order.where(out_id: order_params[:out_id], user_mobile: order_params[:mobile],
