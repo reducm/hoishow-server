@@ -20,6 +20,7 @@ module Routes
                   get ':out_id' => 'orders#show'
                   # post ':out_id/unlock_seat' => 'orders#unlock_seat'
                   post ':out_id/confirm' => 'orders#confirm'
+                  post ':out_id/cancel_order' => 'orders#cancel_order'
                 end
               end
             end
