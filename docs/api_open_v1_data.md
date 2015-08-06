@@ -416,12 +416,12 @@ description: 订单支付成功确认出票
 ```
 
 -----------------------------------
-###订单退款
+###订单取消
 [/api/open/v1/orders/:out_id/cancel_order]()
 
 type `POST`
 
-description: 订单退款
+description: 取消订单
 
 必须参数
 
@@ -437,12 +437,12 @@ description: 订单退款
   {message: 'ok'}
 ```
 
-订单退款失败时的返回
+订单取消失败时的返回
 
 ```javascript
   {
     result_code: 3017,
-    message: '订单退款失败',
+    message: '订单取消失败',
   }
 ```
 
@@ -501,4 +501,4 @@ GET http://服务器地址/api/open/v1/cities.json?api_key=FTpDcdRQj3WRUKny8QxEp
   + 3014 缺少 areas 参数
   + 3015 你所买的区域的票已经卖完了！
   + 3016 重复创建订单
-  + 3017 订单退款失败
+  + 3017 订单取消失败

@@ -19,7 +19,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       Rails.logger.fatal("*** errors: #{e.message}")
     end
     unless @response == 0
-      @message = "订单退款失败"
+      @message = "订单取消失败"
       @error_code = 3017
     end
   end
