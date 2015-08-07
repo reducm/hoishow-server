@@ -23,7 +23,7 @@ Rails.application.routes.draw do
       post "wxpay/notify" => "wxpay#notify"
       post "alipay/notify" => "alipay#notify"
 
-      post "alipay/wireless_refund_notify" => "alipay#wireless_refund_notify"
+      post "alipay/refund_notify" => "alipay#refund_notify"
 
       get "express_detail" => "express_detail#index"
 
