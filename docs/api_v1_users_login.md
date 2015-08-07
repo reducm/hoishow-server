@@ -293,7 +293,7 @@ type `POST`
   {
     order: {order对象}
     payment: 'alipay',             #支付类型
-    query_string: 'query_string'   #支付宝签名
+    sign: 'query_string'   #支付宝签名
   }
 
   {
@@ -344,7 +344,7 @@ type `GET`
 -----------
 
 
-## 即将开始的订单列表 
+## 即将开始的订单列表
 [/api/v1/orders/orders_for_soon]()
 
 type `GET`
