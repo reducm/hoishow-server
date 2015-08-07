@@ -29,7 +29,7 @@ class Ticket < ActiveRecord::Base
   scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
   scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
   scope :avaliable_tickets, ->{ where(status: statuses[:pending], seat_type: seat_types[:avaliable] ) }
-  before_save :generate_code, unless: :pending?
+  after_save :generate_code, unless: :pending?
 
   paginates_per 10
 
@@ -43,14 +43,11 @@ class Ticket < ActiveRecord::Base
       loop do
         code = SecureRandom.hex(4)
         unless Ticket.where(code: code).exists?
-          self.update_attributes({
-            code: code
-          })
+          self.update(code: code)
           break
         end
       end
     end
-    self.code
   end
 
   def search(q)
