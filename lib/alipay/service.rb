@@ -6,8 +6,24 @@ module Alipay
       options = {
         service: "create_direct_pay_by_user",
         payment_type: "1",
-        partner: AlipaySetting["PCpid"],
-        seller_email: AlipaySetting["PC_email"],
+        partner: AlipaySetting["v2_pid"],
+        seller_email: AlipaySetting["v2_email"],
+        _input_charset: "utf-8"
+      }.merge(options)
+
+      if options['total_fee'].nil? and (options['price'].nil? || options['quantity'].nil?)
+        warn("Ailpay Warn: total_fee or (price && quantiry) must have one")
+      end
+
+      "#{AlipaySetting["mapi_url"]}?#{query_string(options)}"
+    end
+
+    def self.wap_create_direct_pay_by_user(options)
+      options = {
+        service:        "alipay.wap.create.direct.pay.by.user",
+        payment_type:   "1",
+        partner:        AlipaySetting["v2_pid"],
+        seller_id:      AlipaySetting["v2_pid"],
         _input_charset: "utf-8"
       }.merge(options)
 
@@ -27,7 +43,7 @@ module Alipay
       puts detail_data
       options = {
         service: "refund_fastpay_by_platform_nopwd",
-        partner: AlipaySetting["PCpid"],
+        partner: AlipaySetting["v2_pid"],
         _input_charset: "utf-8",
         notify_url: AlipaySetting["refund_url"],
         refund_date: Alipay::Utils.timestamp,
@@ -52,22 +68,22 @@ module Alipay
       puts detail_data
       options = {
         service: "refund_fastpay_by_platform_pwd",
-        partner: AlipaySetting["PCpid"],
+        partner: AlipaySetting["v2_pid"],
         _input_charset: "utf-8",
         notify_url: AlipaySetting["refund_url"],
-        seller_email: AlipaySetting["PC_email"],
-        seller_user_id: AlipaySetting["PCpid"],
+        seller_email: AlipaySetting["v2_email"],
+        seller_user_id: AlipaySetting["pid"],
         refund_date: Alipay::Utils.timestamp,
         batch_no: Alipay::Utils.generate_batch_no,
         batch_num: data.size,
         detail_data: detail_data
       }
 
-      "#{AlipaySetting["mapi"]}?#{query_string(options)}"
+      "#{AlipaySetting["mapi_url"]}?#{query_string(options)}"
     end
 
     def self.query_string(options)
-      options.merge(sign_type: 'MD5', sign: Alipay::Sign.md5_sign(options, AlipaySetting["PC_md5_key"])).map do |key, value|
+      options.merge(sign_type: 'MD5', sign: Alipay::Sign.md5_sign(options, AlipaySetting["v2_md5_key"])).map do |key, value|
         "#{CGI.escape(key.to_s)}=#{CGI.escape(value.to_s)}"
       end.join('&')
     end
