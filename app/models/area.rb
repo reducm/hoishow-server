@@ -7,9 +7,11 @@ class Area < ActiveRecord::Base
   has_many :show_area_relations, dependent: :destroy
   has_many :shows, through: :show_area_relations
   has_many :tickets
-  with_options dependent: :destroy do |option|
-    option.has_many :seats, -> { where(order_id: nil) }
-  end
+  # 删除 seat 以后再改这里
+  has_many :seats
+  #with_options dependent: :destroy do |option|
+    #option.has_many :seats, -> { where(order_id: nil) }
+  #end
 
   validates :stadium, presence: {message: "场馆不能为空"}
 
