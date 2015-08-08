@@ -65,7 +65,7 @@
     <%= f.input :stadium_map, label: '场馆地图', input_html: {class: "image-input"} %>
   <div class="form-group">
     <div class="col-xs-1">
-    <%= f.input :seat_type, collection:[["只能选区", "selectable"], ["可以选座", "selected"]], selected: "只能选区", label: '选座设置' %>
+    <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: "只能选区", label: '选座设置' %>
    </div>
   </div>
     <%= f.hidden_field :concert_id, value: @concert.try(:id) %>
