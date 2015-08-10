@@ -1,6 +1,7 @@
 # encoding: utf-8
 class Operation::OrdersController < Operation::ApplicationController
   before_filter :check_login!
+  before_action :get_order, except: [:index]
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
@@ -30,7 +31,7 @@ class Operation::OrdersController < Operation::ApplicationController
       @orders = @orders.where(status: 4)
     end
     #导出时不分页
-    unless params[:page] == "0" 
+    unless params[:page] == "0"
       params[:page] ||= 1
       @orders = @orders.page(params[:page])
     end
@@ -45,23 +46,36 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def show
-    @order = Order.find(params[:id])
   end
 
   def update_express_id
-    @order = Order.find(params[:order_id])
     if @order.update!(express_id: params[:content], status: 2)
       render json: {success: true}
     end
   end
 
   def update_remark_content
-    @order = Order.find(params[:id])
     if @order.update!(remark: params[:remark])
       flash[:notice] = "更新备注成功"
     else
       flash[:alert] = "更新备注失败"
     end
     redirect_to operation_order_url(@order)
+  end
+
+  def manual_refund
+    payment = @order.payments.first
+    if payment && payment.refund_order
+      @order.update(refund_by: @current_admin.name)
+      flash[:notice] = '退款成功'
+    else
+      flash[:notice] = '退款失败'
+    end
+    redirect_to operation_orders_url
+  end
+
+  private
+  def get_order
+    @order = Order.find params[:id]
   end
 end

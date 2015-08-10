@@ -33,7 +33,7 @@
               <td>
                 <% get_areas(@order).each do |area| %>
                   <% tickets = @order.tickets.where(area_id: area.id) %>
-                  <p><%= area.name.upcase + "区 / " + tickets.count.to_s + "张" %></p>
+                  <p><%= area.name.upcase + " / " + tickets.count.to_s + "张" %></p>
                   <% tickets.each do |ticket| %>
                     <p><%= ticket.code %></p>
                   <%end%>
@@ -60,7 +60,7 @@
         <tr>
           <td>快递单号</td>
           <td>
-            <%= @order.express_id%>
+            <%= @order.express_id %>
           </td>
         </tr>
         <tr>
@@ -69,26 +69,36 @@
         </tr>
         <tr>
           <td>收货人地址</td>
-          <td><%= @order.user_address%></td>
+          <td><%= @order.user_address %></td>
         </tr>
         <tr>
           <td>收货人手机</td>
-          <td><%= @order.user_mobile%></td>
+          <td><%= @order.user_mobile %></td>
         </tr>
         <tr>
           <td>备注</td>
           <td>
-    <%= form_tag(update_remark_content_operation_order_path(@order), method: :post) do %>
-      <div class="form-group">
-        <%= text_area_tag "remark", @order.remark, rows: 5, cols: 50 %>
-      </div>
-      <div class="form-group">
-        <%= submit_tag "确认修改备注内容", class: 'btn btn-primary' %>
-      </div>
-    <% end %>
+            <%= form_tag(update_remark_content_operation_order_path(@order), method: :post) do %>
+              <div class="form-group">
+                <%= text_area_tag "remark", @order.remark, rows: 5, cols: 50 %>
+              </div>
+              <div class="form-group">
+                <%= submit_tag "确认修改备注内容", class: 'btn btn-primary' %>
+              </div>
+            <% end %>
           </td>
         </tr>
-      <%end%>
+      <% end %>
+      <% if @order.refund? %>
+        <tr>
+          <td>退款时间</td>
+          <td><%= get_datetime(@order.payments.first.refund_at) %></td>
+        </tr>
+        <tr>
+          <td>退款人</td>
+          <td><%= @order.refund_by %></td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 </div>

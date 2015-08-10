@@ -18,4 +18,16 @@ class Payment < ActiveRecord::Base
      nil
     end
   end
+
+  def refund_order
+    if self.payment_type == "alipay" && self.success?
+      options = {
+        data: [self],
+        reason: "票务系统出票失败"
+      }
+
+      Alipay::Service.refund_fastpay(options)
+    #TODO 微信退款
+    end
+  end
 end

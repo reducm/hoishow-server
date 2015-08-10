@@ -42,6 +42,7 @@ class Order < ActiveRecord::Base
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
   scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
+  scope :paid_refund_orders, ->{ where("created_at < ? and status = ?", Time.now - 30.minutes, statuses[:paid]) }
   scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, statuses[:success]) }
 
   # state_machine
@@ -275,6 +276,10 @@ class Order < ActiveRecord::Base
       self.overtime!
     end
     outdate?
+  end
+
+  def need_refund?
+    paid? && created_at < Time.now - 30.minutes
   end
 
   def already_paid?

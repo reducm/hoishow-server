@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150730093911) do
+ActiveRecord::Schema.define(version: 20150807080441) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -38,8 +38,8 @@ ActiveRecord::Schema.define(version: 20150730093911) do
     t.string   "name",        limit: 255
     t.integer  "seats_count", limit: 4
     t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.string   "sort_by",     limit: 255
   end
 
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 20150730093911) do
     t.string   "open_trade_no",      limit: 255
     t.datetime "generate_ticket_at"
     t.integer  "tickets_count",      limit: 4
+    t.string   "refund_by",          limit: 255
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree

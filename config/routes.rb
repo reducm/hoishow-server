@@ -165,6 +165,7 @@ Rails.application.routes.draw do
       member do
         post "update_express_id"
         post "update_remark_content"
+        post :manual_refund
       end
       collection do
         get :search

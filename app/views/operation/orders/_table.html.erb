@@ -24,7 +24,12 @@
         <td><%= order.created_at.try(:strfcn_time) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <td><%= order.amount %></td>
-        <td><%= link_to "查看详情", operation_order_path(order) %></td>
+        <td>
+          <% if order.need_refund? %>
+            <%= link_to '退款', manual_refund_operation_order_path(order), method: :post %>
+          <% end %>
+          <%= link_to "查看详情", operation_order_path(order) %>
+        </td>
       </tr>
     <% end %>
   </tbody>
