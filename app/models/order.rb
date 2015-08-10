@@ -278,6 +278,10 @@ class Order < ActiveRecord::Base
     outdate?
   end
 
+  def need_refund?
+    paid? && created_at < Time.now - 30.minutes
+  end
+
   def already_paid?
     paid? || success? || refund?
   end
