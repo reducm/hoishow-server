@@ -10,8 +10,8 @@ if show && relation
   json.seats_count relation.seats_count.to_i
   json.price relation.price.to_f
   json.seats_left relation.left_seats
-  # 没设置 channel
-  json.is_sold_out relation.is_sold_out && (relation.channels.nil? || !relation.channels.include?('bike'))
+  # 没设置channel，则对所有渠道皆可售
+  json.is_sold_out relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
 
   json.seats_info do
     json.array! show.seats.where(area_id: area.id), partial: "api_partials/seat", as: :seat
