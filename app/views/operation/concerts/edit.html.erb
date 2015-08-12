@@ -1,0 +1,30 @@
+<%# encoding: utf-8 %>
+
+<%if params[:from_create]%>
+  <%= hidden_field_tag "is_from_create", params[:from_create], id: "from_create" %>
+<%end%>
+<div role="tabpanel">
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-pills concert_edit_style" role="tablist" id="concert_edit_tabs">
+    <li role="presentation" class="active"><a href="#concert_detail" aria-controls="concert_detail" role="tab" data-toggle="tab">投票详情</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab" id="get_map">投票详情与设置</a></li>
+    <li role="presentation"><a href="#concert_shows" aria-controls="concert_shows" role="tab" data-toggle="tab">演出</a></li>
+  </ul>
+  <hr />
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="concert_detail">
+      <%= render partial: "form", locals: {concert: @concert} %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="profile">
+      <%= render partial: "city_voted_data", locals: {concert: @concert, stars: @stars} %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="concert_shows">
+      <%= render partial: "operation/shows/table", locals: {shows: @concert_shows} %>
+    </div>
+  </div>
+</div>

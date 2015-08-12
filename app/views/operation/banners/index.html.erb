@@ -1,0 +1,52 @@
+<%# encoding: utf-8 %>
+
+<div class="nav banners_list">
+  <div class="nav-top">
+    <h1 class="pull-left">广告列表</h1>
+    <%= link_to "新建广告", new_operation_banner_path, class: "btn btn-primary add-banner" %>
+  </div>
+
+
+    <%= paginate @banners%>
+  <table class="table table-striped banners" id="banner-table">
+    <thead>
+      <tr>
+        <th>排序</th>
+        <th>主体类型</th>
+        <th>主体</th>
+        <th>海报</th>
+        <th>图文介绍</th>
+        <th>创建日期</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody class="dragable_items" id="banners_list" data-update-url="<%= sort_operation_banners_url %>">
+    <% @banners.each do|banner|%>
+      <%= content_tag_for :tr, banner, remote: true do %>
+        <td><%= banner.position %></td>
+        <td><%= banner.subject_type_cn %></td>
+        <td>
+          <% if banner.is_article? %>
+            图文主体
+          <% else %>
+            <%= link_to banner.subject_name, subject_show_url(banner.subject_type, banner.subject_id)  %>
+          <% end %>
+        </td>
+        <td><%= image_tag(banner.poster_url, class: "preview-pic") if banner.poster_url %></td>
+        <td>
+          <% if banner.subject_type == "Article" %>
+            <%= link_to "图文描述", description_path(subject_type: "Banner", subject_id: banner.id), target: "blank" %>
+          <%end%>
+        </td>
+        <td><%= banner.updated_at %></td>
+        <td>
+          <span class="handle">[拉我排序] </span>
+          <%= link_to "编辑", edit_operation_banner_path(banner) %> /
+          <%= link_to "删除", operation_banner_path(banner), method: "delete", data: {confirm: "确定删除吗？"} %>
+        </td>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+    <%= paginate @banners%>
+</div>

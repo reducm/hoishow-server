@@ -1,0 +1,22 @@
+<%# encoding: utf-8 %>
+
+<%= simple_form_for [:operation, message] do |f| %>
+  <%= f.input :creator_type, collection: [["关注star的用户", "Star"], ["关注concert的用户", "Concert"], ["关注show的用户", "Show"], ["全部用户", "All"]], input_html: {id: "message_creator_type_select"}, label: "推送用户" %>
+  <div id="message_creator_id"><%= f.input :creator_id, as: :select, input_html: {id: "message_creator_id_select"}, label: "选择目标"%></div>
+  <%= f.input :notification_text, label: "通知栏内容" %>
+  <%= f.input :title, label: "消息标题" %>
+  <%= f.input :content, label: "消息正文" %>
+  <%= f.hidden_field :send_type, value: "manual" %>
+  <div class='target'>
+    <%= f.input :subject_type, collection: [["被关注star", "Star"], ["被关注concert", "Concert"], ["被关注show", "Show"]], input_html: {id: "message_subject_type_select"}, label: "跳转目的地" %>
+    <%= f.input :subject_id, as: :select, input_html: {id: "message_subject_id_select"}, label: "选择目的地"%>
+  </div>
+  <%= f.button :submit, "提交", class: 'btn btn-primary submit_message' %>
+<% end %>
+
+<%= content_tag :div, id: "message_creator_data", data: {
+  stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
+  concerts: ( Concert.concerts_without_auto_hide.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
+  shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } )
+} do%>
+<% end %>

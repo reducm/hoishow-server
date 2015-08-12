@@ -1,0 +1,38 @@
+<%# encoding: utf-8 %>
+
+<div class="nav startup_list">
+  <h1>启动页广告<small>文件最大不超过2m, 推荐分辨率1080x1920</small></h1>
+  <span class="btn btn-primary fileinput-button">
+    <i class="icon-plus icon-white"></i>
+    <span>Add files...</span>
+    <input id="fileuploader" type="file" name="startup[pic]">
+  </span>
+  <div class="pic-list">
+    <% @startups.each do |startup| %>
+      <div class="pic-table">
+        <table>
+          <tr><td colspan='2'><%= image_tag(startup.pic_url, size: '300x500') if startup.pic_url %></td></tr>
+          <tr>
+            <td>广告有效期至</td>
+            <td class="text-right">
+              <% if startup.is_display %>
+                <%= link_to "取消设定", set_startup_status_operation_startup_path(startup), method: 'post' %>
+              <% else %>
+                <%= link_to "设为启动图片", set_startup_status_operation_startup_path(startup, is_display: 1), method: 'post' %>
+              <% end %>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <%= simple_form_for [:operation, startup] do |f| %>
+                <%= f.input :valid_time, as: :datetimepicker, input_html:{ value: ( get_datetime(startup.valid_time) rescue "" )}  %>
+                <%= f.submit "保存", class: 'btn btn-default' %>
+              <% end %>
+            </td>
+            <td class="text-right"><%= link_to "删除", operation_startup_path(startup), method: "delete", data: {confirm: "确定删除吗?"} %></td>
+          </tr>
+        </table>
+      </div>
+    <% end %>
+  </div>
+</div>

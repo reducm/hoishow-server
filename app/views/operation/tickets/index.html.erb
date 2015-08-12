@@ -1,0 +1,41 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <h1 class="pull-left">验票详情</h1>
+  <div class="search">
+    <%= form_tag(search_operation_tickets_path, class: 'form-inline', method: 'get') do %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入验票员名字或演出名称或用户名或手机号进行搜索", size: 50%>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="tickets_list">
+    <%= paginate @tickets%>
+  <table class="table table-hover tickets">
+    <thead>
+      <tr>
+        <th>验票员名字</th>
+        <th>演出名称</th>
+        <th>用户 / 手机号</th>
+        <th>票码</th>
+        <th>验票时间</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tickets.each do|ticket| %>
+        <tr>
+          <% order = ticket.order %>
+          <% user = order.user %>
+          <td><%= ticket.admin.try(:name) %></td>
+          <td><%= order.show_name %></td>
+          <td><%= order.get_username(user)%></td>
+          <td><%= ticket.code %></td>
+          <td><%= ticket.checked_at.try(:strfcn_time)%></td>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+    <%= paginate @tickets%>
+
+</div>

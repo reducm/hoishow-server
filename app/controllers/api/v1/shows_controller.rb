@@ -1,17 +1,31 @@
+# encoding: utf-8
 class Api::V1::ShowsController < Api::V1::ApplicationController
+  before_action :check_has_user
+  before_action :get_show, except: [:index]
+  skip_before_filter :api_verify, only: [:click_seat]
+
   def index
     params[:page] ||= 1
-    @shows = Show.page(params[:page])
+    @shows = Show.is_display.page(params[:page])
   end
 
   def show
-    @show = Show.find(params[:id])
   end
 
   def preorder
-    @show = Show.find(params[:id])
     @stadium = @show.stadium
-    @areas = @stadium.areas
-    @relations = @show.show_area_relations.to_a
+  end
+
+  def seats_info
+    @area = @show.areas.find_by_id(params[:area_id])
+  end
+
+  def click_seat
+    render nothing: true
+  end
+
+  private
+  def get_show
+    @show = Show.find(params[:id])
   end
 end

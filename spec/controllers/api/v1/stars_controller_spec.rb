@@ -8,19 +8,27 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       100.times {create :star}
     end
 
+    it "should order by position" do
+      get :index, with_key(format: :json)
+      expect(JSON.parse(response.body)[0]["position"] < JSON.parse(response.body)[1]["position"]).to be true
+    end
+
     it "should get 20 shows without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20 
-    end    
+      expect(JSON.parse(response.body).size).to eq 10
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
+      expect(response.body).to include("position")
+      expect(response.body).to include("status_cn")
       expect(response.body).to include("avatar")
       expect(response.body).to include("is_followed")
-      JSON.parse(response.body).each do|object| 
+      expect(response.body).to include("followers_count")
+      JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
       end
     end
@@ -34,13 +42,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "should get 20 stars without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
-    end    
-
-    it "with page params" do
-      get :index, with_key(page: 2, format: :json)
-      stars_id = Star.pluck(:id).sort
-      expect(stars_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
   end
 
@@ -61,21 +63,42 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     end
 
   end
-  
+
   context "#show without user" do
     before('each') do
-     @star = create :star     
+      @star = create :star
     end
 
     it "should has attributes" do
       get :show, with_key(id: @star.id, format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
+      expect(response.body).to include("position")
+      expect(response.body).to include("status_cn")
       expect(response.body).to include("avatar")
+      expect(response.body).to include("poster")
       expect(response.body).to include("is_followed")
       expect(response.body).to include("concerts")
-      expect(response.body).to include("videos")
+      expect(response.body).to include("video")
       expect(response.body).to include("shows")
+    end
+
+    it "video sholud has something real if star has main video" do
+      create(:video, star_id: @star.id, is_main: true)
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"].size > 0 ).to be true
+    end
+
+    it "video sholud be empty string if star does not have main video" do
+      create(:video, star_id: @star.id, is_main: false)
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"]).to eq nil
+    end
+
+    it "video sholud be empty string if video is invalid" do
+      Video.create(star_id: @star.id, is_main: true, source: "aa.mp4")
+      get :show, with_key(id: @star.id, format: :json)
+      expect(JSON.parse( response.body )["video"]).to eq nil
     end
 
     it "concerts sholud has something real" do
@@ -100,7 +123,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#show with user" do
     before('each') do
-      3.times {create :star}     
+      3.times {create :star}
       @user = create :user
       Star.limit(3).each do |star|
         #关注
@@ -110,6 +133,20 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
         @user.follow_concert(concert)
         star.hoi_concert(concert)
       end
+    end
+
+    it "should has attributes" do
+      get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
+      expect(response.body).to include("id")
+      expect(response.body).to include("name")
+      expect(response.body).to include("position")
+      expect(response.body).to include("status_cn")
+      expect(response.body).to include("avatar")
+      expect(response.body).to include("poster")
+      expect(response.body).to include("is_followed")
+      expect(response.body).to include("concerts")
+      expect(response.body).to include("video")
+      expect(response.body).to include("shows")
     end
 
     it "3 stars is_followed should be true " do
@@ -126,9 +163,9 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
     it "should have topic staff" do
       Star.all.each do |star|
         #创建topic
-        topic = star.topics.create(content: "fuck tom", subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
+        topic = star.topics.create(content: Base64.encode64("fuck tom"), subject_type: Star.name, creator_type: User.name, creator_id: (create :user).id)
         @user.like_topic(topic)
-      end 
+      end
       get :show, with_key(id: Star.first.id, api_token: @user.api_token, mobile: @user.mobile, format: :json)
       expect(JSON.parse(response.body)["topics"].count > 0 ).to be true
       expect(JSON.parse(response.body)["topics"].first["is_like"] ).to be true
@@ -137,9 +174,9 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#search" do
     before('each') do
-      3.times {|n|Star.create name: "tom#{n}"}     
-      4.times {|n|Star.create name: "xo#{n}"}     
-      2.times {|n|Star.create name: "芙蓉#{n}"}     
+      3.times {|n|create(:star, name: "tom#{n}")}
+      4.times {|n|create(:star, name: "xo#{n}")}
+      2.times {|n|create(:star, name: "芙蓉#{n}")}
     end
 
     it "search should has results" do
@@ -157,5 +194,4 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
       expect(JSON.parse(response.body).size).to eq 7
     end
   end
-
 end

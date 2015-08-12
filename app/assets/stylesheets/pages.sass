@@ -1,0 +1,250 @@
+$green: #73CC20
+$gray: #6A6A6A
+.hshow_btn
+  font-size: 20px
+  width: 80%
+  background: $green
+  border: $green
+  border-radius: 6px
+  color: white
+  padding: 10px 0
+  margin: 0 10%
+  letter-spacing: 4px
+  &:hover
+    color: white
+@media screen and (max-width: 330px)
+  .hshow_btn
+    padding: 5px 0
+
+.sharing_show
+  position: relative
+  z-index: 1
+  .top
+    position: relative
+    img
+      width: 100%
+  .content
+    .intro
+      padding-top: 10px
+      margin-bottom: 5%
+      div
+        margin: 5px
+      label
+        font-size: 14px
+        margin-top: 8px
+        color: #B8B8B8
+        font-weight: normal
+        &#showdesc
+          position: relative
+          margin-bottom: 20px
+          .iarrow
+            content: ""
+            border-left: 10px solid transparent
+            border-right: 10px solid transparent
+            border-top: 10px solid #fd2170
+            position: absolute
+            right: 18px
+            top: 24px
+          .uparrow
+            transform: rorate(180deg)
+      span
+        display: block
+        font-size: 18px
+        color: #fff
+      .show-name
+        span
+          display: inline-block
+          width: 75%
+          color: rgb(253, 33, 112)
+    .description
+      color: #838383
+      display: none
+      text-align: left
+  .bottom
+    color: #fff
+    width: 100%
+    text-align: center
+    font-size: 20px
+    padding-bottom: 10%
+    div
+      margin-bottom: 5%
+    h3
+      font-size: 18px
+      font-weight: normal
+      margin-bottom: 15px
+    .download-btn
+      background-color: rgba(255, 157, 2, 0.9)
+
+.fixedbg
+  width: 100%
+  height: 100%
+  background: url(/img_background.png) center center no-repeat
+  background-size: cover
+.sharingshow
+  overflow: auto
+
+.shareconcert
+  .sharing_concert
+    position: relative
+    .top
+      position: relative
+      img
+        width: 100%
+    .content
+      color: #fff
+      font-size: 20px
+      .intro
+        padding: 10% 0
+      @media screen and (max-width: 330px)
+        .intro
+          padding: 3% 0
+      .city_rank_info
+        width: 90%
+        margin: auto
+        ul li.list-group-item
+          background-color: rgba(255,255,255,0.8) !important
+          border: none
+          border-bottom: 1px solid rgba(106, 106, 106,.3)
+          margin-bottom: 0
+          color: $gray
+          .city_name
+            font-size: 16px
+            text-align: center
+            display: inline-block
+            width: 25%
+          .vote_count
+            font-size: 15px
+            display: inline-block
+            margin-left: 3px
+          .progress_bar
+            display: inline-block
+            width: 45%
+            height: 13px
+            background-color: $green
+            border-radius: 4px
+      .allrank
+        display: none
+    .detailrank
+      background: #40209B
+    .doubledown
+      width: 100%
+      position: absolute
+      bottom: 1%
+      text-align: center
+      color: #8B8B8B
+  .vote_part
+    padding-top: 20%
+    img
+      width: 46%
+      margin-bottom: 5%
+    p
+      margin: auto
+      margin-top: 10%
+      width: 90%
+      font-size: 18px
+      color: #fff
+    .hshow_btn
+      margin-top: 20%
+.download_app
+  width: 100%
+  height: 100%
+  position: absolute
+  background: url(/img_downloadbackground.png) center top
+  background-repeat: no-repeat
+  background-size: cover
+  .icon_img
+    margin-top: 20%
+    .hoishow_icon_img
+      width: 35%
+      margin-bottom: 5%
+    p
+      font-size: 18px
+      color: #fff
+      margin: 0
+      line-height: 30px
+    @media screen and (max-width: 330px)
+      p
+        font-size: 16px
+        line-height: 26px
+    .hshow_btn
+      margin: 10% 0
+
+  .star_icon
+    p
+      font-size: 1.5em
+      color: #fff
+      margin-bottom: 5%
+    .star_icon_div
+      .photodiv
+        width: 25%
+        float: left
+        text-align: center
+        img
+          width: 62px
+          height: 62px
+
+.page_index
+  .page1
+    background: url(/index_page_pic/1.jpg)
+    .qr_code
+      width: 12%
+      position: absolute
+      left: 46%
+      top: 38%
+    .app_download_button
+      width: 22%
+      position: absolute
+      left: 60%
+      top: 38%
+      img
+        width: 90%
+    .star_avatar
+      width: 60%
+      position: absolute
+      left: 43%
+      top: 68%
+      .star_avatar_div
+        margin: 5px
+        display: inline-block
+        width: 15%
+        .img-circle
+          width: 100%
+        .star_name
+          color: #fff
+          font-size: 1.5em
+  .page2
+    background: url(/index_page_pic/2.jpg)
+  .page3
+    background: url(/index_page_pic/3.jpg)
+  .page4
+    background: url(/index_page_pic/4.jpg)
+  .page5
+    background: url(/index_page_pic/5.jpg)
+    .qr_code_for_page5
+      width: 250px
+      position: absolute
+      left: 30%
+      top: 37%
+  .section
+    background-size: cover
+    background-repeat: no-repeat
+    background-position: center center
+
+.voters_count
+  position: absolute
+  width: 100%
+  height: 20%
+  background-color: rgba(0, 0, 0, 0.4)
+  bottom: 0
+  color: #fff
+  text-align: right
+  font-size: 20px
+  padding-right: 7%
+  &:after
+    content: ""
+    display: inline-block
+    height: 100%
+    vertical-align: middle
+  label
+    padding-top: 1%
+    padding-left: 2%

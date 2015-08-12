@@ -1,0 +1,25 @@
+<div id="page_index" class="page_index">
+  <section class="page1">
+  <div class="code_and_download_button">
+    <img class="qr_code" src="web_index_pic/img_qr-code.jpg"/>
+    <div class="app_download_button">
+      <p><a href="http://a.app.qq.com/o/simple.jsp?pkgname=us.bestapp.hoishow"><img class="ios_download_button" src="web_index_pic/app_store.png"/></a></p>
+      <p><a href="http://a.app.qq.com/o/simple.jsp?pkgname=us.bestapp.hoishow"><img class="android_download_button" src="web_index_pic/google_play.png"/></a></p>
+    </div>
+  </div>
+  <div class="star_avatar">
+    <% @stars.each do |star|%>
+      <div class="star_avatar_div text-center">
+        <p class="star_avatar_p"><%= image_tag(star.avatar_url, class: "img-circle") %></p>
+        <p class="star_name"><%= star.name%></p>
+      </div>
+    <% end %>
+  </div>
+  </section>
+  <section class="page2"></section>
+  <section class="page3"></section>
+  <section class="page4"></section>
+  <section class="page5">
+    <img class="qr_code_for_page5" src="web_index_pic/img_qr-code.jpg"/>
+  </section>
+</div>

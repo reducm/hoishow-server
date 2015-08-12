@@ -1,0 +1,26 @@
+<div class="fixedbg sharingshow">
+  <div class="sharing_show">
+    <div class="top">
+      <%= image_tag(@show.poster_url) %>
+      <div class="voters_count"><%= @show.voters_count %></div>
+    </div>
+    <div class="content">
+      <div class="intro text-center">
+        <div class='show-name'><span><%= @show.name %></span></div>
+        <div class='show-time'><label>演出时间</label><span><%= @show.get_show_time %></span></div>
+        <div class='show-stadium'><label>场馆</label><span><%= @show.stadium.name %></span></div>
+        <div class='show-price'><label>票价</label><span><%= get_ticket_price(@show)%></span></div>
+        <div class='show-descrition'>
+          <label id="showdesc">演出详情<i class="iarrow"></i></label>
+          <div class="description text-center">
+            <%= @show.description.html_safe %>
+          </div>
+        </div>
+      </div>
+      <div class="bottom">
+        <div>立即下载APP购票吧</div>
+        <%= link_to "立即下载", '/mobile/download', class: 'btn download-btn hshow_btn' %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<%# encoding: utf-8 %>
+<div class="centerbox">
+  <%= simple_form_for [:operation, banner], html: { class: 'form-horizontal', id: "banner-form"  } do|f| %>
+    <div class="form-group">
+      <div class="col-xs-1">
+        <%= f.input :subject_type, collection: [["明星", "Star"], ["投票", "Concert"], ["演出", "Show"], ["图文", "Article"]], input_html: {id: "subject_type_select"}   %>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-xs-4">
+        <%= f.input :subject_id, collection: [[banner.subject_name, banner.subject_id]], input_html: {id: "subject_id_select"} %>
+      </div>
+    </div>
+    <div class="hidden editor"><%= f.input :description, label: '图文描述' %></div>
+    <div class="form-group">
+    <% if banner.poster_url %>
+      <%= label_tag "当前海报" %>
+      <%= image_tag(banner.poster_url, width: "750") %>
+    <% end %>
+    </div>
+    <%= f.input :poster, label:"海报 (建议大小:750x472)", input_html: {class: "image-uploader"} %>
+    <div class="form-group">
+      <%= f.submit class: 'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
+<%= content_tag :div, id: "hoishow", data: {
+  stars: ( Star.select(:name, :id).map {|star| { name: star.name, id: star.id } } ),
+  concerts: ( Concert.concerts_without_auto_hide.select(:name, :id).map {|concert|{ name: concert.name, id: concert.id } } ),
+  shows: ( Show.select(:name, :id).map {|show|{ name: show.name, id: show.id } } ),
+  articles: [{name: '图文主体', id: 1}]
+} do %>
+<% end %>

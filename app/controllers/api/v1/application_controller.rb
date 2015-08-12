@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 class Api::V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
   before_filter :api_verify
@@ -16,7 +16,7 @@ class Api::V1::ApplicationController < ApplicationController
 
     if @auth.blank?
       return error_json "no permission"
-    end 
+    end
   end
 
   #无用户参数信息时会直接返回403错误
@@ -26,7 +26,14 @@ class Api::V1::ApplicationController < ApplicationController
       return error_json("no_api_token_or_mobile!")
     end
     @user = get_user_from_params(params[:api_token], params[:mobile])
+
     return error_json("api_token_wrong") if @user.blank?
+
+    if verify_block?(@user)
+      render json: {errors: "你的账户由于安全原因暂时不能登录，如有疑问请致电400-880-5380"}, status: 406
+      return false
+    end
+
     @user
   end
 
@@ -44,5 +51,20 @@ class Api::V1::ApplicationController < ApplicationController
   def error_json(str)
     render json: {errors: str}, status: 403
     return false
+  end
+
+  def check_admin_validness!
+    if params[:name].blank? || params[:api_token].blank?
+      return error_json "获取验票员信息异常，请重新登陆"
+    else
+      @admin = Admin.where(api_token: params[:api_token], name: params[:name]).first
+      if @admin.blank?
+        return error_json "账户不存在"
+      elsif verify_block?(@admin)
+        render json: {errors: "账户被锁定，请联系管理员"}, status: 406
+      elsif @admin.admin_type != "ticket_checker"
+        return error_json "账户无验票权限"
+      end
+    end
   end
 end

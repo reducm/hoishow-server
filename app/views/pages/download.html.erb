@@ -1,0 +1,18 @@
+<div class="download_app">
+  <div class="icon_img text-center">
+    <img class="hoishow_icon_img" src="/hoishow_icon.png"/>
+    <p>在这里你不仅能找到精彩的show</p>
+    <p>还能参与投票,决定偶像的下一场show</p>
+    <%= link_to "立即下载", app_download_path, class: 'btn hshow_btn' %>
+  </div>
+  <div class="star_icon text-center">
+    <p>他们已经加入Hoishow啦</p>
+    <div class="star_icon_div">
+      <% @stars.each do |star|%>
+        <div class="photodiv">
+          <%= image_tag(star.avatar_url, class: "img-circle") %>
+        </div>  
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+    <h1 class="pull-left">城市列表</h1>
+  <div class="search">
+    <%= form_tag(search_operation_cities_path, class: 'form-inline', method: 'get') do %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入城市名称搜索" %>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+</div>
+
+    <%= paginate @cities%>
+  <div class="cities_list">
+    <table class="cities table">
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>场馆数</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <% @cities.each do |city| %>
+        <tr>
+          <td><%= city.name %></td>
+          <td><%= link_to city.stadiums_count, operation_stadiums_path(city_id: city.id) %></td>
+          <td><%= link_to "编辑城市", operation_stadiums_path(city_id: city.id) %></td>
+        </tr>
+      <% end %>
+    </table>
+    <%= paginate @cities%>
+  </div>

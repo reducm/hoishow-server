@@ -1,0 +1,42 @@
+<%# encoding: utf-8 %>
+
+<table class="table table-hover shows">
+  <thead>
+    <tr>
+      <th class='text-center'>演出艺人</th>
+      <th class='text-center'>演出名称</th>
+      <th class='text-center'>是否显示</th>
+      <th class='text-center'>选座类型</th>
+      <th class='text-center'>购票状态</th>
+      <th class='text-center'>票的类型</th>
+      <th class='text-center'>演出地点</th>
+      <th class='text-center'>演出时间</th>
+      <th class='text-center'>售出票数／总票数</th>
+      <th class='text-center'>操作</th>
+    </tr>
+  </thead>
+  <tbody class='text-center'>
+    <% shows.each do|show| %>
+      <% tickets = show.tickets %>
+      <tr>
+        <td><%= show.stars.pluck(:name).join(",") %></td>
+        <td><%= show.name %></td>
+        <td><%= show.is_display_cn %></td>
+        <td><%= show.seat_type_cn%></td>
+        <td><%= show.status_cn%></td>
+        <td><%= show.ticket_type_cn %></td>
+        <td><%= show.stadium.try(:name) %></td>
+        <td><%= show.show_time.try(:strfcn_time) %></td>
+        <td><%= tickets.sold_tickets.count %> / <%= show.total_seats_count %></td>
+        <td>
+          <%= link_to "查看详情", operation_show_path(show)%>
+          <% if can? :update, show%>
+            <%= link_to "编辑", edit_operation_show_path(show)%>
+            <%= link_to (show.is_top ? "取消置顶" : "置顶"), toggle_is_top_operation_show_path(show), method: 'PATCH' %>
+          <% end %>
+        </td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>
+<%= paginate shows %>

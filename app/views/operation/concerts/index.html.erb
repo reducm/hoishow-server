@@ -1,0 +1,29 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <h1 class="pull-left">投票列表</h1>
+
+  <div class="search">
+    <%= form_tag(operation_concerts_path, class: 'form-inline', method: 'get') do %>
+      <%= select_tag "concert_status_select", options_for_select([["全部", "all"], ["投票中", "voting"], ["投票结束","finished"]], "#{params[:concert_status_select]}"), class: 'form-control' %>
+      <%= text_field_tag "q", params[:q] ||= nil,  class: 'form-control', placeholder: "输入投票名称或艺人名字进行搜索", size:30%>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+
+  <%= link_to "发布新投票", new_operation_concert_url, class: 'btn btn-primary add-concert' %>
+
+  <hr />
+
+  <% if @concerts.any? %>
+    <p>
+      下载:
+      <%= link_to "CSV", operation_concerts_path(params.merge(q: params[:q], concert_status_select: params[:concert_status_select], page: 0, format: "csv")) %> |
+      <%= link_to "Excel", operation_concerts_path(params.merge(q: params[:q], concert_status_select: params[:concert_status_select], page: 0, format: "xls")) %>
+    </p>
+  <% end %>
+
+  <div class="concerts_list">
+    <%= render partial: "table", locals: {concerts: @concerts} %>
+  </div>
+</div>

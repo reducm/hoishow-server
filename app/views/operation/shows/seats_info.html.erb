@@ -1,0 +1,68 @@
+<div class="nav seats-info text-center">
+  <div class="header">
+    <h3>
+      区域名称: <%= text_field_tag "area_name", @area.name %>
+    </h3>
+    <div class="box-size">
+      大小: <%= text_field_tag "row_size", @seats.maximum('row') %>行<%= text_field_tag "column_size", @seats.maximum('column') %>列
+      <%= link_to "确定", "javascript:void(0)", class: 'btn btn-default set_box' %>
+    </div>
+  </div>
+  <div class="nav-control">
+    <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn' %>
+    <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn' %>
+    <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn' %>
+    <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-primary' %>
+    <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-primary' %>
+    <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-primary' if can? :set_channels, current_admin %>
+    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @area.sort_by) %>
+  </div>
+  <div class="seats-box">
+    <div class="front"><h4>舞台</h4></div>
+    <ul class="list-unstyled seats">
+      <% if @seats.any? %>
+        <% @seats.maximum('row').times.each do |row| %>
+          <li class="row_<%= row + 1 %>">
+            <% @seats.where(row: row + 1).each do |seat| %>
+              <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
+            <% end %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+  <%= link_to "提交", "javascript:void(0);", class: 'btn btn-primary submit_seats' %>
+  <%= hidden_field_tag "show_id", @show.id %>
+  <%= hidden_field_tag 'area_id', @area.id %>
+</div>
+
+<div id="cache_seats"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="setChannelModalLabel">设置渠道</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <%= check_box_tag 'check_all' %>
+          <%= label_tag 'check_all', '全选' %>
+          <%= check_box_tag 'anti_all' %>
+          <%= label_tag 'anti_all', '反选' %>
+          <div class='channels'>
+            <%= check_box_tag 'channel_hoishow', 'hoishow' %>
+            <%= label_tag 'channel_hoishow', '自有'%>
+            <% @channels.each do |channel| %>
+              <%= check_box_tag "channel_#{channel.user}", channel.id %>
+              <%= label_tag "channel_#{channel.user}", channel.user %>
+            <% end %>
+          </div>
+          <%= submit_tag '提交', class: 'btn btn-primary submit_channel'%>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

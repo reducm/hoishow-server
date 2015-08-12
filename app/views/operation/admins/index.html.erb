@@ -1,0 +1,37 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <h2>系统用户</h2>
+  <p><%= link_to "创建新用户", new_operation_admin_path%></p>
+    <%= paginate @admins%>
+  <div class="admins_list">
+    <table class="table admins">
+      <thead>
+        <tr>
+          <th>用户名称</td>
+          <th>用户类型</td>
+          <th>操作</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @admins.each do |admin| %>
+          <tr>
+            <td><%= admin.name %></td>
+            <td><%= admin.type_cn %></td>
+            <td>
+              <% if can? :update, admin %>
+                <%= link_to "编辑", edit_operation_admin_path(admin, set_type: 1) %>
+              <% end %>
+              <% if admin.is_block %>
+                <%= link_to "解除锁定", block_admin_operation_admin_path(admin, block: 0), method: 'post' %>
+              <% else %>
+                <%= link_to "锁定", block_admin_operation_admin_path(admin, block: 1), method: 'post' %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @admins %>
+  </div>
+</div>

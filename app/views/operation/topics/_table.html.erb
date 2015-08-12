@@ -1,0 +1,66 @@
+<%# encoding: utf-8 %>
+
+<table class="table topics" id="topics">
+  <thead>
+    <tr>
+      <th>发布用户</th>
+      <th>内容</th>
+      <th>赞/回复</th>
+      <th>发布时间</th>
+      <th>最后回复时间</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <% topics.each do |topic| %>
+    <tr>
+      <% if topic.creator_type == "Admin" %>
+        <td><%= topic.creator_name %></td>
+      <% else %>
+        <% if creator = topic.creator %>
+          <td><%= link_to topic.creator_name, url_for([:operation, creator]) %></td>
+        <%else%>
+          <td>该对象已经被屏蔽或删除</td>
+        <% end %>
+      <% end %>
+      <td style='max-width: 400px'><%= Base64.decode64(topic.content).force_encoding("utf-8") %></td>
+      <td><%= topic.like_count %>/<%= topic.comments.count %></td>
+      <td><%= get_datetime(topic.created_at) %></td>
+      <td><%= get_datetime(topic.last_reply_time) %></td>
+      <td data-id="<%= topic.id %>">
+        <%= link_to '查看', edit_operation_topic_path(topic) %>
+        <% if topic.is_top %>
+          <%= link_to '取消置顶', set_topic_top_operation_topic_path(topic, is_top: 0, city_id: topic.city_id), method: :post, remote: true %>
+        <% else %>
+          <%= link_to '置顶', set_topic_top_operation_topic_path(topic, is_top: 1, city_id: topic.city_id), method: :post , remote: true %>
+        <% end %>
+        <%= link_to '回复', "javascript:void(0)", class: 'reply_btn' %>
+        <%= link_to '删除', "javascript:void(0)", class: 'del_topic' %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<%= paginate topics, remote: true %>
+
+<div class="modal fade" id="replyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">回复</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <div class="form-group">
+            <%= text_area_tag "reply_content", nil, class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "reply_creator", "回复人" %>
+            <%= select_tag "reply_creator", options_for_select([current_admin.default_name] + stars.collect{|star| [star.name, star.id]}), class: 'form-control chooselist' %>
+          </div>
+          <%= submit_tag "提交", class: 'btn btn-primary add_comment' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

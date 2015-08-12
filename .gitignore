@@ -39,3 +39,7 @@ lib/ipdate.dat
 .DS_Store
 .tags
 .tags_sorted_by_file
+config/database.yml
+
+# ignore local precompile assets file
+config/deploy/assets/

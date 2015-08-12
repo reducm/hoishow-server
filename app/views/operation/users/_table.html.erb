@@ -1,0 +1,37 @@
+<%# encoding: utf-8 %>
+
+<table class="table table-hover users" id="operation_users_table">
+  <thead>
+    <tr>
+      <th class="text-center">头像</th>
+      <th class="text-center">用户名</th>
+      <th class="text-center">手机号</th>
+      <th class="text-center">订单数量</th>
+      <th class="text-center">互动主题数</th>
+      <th class="text-center">互动评论数</th>
+      <th class="text-center">操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.each do|user|%>
+      <tr>
+        <td class="text-center"><%= get_avatar(user, '50x50') %></td>
+        <td class="text-center"><%= user.nickname || user.mobile %></td>
+        <td class="text-center"><%= user.mobile %></td>
+        <td class="text-center"><%= user.orders.count %></td>
+        <td class="text-center"><%= user.topics.count %></td>
+        <td class="text-center"><%= user.comments.count %></td>
+        <td class="text-center">
+          <%= link_to "查看详情", operation_user_path(user)%>
+          <% if user.is_block %>
+            <%= link_to "解除屏蔽", block_user_operation_user_path(user, is_block: 0), method: 'post' %>
+          <% else %>
+            <%= link_to "屏蔽", block_user_operation_user_path(user, is_block: 1), method: 'post' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate users %>

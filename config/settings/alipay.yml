@@ -1,0 +1,11 @@
+email: bike@bestapp.us
+PC_email: danchedianying@163.com
+api_url: "https://openapi.alipay.com/gateway.do"
+mapi_url: "https://mapi.alipay.com/gateway.do"
+wap_api_url: "http://wappaygw.alipay.com/service/rest.htm"
+refund_url: "http://hoishow.dan-che.com/api/v1/alipay/refund_notify"
+notify_url: "http://hoishow.dan-che.com/api/v1/alipay/nofity"
+v2_pid: "2088311153957205"
+v2_email: bike@bestapp.us
+v2_md5_key: "9fv6vb030s043q6bb267o2qcdkypaman"
+v2_alipay_rsa_pub_key: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnxj/9qwVfgoUh/y2W89L6BkRAFljhNhgPdyPuBV64bfQNN1PjbCzkIM6qRdKBoLPXmKKMiFYnkd6rAoprih3/PrQEB/VsW8OoM8fxn67UDYuyBTqA23MML9q1+ilIZwBC2AQ2UBVOrFXfFl75p6/B5KsiNG9zpgmLCUYuLkxpLQIDAQAB"

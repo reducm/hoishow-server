@@ -1,5 +1,5 @@
-json.partial! "concert", { concert: @concert, user: @user, need_stars: true, need_comments: true, need_shows: true  }
-json.cities []
-json.city_rank do
-  json.partial! "city_vote_rank", { cities: @concert.cities.to_a, concert: @concert }
+json.partial! "concert", { concert: @concert, need_stars: true, need_topics: true, need_shows: true  }
+
+json.cities do
+  json.partial! "city_vote_rank", { cities: @concert.cities, concert: @concert }
 end

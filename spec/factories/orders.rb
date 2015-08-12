@@ -14,7 +14,6 @@ FactoryGirl.define do
     city_id 1
     stadium_id 1
     show_id 1
-    seats_info "12.0:1|13.0|2"
     factory :paid_order do
       status Order.statuses[:paid]
     end
@@ -26,6 +25,14 @@ FactoryGirl.define do
     end
     factory :outdate_order do
       status Order.statuses[:outdate]
+    end
+
+    factory :pending_order_with_payment do
+      after(:create) do |order, evaluator|
+        create(:payment, purchase_type: 'Order', purchase_id:  order.id,
+          payment_type:  'alipay', amount: order.amount,
+          paid_origin: ['ios', "android"].sample, trade_id: nil)
+      end
     end
   end
 end

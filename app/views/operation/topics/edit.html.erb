@@ -1,0 +1,65 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <div class="col-md-6">
+    <h2>查看互动</h2>
+    <%= form_tag(operation_topic_path(@topic), method: :put) do %>
+      <div class="form-group">
+        <%= text_area_tag "content", Base64.decode64(@topic.content).force_encoding("UTF-8"), rows: 10, cols: 50 %>
+      </div>
+      <div class="form-group">
+        <%= submit_tag "确认修改互动内容", class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-md-4 div-borded">
+    <table class="table" id="topic-detail">
+      <tr>
+        <td>发布时间</td>
+        <td><%= get_datetime(@topic.created_at) %></td>
+      </tr>
+      <tr>
+        <td>最后回复时间</td>
+        <td><%= get_datetime(@topic.updated_at) %></td>
+      </tr>
+      <tr>
+        <td>点赞数</td>
+        <td><%= @topic.like_count %></td>
+      </tr>
+      <tr>
+        <td>回复数</td>
+        <td><%= @topic.reply_count %></td>
+      </tr>
+    </table>
+  </div>
+  <div class="col-md-12">
+    <h2>回复列表</h2>
+    <a data-toggle="modal" data-target="#newModal">新建回复</a>
+    <div class="comments_list">
+      <%= render partial: 'operation/comments/table', locals: {comments: @comments, stars: @stars} %>
+    </div>
+  </div>
+  <%= hidden_field_tag "topic_id", @topic.id %>
+</div>
+<div class="modal fade" id="newModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">新建回复</h4>
+      </div>
+      <div class="modal-body clearfix">
+        <%= form_tag do %>
+          <div class="form-group">
+            <%= text_area_tag "comment_content", nil, class: 'form-control' %>
+          </div>
+          <div class="form-group">
+            <%= label_tag "creator", "回复人" %>
+            <%= select_tag "creator", options_for_select([current_admin.default_name] + @stars.collect{|star| [star.name, star.id]}), class: 'form-control chooselist' %>
+          </div>
+          <%= submit_tag "提交", class: 'btn btn-primary add_comment flr' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

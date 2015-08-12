@@ -1,21 +1,30 @@
 need_stars ||= false
+need_topics||= false
 need_shows ||= false
-user ||= nil
+@user ||= nil
 
-@followed_concerts = user.present? ? user.follow_concerts.pluck(:id) : []
-@voted_concerts = user.present? ? user.vote_concerts.pluck(:id) : []
+@followed_concerts = @user.present? ? @user.follow_concerts.pluck(:id) : []
+@voted_concert = @user.present? ? @user.user_vote_concerts.where(concert_id: concert.id).first : nil
 
-json.(concert, :id, :name, :description, :status, :followers_count, :shows_count, :voters_count)
+json.(concert, :id, :name, :status, :is_top, :followers_count, :shows_count, :is_show)
 
-json.start_date concert.start_date.to_ms
-json.end_date concert.end_date.to_ms
-json.poster concert.poster.url rescue nil
-json.is_followed concert.id.in?(@followed_concerts) ? true : false
-json.is_voted concert.id.in?(@voted_concerts) ? true : false
+json.description description_path(subject_id: concert.id, subject_type: "Concert")
+json.description_time concert.description_time || ''
+json.voters_count concert.get_voters_count_with_base_number
+json.poster concert.poster_url || ''
+json.is_followed concert.id.in?(@followed_concerts)
+json.is_voted @voted_concert ? true : false
+@voted_concert ? (json.voted_city { json.partial!("api/v1/cities/city", {city: City.find_by_id(@voted_concert.city_id)}) }) : ( json.voted_city nil )
+json.sharing_page mobile_concerts_sharing_url(concert_id: concert.id)
+
 if need_stars
-  json.stars{ json.array! concert.stars, partial: "api/v1/stars/star", as: :star }
+  json.stars{ json.array! concert.stars.is_display, partial: "api/v1/stars/star", as: :star }
+end
+
+if need_topics
+  json.topics{ json.array! concert.topics, partial: "api/v1/topics/topic", as: :topic }
 end
 
 if need_shows
-  json.shows{ json.array! concert.shows, partial: "api/v1/shows/show", as: :show }
+  json.shows{ json.array! concert.shows.is_display, partial: "api/v1/shows/show", as: :show }
 end

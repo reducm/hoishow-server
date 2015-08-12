@@ -1,0 +1,38 @@
+<%# encoding: utf-8 %>
+  <body id="seats_map">
+    <div class="content text-center">
+      <div class="front">
+        <h4>舞台</h4>
+        <div class="nav-seat">
+          <span><i class="avaliable"></i>可选</span>
+          <span><i class="locked"></i>锁定</span>
+          <span><i class="checked"></i>已选</span>
+        </div>
+      </div>
+      <div class="seats_box">
+        <ul class="list-unstyled">
+          <% @seats.maximum('row').times.each do |row| %>
+            <span class="row-bar pull-left"><%= row + 1 %></span>
+            <li>
+              <% @seats.where(row: row + 1).each do |seat| %>
+                <% if seat.channels.present? && !seat.channels.include?('hoishow') %>
+                  <span><i class="locked" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+                <% else %>
+                  <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+                <% end %>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      <%= content_tag :div, id: "check_seats", data: {
+        check_seats: params[:seat_ids]
+      } do %>
+      <% end %>
+
+      <%= hidden_field_tag 'show_id', @show.id %>
+      <%= hidden_field_tag 'show_name', @show.name %>
+      <%= hidden_field_tag 'area_id', @area.id %>
+      <%= hidden_field_tag 'area_name', @area.name %>
+    </div>
+  </body>

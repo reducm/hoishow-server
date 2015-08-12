@@ -1,0 +1,65 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <div class="row">
+    <h1><%= concert.name.present? ? concert.name : "发布新投票" %></h1>
+
+    <%= label_tag "star", "参演艺人" %>
+    <div id="delete_star">
+      <% stars = concert.stars.pluck(:name, :id)%>
+      <% stars.each do |star| %>
+        <span class="btn btn-default"><%= star[0] + " "%></span><button data-star-id="<%= star[1] %>" class="btn btn-danger remove_star" style="margin-left: 4px; margin-right: 30px;">删除</button>
+      <%end%>
+    </div>
+    <p></p>
+    <div>
+      <div class="form-group">
+        <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}, ([star.name, star.id] if params[:action] == 'new')) , class: "form-control chooselist", id: "ddl_stars" %>
+        <a class="btn btn-primary" id="add_star">添加选中艺人</a>
+      </div>
+    </div>
+  </div>
+
+  <%= simple_form_for([:operation, concert ], html: { class: 'form-horizontal', id: 'star-form' }) do |f| %>
+    <%= hidden_field_tag "concert_id", concert.id %>
+  <div class="form-group">
+    <div class="col-xs-3">
+    <%= f.input :name, required: false, label: "投票名称" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-2">
+    <%= f.input :description_time, label: "投票时间描述" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-1">
+    <%= f.input :status, label: "投票状态", as: :select, default: ( params[:action] == 'edit' ? concert.status_cn : "投票中" ), collection: [["投票中", "voting"], ["投票完结", "finished"]] %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-xs-1">
+    <%= f.input :is_show, label: "显示状态", as: :select, default: ( params[:action] == 'edit' ? concert.is_show_cn : "显示中" ), collection: [["显示中", "showing"], ["隐藏中", "hidden"]] %>
+    </div>
+  </div>
+    <% if concert.poster_url %>
+  <div class="form-group">
+      <%= label_tag "当前海报" %>
+  </div>
+  <div class="form-group">
+      <%= image_tag(concert.poster_url, width: "700") %>
+  </div>
+    <% end %>
+    <%= f.input :poster, label: "上传演出海报(建议大小:700x382)", input_html: {class: "image-uploader"} %>
+    <% if params[:action] == "new" && params[:star_id].present? %>
+      <%= hidden_field_tag "default_star_id", star.id, id: 'hf_default_sid' %>
+      <%= hidden_field_tag "default_star_name", star.name, id: 'hf_default_sname' %>
+    <% end %>
+    <%= hidden_field_tag "star_id", params[:star_id] %>
+    <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
+    <%= f.input :description, label: '图文描述' %>
+  <div class="row">
+    <%= f.button :submit, "保存", class: 'marginspace', id: 'submit_concert', class: "btn btn-primary" %>
+  </div>
+  <%end%>
+</div>

@@ -2,8 +2,10 @@
 
 FactoryGirl.define do
   factory :show_area_relation do
-    show :show
-    area :area
+    association :show
+    association :area
     price {Random.rand(10..100)}
+    seats_count { 60 }
+    left_seats { 60 }
   end
 end

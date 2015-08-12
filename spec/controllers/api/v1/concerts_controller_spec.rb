@@ -11,20 +11,20 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
     it "should get 20 concerts without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
-    end    
+      expect(JSON.parse(response.body).size).to eq 10
+    end
 
     it "should has attributes" do
       get :index, with_key(format: :json)
       expect(response.body).to include("id")
       expect(response.body).to include("name")
       expect(response.body).to include("description")
-      expect(response.body).to include("start_date")
-      expect(response.body).to include("end_date")
       expect(response.body).to include("status")
       expect(response.body).to include("shows_count")
       expect(response.body).to include("is_voted")
-      JSON.parse(response.body).each do|object| 
+      expect(response.body).to include("is_top")
+      expect(response.body).to include("voted_city")
+      JSON.parse(response.body).each do|object|
         expect(object["is_followed"]).to be false
         expect(object["is_voted"]).to be false
       end
@@ -39,13 +39,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
     it "should get 20 concerts without user" do
       get :index, with_key(format: :json)
       expect(JSON.parse(response.body).is_a? Array).to be true
-      expect(JSON.parse(response.body).size).to eq 20
-    end    
-
-    it "with page params" do
-      get :index, with_key(page: 2, format: :json)
-      concerts_id = Concert.pluck(:id)
-      expect(concerts_id.index JSON.parse(response.body).first["id"].to_i).to eq 20
+      expect(JSON.parse(response.body).size).to eq 10
     end
   end
 
@@ -55,7 +49,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       @user = create :user
       city = create :city
       Concert.limit(5).each do |concert|
-        @user.follow_concert(concert) 
+        @user.follow_concert(concert)
       end
       Concert.limit(3).each do |concert|
         @user.vote_concert(concert, city)
@@ -76,7 +70,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
   context "#show without user" do
     before('each') do
-      @concert = create :concert     
+      @concert = create :concert
     end
 
     it "should has attributes" do
@@ -88,7 +82,8 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(response.body).to include("cities")
       expect(response.body).to include("stars")
       expect(response.body).to include("shows")
-      #ap JSON.parse response.body
+      expect(response.body).to include("topics")
+      expect(response.body).to include("is_top")
     end
 
     it "status should going string" do
@@ -96,7 +91,6 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       expect(JSON.parse(response.body)["status"]).to eq "voting"
     end
 
-    #TODO stars, shows 
     it "stars should has something" do
       @star = create :star
       @star.hoi_concert(@concert)
@@ -108,7 +102,7 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
 
   context "#show with user" do
     before('each') do
-      3.times {create :concert}     
+      3.times {create :concert}
       @user = create :user
       Concert.limit(3).each do |concert|
         @user.follow_concert(concert)
@@ -129,17 +123,17 @@ RSpec.describe Api::V1::ConcertsController, :type => :controller do
       @city2 = create :city
       @user1 = create :user
       @user2 = create :user
+      @user3 = create :user
       @city1.hold_concert(@concert)
       @city2.hold_concert(@concert)
       @user1.vote_concert(@concert, @city1)
-      @user1.vote_concert(@concert, @city2)
+      @user3.vote_concert(@concert, @city2)
       @user2.vote_concert(@concert, @city2)
     end
-    
+
     it "should has something" do
       get :city_rank, with_key(id: @concert.id, format: :json)
       expect(response.body).to include("vote_count")
-      ap JSON.parse(response.body)
     end
   end
 end

@@ -1,0 +1,22 @@
+<%# encoding: utf-8 %>
+<body class='express_detail'>
+  <div class='content'>
+    <% if @result.any? %>
+      <h2>物流详情</h2>
+      <table>
+        <% @result['router'].each do |router| %>
+          <tr>
+            <td></td>
+            <td class='detail'>
+              <p><%= raw(router['statue_message']) %></p>
+              <p><%= router['time'] %></p>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+      <%= hidden_field_tag 'status', @result['delivery_status'] %>
+    <% else %>
+      <h2>暂无此运单信息，只支持三个月内的运单信息查询</h2>
+    <% end %>
+  </div>
+</body>

@@ -1,0 +1,62 @@
+<%# encoding: utf-8 %>
+
+<div class="nav show_show">
+  <h2>
+    演出详情
+    <% if can? :update, @show %>
+      <small><%= link_to "编辑", edit_operation_show_path(@show) %></small>
+    <% end %>
+  </h2>
+  <h3><%= @show.name %></h3>
+  <div class="form-group">
+    <%= label_tag(:name, "show购票模式", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @show.mode_cn, class: "form-control-static")%>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= label_tag(:name, "show购票状态", class: "col-sm-2 control-label")%>
+    <div class="col-sm-10">
+      <%= label_tag(:name, @show.status_cn, class: "form-control-static")%>
+    </div>
+  </div>
+  <div>
+    <%= link_to "发送演出推送", send_create_message_operation_show_path(@show), method: "post", class: 'btn btn-primary' %>
+    <% if @show.voted_users? %>
+      <%= link_to "开放所有关注过演出的用户购买", update_mode_operation_show_path(@show, mode: 1), method: "post", data: {confirm: "确定开放所有用户购买吗？点击确定后会给所有关注过演出的用户发送消息推送"}, class: "btn btn-success" %>
+    <% end %>
+  </div>
+  <table class="table">
+    <tbody>
+      <tr>
+        <td>演出时间</td>
+        <td><%= @show.show_time.try(:strfcn_time)%></td>
+      </tr>
+      <tr>
+        <td>演出城市</td>
+        <td><%= @show.city.try(:name)%></td>
+      </tr>
+      <tr>
+        <td>演出场馆</td>
+        <td><%= @show.stadium.try(:name) %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>演出票务</h3>
+  <div id="pie_cake" >
+    <% @show.areas.each do |area| %>
+      <% tickets = @show.tickets.where(area_id: area.id) %>
+      <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> unpaid_count=<%= tickets.unpaid_tickets.count %> sold_count=<%= tickets.sold_tickets.count %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %>></div>
+    <% end %>
+  </div>
+  <div class="orders_list">
+    <%= render partial: 'operation/orders/table', locals: {orders: @show.orders.page(params[:page]).order("created_at desc")} %>
+  </div>
+
+  <div role="tabpanel" class="tab-pane topics_list show_show_topics_list" id="shows_show_topics">
+    <h3>互动列表</h3>
+    <%= render partial: 'operation/topics/table', locals: {topics: @show.topics.page(params[:page]), stars: @show.stars} %>
+  </div>
+
+</div>

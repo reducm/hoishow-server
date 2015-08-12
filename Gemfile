@@ -1,6 +1,7 @@
 #encoding: UTF-8
 source 'http://ruby.taobao.org'
 
+gem 'httpi'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
@@ -17,17 +18,22 @@ gem "rest-client"
 # Use CoffeeScript for .coffee assets and views
 
 #assets
-#editor
-gem 'rails_kindeditor'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'bootstrap-sass'
 gem 'font-awesome-sass', '~> 4.3.0'
+gem 'simple_form'
+gem 'jquery-datatables-rails', '~> 3.2.0'
+gem "jquery-fileupload-rails"
+gem "dropzonejs-rails"
 #####END assets ######
 
 #gem 'devise'
 
 gem 'whenever', :require => false
+gem 'sidekiq'
+gem 'sinatra', :require => nil
 
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
@@ -59,7 +65,9 @@ gem "second_level_cache"
 #gem "elasticsearch-model"
 #gem 'searchkick'
 
-gem 'searchkick'
+#gem 'searchkick'
+
+gem 'cancancan', '~> 1.10'
 
 group :test do
   gem 'faker', "~> 1.4.3"
@@ -85,3 +93,30 @@ group :development, :test do
   gem 'thin'
 end
 
+group :development do
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rvm'
+  gem 'capistrano-sidekiq'
+  gem 'capistrano-passenger'
+
+  gem 'guard-livereload', '~> 2.4', require: false
+end
+
+# error notify
+gem 'exception_notification'
+
+# 日志处理
+gem "yell-rails"
+
+# 短信平台接口
+gem 'china_sms', git: "git://github.com/villins/china_sms.git"
+
+
+# state mechine
+gem 'aasm', '~> 4.1'
+
+#node
+gem 'execjs'
+gem 'therubyracer', :platforms => :ruby

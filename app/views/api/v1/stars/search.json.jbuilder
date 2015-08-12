@@ -1,3 +1,1 @@
-json.array! @stars do |star|
-  json.partial! "star", locals: {star: star}
-end
+json.array! @stars, partial: "star", as: :star

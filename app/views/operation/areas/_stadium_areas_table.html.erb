@@ -1,0 +1,77 @@
+<%# encoding: utf-8 %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% areas.each do |area| %>
+      <tr>
+        <td><%= area.name %></td>
+        <td data-id="<%= area.id %>">
+          <%= link_to '重命名', 'javascript:void(0)', class: 'rename_area' %>
+          <%= link_to '删除', 'javascript:void(0)', class: 'del_area' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<script type="text/javascript">
+function refresh_list(){
+  $.get("<%= refresh_areas_operation_stadium_path %>", function(data){
+    $(".areas").html(data)
+  })
+}
+
+(function($){
+  $(".add_area").off("click").on("click", function(){
+    var $tr = $("<tr><td><input type='text' class='area_name'></td><td><a class='submit_area' style='padding:10px;'>确定</a><a class='del_area'>删除</a></td></tr>")
+    $tr.appendTo("tbody")
+  }) //增加区域
+
+  $(".areas").off("click").on("click", ".rename_area", function(){
+    var preName = $(this).parent().prev().text()
+    var $input = $("<input type='text' class='area_name'>")
+    $input.val(preName)
+    $(this).parent().prev().html($input)
+    $(this).parent().html("<a class='submit_area' style='padding:10px;'>确定</a><a class='del_area'>删除</a>")
+  }) //点击重命名
+
+  $(".areas").on("click", ".submit_area", function(){
+    name = $(this).parents("tr").first().find(".area_name").val()
+    id = $(this).parent().data("id")
+    if(name.length < 1){
+      alert("名称不能为空")
+    }
+    else{
+      $.post("<%= submit_area_operation_stadium_path %>", {area_id: id, area_name: name}, function(data){
+        if(data.success)
+          refresh_list()
+      })
+    }
+  }) //创建或修改区域名称
+
+  $_blockDelete = false;
+  $(".areas").on("click", ".del_area", function(){
+    id = $(this).parent().data("id")
+    if(id && !$_blockDelete){
+      $_blockDelete = true;
+      if(confirm('确定要删除区域吗?')){
+        $.post("<%= del_area_operation_stadium_path %>", {area_id: id, _method: 'delete'}, function(data){
+          if(data.success)
+            refresh_list()
+            $_blockDelete = false;
+        })
+      }
+    }
+    else{
+      $(this).parents("tr").first().remove()
+    }
+  }) //删除区域
+})(jQuery);
+
+</script>

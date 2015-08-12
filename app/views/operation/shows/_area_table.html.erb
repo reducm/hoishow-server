@@ -1,0 +1,57 @@
+<%# encoding: utf-8 %>
+
+<% show.areas.each do |area| %>
+  <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
+  <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
+  <tr>
+    <% if show.selected? %>
+      <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control' %></td>
+      <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control' %></td>
+      <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control' %></td>
+      <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+      <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">
+        <%= link_to "修改", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
+        <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+        <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-info' if can? :set_channels, current_admin %>
+      </td>
+    <% elsif show.selectable? %>
+      <td><%= area.name %></td>
+      <td><%= show.seats.where(area_id: area.id, status: Ticket::seat_types[:avaliable]).count %></td>
+      <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+      <td data-id="<%= area.id %>">
+        <%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id), class: 'btn btn-default' %>
+        <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>
+
+<!-- Modal -->
+<div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="setChannelModalLabel">设置渠道</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag do %>
+          <%= check_box_tag 'check_all' %>
+          <%= label_tag 'check_all', '全选' %>
+          <%= check_box_tag 'anti_all' %>
+          <%= label_tag 'anti_all', '反选' %>
+          <div class='channels'>
+            <%= check_box_tag 'channel_hoishow', 'hoishow' %>
+            <%= label_tag 'channel_hoishow', '自有'%>
+            <% ApiAuth.other_channels.each do |channel| %>
+              <%= check_box_tag "channel_#{channel.user}", channel.id %>
+              <%= label_tag "channel_#{channel.user}", channel.user %>
+            <% end %>
+          </div>
+          <%= hidden_field_tag 'area_id' %>
+          <%= submit_tag '提交', class: 'btn btn-primary submit_channel'%>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

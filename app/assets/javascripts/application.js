@@ -12,5 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
+//= require dataTables/jquery.dataTables
+//= require jquery-fileupload/basic
 //= require_tree .
