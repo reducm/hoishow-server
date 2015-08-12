@@ -8,7 +8,7 @@ set :deploy_via, :remote_cache
 set :repo_url, "git@git.bestapp.us:root/hoishow-server.git"
 
 set :scm, :git
-set :branch, "staging"
+set :branch, "master"
 
 set :use_sudo, false
 set :user, 'deploy'
