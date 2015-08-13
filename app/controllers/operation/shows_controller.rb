@@ -153,7 +153,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @seats = @show.seats.seat_map.where(area_id: @area.id)
+    @seats = @show.seats.where(area_id: @area.id)
     @channels = ApiAuth.other_channels
   end
 
