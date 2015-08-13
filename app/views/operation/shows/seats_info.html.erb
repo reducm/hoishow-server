@@ -20,7 +20,7 @@
   <div class="seats-box">
     <div class="front"><h4>舞台</h4></div>
     <ul class="list-unstyled seats">
-      <% if @seats.any? %>
+      <% if @seats.any? && @seats.maximum('row').present? %>
         <% @seats.maximum('row').times.each do |row| %>
           <li class="row_<%= row + 1 %>">
             <% @seats.where(row: row + 1).each do |seat| %>
