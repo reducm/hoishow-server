@@ -25,6 +25,9 @@ class Order < ActiveRecord::Base
 
   paginates_per 10
 
+  delegate :ticket_type, to: :show
+  delegate :seat_type, to: :show
+
   enum status: {
     pending: 0, #未支付
     paid: 1, #已支付
