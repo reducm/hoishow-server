@@ -39,7 +39,7 @@ class Ticket < ActiveRecord::Base
 
   protected
   def generate_code
-    if self.code.blank?
+    if self.code.blank? && self.order.ticket_type == 'e_ticket'
       loop do
         code = SecureRandom.hex(4)
         unless Ticket.where(code: code).exists?
