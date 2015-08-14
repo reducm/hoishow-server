@@ -1,25 +1,11 @@
-if Rails.env.development? || Rails.env.test?
-  Sidekiq.configure_server do |config|
-    config.redis = { url: 'redis://localhost:6379/12'  }
-  end
+redis_host = Rails.env.production? ? 'redis://10.6.21.209:6379' : 'redis://127.0.0.1:6379'
 
-  Sidekiq.configure_client do |config|
-    config.redis = { url: 'redis://localhost:6379/12'  }
-  end
-elsif Rails.env.staging?
-  Sidekiq.configure_client do |config|
-    config.redis = { :size => 2, :namespace => 'hoishowsidekiq_staging' }
-  end
-  Sidekiq.configure_server do |config|
-    config.redis = { :size => 25, :namespace => 'hoishowsidekiq_staging' }
-  end
-elsif Rails.env.production?
-  Sidekiq.configure_client do |config|
-    config.redis = { :size => 2, :namespace => 'hoishowsidekiq_production' }
-  end
-  Sidekiq.configure_server do |config|
-    config.redis = { :size => 25, :namespace => 'hoishowsidekiq_production' }
-  end
+
+Sidekiq.configure_client do |config|
+  config.redis = { url: redis_host, size: 2, namespace: 'hoishowsidekiq' }
+end
+Sidekiq.configure_server do |config|
+  config.redis = { url: redis_host, size: 25, namespace: 'hoishowsidekiq' }
 end
 
 Sidekiq.logger = Yell.new do |l|
