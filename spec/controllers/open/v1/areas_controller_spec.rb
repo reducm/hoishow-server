@@ -31,7 +31,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
         expect(d[:id]).to eq a.id
         expect(d[:name]).to eq a.name
         expect(d[:stadium_id]).to eq a.stadium_id
-        expect(d[:seats_count].to_d).to eq a.seats_count.to_i
+        expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
         # expect(d[:created_at].to_d).to eq a.created_at.to_ms
         # expect(d[:updated_at]).to eq a.updated_at.to_ms
         expect(d[:price]).to eq relation.price.to_f
@@ -70,7 +70,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
       expect(d[:id]).to eq a.id
       expect(d[:name]).to eq a.name
       expect(d[:stadium_id]).to eq a.stadium_id
-      expect(d[:seats_count].to_d).to eq a.seats_count.to_i
+      expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
       # expect(d[:created_at].to_d).to eq a.created_at.to_ms
       # expect(d[:updated_at]).to eq a.updated_at.to_ms
       expect(d[:price]).to eq relation.price.to_f
