@@ -2,7 +2,7 @@
 class Open::V1::ShowsController < Open::V1::ApplicationController
   # 演出列表
   def index
-    @shows = Show.all
+    @shows = Show.is_display
   end
 
   # 演出信息查询
