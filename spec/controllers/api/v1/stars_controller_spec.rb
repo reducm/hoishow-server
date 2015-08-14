@@ -5,7 +5,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#index without user" do
     before('each') do
-      100.times {create :star}
+      10.times {create :star}
     end
 
     it "should order by position" do
@@ -36,7 +36,7 @@ RSpec.describe Api::V1::StarsController, :type => :controller do
 
   context "#index paginate test" do
     before('each') do
-      100.times {create :star}
+      10.times {create :star}
     end
 
     it "should get 20 stars without user" do
