@@ -16,7 +16,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
     before('each') do
       15.times do
         area = create :area, stadium: stadium
-        show.show_area_relations.create(area_id: area.id, channels: 'bike', seats_count: 60, left_seats: 60)
+        show.show_area_relations.create(area_id: area.id, channels: 'bike_ticket', seats_count: 60, left_seats: 60)
       end
     end
 
@@ -31,11 +31,11 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
         expect(d[:id]).to eq a.id
         expect(d[:name]).to eq a.name
         expect(d[:stadium_id]).to eq a.stadium_id
-        expect(d[:seats_count].to_d).to eq a.seats_count.to_i
+        expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
         # expect(d[:created_at].to_d).to eq a.created_at.to_ms
         # expect(d[:updated_at]).to eq a.updated_at.to_ms
         expect(d[:price]).to eq relation.price.to_f
-        expect(d[:is_sold_out]).to eq relation.is_sold_out && !relation.channels.include?('bike')
+        expect(d[:is_sold_out]).to eq relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
         expect(d[:seats_left]).to eq show.area_seats_left(a)
         expect(d[:seats_map]).to eq seats_map_path(show_id: show.id, area_id: a.id)
         d[:seats_info].each do |s|
@@ -60,7 +60,7 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
   context "#action show" do
     it 'should return current area with current id' do
       a = create :area, stadium: stadium
-      show.show_area_relations.create(area_id: a.id, channels: 'bike', seats_count: 60, left_seats: 60)
+      show.show_area_relations.create(area_id: a.id, channels: 'bike_ticket', seats_count: 60, left_seats: 60)
 
       get :show, encrypted_params_in_open({id: a.id, show_id: show.id})
 
@@ -70,11 +70,11 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
       expect(d[:id]).to eq a.id
       expect(d[:name]).to eq a.name
       expect(d[:stadium_id]).to eq a.stadium_id
-      expect(d[:seats_count].to_d).to eq a.seats_count.to_i
+      expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
       # expect(d[:created_at].to_d).to eq a.created_at.to_ms
       # expect(d[:updated_at]).to eq a.updated_at.to_ms
       expect(d[:price]).to eq relation.price.to_f
-      expect(d[:is_sold_out]).to eq relation.is_sold_out && !relation.channels.include?('bike')
+      expect(d[:is_sold_out]).to eq relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
       expect(d[:seats_left]).to eq show.area_seats_left(a)
       expect(d[:seats_map]).to eq seats_map_path(show_id: show.id, area_id: a.id)
     end
