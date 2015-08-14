@@ -43,3 +43,6 @@ config/database.yml
 
 # ignore local precompile assets file
 config/deploy/assets/
+
+# ignore rvmrc
+.rvmrc
