@@ -5,7 +5,6 @@ class Api::V1::ShowsController < Api::V1::ApplicationController
   skip_before_filter :api_verify, only: [:click_seat]
 
   def index
-    params[:page] ||= 1
     @shows = Show.is_display.page(params[:page])
   end
 
