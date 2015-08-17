@@ -6,6 +6,7 @@ class Operation::ApplicationController < ApplicationController
   protected
   def check_login!
     unless current_admin
+      session[:request_page] = request.original_url
       flash[:notice] = "Please login"
       redirect_to operation_signin_url
     end
