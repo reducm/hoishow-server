@@ -56,7 +56,6 @@ class Order < ActiveRecord::Base
     state :refund
     state :outdate
 
-    # Wxpay调用方法  order.pre_pay!({payment_type: 'wxpay', trade_id: query_params["transaction_id"]})
     # Alipay调用方法 order.pre_pay!({payment_type: 'alipay', trade_id: alipay_params["trade_no"]})
     event :pre_pay, :after => :set_payment_to_success do
       transitions :from => :pending, :to => :paid
