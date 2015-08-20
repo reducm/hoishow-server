@@ -48,19 +48,19 @@
     <div class="form-group">
       <% if @show.poster_url %>
         <%= label_tag "当前演出海报" %>
-        <%= image_tag(@show.poster_url, size: "700x382")  %>
+        <%= image_tag(@show.poster_url, width: '640')  %>
       <% end %>
     </div>
-      <%= f.input :poster, label: "上传演出海报(建议大小:700x382)", input_html: {class: "image-uploader"} %>
+      <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <div class="form-group">
       <% if @show.ticket_pic_url %>
         <%= label_tag "当前门票图片" %>
-        <%= image_tag(@show.ticket_pic_url, size: "258x258")  %>
+        <%= image_tag(@show.ticket_pic_url, size: "270x270")  %>
       <% end %>
     </div>
-      <%= f.input :ticket_pic, label: "上传门票图片(建议大小:258x258)", input_html: {class: "image-uploader"} %>
+      <%= f.input :ticket_pic, label: "上传门票图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
       <%= f.input :description, label: '图文描述' %>
-    
+
     <div class="form-group">
       <div class="col-xs-1">
       <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
