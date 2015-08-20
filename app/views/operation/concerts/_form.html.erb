@@ -47,10 +47,10 @@
       <%= label_tag "当前海报" %>
   </div>
   <div class="form-group">
-      <%= image_tag(concert.poster_url, width: "700") %>
+      <%= image_tag(concert.poster_url, width: "640") %>
   </div>
     <% end %>
-    <%= f.input :poster, label: "上传演出海报(建议大小:700x382)", input_html: {class: "image-uploader"} %>
+    <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <% if params[:action] == "new" && params[:star_id].present? %>
       <%= hidden_field_tag "default_star_id", star.id, id: 'hf_default_sid' %>
       <%= hidden_field_tag "default_star_name", star.name, id: 'hf_default_sname' %>

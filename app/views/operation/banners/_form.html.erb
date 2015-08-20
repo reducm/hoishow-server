@@ -15,10 +15,10 @@
     <div class="form-group">
     <% if banner.poster_url %>
       <%= label_tag "当前海报" %>
-      <%= image_tag(banner.poster_url, width: "750") %>
+      <%= image_tag(banner.poster_url, width: "640") %>
     <% end %>
     </div>
-    <%= f.input :poster, label:"海报 (建议大小:750x472)", input_html: {class: "image-uploader"} %>
+    <%= f.input :poster, label:"海报 (建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <div class="form-group">
       <%= f.submit class: 'btn btn-primary' %>
     </div>
