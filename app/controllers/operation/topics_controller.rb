@@ -6,7 +6,6 @@ class Operation::TopicsController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    params[:page] ||= 1
     @topics = Topic.page(params[:page])
     @stars = Star.all
   end

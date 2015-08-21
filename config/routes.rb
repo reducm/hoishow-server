@@ -226,6 +226,7 @@ Rails.application.routes.draw do
         post :set_startup_status
       end
     end
+    resources :feedbacks, only: [:index, :destroy]
     #TODO api_auth
   end
 
