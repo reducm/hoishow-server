@@ -155,6 +155,7 @@ zh-CN:
     topics: "互动"
     comments: "评论"
     videos: '视频'
+    feedbacks: '反馈'
   views:
     pagination:
       first: '首页'
