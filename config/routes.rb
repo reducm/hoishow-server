@@ -27,6 +27,8 @@ Rails.application.routes.draw do
 
       get "express_detail" => "express_detail#index"
 
+      post 'feedbacks' => "feedbacks#create"
+
       resources :admins do
         collection do
           post "sign_in"

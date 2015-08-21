@@ -7,6 +7,26 @@
 
 --------
 
+## 反馈
+[/api/v1/feedbacks]()
+
+type `POST`
+
+description: 用户提交意见反馈
+
+必选参数
+
+```javascript
+   {
+     content: 'hello' //反馈内容
+     mobile: '13888888888' //联系方式
+   }
+```
+
+成功时返回: `{msg: "ok"}` 返回状态码200
+
+--------
+
 ## 点击选座
 [/api/v1/shows/[:id]/click_seat]()
 
