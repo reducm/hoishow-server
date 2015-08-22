@@ -24,7 +24,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       end
 
       get :index, encrypted_params_in_open
-
+      
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
       json[:data].each do |d|
