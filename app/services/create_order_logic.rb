@@ -94,7 +94,7 @@ class CreateOrderLogic
       # pending_orders = get_pending_orders_ids
 
       # set order attr
-      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity})
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity, ticket_type: show.ticket_type})
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
@@ -109,7 +109,7 @@ class CreateOrderLogic
     if check_inventory # 库存检查
       # pending_orders = get_pending_orders_ids
 
-      order_attrs = prepare_order_attrs({tickets_count: @quantity})
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, ticket_type: show.ticket_type})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
       # create_order and create_tickets and callback
       begin
