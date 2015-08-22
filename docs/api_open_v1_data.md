@@ -401,11 +401,8 @@ description: 订单支付成功确认出票
 ```javascript
   {
     user_name: 1, //收货人
-    user_mobile: '13333333333' //收货手机
-    province: '广东省'
-    city: '广州市'
-    district: '海珠区'
-    address: '新港东路2433号'
+    user_mobile: '13333333333' //收货人电话
+    address: '广东省 广州市 海珠区 新港东路2433号'
   }
 ```
 
