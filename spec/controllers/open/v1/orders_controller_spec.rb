@@ -148,7 +148,6 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         expect(d[:show_time]).to eq order.show_time.to_i
         expect(d[:ticket_type]).to eq order.show.ticket_type
         expect(d[:qr_url]).to eq show_for_qr_scan_api_v1_order_path(order)
-        expect(d[:user_mobile]).to eq '15900001111'
         # expect(d[:valid_time]).to eq order.valid_time.to_i
         # about tickets
         expect(d[:tickets]).not_to be_blank
@@ -228,7 +227,6 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         d = json[:data]
         expect(d[:out_id]).to eq order.out_id
         expect(d[:amount]).to eq order.amount.to_f.to_s
-        expect(d[:user_mobile]).to eq '15900001111'
 
         expect(d[:tickets]).not_to be_blank
         expect(d[:tickets].size).to eq show2.seats.count
@@ -340,7 +338,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     it 'will return success when confiemed' do
       expect(order.status).to eq 'pending'
       post :confirm, params # user id ?
-      
+
       expect(json[:result_code]).to eq 0
       order.reload
       expect(order.status).to eq 'success'
@@ -377,8 +375,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       show.update_attributes ticket_type: 'r_ticket'
       show.reload
       new_params = { user_name: 'xx先生', user_mobile: '15900001111',
-       province: '广东省', city: '广州市', district: '海珠区', address: '呵呵',
-       mobile: order.user_mobile}
+       address: '广东省广州市海珠区呵呵', mobile: order.user_mobile}
       pa = sign_params(new_params).tap { |p| p[:out_id] = order.out_id }
       expect(order.status).to eq 'pending'
       post :confirm, pa # user id ?
