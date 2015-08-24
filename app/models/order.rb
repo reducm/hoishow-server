@@ -42,8 +42,13 @@ class Order < ActiveRecord::Base
     bike_ticket: 2 # 单车电影
   }
 
+  enum ticket_type: {
+    e_ticket: 0, #电子票
+    r_ticket: 1, #实体票
+  }
+
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
-  scope :orders_with_r_tickets, ->{ where("status = ? or status = ?", statuses[:paid], statuses[:success]) }
+  scope :orders_with_r_tickets, ->{ where("ticket_type = ? and (status = ? or status = ?)", ticket_types[:r_ticket], statuses[:paid], statuses[:success]).order("created_at desc") }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
   scope :paid_refund_orders, ->{ where("created_at < ? and status = ?", Time.now - 30.minutes, statuses[:paid]) }
   scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, statuses[:success]) }

@@ -21,6 +21,7 @@
 #= require operation/messages
 #= require operation/stadiums
 #= require operation/startup
+#= require operation/feedbacks
 #= require dataTables/jquery.dataTables
 #= require operation/notify
 #= require jquery-fileupload/basic

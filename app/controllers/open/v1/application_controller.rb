@@ -34,6 +34,7 @@ class Open::V1::ApplicationController < ApplicationController
   end
 
   def find_auth!
+    return true if Rails.env.development?
     @auth = Rails.cache.fetch("api_auth_#{params[:api_key]}") do
       ApiAuth.where(key: params[:api_key]).first
     end
@@ -44,7 +45,7 @@ class Open::V1::ApplicationController < ApplicationController
   end
 
   def api_verify!
-    # return true if Rails.env.development?
+    return true if Rails.env.development?
 
     code, msg = @auth.open_api_auth(auth_params)
 

@@ -66,12 +66,8 @@
             <%= link_to "查看详情", operation_order_path(order) %>
           </td>
         </tr>
-      <%end%>
+      <% end %>
     </tbody>
   </table>
-  <%= paginate @r_ticket_orders%>
+  <%= paginate @r_ticket_orders, param_name: 'r_ticket_orders_page' %>
 </div>
-
-
-
-

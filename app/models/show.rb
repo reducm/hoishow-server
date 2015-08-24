@@ -146,6 +146,22 @@ class Show < ActiveRecord::Base
     stars.first
   end
 
+  def get_price_range
+    price_array = if selected?
+                    show_area_relations.map{|relation| relation.price.to_i}
+                  elsif selectable?
+                    seats.map{|seat| seat.price.to_i}
+                  end
+
+    price_array = price_array.uniq.sort if price_array.present?
+
+    if price_array.size <= 1
+      price_array.first.to_i.to_s
+    else
+      "#{price_array.first} - #{price_array.last}"
+    end
+  end
+
   private
   def valids_price
     if min_price.present? && max_price.present?

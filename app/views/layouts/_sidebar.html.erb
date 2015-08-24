@@ -101,6 +101,11 @@
             <% end %>
           </li>
           <li>
+            <%= link_to operation_feedbacks_path do %>
+              <i class="fa fa-file fa-fw"></i> 反馈管理
+            <% end %>
+          </li>
+          <li>
             <a href="#"><i class="fa fa-cog fa-fw"></i> 系统<span class="fa arrow"></span></a>
             <ul class="nav nav-second-level">
               <% if can? :manage, current_admin %>
@@ -127,4 +132,3 @@
     <%= yield %>
   </div>
 </div>
-
