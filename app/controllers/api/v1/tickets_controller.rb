@@ -15,7 +15,7 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
         check_ticket_status_and_update
 
         # Bike演出验票回调
-        if params[:notify_url]
+        if params[:notify_url].present?
           url = "#{params[:notify_url]}?open_trade_no=#{@tickets.first.order.open_trade_no}"
           RestClient.get(url)
         end
