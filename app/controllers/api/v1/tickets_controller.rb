@@ -13,12 +13,7 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
       @tickets = Ticket.where(code: params[:codes].split(','), status: Ticket::statuses["success"])
       if @tickets.any?
         check_ticket_status_and_update
-
-        # Bike演出验票回调
-        if params[:notify_url].present?
-          url = "#{params[:notify_url]}?open_trade_no=#{@tickets.first.order.open_trade_no}"
-          RestClient.get(url)
-        end
+        NotifyTicketCheckedWorker.perform_async(@tickets.first.order.open_trade_no)
 
         render json: {msg: "ok"}, status: 200
       else

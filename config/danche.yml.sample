@@ -1,0 +1,11 @@
+development:
+  notify_url: 'http://localhost:5000/api/v2/business_orders/hoishow_notify'
+
+test:
+  notify_url: 'http://localhost:5000/api/v2/business_orders/hoishow_notify'
+
+production:
+  notify_url: ''
+
+staging:
+  notify_url: ''
