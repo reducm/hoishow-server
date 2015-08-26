@@ -4,12 +4,16 @@
   <thead>
     <tr>
       <th>订单号</th>
-      <th>演出名称</th>
-      <th>用户 / 手机号</th>
-      <th>订单类型</th>
-      <th>订单时间</th>
+      <th>演出</th>
+      <th>下单平台</th>
+      <th>下单来源</th>
+      <th>门票类型</th>
+      <th>下单时间</th>
+      <th>付款时间</th>
+      <th>购票数目</th>
+      <th>总金额</th>
+      <th>手机号</th>
       <th>订单状态</th>
-      <th>总价</th>
       <th>收货人姓名</th>
       <th>收货人电话</th>
       <th>收货人地址</th>
@@ -18,20 +22,24 @@
   </thead>
   <tbody>
     <% @orders.each do|order| %>
+      <% user = order.user %>
       <tr>
         <td><%= order.out_id%></td>
-        <% user = order.user %>
-        <td><%= order.show_name %></td>
-        <td><%= order.get_username(user) %></td>
+        <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
+        <td><%= order.buy_origin %></td>
+        <td><%= order.channel_view %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
-        <td><%= order.created_at.try(:strfcn_time) %></td>
-        <td class="order_status_cn"><%= order.status_cn %></td>
+        <td><%= order.created_at_format %></td>
+        <td><%= order.generate_ticket_at_format %></td>
+        <td><%= order.tickets_count %></td>
         <td><%= order.amount %></td>
+        <td><%= link_to order.get_username(user), operation_user_path(user) %></td>
+        <td class="order_status_cn"><%= order.status_cn %></td>
         <% if order.show.r_ticket? %>
-        <td><%= order.user_name  %></td>
-        <td><%= order.user_mobile %></td>
-        <td width="400px"><%= order.user_address %></td>
-        <td id="td_express_id_<%= order.id %>"><%= order.express_id %></td>
+          <td><%= order.user_name  %></td>
+          <td><%= order.user_mobile %></td>
+          <td width="400px"><%= order.user_address %></td>
+          <td id="td_express_id_<%= order.id %>"><%= order.express_id %></td>
         <% end %>
       </tr>
     <% end %>
