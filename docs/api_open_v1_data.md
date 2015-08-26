@@ -224,15 +224,39 @@ description: 获取指定区域的详情
       price: 1,  //票价
       seats_left: 10,  //剩余票数
       is_sold_out: false   //是否卖完
-      seats_info:
-      [{
-        row: 1,
-        column: 1,
-        status: 'avaliable',
-        seat_name: '1排1座',
-        price: 100
-      }, ...]      //座位信息
     }
+  }
+```
+
+-----------------------------------
+###座位信息
+[/api/open/v1/areas/:id/seats_info]
+
+type `GET`
+
+description: 区域的所有座位信息
+
+必须参数
+```javascript
+  {
+    show_id: 1, //演出id
+  }
+```
+
+成功时返回
+```javascript
+  {
+    result_code: 0,
+    data: [
+      {
+        id: 1 //座位id
+        row: 1 //行号
+        column: 1 //列号
+        name: '1排1座' //座位号
+        price: 1 //价格
+        status: 'avaliable' //座位状态
+      },......
+    ]
   }
 ```
 
