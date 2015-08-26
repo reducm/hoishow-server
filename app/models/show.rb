@@ -151,6 +151,8 @@ class Show < ActiveRecord::Base
                     show_area_relations.map{|relation| relation.price.to_i}
                   elsif selectable?
                     seats.map{|seat| seat.price.to_i}
+                  else
+                    []
                   end
 
     price_array = price_array.uniq.sort if price_array.present?
