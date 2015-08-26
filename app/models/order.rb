@@ -1,11 +1,11 @@
 #encoding: UTF-8
 
-# out_id        订单号 
-# remark        备注      
-# out_trade_no  交易单号 
+# out_id        订单号
+# remark        备注
+# out_trade_no  交易单号
 # buy_origin    下单平台: ios, android
-# channel       渠道(下单来源): hoishow客户端(ios), hoishow客户端(android), bike_ticket       
-# open_trade_no 渠道为非hoishow客户端时才会有, 对应第三方传过来的第三方订单号, 方便对账, 暂时只有单车 
+# channel       渠道(下单来源): 创建order时的 渠道 参数
+# open_trade_no 渠道为非hoishow客户端时才会有, 对应第三方传过来的第三方订单号, 方便对账, 暂时只有单车
 
 class Order < ActiveRecord::Base
   include Operation::OrdersHelper
@@ -201,12 +201,12 @@ class Order < ActiveRecord::Base
       all.each do |o|
         if o.show.r_ticket?
           # 实体票
-          csv << [o.out_id, o.show_name, o.buy_origin, o.channel_view, o.show.try(:ticket_type_cn), o.created_at_format,
+          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
                   o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
                   o.user_name, o.user_mobile, o.user_address, o.express_id]
         else
           # 电子票
-          csv << [o.out_id, o.show_name, o.buy_origin, o.channel_view, o.show.try(:ticket_type_cn), o.created_at_format,
+          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
                   o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
         end
       end
@@ -339,19 +339,6 @@ class Order < ActiveRecord::Base
 
   def show_time
     show.show_time
-  end
-
-  def channel_view
-    case channel 
-    when "ios"
-      "hoishow客户端(ios)"
-    when "android"
-      "hoishow客户端(android)"
-    when "bike_ticket"
-      "单车"
-    else
-      "第三方"
-    end
   end
 
   private

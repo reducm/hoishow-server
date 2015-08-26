@@ -27,7 +27,7 @@
         <td><%= order.out_id%></td>
         <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
         <td><%= order.buy_origin %></td>
-        <td><%= order.channel_view %></td>
+        <td><%= order.channel %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
         <td><%= order.created_at_format %></td>
         <td><%= order.generate_ticket_at_format %></td>
