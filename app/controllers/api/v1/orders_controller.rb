@@ -17,7 +17,7 @@ class Api::V1::OrdersController < Api::V1::ApplicationController
   end
 
   def show_for_qr_scan
-    @order = Order.where(out_id: params[:id]).first
+    @order = Order.where("out_id = ? or open_trade_no = ?", params[:id], params[:id]).first
   end
 
   def pay
