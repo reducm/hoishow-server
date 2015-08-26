@@ -92,12 +92,4 @@ type: `PATCH`
   }
 ```
 
-可选参数
-
-```javascript
-   {
-     notify_url: 'http://dan-che.com/notify' //第三方回调地址
-   }
-```
-
 成功时返回: `{msg: "ok"}` 返回状态码200
