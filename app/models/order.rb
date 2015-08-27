@@ -1,4 +1,12 @@
 #encoding: UTF-8
+
+# out_id        订单号
+# remark        备注
+# out_trade_no  交易单号
+# buy_origin    下单平台: ios, android
+# channel       渠道(下单来源): 创建order时的 渠道 参数
+# open_trade_no 渠道为非hoishow客户端时才会有, 对应第三方传过来的第三方订单号, 方便对账, 暂时只有单车
+
 class Order < ActiveRecord::Base
   include Operation::OrdersHelper
   include ModelAttrI18n
@@ -37,9 +45,8 @@ class Order < ActiveRecord::Base
   }
 
   enum channel: {
-    ios: 0, # 客户端
-    android: 1, # 客户端
-    bike_ticket: 2 # 单车电影
+    hoishow: 0, # Hoishow
+    bike_ticket: 1 # 单车电影
   }
 
   enum ticket_type: {
@@ -187,12 +194,19 @@ class Order < ActiveRecord::Base
   #2. new order执行order.set_tickets_and_price(show和area的中间表数组), 例如买三张三区，所以就扔三个三区的中间表数组[show_area_relation, show_area_relation, show_area_relation]
   def self.to_csv(options = {})
     CSV.generate(options) do |csv|
-      csv << ["订单号", "演出名称", "用户 / 手机号", "票的类型", "订单时间", "状态", "总价", "收货人姓名", "收货人电话", "收货人地址", "票的状态", "快递单号"]
+      csv << ["订单号", "演出", "下单平台", "下单来源", "门票类型", "下单时间",
+              "付款时间", "购票数量", "总金额", "手机号", "订单状态",
+              "收货人姓名", "收货人电话", "收货人地址", "快递单号"]
       all.each do |o|
         if o.show.r_ticket?
-          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount, o.user_name, o.user_mobile, o.user_address, o.express_id]
+          # 实体票
+          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+                  o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
+                  o.user_name, o.user_mobile, o.user_address, o.express_id]
         else
-          csv << [o.out_id, o.show_name, o.get_username(o.user), o.show.try(:ticket_type_cn), o.created_at.try(:strfcn_time), o.status_cn, o.amount]
+          # 电子票
+          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+                  o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
         end
       end
     end
@@ -216,9 +230,10 @@ class Order < ActiveRecord::Base
     def init_and_create_tickets_by_relations(show, order_attrs, relation)
       Order.transaction do
         # create order
-        order = Order.init_from_show(show, order_attrs)
-        order.save!
         quantity = order_attrs[:tickets_count]
+        order = Order.init_from_show(show, order_attrs)
+        order.ticket_info = "#{relation.area.name} - #{quantity}张"
+        order.save!
 
         # update 库存
         # 加乐观锁
@@ -253,6 +268,7 @@ class Order < ActiveRecord::Base
         order_attrs[:amount] = tickets.sum(:price)
         # create order
         order = Order.init_from_show(show, order_attrs)
+        order.ticket_info = tickets.map(&:seat_name).join('|')
         order.save!
         # 按 area_id 分组, 或者换种做法
         area_ids_hash = tickets.group(:area_id).count
@@ -310,6 +326,16 @@ class Order < ActiveRecord::Base
   def show_time_format
     return nil if self.show_time.nil?
     show_time.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def created_at_format
+    return nil if self.created_at.nil?
+    created_at.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def generate_ticket_at_format
+    return nil if self.generate_ticket_at.nil?
+    generate_ticket_at.strftime("%Y年%m月%d日%H:%M")
   end
 
   def show_time

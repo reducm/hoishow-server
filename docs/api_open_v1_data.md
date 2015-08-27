@@ -372,6 +372,7 @@ description: 创建订单并锁座
     bike_user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
     bike_out_id: '123' //渠道订单号
+    buy_origin: 'ios' //下单平台
 
     #选区
     area_id: 1, //区域id
