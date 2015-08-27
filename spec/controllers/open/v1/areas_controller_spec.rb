@@ -32,8 +32,6 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
         expect(d[:name]).to eq a.name
         expect(d[:stadium_id]).to eq a.stadium_id
         expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
-        # expect(d[:created_at].to_d).to eq a.created_at.to_ms
-        # expect(d[:updated_at]).to eq a.updated_at.to_ms
         expect(d[:price]).to eq relation.price.to_f
         expect(d[:is_sold_out]).to eq relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
         expect(d[:seats_left]).to eq show.area_seats_left(a)
@@ -63,8 +61,6 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
       expect(d[:name]).to eq a.name
       expect(d[:stadium_id]).to eq a.stadium_id
       expect(d[:seats_count].to_i).to eq relation.seats_count.to_i
-      # expect(d[:created_at].to_d).to eq a.created_at.to_ms
-      # expect(d[:updated_at]).to eq a.updated_at.to_ms
       expect(d[:price]).to eq relation.price.to_f
       expect(d[:is_sold_out]).to eq relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
       expect(d[:seats_left]).to eq show.area_seats_left(a)
@@ -83,6 +79,18 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
 
       expect(response.status).to eq 404
       expect(json[:message]).to eq '找不到该数据'
+    end
+  end
+
+  context "#action seats_info" do
+    it "should return current area seats data" do
+      a = create :area, stadium: stadium
+      show.show_area_relations.create(area_id: a.id, channels: 'bike_ticket', seats_count: 60, left_seats: 60)
+      10.times {create :seat, area: a, show: show}
+
+      get :seats_info, encrypted_params_in_open({id: a.id, show_id: show.id})
+      expect(json[:result_code]).to eq 0
+      expect(json[:data].size).to eq 10
     end
   end
 end

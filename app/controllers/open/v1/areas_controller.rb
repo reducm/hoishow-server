@@ -10,4 +10,9 @@ class Open::V1::AreasController < Open::V1::ApplicationController
   def show
     @area = @show.areas.includes(:seats).find(params[:id])
   end
+
+  # 座位信息查询
+  def seats_info
+    @area = @show.areas.includes(:seats).find(params[:id])
+  end
 end

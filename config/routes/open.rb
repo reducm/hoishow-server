@@ -10,7 +10,9 @@ module Routes
               resources :cities, only: [:index]
               resources :stadiums, only: [:index, :show]
               resources :shows, only: [:index, :show]
-              resources :areas, only: [:index, :show]
+              resources :areas, only: [:index, :show] do
+                get :seats_info, on: :member
+              end
               # resources :seats, only: [:index, :show]
               # api about orders
               resources :orders, only: [:create] do
