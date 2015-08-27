@@ -45,9 +45,8 @@ class Order < ActiveRecord::Base
   }
 
   enum channel: {
-    ios: 0, # 客户端
-    android: 1, # 客户端
-    bike_ticket: 2 # 单车电影
+    hoishow: 0, # Hoishow
+    bike_ticket: 1 # 单车电影
   }
 
   enum ticket_type: {
@@ -231,9 +230,10 @@ class Order < ActiveRecord::Base
     def init_and_create_tickets_by_relations(show, order_attrs, relation)
       Order.transaction do
         # create order
-        order = Order.init_from_show(show, order_attrs)
-        order.save!
         quantity = order_attrs[:tickets_count]
+        order = Order.init_from_show(show, order_attrs)
+        order.ticket_info = "#{relation.area.name} - #{quantity}张"
+        order.save!
 
         # update 库存
         # 加乐观锁
@@ -268,6 +268,7 @@ class Order < ActiveRecord::Base
         order_attrs[:amount] = tickets.sum(:price)
         # create order
         order = Order.init_from_show(show, order_attrs)
+        order.ticket_info = tickets.map(&:seat_name).join('|')
         order.save!
         # 按 area_id 分组, 或者换种做法
         area_ids_hash = tickets.group(:area_id).count

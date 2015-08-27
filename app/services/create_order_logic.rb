@@ -128,14 +128,17 @@ class CreateOrderLogic
   end
 
   def prepare_order_attrs(attrs={})
-    attrs.merge!(channel: Order.channels[way], user_id: user.id)
+    attrs.merge!(user_id: user.id)
     # 按渠道来生成订单
 
     attrs.tap do |p|
       if ['ios', 'android'].include?(way) # app 端
+        p[:channel] = 0
         p[:buy_origin] = way
       elsif 'bike_ticket' == way # 单车电影
         # open_trade_no for 对账
+        p[:buy_origin] = options[:buy_origin]
+        p[:channel] = 1
         p[:open_trade_no] = options[:bike_out_id]
         p[:user_mobile] = options[:user_mobile]
       end
