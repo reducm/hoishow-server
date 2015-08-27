@@ -22,6 +22,7 @@
 #= require operation/stadiums
 #= require operation/startup
 #= require operation/feedbacks
+#= require operation/helps
 #= require dataTables/jquery.dataTables
 #= require operation/notify
 #= require jquery-fileupload/basic
@@ -48,6 +49,9 @@ $ ->
     scrollInput: false
     })
 
+  # 拉动排序, 调用jquery-ui的sortable
+  # 需要排序的在元素的class加入dragable_items
+  # 保存处理在controller
   $('.dragable_items').sortable(
     axis: 'y'
     handle: '.handle'

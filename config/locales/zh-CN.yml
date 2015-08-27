@@ -306,3 +306,7 @@ zh-CN:
         avatar: 头像
         poster: 海报
         description: 图文内容
+      help:
+        name: 名称
+        description: 内容
+        position: 排序
