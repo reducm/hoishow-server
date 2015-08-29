@@ -1,0 +1,33 @@
+<div class="nav">
+  <h1>参数配置</h1>
+  <%= link_to '新增参数', new_operation_site_setting_path, class: 'btn btn-default' %>
+  <div class="data-list">
+    <table class="table">
+      <thead>
+        <th>参数名</th>
+        <th>参数值</th>
+        <th>备注</th>
+        <th>操作</th>
+      </thead>
+      <% @data_list.each do |d| %>
+        <tr>
+          <td><%= d.common_key %></td>
+          <td><%= d.common_value %></td>
+          <td><%= d.remark %></td>
+          <td>
+            <% if can? :update, d %>
+              <% unless d.is_block %>
+                <%= link_to '编辑', edit_operation_site_setting_path(d) %>
+                <%= link_to '删除', "/operation/site_setting/#{d.id}", method: "delete", data: {confirm: "确定删除吗？"} %>
+              <% end %>
+              <% if can? :block, d %>
+                <% text = d.is_block ? '解除锁定' : '锁定' %>
+                <%= link_to text, set_block_operation_site_setting_path(d, is_block: !d.is_block), method: 'post' %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+</div>
