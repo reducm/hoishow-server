@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150827062007) do
+ActiveRecord::Schema.define(version: 20150829065751) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -157,8 +157,8 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.integer  "stadium_id",         limit: 4
     t.integer  "show_id",            limit: 4
     t.integer  "status",             limit: 4
-    t.datetime "created_at",                                                null: false
-    t.datetime "updated_at",                                                null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.string   "express_id",         limit: 255
     t.string   "user_address",       limit: 255
     t.string   "user_name",          limit: 255
@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.string   "refund_by",          limit: 255
     t.integer  "ticket_type",        limit: 4
     t.string   "ticket_info",        limit: 255
+    t.decimal  "postage",                          precision: 4,  scale: 2, default: 0.0
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -389,7 +390,7 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.datetime "last_sign_in_at"
     t.string   "avatar",             limit: 255
     t.string   "nickname",           limit: 255
-    t.integer  "sex",                limit: 4,   default: 2
+    t.integer  "sex",                limit: 4
     t.datetime "birthday"
     t.string   "salt",               limit: 255
     t.boolean  "has_set_password",   limit: 1
