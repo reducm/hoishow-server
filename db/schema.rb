@@ -11,8 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150827062007) do
-
+ActiveRecord::Schema.define(version: 20150829071522) do
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
     t.string   "name",               limit: 255
@@ -77,6 +76,15 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.string   "creator_type", limit: 255
   end
 
+  create_table "common_data", force: :cascade do |t|
+    t.string   "common_key",   limit: 255
+    t.string   "common_value", limit: 255
+    t.string   "remark",       limit: 255
+    t.boolean  "is_block",     limit: 1,   default: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
   create_table "concert_city_relations", force: :cascade do |t|
     t.integer  "concert_id",  limit: 4
     t.integer  "city_id",     limit: 4
@@ -128,6 +136,14 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "helps", force: :cascade do |t|
+    t.string   "name",        limit: 255
+    t.text     "description", limit: 65535
+    t.integer  "position",    limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer  "send_type",         limit: 4
     t.string   "title",             limit: 255
@@ -157,8 +173,8 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.integer  "stadium_id",         limit: 4
     t.integer  "show_id",            limit: 4
     t.integer  "status",             limit: 4
-    t.datetime "created_at",                                                null: false
-    t.datetime "updated_at",                                                null: false
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.string   "express_id",         limit: 255
     t.string   "user_address",       limit: 255
     t.string   "user_name",          limit: 255
@@ -173,6 +189,7 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.string   "refund_by",          limit: 255
     t.integer  "ticket_type",        limit: 4
     t.string   "ticket_info",        limit: 255
+    t.decimal  "postage",                          precision: 4,  scale: 2, default: 0.0
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -389,7 +406,7 @@ ActiveRecord::Schema.define(version: 20150827062007) do
     t.datetime "last_sign_in_at"
     t.string   "avatar",             limit: 255
     t.string   "nickname",           limit: 255
-    t.integer  "sex",                limit: 4,   default: 2
+    t.integer  "sex",                limit: 4
     t.datetime "birthday"
     t.string   "salt",               limit: 255
     t.boolean  "has_set_password",   limit: 1

@@ -13,7 +13,9 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
       @tickets = Ticket.where(code: params[:codes].split(','), status: Ticket::statuses["success"])
       if @tickets.any?
         check_ticket_status_and_update
-        NotifyTicketCheckedWorker.perform_async(@tickets.first.order.open_trade_no)
+        unless Rails.env.test? 
+          NotifyTicketCheckedWorker.perform_async(@tickets.first.order.open_trade_no)
+        end
 
         render json: {msg: "ok"}, status: 200
       else

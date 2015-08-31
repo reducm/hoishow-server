@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
 
   root to: 'pages#index'
+
+  get "/help" => 'pages#show_help'
+  get "/help/:position" => 'pages#show_sub_help'
+
   get "/about" => 'pages#about'
 
   get "/mobile" => 'pages#wap_index'
@@ -106,6 +110,12 @@ Rails.application.routes.draw do
     resources :sessions, only: [:new, :create, :destroy]
     match "/signin" => "sessions#new", via: [:get]
     match "/signout" => "sessions#destroy", via: [:delete]
+
+    resources :helps do
+      collection do
+        post :sort
+      end
+    end
 
     resources :banners do
       collection do
@@ -227,6 +237,9 @@ Rails.application.routes.draw do
       end
     end
     resources :feedbacks, only: [:index, :destroy]
+    resources :site_setting do
+      post :set_block, on: :member
+    end
     #TODO api_auth
   end
 
