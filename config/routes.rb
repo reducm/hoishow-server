@@ -6,10 +6,8 @@ Rails.application.routes.draw do
 
   root to: 'pages#index'
 
-  get "/help", controller: "pages", action: :show_help
-  Help.pluck(:position).each do |position|
-    get "/help/#{position}", controller: "pages", action: :show_sub_help
-  end
+  get "/help" => 'pages#show_help'
+  get "/help/:position" => 'pages#show_sub_help'
 
   get "/about" => 'pages#about'
 
