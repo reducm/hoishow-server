@@ -86,7 +86,7 @@ describe CreateOrderLogic do
 
     it 'will handle pending_orders' do
       pending_order = user.orders.init_from_show(@show1)
-      pending_order.channel = 'ios'
+      pending_order.channel = 'hoishow' 
       pending_order.save
       #pending_order.create_tickets_by_relations(@show1.show_area_relations.first, 1)
       expect(pending_order.status).to eq 'pending'
