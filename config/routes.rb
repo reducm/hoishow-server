@@ -5,6 +5,12 @@ Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
 
   root to: 'pages#index'
+
+  get "/help", controller: "pages", action: :show_help
+  Help.pluck(:position).each do |position|
+    get "/help/#{position}", controller: "pages", action: :show_sub_help
+  end
+
   get "/about" => 'pages#about'
 
   get "/mobile" => 'pages#wap_index'
@@ -106,6 +112,12 @@ Rails.application.routes.draw do
     resources :sessions, only: [:new, :create, :destroy]
     match "/signin" => "sessions#new", via: [:get]
     match "/signout" => "sessions#destroy", via: [:delete]
+
+    resources :helps do
+      collection do
+        post :sort
+      end
+    end
 
     resources :banners do
       collection do

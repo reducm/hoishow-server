@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+
+<% if @helps.any? %>
+  <% @helps.each do |help| %>
+    <p>
+      <%= link_to help.name, "/help/#{help.position}" %>
+    </p>
+  <% end %>
+<% else %>
+  <p>内容建设中</p>
+<% end %>
