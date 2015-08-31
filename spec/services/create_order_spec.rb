@@ -86,12 +86,6 @@ describe CreateOrderLogic do
 
     it 'will handle pending_orders' do
       pending_order = user.orders.init_from_show(@show1)
-      #enum channel: {
-        #hoishow: 0, # Hoishow
-        #bike_ticket: 1 # 单车电影
-      #}
-      # fix ./spec/services/create_order_spec.rb:87
-      #   'ios' is not a valid channel
       pending_order.channel = 'hoishow' 
       pending_order.save
       #pending_order.create_tickets_by_relations(@show1.show_area_relations.first, 1)
