@@ -237,6 +237,9 @@ Rails.application.routes.draw do
       end
     end
     resources :feedbacks, only: [:index, :destroy]
+    resources :site_setting do
+      post :set_block, on: :member
+    end
     #TODO api_auth
   end
 
