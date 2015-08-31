@@ -186,6 +186,7 @@ class Order < ActiveRecord::Base
     # 当全部票的状态都为 success
     if ticket_status.size == 1 && ticket_status[0] == Ticket::statuses['success']
       self.update(generate_ticket_at: Time.now)
+      NotifyTicketCheckedWorker.perform_async(open_trade_no)
     end
   end
 
