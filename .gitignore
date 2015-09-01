@@ -47,3 +47,6 @@ config/deploy/assets/
 
 # ignore rvmrc
 .rvmrc
+
+# ignore certs
+config/certs/
