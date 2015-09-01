@@ -60,7 +60,7 @@ class Show < ActiveRecord::Base
   # 未支付订单的票数
   def unpaid_tickets_count
     if orders.any?
-      orders.where(status: "pending").sum(:tickets_count)
+      orders.pending.sum(:tickets_count)
     else
       0
     end
