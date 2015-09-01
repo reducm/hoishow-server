@@ -74,6 +74,12 @@ class Operation::OrdersController < Operation::ApplicationController
     redirect_to operation_orders_url
   end
 
+  def manual_send_sms
+    ChinaSMS.send(@order.user.mobile, "【单车娱乐】亲爱的单车用户，您订购的演出门票已经发货，由顺丰速运配送：#{@order.express_id}。可使用客户端查看订单及跟踪物流信息。客服电话：4008805380")
+
+    redirect_to operation_orders_url
+  end
+
   private
   def get_order
     @order = Order.find params[:id]
