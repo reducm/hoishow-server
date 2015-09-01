@@ -347,7 +347,7 @@ class Order < ActiveRecord::Base
 
   def notify_and_send_sms
     NotifyTicketCheckedWorker.perform_async(open_trade_no)
-    ChinaSMS.send(user.mobile, '【单车娱乐】亲爱的单车用户，您订购的演出门票已出票，我们将尽快为您配送。可使用客户端查看订单及跟踪物流信息。客服电话：4008805380')
+    ChinaSMS.to(user.mobile, '您订购的演出门票已出票，我们将尽快为您配送。可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】')
   end
 
   private
