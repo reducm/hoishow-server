@@ -6,13 +6,16 @@ Rails.application.routes.draw do
 
   root to: 'pages#index'
 
-  get "/help" => 'pages#show_help'
+  get "/helps" => 'pages#show_help'
   get "/help/:position" => 'pages#show_sub_help'
 
+  # web
   get "/about" => 'pages#about'
 
+  # wap
   get "/mobile" => 'pages#wap_index'
-  get "/mobile/about" => 'pages#wap_about'
+  get "/mobile_about" => 'pages#wap_about'
+  get "/service/terms" => 'pages#wap_terms'
 
   #app下载
   get "/mobile/download" => 'pages#download'

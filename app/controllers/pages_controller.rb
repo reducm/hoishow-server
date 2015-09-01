@@ -40,9 +40,15 @@ class PagesController < ApplicationController
   end
 
   def wap_index
+    render layout: 'mobile'
   end
 
   def wap_about
+    render layout: 'mobile'
+  end
+
+  def wap_terms
+    render layout: 'mobile'
   end
 
   def sharing_show
