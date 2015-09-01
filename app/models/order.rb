@@ -186,7 +186,7 @@ class Order < ActiveRecord::Base
     # 当全部票的状态都为 success
     if ticket_status.size == 1 && ticket_status[0] == Ticket::statuses['success']
       self.update(generate_ticket_at: Time.now)
-      NotifyTicketCheckedWorker.perform_async(open_trade_no)
+      notify_and_send_sms
     end
   end
 
@@ -343,6 +343,11 @@ class Order < ActiveRecord::Base
 
   def show_time
     show.show_time
+  end
+
+  def notify_and_send_sms
+    NotifyTicketCheckedWorker.perform_async(open_trade_no)
+    ChinaSMS.to(user.mobile, '您订购的演出门票已出票，我们将尽快为您配送。可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】')
   end
 
   private

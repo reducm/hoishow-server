@@ -4,6 +4,7 @@ class PagesController < ApplicationController
   # 帮助目录页
   def show_help
     @helps = Help.order(:position)
+    render layout: 'mobile'
   end
 
   # 帮助下级页
@@ -18,6 +19,7 @@ class PagesController < ApplicationController
     end
     @help = Help.find_by_position!(position)
     @description = @help.description
+    render layout: 'mobile'
   end
 
   def index

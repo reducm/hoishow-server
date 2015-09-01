@@ -45,8 +45,7 @@
         <th>门票状态</th>
         <th>门票类型</th>
         <th>快递单号</th>
-        <th>修改</th>
-        <th>查看</th>
+        <th class="text-center">操作</th>
       </tr>
     </thead>
     <tbody>
@@ -59,11 +58,10 @@
           <td><%= order.status_cn %></td>
           <td><%= order.show.try(:ticket_type_cn) %></td>
           <td id="td_express_id_<%= order.id %>"><%= order.express_id%></td>
-          <td>
-            <button class="btn btn-info change_express_data" data-order-id="<%= order.id %>">修改单号</button>
-          </td>
-          <td>
-            <%= link_to "查看详情", operation_order_path(order) %>
+          <td class="text-center">
+            <button class="btn btn-default change_express_data" data-order-id="<%= order.id %>">修改单号</button>
+            <%= link_to '发送短信', manual_send_sms_operation_order_path(order), class: 'btn btn-default' if order.express_id.present? %>
+            <%= link_to "查看详情", operation_order_path(order), class: 'btn btn-default' %>
           </td>
         </tr>
       <% end %>

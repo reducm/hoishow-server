@@ -57,6 +57,15 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
+  # 未支付订单的票数
+  def unpaid_tickets_count
+    if orders.any?
+      orders.pending.sum(:tickets_count)
+    else
+      0
+    end
+  end
+
   def get_show_time
     if going_to_open?
       description_time
