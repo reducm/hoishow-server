@@ -52,7 +52,7 @@ end
   area = Area.where(name: n, seats_count: 100, stadium_id: stadium.id).first_or_create
   price = idx + 100
   sar = ShowAreaRelation.where(show_id: Show.first.id, area_id: area.id, price: price,
-    seats_count: 1000, left_seats: 1000).first_or_create
+                               seats_count: 1000, left_seats: 1000).first_or_create
 
   if sar.id == 1
     1000.times do Seat.create(show_id: sar.show_id, area_id: sar.area_id, price: price) end
@@ -67,19 +67,31 @@ admin.save
 # user, order, ticket
 concert = Concert.first
 show = Show.first
-# 每个区都有订单，而且不同数量
 Benchmark.bm do |b|
   b.report "order and ticket data" do
+    # 每个区的订单和票都不一样
     Area.all.each_with_index do |area, index|
-      (1..(50 * (index + 1))).each do |i|
+      success_order_quantity = 20 # 支付订单数
+      pending_order_quantity = 50 * (index + 1) - success_order_quantity # 未支付订单数，50是基数
+      # 支付订单
+      (1..success_order_quantity).each do |i|
+        user = User.create(mobile: 13_800_000_000 + Random.rand(100_000_000 - 10_000_000))
+        order = Order.create(user_id: user.id, city_id: city.id, city_name: city.name, stadium_id: stadium.id, stadium_name: stadium.name,
+                             concert_id: concert.id, concert_name: concert.name, show_id: show.id, show_name: show.name, amount: i + 100,
+                             tickets_count: 1, status: Order.statuses[:success])
+        Ticket.create(area_id: area.id, show_id: show.id, order_id: order.id, price: 100, code: SecureRandom.hex(6),
+                      status: Ticket.statuses[:success], seat_type: Ticket.seat_types[:locked])
+      end 
+      # 未支付订单
+      (1..pending_order_quantity).each do |i|
         user = User.create(mobile: 13_800_000_000 + Random.rand(100_000_000 - 10_000_000))
         order = Order.create(user_id: user.id, city_id: city.id, city_name: city.name, stadium_id: stadium.id, stadium_name: stadium.name,
                              concert_id: concert.id, concert_name: concert.name, show_id: show.id, show_name: show.name, amount: i + 100, tickets_count: 1)
         Ticket.create(area_id: area.id, show_id: show.id, order_id: order.id, price: 100, code: SecureRandom.hex(6),
-                      status: Ticket.statuses[:success], seat_type: Ticket.seat_types[:locked])
-      end 
+                      status: Ticket.statuses[:pending], seat_type: Ticket.seat_types[:locked])
+      end
       # 减库存
-      ShowAreaRelation.where(show_id: show.id, area_id: area.id).first.decrement!(:left_seats, by = 100)
+      ShowAreaRelation.where(show_id: show.id, area_id: area.id).first.decrement!(:left_seats, by = success_order_quantity + pending_order_quantity)
     end
   end
 end
