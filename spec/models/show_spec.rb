@@ -78,8 +78,9 @@ describe Show do
     end
 
     it "show's unpaid_tickets_count should be right" do
+      area = Area.first
       # 出票前
-      expect(@show.unpaid_tickets_count).to eq 0
+      expect(@show.unpaid_tickets_count(area)).to eq 0
       # 出票后
       Area.all.each_with_index do |area, i|
         relation = create :show_area_relation, area: area, show: @show
@@ -89,7 +90,7 @@ describe Show do
           create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id
         end
       end
-      expect(@show.unpaid_tickets_count).to eq @quantity * Area.count * 2
+      expect(@show.unpaid_tickets_count(area)).to eq @quantity * 2
     end
   end
 end
