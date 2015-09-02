@@ -26,9 +26,8 @@ class Ticket < ActiveRecord::Base
     unused: 2      # 空白座位
   }
 
-  scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
-  scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
-  scope :avaliable_tickets, ->{ where(status: statuses[:pending], seat_type: seat_types[:avaliable] ) }
+  scope :sold_tickets, ->{where("status = ? or status = ?", statuses[:success], statuses[:used])}
+  scope :avaliable_tickets, ->{where(status: statuses[:pending], seat_type: seat_types[:avaliable])}
   after_save :generate_code, unless: :pending?
 
   paginates_per 10

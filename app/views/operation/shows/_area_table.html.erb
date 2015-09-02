@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <% show.areas.each do |area| %>
-  <% sold_tickets_count = show.tickets.where(area_id: area.id).sold_tickets.count %>
+  <% sold_tickets_count = show.tickets.area_sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr>
     <% if show.selected? %>
