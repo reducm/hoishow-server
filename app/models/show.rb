@@ -69,7 +69,7 @@ class Show < ActiveRecord::Base
   # 该区域已出票，并且订单已支付的票数
   def sold_tickets_count(area)
     if orders.any?
-      orders.joins(:tickets).where(tickets: { area_id: area.id }).success.sum(:tickets_count)
+      orders.joins(:tickets).where("tickets.area_id = ? and (tickets.status = ? or tickets.status = ?)", area.id, Ticket.statuses[:success], Ticket.statuses[:used]).success.sum(:tickets_count)
     else
       0
     end
