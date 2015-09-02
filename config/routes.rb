@@ -6,13 +6,16 @@ Rails.application.routes.draw do
 
   root to: 'pages#index'
 
-  get "/help" => 'pages#show_help'
+  get "/helps" => 'pages#show_help'
   get "/help/:position" => 'pages#show_sub_help'
 
+  # web
   get "/about" => 'pages#about'
 
+  # wap
   get "/mobile" => 'pages#wap_index'
-  get "/mobile/about" => 'pages#wap_about'
+  get "/mobile_about" => 'pages#wap_about'
+  get "/service/terms" => 'pages#wap_terms'
 
   #app下载
   get "/mobile/download" => 'pages#download'
@@ -240,6 +243,9 @@ Rails.application.routes.draw do
     resources :feedbacks, only: [:index, :destroy]
     resources :site_setting do
       post :set_block, on: :member
+    end
+    resources :static_pages, except: [:show, :destroy] do
+      get :description, on: :member
     end
     #TODO api_auth
   end

@@ -1,0 +1,23 @@
+<div class="nav">
+  <h2>静态页管理</h2>
+  <%= link_to '新增静态页', new_operation_static_page_path, class: 'btn btn-primary' %>
+  <div class="page_list">
+    <table class="table">
+      <thead>
+        <th>页面类型</th>
+        <th>操作</th>
+      </thead>
+      <tbody>
+        <% @pages.each do |page| %>
+          <tr>
+            <td><%= t("activerecord.attributes.page_title_values.#{page.title}") %></td>
+            <td>
+              <%= link_to '预览', description_operation_static_page_path(page), target: '_blank' %>
+              <%= link_to '编辑', edit_operation_static_page_path(page) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
