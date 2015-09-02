@@ -32,8 +32,12 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 10
 
-  def self.area_sold_tickets(area_id)
-    where("area_id = ? and (status = ? or status = ?)", area_id, statuses[:success], statuses[:used]).size
+  def self.area_sold_tickets_count(area_id)
+    where("area_id = ? and (status = ? or status = ?)", area_id, statuses[:success], statuses[:used]).count
+  end
+
+  def self.area_unpaid_tickets_count(area_id)
+    where("area_id = ? and status = ?", area_id, statuses[:pending]).count
   end
 
   protected
