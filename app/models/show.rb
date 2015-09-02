@@ -60,7 +60,7 @@ class Show < ActiveRecord::Base
   # 该区域已出票，但订单未支付的票数
   def unpaid_tickets_count(area)
     if orders.any?
-      orders.joins(:tickets).where(tickets: { area_id: area.id }).pending.sum(:tickets_count)
+      orders.map{|o| o.tickets.area_unpaid_tickets_count(area.id)}.sum
     else
       0
     end
@@ -69,7 +69,7 @@ class Show < ActiveRecord::Base
   # 该区域已出票，并且订单已支付的票数
   def sold_tickets_count(area)
     if orders.any?
-      orders.joins(:tickets).where("tickets.area_id = ? and (tickets.status = ? or tickets.status = ?)", area.id, Ticket.statuses[:success], Ticket.statuses[:used]).success.sum(:tickets_count)
+      orders.map{|o| o.tickets.area_sold_tickets_count(area.id)}.sum
     else
       0
     end
@@ -133,11 +133,7 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    if self.selected? #选区
-      show_area_relations.sum(:seats_count)
-    elsif self.selectable? #选座
-      seats.avaliable_and_locked_seats.count
-    end
+    show_area_relations.sum(:seats_count)
   end
 
   def area_seats_count(area)

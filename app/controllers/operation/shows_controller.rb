@@ -146,7 +146,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def del_area
     area = @show.areas.find_by_id(params[:area_id])
-    if area && @show.show_area_relations.where(area_id: params[:area_id]).first.destroy && area.destroy
+    if area && @show.show_area_relations.where(area_id: params[:area_id]).delete_all && area.destroy
       render partial: "area_table", locals: {show: @show}
     end
   end
