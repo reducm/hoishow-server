@@ -57,10 +57,19 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
-  # 未支付订单的票数
-  def unpaid_tickets_count
+  # 该区域已出票，但订单未支付的票数
+  def unpaid_tickets_count(area)
     if orders.any?
-      orders.pending.sum(:tickets_count)
+      orders.joins(:tickets).where(tickets: { area_id: area.id }).pending.sum(:tickets_count)
+    else
+      0
+    end
+  end
+
+  # 该区域已出票，并且订单已支付的票数
+  def sold_tickets_count(area)
+    if orders.any?
+      orders.joins(:tickets).where("tickets.area_id = ? and (tickets.status = ? or tickets.status = ?)", area.id, Ticket.statuses[:success], Ticket.statuses[:used]).success.sum(:tickets_count)
     else
       0
     end

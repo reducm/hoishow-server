@@ -1,0 +1,6 @@
+<div class="nav">
+  <h2>编辑静态页</h2>
+  <div class="form">
+    <%= render partial: 'form', locals: {page: @page, url: "/operation/static_pages/#{@page.id}"} %>
+  </div>
+</div>
