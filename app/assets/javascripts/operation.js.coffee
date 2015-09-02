@@ -24,6 +24,7 @@
 #= require operation/feedbacks
 #= require operation/site_setting
 #= require operation/helps
+#= require operation/static_pages
 #= require dataTables/jquery.dataTables
 #= require operation/notify
 #= require jquery-fileupload/basic

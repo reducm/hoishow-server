@@ -244,6 +244,9 @@ Rails.application.routes.draw do
     resources :site_setting do
       post :set_block, on: :member
     end
+    resources :static_pages, except: [:show, :destroy] do
+      get :description, on: :member
+    end
     #TODO api_auth
   end
 

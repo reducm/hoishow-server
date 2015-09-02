@@ -310,3 +310,9 @@ zh-CN:
         name: 名称
         description: 内容
         position: 排序
+      page:
+        title: 页面类型
+        description: 页面详情
+      page_title_values:
+        mobile_about: 产品介绍
+        terms: 服务条款
