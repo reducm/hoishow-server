@@ -33,9 +33,9 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 10
 
-  # def self.default_scope
-    # order('created_at DESC') if self == Ticket
-  # end
+  def self.area_sold_tickets(area_id)
+    where("area_id = ? and (status = ? or status = ?)", area_id, statuses[:success], statuses[:used]).size
+  end
 
   protected
   def generate_code
