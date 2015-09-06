@@ -6,8 +6,9 @@ Rails.application.routes.draw do
 
   root to: 'pages#index'
 
+  # app帮助
   get "/helps" => 'pages#show_help'
-  get "/help/:position" => 'pages#show_sub_help'
+  get "/helps/:position" => 'pages#show_sub_help'
 
   # web
   get "/about" => 'pages#about'
@@ -27,7 +28,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      post "wxpay/notify" => "wxpay#notify"
       post "alipay/notify" => "alipay#notify"
 
       post "alipay/refund_notify" => "alipay#refund_notify"

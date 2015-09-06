@@ -1,0 +1,28 @@
+development: &DEFAULT
+  upyun_username: ""
+  upyun_password: ""
+  upyun_bucket: ""
+  assets_bucket: ''
+  upyun_bucket_domain: ""
+  upyun_upload_url: ""
+  hoishow-img:
+    upyun_username: ""
+    upyun_password: ""
+    upyun_bucket: ""
+    upyun_bucket_domain: ""
+    upyun_upload_url: ""
+  hoishow-file:
+    upyun_username: ""
+    upyun_password: ""
+    upyun_bucket: ""
+    upyun_bucket_domain: ""
+    upyun_upload_url: ""
+
+test:
+  <<: *DEFAULT
+
+production:
+  <<: *DEFAULT
+
+staging:
+  <<: *DEFAULT

@@ -1,0 +1,11 @@
+email:
+PC_email:
+api_url: "https://openapi.alipay.com/gateway.do"
+mapi_url: "https://mapi.alipay.com/gateway.do"
+wap_api_url: "http://wappaygw.alipay.com/service/rest.htm"
+refund_url: "http://hoishow.dan-che.com/api/v1/alipay/refund_notify"
+notify_url: "http://hoishow.dan-che.com/api/v1/alipay/nofity"
+v2_pid:
+v2_email:
+v2_md5_key:
+v2_alipay_rsa_pub_key:

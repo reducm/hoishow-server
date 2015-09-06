@@ -2,8 +2,6 @@ UpyunSetting = YAML.load_file(File.join "#{Rails.root}", "config", "upyun.yml")[
 
 AlipaySetting = YAML.load_file(File.join "#{Rails.root}", "config", "settings", "alipay.yml")
 
-WxpaySetting = YAML.load_file(File.join "#{Rails.root}", "config", "settings", "wx_pay.yml")
-
 UmengMessageSetting = YAML.load_file(File.join "#{Rails.root}", "config", "umeng_message.yml")[Rails.env || "development"]
 
 BikeSetting = YAML.load_file(File.join "#{Rails.root}", "config", "danche.yml")[Rails.env || "development"]
