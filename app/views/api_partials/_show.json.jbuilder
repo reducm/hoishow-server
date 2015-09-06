@@ -10,3 +10,4 @@ json.ticket_pic show.ticket_pic_url || ''
 json.stadium_map show.stadium_map_url || ''
 # 可能有效率问题，先用着
 json.stars show.concert.stars.pluck(:name).join(' | ')
+json.price_range show.get_price_range

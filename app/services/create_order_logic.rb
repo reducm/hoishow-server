@@ -94,7 +94,7 @@ class CreateOrderLogic
       # pending_orders = get_pending_orders_ids
 
       # set order attr
-      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity})
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity, ticket_type: show.ticket_type})
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
@@ -109,7 +109,7 @@ class CreateOrderLogic
     if check_inventory # 库存检查
       # pending_orders = get_pending_orders_ids
 
-      order_attrs = prepare_order_attrs({tickets_count: @quantity})
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, ticket_type: show.ticket_type})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
       # create_order and create_tickets and callback
       begin
@@ -128,14 +128,17 @@ class CreateOrderLogic
   end
 
   def prepare_order_attrs(attrs={})
-    attrs.merge!(channel: Order.channels[way], user_id: user.id)
+    attrs.merge!(user_id: user.id)
     # 按渠道来生成订单
 
     attrs.tap do |p|
       if ['ios', 'android'].include?(way) # app 端
+        p[:channel] = 0
         p[:buy_origin] = way
       elsif 'bike_ticket' == way # 单车电影
         # open_trade_no for 对账
+        p[:buy_origin] = options[:buy_origin]
+        p[:channel] = 1
         p[:open_trade_no] = options[:bike_out_id]
         p[:user_mobile] = options[:user_mobile]
       end

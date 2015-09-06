@@ -1,0 +1,36 @@
+<%# encoding: utf-8 %>
+
+<div class="nav helps_list">
+  <div class="nav-top">
+    <h1 class="pull-left">帮助页列表</h1>
+    <%= link_to "新建帮助页", new_operation_help_path, class: "btn btn-primary add-help" %>
+  </div>
+
+  <table class="table table-striped helps" id="help-table">
+    <thead>
+      <tr>
+        <th>排序</th>
+        <th>名称</th>
+        <th>创建日期</th>
+        <th>更新日期</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody class="dragable_items" id="helps_list" data-update-url="<%= sort_operation_helps_url %>">
+    <% @helps.each do|help|%>
+      <%= content_tag_for :tr, help, remote: true do %>
+        <td><%= help.position %></td>
+        <td><%= help.name %></td>
+        <td><%= help.created_at %></td>
+        <td><%= help.updated_at %></td>
+        <td>
+          <span class="handle">[拉我排序] </span>
+          <%= link_to "编辑", edit_operation_help_path(help) %> /
+          <%= link_to "删除", operation_help_path(help), method: "delete", data: {confirm: "确定删除吗？"} %> /
+          <%= link_to '预览', "/helps/#{help.position}", target: '_blank' %>
+        </td>
+      <% end %>
+    <% end %>
+    </tbody>
+  </table>
+</div>

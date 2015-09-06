@@ -88,7 +88,8 @@ description: 获取全部的演出
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
-      stars: "陈奕迅 | 张敬轩"
+      stars: "陈奕迅 | 张敬轩",
+      price_range: '1 - 100'
     },.....]
 ```
 
@@ -123,14 +124,6 @@ description: 获取全部的区域
       price: 1,  //票价
       seats_left: 10,  //剩余票数
       is_sold_out: false   //是否卖完
-      seats_info:
-      [{
-        row: 1,
-        column: 1,
-        status: 'avaliable',
-        seat_name: '1排1座',
-        price: 100
-      }, ...]      //座位信息
      },.....]
 ```
 
@@ -194,7 +187,8 @@ description: 获取指定演出的详情
       stadium_map: 'xxx' //场馆图
       seat_type: // selectable(可以选座)/selected(只能选区)
       mode:  // voted_users(投票用户购买)/all_users(所有用户购买)
-      star: "陈奕迅 | 张敬轩"
+      star: "陈奕迅 | 张敬轩",
+      price_range: '1 - 100'
     }
   }
 ```
@@ -230,15 +224,39 @@ description: 获取指定区域的详情
       price: 1,  //票价
       seats_left: 10,  //剩余票数
       is_sold_out: false   //是否卖完
-      seats_info:
-      [{
-        row: 1,
-        column: 1,
-        status: 'avaliable',
-        seat_name: '1排1座',
-        price: 100
-      }, ...]      //座位信息
     }
+  }
+```
+
+-----------------------------------
+###座位信息
+[/api/open/v1/areas/:id/seats_info]
+
+type `GET`
+
+description: 区域的所有座位信息
+
+必须参数
+```javascript
+  {
+    show_id: 1, //演出id
+  }
+```
+
+成功时返回
+```javascript
+  {
+    result_code: 0,
+    data: [
+      {
+        id: 1 //座位id
+        row: 1 //行号
+        column: 1 //列号
+        name: '1排1座' //座位号
+        price: 1 //价格
+        status: 'avaliable' //座位状态
+      },......
+    ]
   }
 ```
 
@@ -354,6 +372,7 @@ description: 创建订单并锁座
     bike_user_id: 1, //渠道用户id
     mobile: '13333333333', //用户手机号
     bike_out_id: '123' //渠道订单号
+    buy_origin: 'ios' //下单平台
 
     #选区
     area_id: 1, //区域id
@@ -401,11 +420,8 @@ description: 订单支付成功确认出票
 ```javascript
   {
     user_name: 1, //收货人
-    user_mobile: '13333333333' //收货手机
-    province: '广东省'
-    city: '广州市'
-    district: '海珠区'
-    address: '新港东路2433号'
+    user_mobile: '13333333333' //收货人电话
+    address: '广东省 广州市 海珠区 新港东路2433号'
   }
 ```
 

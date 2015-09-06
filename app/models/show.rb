@@ -57,6 +57,24 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
+  # 该区域已出票，但订单未支付的票数
+  def unpaid_tickets_count(area)
+    if orders.any?
+      orders.map{|o| o.tickets.area_unpaid_tickets_count(area.id)}.sum
+    else
+      0
+    end
+  end
+
+  # 该区域已出票，并且订单已支付的票数
+  def sold_tickets_count(area)
+    if orders.any?
+      orders.map{|o| o.tickets.area_sold_tickets_count(area.id)}.sum
+    else
+      0
+    end
+  end
+
   def get_show_time
     if going_to_open?
       description_time
@@ -115,11 +133,7 @@ class Show < ActiveRecord::Base
   end
 
   def total_seats_count
-    if self.selected? #选区
-      show_area_relations.sum(:seats_count)
-    elsif self.selectable? #选座
-      seats.avaliable_and_locked_seats.count
-    end
+    show_area_relations.sum(:seats_count)
   end
 
   def area_seats_count(area)
@@ -144,6 +158,24 @@ class Show < ActiveRecord::Base
 
   def first_star
     stars.first
+  end
+
+  def get_price_range
+    price_array = if selected?
+                    show_area_relations.map{|relation| relation.price.to_i}
+                  elsif selectable?
+                    seats.map{|seat| seat.price.to_i}
+                  else
+                    []
+                  end
+
+    price_array = price_array.uniq.sort if price_array.present?
+
+    if price_array.size <= 1
+      price_array.first.to_i.to_s
+    else
+      "#{price_array.first} - #{price_array.last}"
+    end
   end
 
   private

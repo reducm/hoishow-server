@@ -47,7 +47,7 @@
   <div id="pie_cake" >
     <% @show.areas.each do |area| %>
       <% tickets = @show.tickets.where(area_id: area.id) %>
-      <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> unpaid_count=<%= tickets.unpaid_tickets.count %> sold_count=<%= tickets.sold_tickets.count %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %>></div>
+      <div class="pull-left" total_tickets=<%= @show.area_seats_count(area) %> unpaid_count=<%= @show.unpaid_tickets_count(area) %> sold_count=<%= @show.sold_tickets_count(area) %> left_count= <%= @show.area_seats_left(area) %> id=<%= area.name %>></div>
     <% end %>
   </div>
   <div class="orders_list">

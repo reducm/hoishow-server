@@ -19,7 +19,8 @@ class Operation::SessionsController < Operation::ApplicationController
         admin.update(last_sign_in_at: DateTime.now)
         session[:admin_id] = admin.id
 
-        redirect_to session[:request_page]
+        url = session[:request_page] ? session[:request_page] : operation_root_url
+        redirect_to url
       else
         flash[:alert] = '密码错误, 请重新输入'
         redirect_to operation_signin_url

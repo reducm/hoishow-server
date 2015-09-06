@@ -26,16 +26,19 @@ class Ticket < ActiveRecord::Base
     unused: 2      # 空白座位
   }
 
-  scope :sold_tickets, ->{ where("status = ? or status = ?", statuses[:success], statuses[:used] ) }
-  scope :unpaid_tickets, ->{ where("status = ? or status = ?", statuses[:pending], statuses[:outdate] ) }
-  scope :avaliable_tickets, ->{ where(status: statuses[:pending], seat_type: seat_types[:avaliable] ) }
+  scope :sold_tickets, ->{where("status = ? or status = ?", statuses[:success], statuses[:used])}
+  scope :avaliable_tickets, ->{where(status: statuses[:pending], seat_type: seat_types[:avaliable])}
   after_save :generate_code, unless: :pending?
 
   paginates_per 10
 
-  # def self.default_scope
-    # order('created_at DESC') if self == Ticket
-  # end
+  def self.area_sold_tickets_count(area_id)
+    where("area_id = ? and (status = ? or status = ?)", area_id, statuses[:success], statuses[:used]).count
+  end
+
+  def self.area_unpaid_tickets_count(area_id)
+    where("area_id = ? and status = ?", area_id, statuses[:pending]).count
+  end
 
   protected
   def generate_code

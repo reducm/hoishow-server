@@ -24,10 +24,10 @@
 <div class="form-group">
   <% if star.poster_url %>
     <%= label_tag "当前海报" %>
-    <%= image_tag(star.poster_url, size: "750x522") %>
+    <%= image_tag(star.poster_url, width: "640") %>
   <% end %>
 </div>
-  <%= f.input :poster, label: "上传海报(建议大小:750x522)", input_html: {class: "image-uploader"} %>
+  <%= f.input :poster, label: "上传海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
 
 <div class="form-group">
   <% if @videos_uploaded_before.any? %>

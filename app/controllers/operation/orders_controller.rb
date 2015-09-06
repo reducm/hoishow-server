@@ -9,13 +9,13 @@ class Operation::OrdersController < Operation::ApplicationController
     if params[:q]
       ids = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").map(&:id).compact
       @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).order("created_at desc")
-      @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+      @r_ticket_orders = Order.orders_with_r_tickets
     elsif params[:q_express]
       @orders = Order.order("created_at desc")
-      @r_ticket_orders = Order.where("user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%","%#{params[:q_express]}%", "%#{params[:q_express]}%").orders_with_r_tickets.select { |order| order.show.r_ticket? }
+      @r_ticket_orders = Order.where("user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%","%#{params[:q_express]}%", "%#{params[:q_express]}%").orders_with_r_tickets
     else
       @orders = Order.order("created_at desc")
-      @r_ticket_orders = Order.orders_with_r_tickets.select { |order| order.show.r_ticket? }
+      @r_ticket_orders = Order.orders_with_r_tickets
     end
     #下拉框筛选
     case params[:order_status_select]
@@ -35,7 +35,7 @@ class Operation::OrdersController < Operation::ApplicationController
       params[:page] ||= 1
       @orders = @orders.page(params[:page])
     end
-    @r_ticket_orders = Kaminari.paginate_array(@r_ticket_orders).page(params[:page]).per(10)
+    @r_ticket_orders = @r_ticket_orders.page(params[:r_ticket_orders_page])
     #导出
     filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
@@ -71,6 +71,13 @@ class Operation::OrdersController < Operation::ApplicationController
     else
       flash[:notice] = '退款失败'
     end
+    redirect_to operation_orders_url
+  end
+
+  def manual_send_sms
+    SendSmsWorker.perform_async(@order.user_mobile, "您订购的演出门票已发货，顺丰速运：#{@order.express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
+
+    flash[:notice] = '短信发送成功'
     redirect_to operation_orders_url
   end
 

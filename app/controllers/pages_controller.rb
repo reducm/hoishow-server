@@ -1,6 +1,27 @@
 class PagesController < ApplicationController
   layout false
 
+  # 帮助目录页
+  def show_help
+    @helps = Help.order(:position)
+    render layout: 'mobile'
+  end
+
+  # 帮助下级页
+  def show_sub_help
+    # Help表的position相当于白名单
+    # 如果地址合法而且有内容的话，返回内容
+    position = request.path.split("/").last.to_i
+
+    unless Help.pluck(:position).include?(position)
+      render text: "not allow", status: 403
+      return false
+    end
+    @help = Help.find_by_position!(position)
+    @description = @help.description
+    render layout: 'mobile'
+  end
+
   def index
     @stars = Star.limit(4)
     render layout: 'application'
@@ -19,9 +40,17 @@ class PagesController < ApplicationController
   end
 
   def wap_index
+    render layout: 'mobile'
   end
 
   def wap_about
+    @page = Page.where(title: Page::MOBILE_ABOUT).first
+    render layout: 'mobile'
+  end
+
+  def wap_terms
+    @page = Page.where(title: Page::TERMS).first
+    render layout: 'mobile'
   end
 
   def sharing_show

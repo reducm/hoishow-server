@@ -1,18 +1,26 @@
 set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) ->
     option =
       title:
-        text: area_name + "区(共" + tickets_count + "张)"
+        text: area_name + "(共" + tickets_count + "张)"
         x: "center"
       tooltip:
         show: true
       calculable: false
       series: [
         type: "pie"
-        radius: "55%"
+        radius: "40%"
+        # 标签文本和引导线
+        itemStyle:
+          normal:
+            label:
+              textStyle:
+                fontWeight: "bolder"
+                fontSize: 16
+            labelLine: length: 0
         data: [
-          {value: sold_count, name: "售出数量"}
-          {value: unpaid_count, name: "未支付数量"}
-          {value: left_count, name: "剩余数量"}
+          {value: sold_count, name: "售出"}
+          {value: unpaid_count, name: "未支付"}
+          {value: left_count, name: "剩余"}
         ]
       ]
     myChart = echarts.init(document.getElementById(area_name))
@@ -86,7 +94,7 @@ $ ->
       area_name = $(this).attr("id")
       tickets_count = $(this).attr("total_tickets")
       if tickets_count > 0
-        $(this).width(300).height(300)
+        $(this).width(325).height(325)
         set_pie_cake(unpaid_count, left_count, sold_count, area_name, tickets_count))
 
 #show new form

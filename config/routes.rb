@@ -5,10 +5,17 @@ Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
 
   root to: 'pages#index'
+
+  get "/helps" => 'pages#show_help'
+  get "/helps/:position" => 'pages#show_sub_help'
+
+  # web
   get "/about" => 'pages#about'
 
+  # wap
   get "/mobile" => 'pages#wap_index'
-  get "/mobile/about" => 'pages#wap_about'
+  get "/mobile_about" => 'pages#wap_about'
+  get "/service/terms" => 'pages#wap_terms'
 
   #app下载
   get "/mobile/download" => 'pages#download'
@@ -25,6 +32,8 @@ Rails.application.routes.draw do
       post "alipay/refund_notify" => "alipay#refund_notify"
 
       get "express_detail" => "express_detail#index"
+
+      post 'feedbacks' => "feedbacks#create"
 
       resources :admins do
         collection do
@@ -104,6 +113,12 @@ Rails.application.routes.draw do
     match "/signin" => "sessions#new", via: [:get]
     match "/signout" => "sessions#destroy", via: [:delete]
 
+    resources :helps do
+      collection do
+        post :sort
+      end
+    end
+
     resources :banners do
       collection do
         post :sort
@@ -165,6 +180,7 @@ Rails.application.routes.draw do
         post "update_express_id"
         post "update_remark_content"
         post :manual_refund
+        get :manual_send_sms
       end
       collection do
         get :search
@@ -222,6 +238,13 @@ Rails.application.routes.draw do
       member do
         post :set_startup_status
       end
+    end
+    resources :feedbacks, only: [:index, :destroy]
+    resources :site_setting do
+      post :set_block, on: :member
+    end
+    resources :static_pages, except: [:show, :destroy] do
+      get :description, on: :member
     end
     #TODO api_auth
   end

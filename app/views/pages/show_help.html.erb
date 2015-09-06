@@ -1,0 +1,20 @@
+<%# encoding: utf-8 %>
+
+<% if @helps.any? %>
+  <div class="list-box">
+    <% @helps.each do |help| %>
+      <a href="<%= "/help/#{help.position}" %>">
+        <div class="line-box">
+          <div class="help-title">
+            <p><%= help.name %></p>
+          </div>
+          <div class="right-arrow">
+            <%= image_tag 'arrow_right.png' %>
+          </div>
+        </div>
+      </a>
+    <% end %>
+  </div>
+<% else %>
+  <p>内容建设中</p>
+<% end %>

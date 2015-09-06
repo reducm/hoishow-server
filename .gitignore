@@ -46,9 +46,13 @@ config/upyun.yml
 config/umeng_message.yml
 config/settings/alipay.yml
 config/settings/wx_pay.yml
+config/danche.yml
 
 # ignore local precompile assets file
 config/deploy/assets/
 
 # ignore rvmrc
 .rvmrc
+
+# ignore certs
+config/certs/

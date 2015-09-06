@@ -43,9 +43,8 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       error_respond(2002, @show.status_cn)
     end
     # bike_out_id 表示 单车过来的 out_id, 用于对账
-    options = params.slice(:area_id, :quantity, :areas, :bike_out_id, :seats)
+    options = params.slice(:area_id, :quantity, :areas, :bike_out_id, :seats, :buy_origin)
 
-    options[:user_mobile] = order_params[:mobile]
     # 单车电影那边过来的，用 mobile 找到或者创建一个 hoishow 的 user
     user = User.find_or_create_bike_user(order_params[:mobile],
       order_params[:bike_user_id])
@@ -92,12 +91,11 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     end
 
     # 实体票的话，可更新快递信息
-    if @order.user_address.nil? && @order.show.ticket_type == 'r_ticket'
+    if @order.user_address.nil? && @order.show.r_ticket?
       # user_name 暂时就不关联到 bike_ticket_user
       return if expresses_params.blank?
-      address = expresses_params.slice(:province, :city, :district, :address).values.join
       express_attr = expresses_params.slice(:user_name, :user_mobile).tap do |p|
-        p[:user_address] = address
+        p[:user_address] = expresses_params[:address]
       end
       @order.update_attributes!(express_attr)
     end
@@ -105,8 +103,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   private
   def order_auth!
-    @order = Order.where(out_id: order_params[:out_id], user_mobile: order_params[:mobile],
-      channel: Order.channels["#{@auth.channel}"]).first
+    @order = Order.where(out_id: order_params[:out_id], channel: Order.channels["#{@auth.channel}"]).first
     if @order.nil?
       error_respond(3006, '订单不存在')
     end
@@ -135,7 +132,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def expresses_params
-    params.permit(:user_name, :user_mobile, :province, :city, :district, :address)
+    params.permit(:user_name, :user_mobile, :address)
   end
 
   def mobile_auth!

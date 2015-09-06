@@ -155,6 +155,10 @@ zh-CN:
     topics: "互动"
     comments: "评论"
     videos: '视频'
+    feedbacks: '反馈'
+    helps: '帮助'
+    static_pages: '静态页'
+    site_setting: '参数'
   views:
     pagination:
       first: '首页'
@@ -305,3 +309,13 @@ zh-CN:
         avatar: 头像
         poster: 海报
         description: 图文内容
+      help:
+        name: 名称
+        description: 内容
+        position: 排序
+      page:
+        title: 页面类型
+        description: 页面详情
+      page_title_values:
+        mobile_about: 产品介绍
+        terms: 服务条款

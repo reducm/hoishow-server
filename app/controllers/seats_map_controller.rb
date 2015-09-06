@@ -1,5 +1,5 @@
 class SeatsMapController < ApplicationController
-  layout 'mobile'
+  layout false
 
   def show
     @show = Show.find_by_id(params[:show_id])
