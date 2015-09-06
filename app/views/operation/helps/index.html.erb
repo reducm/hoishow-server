@@ -26,8 +26,8 @@
         <td>
           <span class="handle">[拉我排序] </span>
           <%= link_to "编辑", edit_operation_help_path(help) %> /
-          <%= link_to "删除", operation_help_path(help), method: "delete", data: {confirm: "确定删除吗？"} %> / 
-          <a href="/help/<%= help.position %>">预览</a>
+          <%= link_to "删除", operation_help_path(help), method: "delete", data: {confirm: "确定删除吗？"} %> /
+          <%= link_to '预览', "/helps/#{help.position}", target: '_blank' %>
         </td>
       <% end %>
     <% end %>

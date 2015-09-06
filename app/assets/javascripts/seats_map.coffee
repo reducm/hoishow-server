@@ -1,3 +1,5 @@
+#= require jquery
+
 click_seat = (show_id, status, el)->
   location.href = "/api/v1/shows/#{show_id}/click_seat?show_name=#{$('#show_name').val()}&area_id=#{$('#area_id').val()}&area_name=#{$('#area_name').val()}&seat_id=#{$(el).data('id')}&seat_name=#{$(el).data('seat-name')}&price=#{$(el).data('seat-price')}&remark=#{$(el).data('remark')}&status=#{status}"
 
@@ -18,4 +20,3 @@ $ ->
     $.each(check_seats, (idx, val)->
       $("[data-id='#{val}']").addClass('checked').removeClass('avaliable')
     )
-

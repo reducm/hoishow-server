@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   root to: 'pages#index'
 
   get "/helps" => 'pages#show_help'
-  get "/help/:position" => 'pages#show_sub_help'
+  get "/helps/:position" => 'pages#show_sub_help'
 
   # web
   get "/about" => 'pages#about'
