@@ -44,10 +44,12 @@ class PagesController < ApplicationController
   end
 
   def wap_about
+    @page = Page.where(title: Page::MOBILE_ABOUT).first
     render layout: 'mobile'
   end
 
   def wap_terms
+    @page = Page.where(title: Page::TERMS).first
     render layout: 'mobile'
   end
 
