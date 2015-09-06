@@ -9,7 +9,7 @@ set :passenger_restart_with_touch, true
 set :sidekiq_monit_default_hooks, false
 set :pty, false
 
-set :linked_files, %w{config/database.yml config/settings/wx_pay.yml config/settings/alipay.yml
+set :linked_files, %w{config/database.yml config/settings/alipay.yml
                       config/danche.yml config/certs/rsa_private_key.pem config/certs/app_private_key.pem
                       config/certs/alipay_public_key.pem}
 

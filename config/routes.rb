@@ -27,7 +27,6 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      post "wxpay/notify" => "wxpay#notify"
       post "alipay/notify" => "alipay#notify"
 
       post "alipay/refund_notify" => "alipay#refund_notify"
