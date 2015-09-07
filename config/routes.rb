@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   root to: 'pages#index'
 
+  # app帮助
   get "/helps" => 'pages#show_help'
   get "/helps/:position" => 'pages#show_sub_help'
 

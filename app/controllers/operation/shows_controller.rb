@@ -135,7 +135,7 @@ class Operation::ShowsController < Operation::ApplicationController
         rest_tickets.times { @show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: params[:price]) }
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
       elsif old_seats_count == seats_count #座位不变
-        relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: old_left_seats)
+        relation.update(price: params[:price])
       end
     end
 
@@ -144,7 +144,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def del_area
     area = @show.areas.find_by_id(params[:area_id])
-    if area && @show.show_area_relations.where(area_id: params[:area_id]).delete_all && area.destroy
+    if area && area.destroy
       render partial: "area_table", locals: {show: @show}
     end
   end
