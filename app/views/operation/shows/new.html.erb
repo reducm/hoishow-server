@@ -43,7 +43,7 @@
     </div>
   </div>
   <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
-  <%= f.input :ticket_pic, label: "上传门票图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
+  <%= f.input :ticket_pic, label: "上传入场券图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
   <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", as: :radio_buttons, label: "取票方式" %>
   <%= f.input :description, label: '图文描述' %>
 
@@ -62,7 +62,7 @@
     <%= f.input :stadium_id, required: false, as: :select, input_html: {id: "show_stadium_select"}, label: '场馆' %>
     </div>
   </div>
-    <%= f.input :stadium_map, label: '场馆地图', input_html: {class: "image-input"} %>
+    <%= f.input :stadium_map, label: '场馆座位图', input_html: {class: "image-input"} %>
   <div class="form-group">
     <div class="col-xs-1">
     <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: "只能选区", label: '选座设置' %>
@@ -70,7 +70,7 @@
   </div>
     <%= f.hidden_field :concert_id, value: @concert.try(:id) %>
   <div class="row">
-    <%= f.button :submit, "保存", class: 'submit-form btn btn-primary' %>
+    <%= f.button :submit, "设置座位信息", class: 'submit-form btn btn-primary' %>
   </div>
   <% end %>
   <img id="stadium_pic" class="image-preview">
