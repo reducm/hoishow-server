@@ -163,7 +163,7 @@ class Operation::ShowsController < Operation::ApplicationController
       set_seats(params[:seats_info])
       seats_count = @show.seats.avaliable_and_locked_seats.where(area_id: @area.id).count
       left_seats = @show.seats.avaliable_seats.where(area_id: @area.id).count
-      @show.show_area_relations.where(area_id: @area.id).first.update(seats_count: seats_count, left_seats: left_seats)
+      @show.show_area_relations.where(area_id: @area.id).first.update(seats_count: seats_count, left_seats: left_seats, price: @area.seats.maximum('price'))
     end
     render json: {success: true}
   end
