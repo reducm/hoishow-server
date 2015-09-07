@@ -129,7 +129,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
       if old_seats_count > seats_count #减少了座位
         rest_tickets = old_seats_count - seats_count
-        @show.seats.where(area_id: area.id).limit(rest_tickets).destroy_all
+        @show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
         new_left_seats = old_left_seats - rest_tickets
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: new_left_seats)
       elsif old_seats_count < seats_count #增加了座位
@@ -153,7 +153,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @seats = @show.seats.where(area_id: @area.id)
+    @seats = @show.seats.where(area_id: @area.id).order(:row, :column)
     @channels = ApiAuth.other_channels
   end
 
@@ -161,7 +161,7 @@ class Operation::ShowsController < Operation::ApplicationController
     @area = @show.areas.find_by_id(params[:area_id])
     @area.update(name: params[:area_name], sort_by: params[:sort_by])
     Seat.transaction do
-      @show.seats.where(area_id: @area.id).delete_all
+      @show.seats.where('area_id = ? and order_id is null', @area.id).destroy_all
       set_seats(params[:seats_info])
       seats_count = @show.seats.avaliable_and_locked_seats.where(area_id: @area.id).count
       left_seats = @show.seats.avaliable_seats.where(area_id: @area.id).count
@@ -227,7 +227,8 @@ class Operation::ShowsController < Operation::ApplicationController
     seats_info['seats'].each do |row|
       columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
       row.each do |s|
-        @seat = @show.seats.where(area_id: @area.id).create(row: s['row'], column: s['column'], status: s['seat_status'], channels: s['channel_ids'])
+        @seat = @show.seats.where(area_id: @area.id,row: s['row'], column: s['column']).first_or_create
+        @seat.update(channels: s['channel_ids'], status: s['seat_status'])
         if @seat.status != 'unused'
           if s['seat_no'].blank?
             @seat.update(name: "#{rowId}排#{columnId}座", price: s['price'])
