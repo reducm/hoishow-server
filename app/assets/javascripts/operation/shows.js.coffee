@@ -398,10 +398,13 @@ $ ->
       if $('ul.seats span').length < 1
         return false
       if $('ul.seats span.avaliable').length > 1
+        result = 0
         $('ul.seats span.avaliable').each(()->
           if $(this).data('seat-price').length < 1
             alert('可选座位价格不能为空')
+            result += 1
             return false
         )
+        get_seats_info('redirect') if result == 0
       else
         get_seats_info('redirect')
