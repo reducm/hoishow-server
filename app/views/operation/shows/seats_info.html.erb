@@ -20,36 +20,40 @@
   </div>
   <div class="seats-box">
     <div class="front"><h4>舞台</h4></div>
-    <ul class="row-bar list-unstyled pull-left">
-    <% if @seats.any? && @seats.maximum('row').present? %>
-      <li></li>
-      <% @seats.maximum('row').times.each do |row| %>
-        <li><%= row + 1 %></li>
+    <div class="content">
+      <ul class="row-bar list-unstyled pull-left">
+      <% if @seats.any? && @seats.maximum('row').present? %>
+        <li></li>
+        <% @seats.maximum('row').times.each do |row| %>
+          <li><%= row + 1 %></li>
+        <% end %>
       <% end %>
-    <% end %>
-    </ul>
-    <ul class="list-unstyled seats">
-    <% if @seats.any? && @seats.maximum('row').present? %>
-      <li class="column-bar">
-        <% if @area.sort_by == 'asc' %>
-          <% @seats.maximum('column').times.each do |column| %>
-            <span class="column"><%= column %></span>
-          <% end %>
-        <% else %>
-          <% @seats.maximum('column').downto(1) do |column| %>
-            <span class="column"><%= column %></span>
+      </ul>
+      <ul class="list-unstyled seats">
+        <% if @seats.any? && @seats.maximum('row').present? %>
+        <% @column_size = @seats.maximum('column') %>
+          <li class="column-bar">
+            <%= hidden_field_tag 'column_size', @column_size %>
+            <% if @area.sort_by == 'asc' %>
+              <% @column_size.times.each do |column| %>
+                <span class="column"><%= column + 1 %></span>
+              <% end %>
+            <% else %>
+              <% @column_size.downto(1) do |column| %>
+                <span class="column"><%= column %></span>
+              <% end %>
+            <% end %>
+          </li>
+          <% @seats.maximum('row').times.each do |row| %>
+            <li class="row_<%= row + 1 %> row_li">
+              <% @seats.where(row: row + 1).each do |seat| %>
+                <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
+              <% end %>
+            </li>
           <% end %>
         <% end %>
-      </li>
-      <% @seats.maximum('row').times.each do |row| %>
-        <li class="row_<%= row + 1 %>">
-          <% @seats.where(row: row + 1).each do |seat| %>
-            <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
-          <% end %>
-        </li>
-      <% end %>
-    <% end %>
-    </ul>
+      </ul>
+    </div>
   </div>
   <%= link_to "提交", "javascript:void(0);", class: 'btn btn-primary submit_seats' %>
   <%= hidden_field_tag "show_id", @show.id %>
