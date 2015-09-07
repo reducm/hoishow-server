@@ -39,7 +39,7 @@ get_seats_info = (target)->
   area_name = $('#area_name').val()
   sort_by = $('#area_sort_by').val()
   seats = []
-  $('ul.seats li').each(()->
+  $('ul.seats li.row_li').each(()->
     $li = $(this)
     row_seats = []
     $li.children().each(()->
@@ -285,6 +285,12 @@ $ ->
 
     $('ul.seats span').tooltip()
 
+    column_size = $('#column_size').val()
+    rest_width = $('ul.seats').width() - column_size * 24
+    if rest_width > 0
+      $('ul.seats').width(column_size * 24)
+      $('.content').css('padding-left': rest_width/2 - 20)
+
     #设置行列
     $('.set_box').on 'click', ()->
       row_size = $('#row_size').val()
@@ -297,7 +303,7 @@ $ ->
         $('ul.seats').children().remove()
         i = 0
         while i < row_size
-          $('ul.seats').append '<li class=\'row_' + (i + 1) + '\'></li>'
+          $('ul.seats').append '<li class=\'row_li row_' + (i + 1) + '\'></li>'
           j = 0
           while j < column_size
             $('li.row_' + (i + 1)).append '<span title=\'\' class=\'seat\' data-seat-no=\'\' data-row-id=\'' + (i + 1) + '\' data-column-id=\'' + (j + 1) + '\'></span>'
