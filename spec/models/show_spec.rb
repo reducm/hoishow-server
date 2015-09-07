@@ -84,13 +84,11 @@ describe Show do
       # 出票后
       Area.all.each_with_index do |area, i|
         relation = create :show_area_relation, area: area, show: @show
-        2.times do
-          order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: @quantity}, relation)
-          order.save
-          create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id
-        end
+        order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: @quantity}, relation)
+        order.save
+        create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id
       end
-      expect(@show.unpaid_tickets_count(area)).to eq @quantity * 2
+      expect(@show.unpaid_tickets_count(area)).to eq @quantity
     end
   end
 end
