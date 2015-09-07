@@ -33,7 +33,7 @@ set_title = (el)->
   $(el).attr('data-original-title', text)
   $('ul.seats span').tooltip()
 
-get_seats_info = ()->
+get_seats_info = (target)->
   show_id = $('#show_id').val()
   area_id = $('#area_id').val()
   area_name = $('#area_name').val()
@@ -48,9 +48,13 @@ get_seats_info = ()->
     seats.push(row_seats)
   )
   result = {seats: seats, sort_by: sort_by}
+  pop_content('数据保存中,请稍等......')
   $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(result), area_name: area_name, sort_by: sort_by}, (data)->
     if data.success
-      location.href = "/operation/shows/#{show_id}/edit"
+      if target == 'reload'
+        location.reload()
+      else
+        location.href = "/operation/shows/#{show_id}/edit"
   )
 
 init_editor = ()->
@@ -80,6 +84,11 @@ toggle_show_time = ()->
   else
     $('.show_description_time').hide()
     $('.show_show_time').show()
+
+pop_content = (content)->
+  $('#pop-modal p').text(content)
+  $('#pop-modal').modal('show')
+
 $ ->
   $('.image-uploader').change ->
     readURL this
@@ -267,7 +276,12 @@ $ ->
 
   # 设置选座
   if $('.seats-info').length > 0
-    $('ul.seats').selectable({filter: 'span'})
+    $('ul.seats').selectable({
+      filter: 'span',
+      selected: (event, ui)->
+        $('ul.seats li').removeClass('checked')
+        $('.ui-selected').parent().addClass('checked')
+    })
 
     $('ul.seats span').tooltip()
 
@@ -286,20 +300,30 @@ $ ->
           $('ul.seats').append '<li class=\'row_' + (i + 1) + '\'></li>'
           j = 0
           while j < column_size
-            $('li.row_' + (i + 1)).append '<span title=\'\' class=\'seat blank\' data-seat-no=\'\' data-row-id=\'' + (i + 1) + '\' data-column-id=\'' + (j + 1) + '\'></span'
+            $('li.row_' + (i + 1)).append '<span title=\'\' class=\'seat\' data-seat-no=\'\' data-row-id=\'' + (i + 1) + '\' data-column-id=\'' + (j + 1) + '\'></span>'
             j++
           i++
-        $('ul.seats').selectable({filter: 'span'})
+        $('ul.seats').selectable({
+          filter: 'span',
+          selected: (event, ui)->
+            $('ul.seats li').removeClass('checked')
+            $('.ui-selected').parent().addClass('checked')
+        })
+      get_seats_info('reload')
+
+    #全选座位
+    $('.check_all_seats').on 'click', ()->
+      $('.seat').addClass('ui-selected')
 
     #设置座位状态
     $('.set_avaliable').on 'click', ()->
-      $('.ui-selected').data('status', 'avaliable').addClass('avaliable').removeClass('locked unused ui-selected blank no-status')
+      $('.ui-selected').data('status', 'avaliable').addClass('avaliable').removeClass('locked unused ui-selected')
 
     $('.set_locked').on 'click', ()->
-      $('.ui-selected').data('status', 'locked').addClass('locked').removeClass('avaliable unused ui-selected blank no-status')
+      $('.ui-selected').data('status', 'locked').addClass('locked').removeClass('avaliable unused ui-selected')
 
     $('.set_unused').on 'click', ()->
-      $('.ui-selected').data('status', 'unused').addClass('unused').removeClass('locked avaliable ui-selected blank no-status')
+      $('.ui-selected').data('status', 'unused').addClass('unused').removeClass('locked avaliable ui-selected')
 
     #设置座位号
     $(".set_seat_no").on 'click', ()->
@@ -334,19 +358,20 @@ $ ->
       else
         $('#setChannelModal').modal('show')
 
-    #全选
+    #全选渠道
     $('#setChannelModal').on 'click', '#check_all', ()->
       $('.channels input[type="checkbox"]').prop('checked', $(this).prop('checked'))
 
     $('#setChannelModal').on 'click', '.channels input[type="checkbox"]', ()->
       $('#check_all').prop('checked', $('.channels input[type="checkbox"]:checked').length == $('.channels input[type="checkbox"]').length)
 
-    #反选
+    #反选渠道
     $('#setChannelModal').on 'click', '#anti_all', ()->
       $('.channels input[type="checkbox"]').each(()->
         $(this).prop('checked', !this.checked)
       )
 
+    #提交渠道
     $('#setChannelModal').on 'click', '.submit_channel', (e)->
       e.preventDefault()
       if $('.channels input[type="checkbox"]:checked').length < 1
@@ -366,8 +391,5 @@ $ ->
     $('.submit_seats').on 'click', ()->
       if $('ul.seats span').length < 1
         return false
-      else if $('.blank').length > 0
-        alert('还有座位没有设置状态')
-        $('.blank').addClass('no-status')
       else
-        get_seats_info()
+        get_seats_info('redirect')

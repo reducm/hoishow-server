@@ -30,11 +30,10 @@ class Operation::ShowsController < Operation::ApplicationController
       concert = Concert.find(params[:show][:concert_id])
       if @show.save! && concert
         flash[:notice] = "演出创建成功"
-        redirect_to operation_shows_url
       else
         flash[:alert] = @show.errors.full_messages
-        redirect_to new_operation_show_url(concert_id: @show.concert_id)
       end
+      redirect_to edit_operation_show_url(@show)
     else
       concert = Concert.create(name: "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
       Star.where('id in (?)', params[:star_ids].split(',')).each {|star| star.hoi_concert(concert)}
@@ -42,11 +41,10 @@ class Operation::ShowsController < Operation::ApplicationController
       @show.concert_id = concert.id
       if @show.save! && concert
         flash[:notice] = "演出创建成功"
-        redirect_to operation_shows_url
       else
         flash[:alert] = @show.errors.full_messages
-        redirect_to new_operation_show_url(concert_id: @show.concert_id)
       end
+      redirect_to edit_operation_show_url(@show)
     end
   end
 

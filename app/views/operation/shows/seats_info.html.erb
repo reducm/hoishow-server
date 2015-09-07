@@ -4,31 +4,51 @@
       区域名称: <%= text_field_tag "area_name", @area.name %>
     </h3>
     <div class="box-size">
-      大小: <%= text_field_tag "row_size", @seats.maximum('row') %>行<%= text_field_tag "column_size", @seats.maximum('column') %>列
+      <b>大小</b>: <%= text_field_tag "row_size", @seats.maximum('row') %>排<%= text_field_tag "column_size", @seats.maximum('column') %>列
+      <b>排序</b>: <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @area.sort_by) %>
       <%= link_to "确定", "javascript:void(0)", class: 'btn btn-default set_box' %>
     </div>
   </div>
   <div class="nav-control">
+    <%= link_to '全选座位', 'javascript:void(0);', class: 'check_all_seats btn btn-info' %>
     <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn' %>
     <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn' %>
     <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn' %>
     <%= link_to '设置座位号', 'javascript:void(0);', class: 'set_seat_no btn btn-primary' %>
     <%= link_to '设置价格', 'javascript:void(0);', class: 'set_price btn btn-primary' %>
     <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-primary' if can? :set_channels, current_admin %>
-    <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @area.sort_by) %>
   </div>
   <div class="seats-box">
     <div class="front"><h4>舞台</h4></div>
-    <ul class="list-unstyled seats">
-      <% if @seats.any? && @seats.maximum('row').present? %>
-        <% @seats.maximum('row').times.each do |row| %>
-          <li class="row_<%= row + 1 %>">
-            <% @seats.where(row: row + 1).each do |seat| %>
-              <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
-            <% end %>
-          </li>
-        <% end %>
+    <ul class="row-bar list-unstyled pull-left">
+    <% if @seats.any? && @seats.maximum('row').present? %>
+      <li></li>
+      <% @seats.maximum('row').times.each do |row| %>
+        <li><%= row + 1 %></li>
       <% end %>
+    <% end %>
+    </ul>
+    <ul class="list-unstyled seats">
+    <% if @seats.any? && @seats.maximum('row').present? %>
+      <li class="column-bar">
+        <% if @area.sort_by == 'asc' %>
+          <% @seats.maximum('column').times.each do |column| %>
+            <span class="column"><%= column %></span>
+          <% end %>
+        <% else %>
+          <% @seats.maximum('column').downto(1) do |column| %>
+            <span class="column"><%= column %></span>
+          <% end %>
+        <% end %>
+      </li>
+      <% @seats.maximum('row').times.each do |row| %>
+        <li class="row_<%= row + 1 %>">
+          <% @seats.where(row: row + 1).each do |seat| %>
+            <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
     </ul>
   </div>
   <%= link_to "提交", "javascript:void(0);", class: 'btn btn-primary submit_seats' %>
@@ -63,6 +83,14 @@
           <%= submit_tag '提交', class: 'btn btn-primary submit_channel'%>
         <% end %>
       </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="pop-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <p></p>
     </div>
   </div>
 </div>
