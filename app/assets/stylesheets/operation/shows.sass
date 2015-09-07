@@ -45,8 +45,6 @@ a.del_star.btn.btn-danger
     top: 25%
     left: 12%
     width: 100px
-    select
-      margin: 10px
     a
       margin: 10px
       color: #fff
@@ -57,8 +55,6 @@ a.del_star.btn.btn-danger
     .set_unused
       background-color: grey
   .seats-box
-    overflow: auto
-    white-space: nowrap
     .front
       h4
         display: inline-block
@@ -66,11 +62,27 @@ a.del_star.btn.btn-danger
         height: 30px
         line-height: 30px
         background-color: rgb(182, 179, 179)
+    .row-bar
+      li
+        height: 15px
+        width: 15px
+        margin-left: 20px
+        margin-right: 10px
+        margin-bottom: 5px
     .seats
+      overflow: auto
+      white-space: nowrap
+      .checked
+        background-color: #CCC9C9
+      .column
+        display: inline-block
+        height: 15px
+        width: 15px
+        margin-right: 5px
       .seat
         border: 1px solid #000
-        width: 20px
-        height: 20px
+        width: 15px
+        height: 15px
         display: inline-block
         margin-right: 5px
       .avaliable
@@ -79,11 +91,18 @@ a.del_star.btn.btn-danger
         background-color: black
       .unused
         background-color: grey
-      .no-status
-        border-color: red
       .ui-selecting
         background-color: #FECA40
       .ui-selected
         background-color: #FADAAD
     .submit_seats
       width: 180px
+#pop-modal
+  top: 30%
+  outline: none
+  .modal-content
+    height: 70px
+    margin: 0 auto
+    line-height: 70px
+    font-size: 1.5em
+    text-align: center
