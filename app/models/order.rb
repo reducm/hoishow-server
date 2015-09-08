@@ -290,7 +290,6 @@ class Order < ActiveRecord::Base
   def set_tickets_and_price(show_area_relations=[])
     # update price
     amount = show_area_relations.map{|relation| relation.price}.inject(&:+)
-    amount += postage.to_i
     self.update_attributes(amount: amount)
     # create_tickets
     self.create_tickets_by_relations(show_area_relations[0], show_area_relations.size)
@@ -356,7 +355,6 @@ class Order < ActiveRecord::Base
     generate_out_id
     self.valid_time = Time.now + 15.minutes
     self.status = :pending if self.status.blank?
-    self.postage = CommonData.get_value('postage')
     save!
   end
 
