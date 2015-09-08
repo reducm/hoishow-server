@@ -20,10 +20,10 @@
 # Learn more: http://github.com/javan/whenever
 set :output, "log/cron.log"
 
-every 1.hour do
+every 5.minutes do
   rake "orders:check_outdate_orders"
 end
 
-every 1.hour do
+every 30.minutes do
   rake "orders:check_refund_orders"
 end
