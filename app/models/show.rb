@@ -22,6 +22,7 @@ class Show < ActiveRecord::Base
   validates :stadium, presence: {message: "场馆不能为空"}
 
   scope :is_display, -> { where(is_display: true).order('shows.is_top DESC, shows.created_at DESC') }
+  scope :finished_shows, -> { where('show_time is not null and show_time < ?', Time.now)}
 
   before_create :set_city
 
