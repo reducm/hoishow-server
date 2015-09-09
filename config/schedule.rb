@@ -27,3 +27,7 @@ end
 every 30.minutes do
   rake "orders:check_refund_orders"
 end
+
+every 30.minutes do
+  rake "shows:check_finished_shows"
+end
