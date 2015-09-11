@@ -4,8 +4,8 @@
       区域名称: <%= text_field_tag "area_name", @area.name %>
     </h3>
     <div class="box-size">
-      <b>大小</b>: <%= text_field_tag "row_size", @seats.maximum('row') %>排<%= text_field_tag "column_size", @seats.maximum('column') %>列
-      <b>排序</b>: <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @area.sort_by) %>
+      <b>大小</b>: <%= text_field_tag "row_size", @max_row %>排<%= text_field_tag "column_size", @max_col %>列
+      <b>排序</b>: <%= select_tag "area_sort_by", options_for_select([['从左往右', 'asc'], ['从右往左', 'desc']], @sort_by) %>
       <%= link_to "确定", "javascript:void(0)", class: 'btn btn-default set_box' %>
     </div>
   </div>
@@ -22,32 +22,32 @@
     <div class="front"><h4>舞台</h4></div>
     <div class="content">
       <ul class="row-bar list-unstyled pull-left">
-      <% if @seats.any? && @seats.maximum('row').present? %>
+      <% if @seats.present? && @max_row.present? %>
         <li></li>
-        <% @seats.maximum('row').times.each do |row| %>
+        <% @max_row.times.each do |row| %>
           <li><%= row + 1 %></li>
         <% end %>
       <% end %>
       </ul>
       <ul class="list-unstyled seats">
-        <% if @seats.any? && @seats.maximum('row').present? %>
-        <% @column_size = @seats.maximum('column') %>
+        <% if @seats.present? && @max_row.present? %>
           <li class="column-bar">
-            <%= hidden_field_tag 'column_size', @column_size %>
-            <% if @area.sort_by == 'asc' %>
-              <% @column_size.times.each do |column| %>
+            <%= hidden_field_tag 'column_size', @max_col %>
+            <% if @sort_by == 'asc' %>
+              <% @max_col.times.each do |column| %>
                 <span class="column"><%= column + 1 %></span>
               <% end %>
             <% else %>
-              <% @column_size.downto(1) do |column| %>
+              <% @max_col.downto(1) do |column| %>
                 <span class="column"><%= column %></span>
               <% end %>
             <% end %>
           </li>
-          <% @seats.maximum('row').times.each do |row| %>
+          <% 1.upto(@max_row) do |row| %>
             <li class="row_<%= row + 1 %> row_li">
-              <% @seats.where(row: row + 1).each do |seat| %>
-                <span title="座位号: <%= seat.name %> 价格: <%= seat.price.to_i %>元" class="seat <%= seat.status %>" data-row-id="<%= seat.row %>" data-column-id="<%= seat.column %>" data-seat-no="" data-status="<%= seat.status %>" data-seat-price="<%= seat.price %>" data-channel-ids="<%= seat.channels %>"></span>
+              <% 1.upto(@max_col) do |col| %>
+                <% seat = @seats["#{row}|#{col}"] %>
+                <span title="座位号: <%= "#{row}排#{col}座" %> 价格: <%= seat['price'] %>元" class="seat <%= seat['status'] %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-seat-no="<%= "#{row}排#{col}座" %>" data-status="<%= seat['status'] %>" data-seat-price="<%= seat['price'] %>" data-channel-ids="<%= seat['channel'] %>"></span>
               <% end %>
             </li>
           <% end %>

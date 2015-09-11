@@ -38,18 +38,27 @@ get_seats_info = (target)->
   area_id = $('#area_id').val()
   area_name = $('#area_name').val()
   sort_by = $('#area_sort_by').val()
-  seats = []
+  data = { seats: {}, total: '', sort_by: '' }
+
+  # set seats
   $('ul.seats li.row_li').each(()->
     $li = $(this)
-    row_seats = []
     $li.children().each(()->
-      row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price'), channel_ids: $(this).data('channel-ids')})
+      key = "#{$(this).data('row-id')}|#{$(this).data('column-id')}"
+      value = { status: $(this).data('status'), price: $(this).data('seat-price'), channel: $(this).data('channel-ids') }
+      data['seats'][key] = value
     )
-    seats.push(row_seats)
   )
-  result = {seats: seats, sort_by: sort_by}
+  # set max row and column
+  row_size = $('#row_size').val()
+  column_size = $('#column_size').val()
+  data['total'] = "#{row_size}|#{column_size}"
+
+  # set sort_by
+  data['sort_by'] = sort_by
+
   pop_content('数据保存中,请稍等......')
-  $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(result), area_name: area_name, sort_by: sort_by}, (data)->
+  $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(data), area_name: area_name}, (data)->
     if data.success
       if target == 'reload'
         location.reload()
