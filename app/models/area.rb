@@ -16,4 +16,14 @@ class Area < ActiveRecord::Base
   validates :stadium, presence: {message: "场馆不能为空"}
 
   paginates_per 10
+
+  def seats_info=(si)
+    write_attribute(:seats_info, ActiveSupport::JSON::encode(si))
+  end
+
+  def seats_info
+    si = read_attribute(:seats_info)
+    return si unless si
+    ActiveSupport::JSON::decode(si)
+  end
 end
