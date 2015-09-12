@@ -65,24 +65,24 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     end
   end
 
-  # def unlock_seat
-  #   if ['outdate', 'refund'].exclude?(order_params[:reason])
-  #     @error_code = 3011
-  #     @message = '解锁原因错误'
-  #     return
-  #   end
-  #
-  #   if order_params[:reason] == 'outdate'
-  #     result = @order.overtime!
-  #   elsif order_params[:reason] == 'refund'
-  #     result = @order.refunds!
-  #   end
-  #
-  #   unless result
-  #     @error_code = 3008
-  #     @message = '订单解锁失败'
-  #   end
-  # end
+  def unlock_seat
+    if ['outdate', 'refund'].exclude?(order_params[:reason])
+      @error_code = 3011
+      @message = '解锁原因错误'
+      return
+    end
+
+    if order_params[:reason] == 'outdate'
+      result = @order.overtime!
+    elsif order_params[:reason] == 'refund'
+      result = @order.refunds!
+    end
+
+    unless result
+      @error_code = 3008
+      @message = '订单解锁失败'
+    end
+  end
 
   def confirm
     if !@order.pre_pay! || !@order.success_pay!

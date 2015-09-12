@@ -232,6 +232,10 @@ class Order < ActiveRecord::Base
         # create order
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
+
+        pending_order = user.orders.where(show_id: show.id, status: statuses[:pending]).first
+        pending_order.overtime! if pending_order
+
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
         order.save!
 
@@ -268,6 +272,10 @@ class Order < ActiveRecord::Base
         order_attrs[:amount] = tickets.sum(:price)
         # create order
         order = Order.init_from_show(show, order_attrs)
+
+        pending_order = user.orders.where(show_id: show.id, status: statuses[:pending]).first
+        pending_order.overtime! if pending_order
+
         order.ticket_info = tickets.map(&:seat_name).join('|')
         order.save!
         # 按 area_id 分组, 或者换种做法
