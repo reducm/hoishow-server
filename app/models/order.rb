@@ -233,7 +233,7 @@ class Order < ActiveRecord::Base
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
 
-        pending_order = Order.where(user_id: user_id, show_id: show.id, status: statuses[:pending]).first
+        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
         pending_order.overtime! if pending_order
 
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
@@ -273,7 +273,7 @@ class Order < ActiveRecord::Base
         # create order
         order = Order.init_from_show(show, order_attrs)
 
-        pending_order = Order.where(user_id: user_id, show_id: show.id, status: statuses[:pending]).first
+        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
         pending_order.overtime! if pending_order
 
         order.ticket_info = tickets.map(&:seat_name).join('|')
