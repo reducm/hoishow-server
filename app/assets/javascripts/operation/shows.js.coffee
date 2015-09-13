@@ -57,17 +57,64 @@ get_seats_info = (target)->
         location.href = "/operation/shows/#{show_id}/edit"
   )
 
+insert_obj = (obj)->
+  node = window.getSelection().anchorNode
+  if node
+    $(node).after(obj)
+  else
+    $('.qeditor_preview').append(obj)
+
 init_editor = ()->
-  editor = new Simditor({
-             textarea: $('#show_description'),
-             upload: {
-               url: '/simditor_image',
-               connectionCount: 3,
-               leaveConfirm: '正在上传文件，如果离开上传会自动取消'
-             },
-             toolbar: ['link', 'image', '|', 'title', 'bold', 'italic', 'color','|', 'underline', 'strikethrough', 'hr', 'html'],
-             pasteImage: true
-           })
+  toolbar = $('#show_description').parent().find('.qeditor_toolbar')
+  editor = $(".qeditor_preview")
+
+  video = $("<a href='#' class='qe-video'><span class='fa fa-video-camera'></span><input id='video_uploader' type='file' name='file' accept='audio/*'/></a>")
+  video.on 'click', ()->
+    $('#video_uploader').fileupload
+      url: "/operation/shows/upload"
+      dataType: "json"
+      add: (e, data) ->
+        types = /(\.|\/)(mp4)$/i
+        file = data.files[0]
+        if types.test(file.type) || types.test(file.name)
+          $('#video_uploader').append(data.context)
+          data.submit()
+        else
+          alert("#{file.name}不是mp4视频文件")
+      submit: (e, data) ->
+        data.formData = {
+          file: $('#video_uploader').val(),
+          file_type: 'video'
+        }
+      done: (e, data) ->
+        $video = "<p><video controls><source src='#{data.result.file_path}' /></video></p>"
+        insert_obj($video)
+        editor.change()
+
+  image = $("<a href='#' class='qe-image'><span class='fa fa-picture-o'></span><input id='image_uploader' type='file' name='file' accept='image/*'/></a>")
+  image.on 'click', ()->
+    $('#image_uploader').fileupload
+      url: "/operation/shows/upload"
+      dataType: "json"
+      add: (e, data) ->
+        types = /(\.|\/)(gif|jpe?g|png)$/i
+        file = data.files[0]
+        if types.test(file.type) || types.test(file.name)
+          $('#image_uploader').append(data.context)
+          data.submit()
+        else
+          alert("#{file.name}不是gif, jpeg, 或png图像文件")
+      submit: (e, data) ->
+        data.formData = {
+          file: $('#image_uploader').val(),
+          file_type: 'image'
+        }
+      done: (e, data) ->
+        $img = "<p><img src='#{data.result.file_path}' /></p>"
+        insert_obj($img)
+        editor.change()
+
+  toolbar.append(video, image)
 
 toggle_show_time = ()->
   $('#show_status').on 'change', ()->
@@ -93,7 +140,10 @@ $ ->
   $('.image-uploader').change ->
     readURL this
 
-  init_editor() if $('#show_description').length > 0
+  if $('#show_description').length > 0
+    $('#show_description').qeditor({})
+    init_editor()
+
 #show show
   if $(".show_show").length > 0
     $("#pie_cake div").each(() ->
