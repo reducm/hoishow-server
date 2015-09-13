@@ -59,18 +59,18 @@ class Show < ActiveRecord::Base
   mount_uploader :stadium_map, ImageUploader
 
   # 该区域已出票，但订单未支付的票数
-  def unpaid_tickets_count(area)
+  def unpaid_tickets_count(area_id)
     if orders.any?
-      orders.map{|o| o.tickets.area_unpaid_tickets_count(area.id)}.sum
+      tickets.area_unpaid_tickets_count(area_id, order_ids)
     else
       0
     end
   end
 
   # 该区域已出票，并且订单已支付的票数
-  def sold_tickets_count(area)
+  def sold_tickets_count(area_id)
     if orders.any?
-      orders.map{|o| o.tickets.area_sold_tickets_count(area.id)}.sum
+      tickets.area_sold_tickets_count(area_id, order_ids)
     else
       0
     end
@@ -118,27 +118,27 @@ class Show < ActiveRecord::Base
     Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
   end
 
-  def area_seats_left(area)
+  def area_seats_left(area_id)
     # find all valid tickets
     # valid_tickets_count = area.tickets.where(order_id: self.orders.valid_orders.pluck(:id)).count
     # find the seats_count in this area
     # count = area_seats_count(area) - valid_tickets_count
 
     # [0, count].max
-    relation = self.show_area_relations.where(area_id: area.id).first
+    relation = self.show_area_relations.where(area_id: area_id).first
     relation.try(:left_seats) || 0
   end
 
-  def area_is_sold_out(area)
-    show_area_relations.where(area_id: area.id).first.is_sold_out
+  def area_is_sold_out(area_id)
+    show_area_relations.where(area_id: area_id).first.is_sold_out
   end
 
   def total_seats_count
     show_area_relations.sum(:seats_count)
   end
 
-  def area_seats_count(area)
-    if seats_count = show_area_relations.where(area_id: area.id).first.seats_count
+  def area_seats_count(area_id)
+    if seats_count = show_area_relations.where(area_id: area_id).first.seats_count
       seats_count
     else
       0

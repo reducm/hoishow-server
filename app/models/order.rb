@@ -83,7 +83,7 @@ class Order < ActiveRecord::Base
     # end
 
     # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment})
-    event :refunds, :after => [:set_payment_to_refund, :set_tickets_to_refund] do
+    event :refunds, :after => [:set_payment_to_refund, :handle_seats_and_tickets] do
       transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
     end
 
