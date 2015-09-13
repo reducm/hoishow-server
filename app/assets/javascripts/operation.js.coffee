@@ -25,12 +25,13 @@
 #= require operation/site_setting
 #= require operation/helps
 #= require operation/static_pages
-#= require dataTables/jquery.dataTables
 #= require operation/notify
+#= require operation/videos
+#
 #= require jquery-fileupload/basic
 #= require dropzone
-#= require operation/videos
-
+#= require datatables.min
+#
 #= require simditor/module
 #= require simditor/hotkeys
 #= require simditor/uploader
