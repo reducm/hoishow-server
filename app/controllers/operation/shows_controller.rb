@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search]
+  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
@@ -207,6 +207,18 @@ class Operation::ShowsController < Operation::ApplicationController
       render json: {success: true}
     else
       render json: {error: true}
+    end
+  end
+
+  def upload
+    case params[:file_type]
+    when 'image'
+      image = SimditorImage.create(image: params[:file])
+      render json: {file_path: image.image_url}
+    when 'video'
+      video = Video.create(source: params[:file])
+      render json: {file_path: video.source_url}
+    else
     end
   end
 

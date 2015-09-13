@@ -38,6 +38,8 @@
 #= require simditor/beautify-html
 #= require simditor/simditor-html
 
+#= require jquery.qeditor
+
 #= require operation/jquery.datetimepicker
 
 $ ->
