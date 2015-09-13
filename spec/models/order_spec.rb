@@ -180,7 +180,7 @@ describe Order do
         expect(t.status).to eq 'success'
 
         new_order.refunds!({payment: payment, refund_amount: '100'})
-        expect(t.reload.status).to eq 'refund'
+        expect(t.reload.status).to eq 'pending'
         payment.reload
         expect(payment.status).to eq 'refund'
         expect(payment.refund_amount).to eq 100
