@@ -2,29 +2,12 @@
 
 <div class="nav">
     <h1 class="pull-left">订单列表</h1>
-
-  <div class="search">
-    <%= form_tag(operation_orders_path, class: 'form-inline', method: 'get') do %>
-      <%= select_tag "order_status_select", options_for_select([["全部", "all"], ["未支付", "pending"], ["已支付", "paid"], ["已出票", "success"], ["已退款", "refund"], ["已过期", "outdate"]], "#{params[:order_status_select]}"), class: 'form-control' %>
-      <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入演出名称搜索" %>
-      <%= submit_tag "搜索", class: 'btn btn-default' %>
-    <% end %>
-  </div>
 </div>
-
-  <hr />
-
-  <% if @orders.any? %>
-    <p>
-      下载:
-      <%= link_to "CSV", operation_orders_path(params.merge(q: params[:q], order_status_select: params[:order_status_select], page: 0, format: "csv")) %> |
-      <%= link_to "Excel", operation_orders_path(params.merge(q: params[:q], order_status_select: params[:order_status_select], page: 0, format: "xls")) %>
-    </p>
-  <% end %>
 
 <div class="orders_list">
-  <%= render partial: "table", locals: {orders: @orders} %>
+  <%= render partial: "table" %>
 </div>
+
 <div class="nav">
     <h1 class="pull-left">实体票快递详情</h1>
   <div class="search">
@@ -67,5 +50,4 @@
       <% end %>
     </tbody>
   </table>
-  <%= paginate @r_ticket_orders, param_name: 'r_ticket_orders_page' %>
 </div>

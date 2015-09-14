@@ -2,46 +2,16 @@
 class Operation::OrdersController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_order, except: [:index]
+  before_action :get_orders_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    #搜索
-    if params[:q]
-      ids = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").map(&:id).compact
-      @orders = Order.where("show_name like ? or user_id in (?)", "%#{params[:q]}%", ids).order("created_at desc")
-      @r_ticket_orders = Order.orders_with_r_tickets
-    elsif params[:q_express]
-      @orders = Order.order("created_at desc")
-      @r_ticket_orders = Order.where("user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%","%#{params[:q_express]}%", "%#{params[:q_express]}%").orders_with_r_tickets
-    else
-      @orders = Order.order("created_at desc")
-      @r_ticket_orders = Order.orders_with_r_tickets
-    end
-    #下拉框筛选
-    case params[:order_status_select]
-    when "pending"
-      @orders = @orders.where(status: 0)
-    when "paid"
-      @orders = @orders.where(status: 1)
-    when "success"
-      @orders = @orders.where(status: 2)
-    when "refund"
-      @orders = @orders.where(status: 3)
-    when "outdate"
-      @orders = @orders.where(status: 4)
-    end
-    #导出时不分页
-    unless params[:page] == "0"
-      params[:page] ||= 1
-      @orders = @orders.page(params[:page])
-    end
-    @r_ticket_orders = @r_ticket_orders.page(params[:r_ticket_orders_page])
-    #导出
-    filename = Time.now.strfcn_time + '订单列表'
+    @r_ticket_orders = Order.orders_with_r_tickets
+
     respond_to do |format|
-      format.html { render :index }
-      format.csv { send_data @orders.to_csv, filename: filename + '.csv'}
-      format.xls { headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\""}
+      format.html
+      # json数据组装, 详见app/services/orders_datatable.rb
+      format.json { render json: OrdersDatatable.new(view_context) }
     end
   end
 
