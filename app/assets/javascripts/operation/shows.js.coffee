@@ -44,9 +44,12 @@ get_seats_info = (target)->
   $('ul.seats li.row_li').each(()->
     $li = $(this)
     $li.children().each(()->
-      key = "#{$(this).data('row-id')}|#{$(this).data('column-id')}"
-      value = { status: $(this).data('status'), price: $(this).data('seat-price'), channel: $(this).data('channel-ids') }
-      data['seats'][key] = value
+      status = $(this).data('status')
+      if status != undefined && status != ''
+        key = "#{$(this).data('row-id')}|#{$(this).data('column-id')}"
+        seat_no = "#{$(this).data('row-id')}排#{$(this).data('column-id')}座"
+        value = { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no }
+        data['seats'][key] = value
     )
   )
   # set max row and column
