@@ -2,6 +2,7 @@
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
+  before_action :get_orders_filters, only: :show
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
@@ -49,6 +50,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def show
+    @show_id = params[:id]
   end
 
   def edit
