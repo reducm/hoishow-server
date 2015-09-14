@@ -50,7 +50,7 @@
     <% end %>
   </div>
   <div class="orders_list">
-    <%= render partial: 'operation/orders/table', locals: {orders: @show.orders.page(params[:page]).order("created_at desc")} %>
+    <%= render partial: 'operation/orders/table' %>
   </div>
 
   <div role="tabpanel" class="tab-pane topics_list show_show_topics_list" id="shows_show_topics">
@@ -59,3 +59,8 @@
   </div>
 
 </div>
+
+<%= content_tag :div, id: "show_id", data: {
+  this_show_id: ( @show_id )
+} do %>
+<% end %>

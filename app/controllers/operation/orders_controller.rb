@@ -2,17 +2,11 @@
 class Operation::OrdersController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_order, except: [:index]
+  before_action :get_orders_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
     @r_ticket_orders = Order.orders_with_r_tickets
-
-    # 供view过滤
-    @status_filter = status_filter
-    # {"hoishow"=>0, "bike_ticket"=>1}
-    @channel_filter = Order.channels
-    @buy_origin_filter = buy_origin_filter
-    @show_filter = show_filter
 
     respond_to do |format|
       format.html
@@ -60,32 +54,5 @@ class Operation::OrdersController < Operation::ApplicationController
   private
   def get_order
     @order = Order.find params[:id]
-  end
-
-  # {"已出票"=>2, "未支付"=>0, ...}
-  def status_filter
-    hash = {}
-    Order.select(:status).distinct.order(:status).each do |order|
-      hash[order.tran("status")] = order[:status]
-    end
-    hash
-  end
-
-  # {"ios"=>"ios", "android"=>"android"}
-  def buy_origin_filter
-    hash = {}
-    Order.select(:buy_origin).distinct.each do |order|
-      hash[order[:buy_origin]] = order[:buy_origin]
-    end
-    hash
-  end
-
-  # {"Coldplay全球巡回演唱会北京站"=>"Coldplay全球巡回演唱会北京站"}
-  def show_filter
-    hash = {}
-    Order.select(:show_name).distinct.each do |order|
-      hash[order[:show_name]] = order[:show_name]
-    end
-    hash
   end
 end

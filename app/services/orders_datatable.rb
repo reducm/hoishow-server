@@ -72,9 +72,9 @@ private
     if params[:buy_origin].present?
       orders = orders.where("orders.buy_origin like ?", params[:buy_origin])
     end
-    # 按演出名称过滤
+    # 按演出过滤
     if params[:show].present?
-      orders = orders.where("orders.show_name like ?", params[:show])
+      orders = orders.where("orders.show_id like ?", params[:show])
     end
     # 按下单时间称过滤
     if params[:start_date].present? && params[:end_date].present?

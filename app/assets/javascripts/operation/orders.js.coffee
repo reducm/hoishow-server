@@ -42,7 +42,8 @@ $ ->
               'status': $('#status_filter').val()
               'channel': $('#channel_filter').val()
               'buy_origin': $('#buy_origin_filter').val()
-              'show': $('#show_filter').val()
+              # 从演出详情页访问的话，取该演出的订单
+              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
         # 导出。这里有两个问题：csv导出不能；导出的是分页数据
@@ -68,12 +69,14 @@ $ ->
           select.val("%%")
           $.each f_data["buyOriginFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单平台：" + key + '</option>'
-          # 按演出名称过滤
-          select = $('<select><option value="%%">演出：全部</option></select>').attr("id", "show_filter").appendTo($("#orders_table_length")).on 'change', ->
-            api.ajax.reload()
-          select.val("%%")
-          $.each f_data["showFilter"], (key, value) ->
-            select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
+          # 按演出过滤
+          # 如果从演出详情页访问的，不生成过滤框
+          unless $('#show_id').length > 0
+            select = $('<select><option value="%%">演出：全部</option></select>').attr("id", "show_filter").appendTo($("#orders_table_length")).on 'change', ->
+              api.ajax.reload()
+            select.val("%%")
+            $.each f_data["showFilter"], (key, value) ->
+              select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
           # 按下单开始时间过滤
           input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '下单开始时间').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
