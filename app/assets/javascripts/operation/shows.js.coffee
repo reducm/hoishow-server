@@ -59,7 +59,7 @@ get_seats_info = (target)->
 
 insert_obj = (obj)->
   node = window.getSelection().anchorNode
-  if node
+  if node && node.nodeType == 3
     $(node).after(obj)
   else
     $('.qeditor_preview').append(obj)
@@ -77,18 +77,22 @@ init_editor = ()->
         types = /(\.|\/)(mp4)$/i
         file = data.files[0]
         if types.test(file.type) || types.test(file.name)
-          $('#video_uploader').append(data.context)
           data.submit()
+          $('.qeditor_preview').append($('<div id="progress" style="width: 300px;"><div class="bar" style="width: 0%;"></div></div>'))
         else
           alert("#{file.name}不是mp4视频文件")
+      progressAll: (e, data) ->
+        progressNo = parseInt(data.loaded / data.total * 100, 10)
+        $('#progress .bar').css('width', progressNo + '%')
       submit: (e, data) ->
         data.formData = {
           file: $('#video_uploader').val(),
           file_type: 'video'
         }
       done: (e, data) ->
-        $video = "<p><video controls><source src='#{data.result.file_path}' /></video></p>"
+        $video = "<p><video controls><source src='#{data.result.file_path}' /></video><br /></p>"
         insert_obj($video)
+        $('#progress').hide()
         editor.change()
 
   image = $("<a href='#' class='qe-image'><span class='fa fa-picture-o'></span><input id='image_uploader' type='file' name='file' accept='image/*'/></a>")
@@ -100,18 +104,22 @@ init_editor = ()->
         types = /(\.|\/)(gif|jpe?g|png)$/i
         file = data.files[0]
         if types.test(file.type) || types.test(file.name)
-          $('#image_uploader').append(data.context)
           data.submit()
+          $('.qeditor_preview').append($('<div id="progress" style="width: 300px;"><div class="bar" style="width: 0%;"></div></div>'))
         else
           alert("#{file.name}不是gif, jpeg, 或png图像文件")
+      progress: (e, data) ->
+        progressNo = parseInt(data.loaded / data.total * 100, 10)
+        $('#progress .bar').css('width', progressNo + '%')
       submit: (e, data) ->
         data.formData = {
           file: $('#image_uploader').val(),
           file_type: 'image'
         }
       done: (e, data) ->
-        $img = "<p><img src='#{data.result.file_path}' /></p>"
+        $img = "<p><img src='#{data.result.file_path}' /><br /></p>"
         insert_obj($img)
+        $('#progress').hide()
         editor.change()
 
   toolbar.append(video, image)

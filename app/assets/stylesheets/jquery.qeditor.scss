@@ -85,9 +85,16 @@
   height: auto;
   margin:0 auto;
   overflow-y:scroll;
+  img {
+    width: 100%;
+  }
   video {
     height: 200px;
     width: 300px;
+  }
+  .bar {
+    height: 18px;
+    background: green;
   }
 }
 .qeditor_placeholder { color:#999; }
