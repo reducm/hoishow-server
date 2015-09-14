@@ -22,7 +22,7 @@
     <div class="front"><h4>舞台</h4></div>
     <div class="content">
       <ul class="row-bar list-unstyled pull-left">
-      <% if @seats.present? && @max_row.present? %>
+      <% if @max_row.present? %>
         <li></li>
         <% @max_row.times.each do |row| %>
           <li><%= row + 1 %></li>
@@ -30,24 +30,31 @@
       <% end %>
       </ul>
       <ul class="list-unstyled seats">
-        <% if @seats.present? && @max_row.present? %>
+        <% if @max_row.present? && @max_col.present? %>
           <li class="column-bar">
             <%= hidden_field_tag 'column_size', @max_col %>
-            <% if @sort_by == 'asc' %>
-              <% @max_col.times.each do |column| %>
-                <span class="column"><%= column + 1 %></span>
-              <% end %>
-            <% else %>
-              <% @max_col.downto(1) do |column| %>
-                <span class="column"><%= column %></span>
-              <% end %>
+            <% column_array =if @sort_by == 'asc'
+                1.upto(@max_col)
+              else
+                @max_col.downto(1)
+              end
+            %>
+            <% column_array.each do |column| %>
+              <span class="column"><%= column %></span>
             <% end %>
           </li>
           <% 1.upto(@max_row) do |row| %>
-            <li class="row_<%= row + 1 %> row_li">
-              <% 1.upto(@max_col) do |col| %>
-                <% seat = @seats["#{row}|#{col}"] %>
-                <span title="座位号: <%= "#{row}排#{col}座" %> 价格: <%= seat['price'] %>元" class="seat <%= seat['status'] %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-seat-no="<%= "#{row}排#{col}座" %>" data-status="<%= seat['status'] %>" data-seat-price="<%= seat['price'] %>" data-channel-ids="<%= seat['channel'] %>"></span>
+            <li class="row_<%= row %> row_li">
+              <% column_array.each do |col| %>
+                <%seat = @seats["#{row}|#{col}"]
+                  default_seat_no = "#{row}排#{col}座"
+                  if seat.nil?
+                    status, price, channels, seat_no = '', '', '', default_seat_no
+                  else
+                    status, price, channels, seat_no = seat['status'], seat['price'], seat['channels'], seat['seat_no']
+                  end%>
+
+                <span title="座位号: <%= seat_no %> 价格: <%= price %>元" class="seat <%= status %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-seat-no="<%= seat_no %>" data-status="<%= status %>" data-seat-price="<%= price %>" data-channel-ids="<%= channels %>"></span>
               <% end %>
             </li>
           <% end %>
