@@ -1,7 +1,7 @@
 $ ->
   if $(".startup_list").length > 0
     $("label").remove()
-    
+
     $('#fileuploader').fileupload
       url: '/operation/startup'
       dataType: "json"
@@ -9,7 +9,7 @@ $ ->
         types = /(\.|\/)(gif|jpe?g|png)$/i
         file = data.files[0]
         if types.test(file.type) || types.test(file.name)
-          $('#fileuploader').append(data.context)
+          $('#fileuploader').appendTo(data.context)
           data.submit()
         else
           alert("#{file.name}不是gif, jpeg, 或png图像文件")
