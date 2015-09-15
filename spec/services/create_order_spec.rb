@@ -13,9 +13,11 @@ describe CreateOrderLogic do
       2.times { create(:seat, area_id: area.id, show: @show1, price: r.price) }
     end
 
+    seats_info = generate_seats(3, 4, 'avaliable')
     @stadium.areas.last(3).each_with_index do |area, i|
-      r = @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 3, left_seats: 3)
-      3.times { create(:seat, area_id: area.id, show: @show2, price: r.price) }
+      area.update_attributes(seats_info: seats_info)
+      r = @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 12, left_seats: 12)
+      # 3.times { create(:seat, area_id: area.id, show: @show2, price: r.price) }
     end
 
     @way = 'ios'
@@ -86,7 +88,7 @@ describe CreateOrderLogic do
 
     it 'will handle pending_orders' do
       pending_order = user.orders.init_from_show(@show1)
-      pending_order.channel = 'hoishow' 
+      pending_order.channel = 'hoishow'
       pending_order.save
       #pending_order.create_tickets_by_relations(@show1.show_area_relations.first, 1)
       expect(pending_order.status).to eq 'pending'
@@ -105,17 +107,15 @@ describe CreateOrderLogic do
 
   context "create_order_with_selectable" do
     let(:options) do
+      seats = {}.tap { |h| @show2.areas.map do |area|
+        sf = area.seats_info["seats"]
+        h[area.id.to_s] = { "1|2" => sf['1|2']['price'], "1|3" => sf['1|3']['price'] }
+      end
+      }
       {
         user: user, quantity: 1, area_id: first_area.id,
         way: @way,
-        areas: @show2.areas.map do |area|
-          {
-            area_id: area.id.to_s,
-            seats: area.seats.map do |s|
-              { id: s.id, seat_no: s.name }
-            end
-          }
-        end.to_json
+        seats: seats.to_json
       }
     end
 
@@ -126,11 +126,18 @@ describe CreateOrderLogic do
       expect(co_logic.order.tickets.count).to eq @show2.seats.count
       expect(co_logic.response).to eq 0
       expect(co_logic.success?).to eq true
-      @show2.show_area_relations.each do |r|
-        expect(r.left_seats).to eq 0
-        expect(r.is_sold_out).to eq true
+      # @show2.show_area_relations.each do |r|
+      #   expect(r.left_seats).to eq 0
+      #   expect(r.is_sold_out).to eq true
+      # end
+      expect(co_logic.order.tickets.pluck(:status).uniq).to eq [0]
+      @show2.areas.map do |area|
+        area.reload
+        sf = area.seats_info["seats"]
+        expect(sf["1|2"]['status']).to eq 'locked'
+        expect(sf["1|3"]['status']).to eq 'locked'
+        expect(area.seats_info['selled_seats']).to eq(["1|2", "1|3"])
       end
-      # expect(co_logic.order.tickets.pluck(:status).uniq).to eq [0]
     end
 
     it "should set create a new order with tickets when execute successfully" do
@@ -148,8 +155,6 @@ describe CreateOrderLogic do
       expect(order.concert).to eq @show2.concert
       expect(order.concert_name).to eq @show2.concert.name
       expect(order.status).to eq 'pending'
-
-      expect(order.tickets.count).to eq @show2.seats.count
     end
 
     it "will set response to 3 when params[:areas] was nil" do
@@ -160,12 +165,54 @@ describe CreateOrderLogic do
       expect(co_logic.error_msg).to eq "缺少参数"
     end
 
-    it "will set response to 3001 when params seats was wrong" do
-      params = { user: user, quantity: 1, seats: [100, 200].to_json, area_id: first_area.id, way: @way }
+    it "will set response to 2004 when seat was locked" do
+      seats_info = generate_seats(1, 2, 'locked')
+      area = create(:area, stadium: @stadium, seats_info: seats_info)
+      @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
+      seats = {}.tap { |h|
+        sf = area.seats_info["seats"]
+        h[area.id.to_s] = { "1|1" => sf['1|1']['price'] }
+      }
+
+      params = { user: user, quantity: 1, seats: seats.to_json, area_id: area.id, way: @way }
       co_logic = CreateOrderLogic.new(@show2, params)
       expect{co_logic.execute}.to change(user.orders, :count).by(0)
-      expect(co_logic.response).to eq 3001
-      expect(co_logic.error_msg).to eq "下单锁座失败"
+      expect(co_logic.response).to eq 2004
+      expect(co_logic.error_msg).to include('存在问题')
+    end
+
+    it "will set response to 2004 when price was wrong" do
+      seats_info = generate_seats(1, 2, 'avaliable')
+      area = create(:area, stadium: @stadium, seats_info: seats_info)
+      @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
+
+      seats = {}.tap { |h|
+        sf = area.seats_info["seats"]
+        h[area.id.to_s] = { "1|1" => -1 }
+      }
+
+      params = { user: user, quantity: 1, seats: seats.to_json, area_id: area.id, way: @way }
+      co_logic = CreateOrderLogic.new(@show2, params)
+      expect{co_logic.execute}.to change(user.orders, :count).by(0)
+      expect(co_logic.response).to eq 2004
+      expect(co_logic.error_msg).to include('存在问题')
+    end
+
+    it "will set response to 2004 when seat was selled" do
+      seats_info = generate_seats(1, 2, 'locked', [], true, ['1|1', '1|2'])
+      area = create(:area, stadium: @stadium, seats_info: seats_info)
+      @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
+
+      seats = {}.tap { |h|
+        sf = area.seats_info["seats"]
+        h[area.id.to_s] = { "1|1" => sf['1|1']['price'] }
+      }
+
+      params = { user: user, quantity: 1, seats: seats.to_json, area_id: area.id, way: @way }
+      co_logic = CreateOrderLogic.new(@show2, params)
+      expect{co_logic.execute}.to change(user.orders, :count).by(0)
+      expect(co_logic.response).to eq 2004
+      expect(co_logic.error_msg).to include('已被锁定')
     end
 
     # 关于 seat lock 的测试
