@@ -33,6 +33,27 @@ class Area < ActiveRecord::Base
     self.seats_info['seats'].select{ |k, v| keys.to_a.include?(k) }
   end
 
+  # 统计方法, for 兼容 wapper
+  def avaliable_and_locked_seats_count
+    status_statistics(['avaliable', 'locked'], 'status').size
+  end
+
+  def avaliable_seats_count
+    status_statistics(['avaliable'], 'status').size
+  end
+
+  def status_statistics(filter=[], type)
+    return 0 if self.seats_info.nil?
+
+    self.seats_info['seats'].select{ |k, v| filter.include?(v[type]) }
+  end
+
+  def all_price_with_seats
+    return [] if self.seats_info.nil?
+
+    self.seats_info['seats'].map{|k,v| v['price'].to_i}
+  end
+
   def draw_seats_info_for_apis(channel)
     return [] if self.seats_info.nil?
 
