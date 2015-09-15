@@ -3,14 +3,13 @@ class Operation::OrdersController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_order, except: [:index]
   before_action :get_orders_filters, only: :index
+  before_action :get_express_list, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    @r_ticket_orders = Order.orders_with_r_tickets
-
     respond_to do |format|
       format.html
-      # json数据组装, 详见app/services/orders_datatable.rb
+      # 订单json数据组装, 详见app/services/orders_datatable.rb
       format.json { render json: OrdersDatatable.new(view_context) }
     end
   end
@@ -54,5 +53,15 @@ class Operation::OrdersController < Operation::ApplicationController
   private
   def get_order
     @order = Order.find params[:id]
+  end
+
+  # 快递单
+  def get_express_list
+    r_ticket_orders = Order.orders_with_r_tickets
+    if params[:q_express].present?
+      r_ticket_orders = Order.where("out_id like ? or user_name like ? or user_mobile like ? or user_address like ?", "%#{params[:q_express]}%", "%#{params[:q_express]}%", "%#{params[:q_express]}%", "%#{params[:q_express]}%").order("created_at desc")
+    end
+    r_ticket_orders = r_ticket_orders.page(params[:r_ticket_orders_page])
+    @r_ticket_orders = r_ticket_orders
   end
 end

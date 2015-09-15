@@ -1,5 +1,5 @@
 $ ->
-#修改快递单号
+  #修改快递单号
   $("#expresses_list").on "click", ".change_express_data", (e) ->
     e.preventDefault()
     order_id = $(this).data("order-id")
@@ -15,6 +15,13 @@ $ ->
       if data.success
         location.reload()
     )
+
+  # 快递单搜索后，高亮快递tab
+  unless $('#q_express').val() == ""
+    $('#orders_tab').removeClass('active')
+    $('#orders_list').removeClass('active')
+    $('#express_tab').addClass('active')
+    $('#express_list').addClass('active')
 
   # 服务器提供的过滤条件数据源
   f_data = $('#orders_filters').data()
@@ -78,11 +85,13 @@ $ ->
             $.each f_data["showFilter"], (key, value) ->
               select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
           # 按下单开始时间过滤
-          input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '下单开始时间').appendTo($("#orders_table_length")).on 'change', ->
+          $('<br />').appendTo($("#orders_table_length"))
+          input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '订单时间').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
+          $('<label>至</label>').appendTo($("#orders_table_length"))
           $('#start_date_filter').datetimepicker()
           # 按下单结束时间过滤
-          input = $('<input></input>').attr('id', 'end_date_filter').attr('placeholder', '下单结束时间').appendTo($("#orders_table_length")).on 'change', ->
+          input = $('<input></input>').attr('id', 'end_date_filter').attr('placeholder', '订单时间').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           $('#end_date_filter').datetimepicker()
           # 文本搜索提示
