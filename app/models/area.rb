@@ -26,4 +26,36 @@ class Area < ActiveRecord::Base
     return si unless si
     ActiveSupport::JSON::decode(si)
   end
+
+  def select_from_seats_info(keys)
+    return nil if self.seats_info.nil?
+
+    self.seats_info['seats'].select{ |k, v| keys.to_a.include?(k) }
+  end
+
+  def draw_seats_info_for_apis(channel)
+    return [] if self.seats_info.nil?
+
+    seats = self.seats_info['seats']
+    # sort_by = self.seats_info['sort_by']
+    # total = self.seats_info['total'].split('|').map(&:to_i)
+    # max_row, max_col= total[0], total[1]
+    # 暂时不排序
+    seats.each_pair do |k, v|
+      row_col = k.split('|')
+      hash = {}.tap do |h|
+        h[:id] = 1 # hardcode seat id 兼容 api
+        h[:row] = row_col[0]
+        h[:column] = row_col[1]
+        h[:name] = v['seat_no']
+        h[:price] = v['price'].to_f
+        # 非本渠道 seat, 状态全部设为 locked
+        h[:status] = if seat.channels.include?(channel)
+          v['status']
+        else
+          'locked'
+        end
+      end
+    end
+  end
 end

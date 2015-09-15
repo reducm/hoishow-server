@@ -256,30 +256,61 @@ class Order < ActiveRecord::Base
       end
     end
 
-    def init_and_create_tickets_by_seats(show, order_attrs, seat_ids)
-      # seat_ids = [1, 2, 3, 4] 数组存放 seat 的 id
+    def init_and_create_tickets_by_seats(show, order_attrs, seats_params, area_id=nil) # area_id 是预留参数
       # p 'start one seat transition'
       Order.transaction do
-        # count ticket count
-        quantity = seat_ids.size
-        # search all avaliable_tickets
-        tickets = show.tickets.avaliable_tickets.where(id: seat_ids)
-        # set amount to order
-        order_attrs[:amount] = tickets.sum(:price)
+        # seats_params = { "area_id" => { "row|col" => "price" } }
         # create order
         order = Order.init_from_show(show, order_attrs)
-        order.ticket_info = tickets.map(&:seat_name).join('|')
         order.save!
-        # 按 area_id 分组, 或者换种做法
-        area_ids_hash = tickets.group(:area_id).count
+        # count ticket count
+        tickets_count = 0
+        # set the total_price
+        total_price = 0
+        # init ticket info
+        ticket_info = []
+        # 分区处理
+        seats_params.each do |area_id, s|
+          # raise ActiveRecord::RecordNotFound if area.nil?
+          area = ShowAreaRelation.where(show_id: show.id, area_id: area_id).first.area
+          # load the seats info
+          sf = area.select_from_seats_info(s.keys)
 
-        raise ArgumentError, 'avaliable_tickets is not enough' if area_ids_hash.values.sum != quantity
-        # update ticket
-        tickets.update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
-        # 更新库存，这里可能会有瓶颈
-        ShowAreaRelation.where(show_id: show.id, area_id: area_ids_hash.keys).each do |sar|
-          sar.decrement(:left_seats, area_ids_hash[sar.area_id]).save!
+          tickets_count += s.size
+          total_price += sf.values.map{|item| item['price'].to_i}.sum
+          ticket_info += sf.values.map{|item| area.name + ' ' + item['seat_no']}
+
+          # init selled_seats
+          selled_seats = []
+
+          # create tickets
+          s.each_pair do |k, v|
+            Ticket.create(show_id: show.id, area_id: area_id, order_id: order.id,
+              price: sf[k]['price'])
+
+            # update seat status 相当于更新库存
+            sf[k]['status'] = 'locked' # need to change to contant
+            selled_seats << k
+          end
+
+          # update seats info in area
+          all_seat_info = area.seats_info
+          all_seat_info.update(selled_seats: selled_seats)
+          all_seat_info['seats'].update(sf)
+          # p all_seat_info
+          area.update_attributes!(seats_info: all_seat_info)
         end
+
+        update_attrs = {}.tap do |h|
+          # set order tickets_count
+          h[:tickets_count] = tickets_count
+          # set the order amount
+          h[:amount] = total_price
+          # set the ticket_info
+          h[:ticket_info] = ticket_info.join('|')
+        end
+
+        order.update_attributes! update_attrs
 
         order
       end
