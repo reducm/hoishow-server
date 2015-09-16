@@ -200,7 +200,7 @@ class CreateOrderLogic
   def batch_overtime!(pending_orders)
     # delay job
     user.orders.where(id: pending_orders).each do |o|
-      o.overtime!
+      o.overtime!({handle_ticket_method: 'outdate'})
     end
   end
 end

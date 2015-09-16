@@ -82,12 +82,12 @@ class Order < ActiveRecord::Base
     #   transitions :from => :paid, :to => :cancel
     # end
 
-    # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment})
-    event :refunds, :after => [:set_payment_to_refund, :set_tickets_to_refund] do
+    # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment, handle_ticket_method: 'refund'})
+    event :refunds, :after => [:set_payment_to_refund, :handle_seats_and_tickets] do
       transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
     end
 
-    # 调用方法 order.overtime!
+    # 调用方法 order.overtime!({handle_ticket_method: 'outdate'})
     event :overtime, :after => :handle_seats_and_tickets do
       transitions :from => :pending, :to => :outdate
     end
@@ -143,26 +143,47 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def handle_seats_and_tickets
+  # 调用此方法需要传入 {handle_ticket_method: 'outdate'} 此参数，表示将 ticket
+  # 是 outdate 还是 refund 或者 cancel 处理
+  # 然后释放库存或者座位
+  def handle_seats_and_tickets *args
+    options = args.extract_options!
+
     begin
       Order.transaction do
         show = self.show
         area_ids = self.tickets.pluck(:area_id)
         # 用 order 里面的 tickets_count
         tickets_count = area_ids.size
-        # 释放 tickets
-        self.tickets.update_all(status: Ticket.statuses[:pending],
-          seat_type: Ticket.seat_types[:avaliable], order_id: nil)
 
         # 这些流程应该还是放到 ticket 的一些 callback 里面比较好
         if show.selected? # 选区则要更新库存
+          # 释放 tickets
+          self.tickets.update_all(status: Ticket.statuses[:pending],
+            seat_type: Ticket.seat_types[:avaliable], order_id: nil)
+
           area_id = area_ids.uniq
           raise RuntimeError, 'area_id not uniq' if area_id.size != 1
           relation = show.show_area_relations.where(area_id: area_id[0]).first
           # update 库存
           relation.increment(:left_seats, tickets_count ).save!
         elsif show.selectable? # 选座也要更新库存
-          # 跨区选择
+          # 更新座位信息
+          self.tickets.each do |t|
+            area = t.area
+            sf = area.seats_info
+            # 将 ticket 变过期， 如果是退款的话要传入参数
+            t.send "#{options[:handle_ticket_method]}!"
+
+            key = t.seat_key
+            # 回滚库存
+            sf['selled'].delete(key)
+            sf['seats'][key]['status'] = 'avaliable'
+
+            area.update_attributes!(seats_info: sf)
+          end
+
+          # 跨区更新库存, 暂时保留
           relations = show.show_area_relations.where(area_id: area_ids)
 
           relations.each do |relation|
@@ -272,7 +293,11 @@ class Order < ActiveRecord::Base
         # 分区处理
         seats_params.each do |area_id, s|
           # raise ActiveRecord::RecordNotFound if area.nil?
-          area = ShowAreaRelation.where(show_id: show.id, area_id: area_id).first.area
+          sar = ShowAreaRelation.where(show_id: show.id, area_id: area_id).first
+          # 更新 relation 暂时保留
+          sar.decrement(:left_seats, s.size).save!
+          # load the current area
+          area = sar.area
           # load the seats info
           sf = area.select_from_seats_info(s.keys)
 
@@ -285,8 +310,10 @@ class Order < ActiveRecord::Base
 
           # create tickets
           s.each_pair do |k, v|
+            row_col = k.split('|').map(&:to_i)
             Ticket.create(show_id: show.id, area_id: area_id, order_id: order.id,
-              price: sf[k]['price'])
+              price: sf[k]['price'].to_f, seat_name: sf[k]['seat_no'],
+              row: row_col[0], column: row_col[1])
 
             # update seat status 相当于更新库存
             sf[k]['status'] = 'locked' # need to change to contant
@@ -329,7 +356,7 @@ class Order < ActiveRecord::Base
   def status_outdate?
     if pending? && created_at < Time.now - 15.minutes
       # 状态机
-      self.overtime!
+      self.overtime!({handle_ticket_method: 'outdate'})
     end
     outdate?
   end

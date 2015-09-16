@@ -40,6 +40,10 @@ class Ticket < ActiveRecord::Base
     where("area_id = ? and status = ?", area_id, statuses[:pending]).count
   end
 
+  def seat_key
+    [self.row, self.column].join('|')
+  end
+
   protected
   def generate_code
     if self.code.blank? && self.order.ticket_type == 'e_ticket'

@@ -73,9 +73,9 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   #   end
   #
   #   if order_params[:reason] == 'outdate'
-  #     result = @order.overtime!
+  #     result = @order.overtime!({handle_ticket_method: 'outdate'})
   #   elsif order_params[:reason] == 'refund'
-  #     result = @order.refunds!
+  #     result = @order.refunds!({handle_ticket_method: 'refund'})
   #   end
   #
   #   unless result
