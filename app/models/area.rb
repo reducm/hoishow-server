@@ -2,6 +2,10 @@
 class Area < ActiveRecord::Base
   acts_as_cached(:version => 1, :expires_in => 1.day)
 
+  SEAT_AVALIABLE = 'avaliable'
+  SEAT_LOCKED = 'locked'
+  SEAT_UNUSED = 'unused'
+
   belongs_to :stadium
 
   has_many :show_area_relations, dependent: :destroy
@@ -35,11 +39,11 @@ class Area < ActiveRecord::Base
 
   # 统计方法, for 兼容 wapper
   def avaliable_and_locked_seats_count
-    status_statistics(['avaliable', 'locked'], 'status').size
+    status_statistics([SEAT_AVALIABLE, SEAT_LOCKED], 'status').size
   end
 
   def avaliable_seats_count
-    status_statistics(['avaliable'], 'status').size
+    status_statistics([SEAT_AVALIABLE], 'status').size
   end
 
   def status_statistics(filter=[], type)
@@ -74,7 +78,7 @@ class Area < ActiveRecord::Base
         h[:status] = if seat.channels.include?(channel)
           v['status']
         else
-          'locked'
+          SEAT_LOCKED
         end
       end
     end

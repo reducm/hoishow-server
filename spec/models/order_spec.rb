@@ -190,8 +190,8 @@ describe Order do
 
     context 'overtime' do
       it 'selectable will set tickets info and seat info after update status' do
-        seats_info = generate_seats(2, 2, 'avaliable', [], true, ['1|1'])
-        seats_info['seats']['1|1']['status'] = 'locked'
+        seats_info = generate_seats(2, 2, Area::SEAT_AVALIABLE, [], true, ['1|1'])
+        seats_info['seats']['1|1']['status'] = Area::SEAT_LOCKED
         seat1 = seats_info['seats']['1|1']
 
         @show.update_attributes seat_type: 0
@@ -204,7 +204,7 @@ describe Order do
 
         o_ticket = create :ticket, show_id: @show.id, area_id: relation2.area_id,
           order_id: o.id, price: relation2.price, row: 1, column: 1
-        expect(seat1['status']).to eq 'locked'
+        expect(seat1['status']).to eq Area::SEAT_LOCKED
         expect(relation2.left_seats).to eq 3
 
         o.overtime!({handle_ticket_method: 'outdate'})
@@ -212,7 +212,7 @@ describe Order do
         expect(relation2.reload.left_seats).to eq 4
 
         sf = relation2.area.reload.seats_info
-        expect(sf['seats']['1|1']['status']).to eq('avaliable')
+        expect(sf['seats']['1|1']['status']).to eq(Area::SEAT_AVALIABLE)
         expect(sf['selled']).to be_blank
         expect(o.reload.status).to eq 'outdate'
         expect(o_ticket.reload.status).to eq 'outdate'

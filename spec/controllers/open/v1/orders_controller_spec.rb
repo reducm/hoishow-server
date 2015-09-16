@@ -44,7 +44,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     r2 = show2.show_area_relations.create(area_id: area2.id, channels: 'bike',
       is_sold_out: false, price: rand(300..500), seats_count: 2, left_seats: 2)
 
-    seats_info = generate_seats(1, 2, 'avaliable')
+    seats_info = generate_seats(1, 2, Area::SEAT_AVALIABLE)
     show2.areas.map do |a|
       a.update_attributes(seats_info: seats_info)
       a.reload
@@ -443,7 +443,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       it 'should return ok when quantity less than seat left count' do
         area4 = create :area, stadium: stadium
         show2.show_area_relations.create(area: area4, price: rand(300..500), seats_count: 2)
-        seats_info = generate_seats(1, 2, 'avaliable')
+        seats_info = generate_seats(1, 2, Area::SEAT_AVALIABLE)
         area4.update_attributes seats_info: seats_info
         seats = {}.tap { |h|
           sf = area4.seats_info["seats"]
@@ -459,7 +459,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       it 'should return error when seat was locked' do
         area3 = create :area, stadium: stadium
         show2.show_area_relations.create(area: area3, price: rand(300..500), seats_count: 2)
-        seats_info = generate_seats(1, 2, 'locked', [], true, ['1|1', '1|2'])
+        seats_info = generate_seats(1, 2, Area::SEAT_LOCKED, [], true, ['1|1', '1|2'])
         area3.update_attributes seats_info: seats_info
         seats = {}.tap { |h|
           sf = area3.seats_info["seats"]

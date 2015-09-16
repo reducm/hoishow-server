@@ -13,7 +13,7 @@ describe CreateOrderLogic do
       2.times { create(:seat, area_id: area.id, show: @show1, price: r.price) }
     end
 
-    seats_info = generate_seats(3, 4, 'avaliable')
+    seats_info = generate_seats(3, 4, Area::SEAT_AVALIABLE)
     @stadium.areas.last(3).each_with_index do |area, i|
       area.update_attributes(seats_info: seats_info)
       r = @show2.show_area_relations.create(area: area, price: ( i+1 )*( 10 ), seats_count: 12, left_seats: 12)
@@ -134,8 +134,8 @@ describe CreateOrderLogic do
       @show2.areas.map do |area|
         area.reload
         sf = area.seats_info["seats"]
-        expect(sf["1|2"]['status']).to eq 'locked'
-        expect(sf["1|3"]['status']).to eq 'locked'
+        expect(sf["1|2"]['status']).to eq Area::SEAT_LOCKED
+        expect(sf["1|3"]['status']).to eq Area::SEAT_LOCKED
         expect(area.seats_info['selled_seats']).to eq(["1|2", "1|3"])
       end
     end
@@ -166,7 +166,7 @@ describe CreateOrderLogic do
     end
 
     it "will set response to 2004 when seat was locked" do
-      seats_info = generate_seats(1, 2, 'locked')
+      seats_info = generate_seats(1, 2, Area::SEAT_LOCKED)
       area = create(:area, stadium: @stadium, seats_info: seats_info)
       @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
       seats = {}.tap { |h|
@@ -182,7 +182,7 @@ describe CreateOrderLogic do
     end
 
     it "will set response to 2004 when price was wrong" do
-      seats_info = generate_seats(1, 2, 'avaliable')
+      seats_info = generate_seats(1, 2, Area::SEAT_AVALIABLE)
       area = create(:area, stadium: @stadium, seats_info: seats_info)
       @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
 
@@ -199,7 +199,7 @@ describe CreateOrderLogic do
     end
 
     it "will set response to 2004 when seat was selled" do
-      seats_info = generate_seats(1, 2, 'locked', [], true, ['1|1', '1|2'])
+      seats_info = generate_seats(1, 2, Area::SEAT_LOCKED, [], true, ['1|1', '1|2'])
       area = create(:area, stadium: @stadium, seats_info: seats_info)
       @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
 

@@ -43,7 +43,7 @@
                      if seat
                        status = if seat['channels'].include?('hoishow')
                          # 其他渠道的 seat 一律设置为 locked
-                         "locked"
+                         Area::SEAT_LOCKED
                        else
                          seat['status']
                        end

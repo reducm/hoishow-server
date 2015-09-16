@@ -178,7 +178,7 @@ class Order < ActiveRecord::Base
             key = t.seat_key
             # 回滚库存
             sf['selled'].delete(key)
-            sf['seats'][key]['status'] = 'avaliable'
+            sf['seats'][key]['status'] = Area::SEAT_AVALIABLE
 
             area.update_attributes!(seats_info: sf)
           end
@@ -316,7 +316,7 @@ class Order < ActiveRecord::Base
               row: row_col[0], column: row_col[1])
 
             # update seat status 相当于更新库存
-            sf[k]['status'] = 'locked' # need to change to contant
+            sf[k]['status'] = Area::SEAT_LOCKED # need to change to contant
             selled_seats << k
           end
 

@@ -113,7 +113,7 @@ class CreateOrderLogic
             s.each_pair do |k, v|
               seat = seats_info[k]
               # 不存在这个行列的座位，则放进 wrong_seats 数组
-              if seat.nil? || seat['status'] != 'avaliable' || seat['price'] != v
+              if seat.nil? || seat['status'] != Area::SEAT_AVALIABLE || seat['price'] != v
                 wrong_seats << k
               end
             end
