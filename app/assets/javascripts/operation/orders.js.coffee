@@ -26,6 +26,21 @@ $ ->
   # 服务器提供的过滤条件数据源
   f_data = $('#orders_filters').data()
 
+  # 返回当前季节的开始日期
+  season_start_date = ->
+    current_month = moment().format('M')
+    switch current_month
+      when "3", "4", "5"
+        moment().format('YYYY/03/01 00:00')
+      when "6", "7", "8"
+        moment().format('YYYY/06/01 00:00')
+      when "9", "10", "11"
+        moment().format('YYYY/09/01 00:00')
+      when "12", "1", "2"
+        moment().format('YYYY/12/01 00:00')
+      else
+        alert "sth wrong", current_month
+
   # 订单列表初始化
   ShowOrders = do ->
     loadTable = ->
@@ -84,6 +99,39 @@ $ ->
             select.val("%%")
             $.each f_data["showFilter"], (key, value) ->
               select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
+          # 时间过滤预设
+          timenow = moment().format('YYYY/MM/DD hh:mm')
+          # 时间过滤预设：全部
+          $('<br />').appendTo($("#orders_table_length"))
+          $('<button>全部</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val("")
+            $('#end_date_filter').val("")
+            api.ajax.reload()
+          # 时间过滤预设：今天
+          $('<button>今天</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本周
+          $('<button>本周</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('week').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本月
+          $('<button>本月</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('month').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本季
+          $('<button>本季</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val(season_start_date)
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本年
+          $('<button>本年</button>').appendTo($("#orders_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('year').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
           # 按下单开始时间过滤
           $('<br />').appendTo($("#orders_table_length"))
           input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '订单时间').appendTo($("#orders_table_length")).on 'change', ->
