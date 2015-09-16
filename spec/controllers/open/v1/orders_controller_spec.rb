@@ -236,7 +236,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         expect(d[:tickets]).not_to be_blank
         expect(d[:tickets].size).to eq show2.seats.count
         d[:tickets].each do |t|
-          ticket = order.tickets.find_by(code: t[:code])
+          ticket = order.tickets.find(t[:id])
           expect(t[:area_name]).to eq ticket.area.name || ''
           expect(t[:price]).to eq ticket.price.to_f.to_s
           expect(t[:seat_name]).to eq ticket.seat_name || ''
