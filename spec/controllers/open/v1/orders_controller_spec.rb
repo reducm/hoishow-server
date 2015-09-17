@@ -211,11 +211,12 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       # end
 
       let(:params) do
-        seats = {}.tap { |h| show2.areas.map do |a|
-          sf = a.seats_info["seats"]
-          h[a.id.to_s] = { "1|2" => sf['1|2']['price'], "1|1" => sf['1|1']['price'] }
+        seats = []
+        show2.areas.map do |area|
+          sf = area.seats_info["seats"]
+          seats << [area.id, 1, 2, sf['1|2']['price']].join(':')
+          seats << [area.id, 1, 1, sf['1|1']['price']].join(':')
         end
-        }
         {
           mobile: '15900001111', quantity: 1, area_id: area2.id, show_id: show2.id,
           bike_user_id: user.bike_user_id,
@@ -445,10 +446,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         show2.show_area_relations.create(area: area4, price: rand(300..500), seats_count: 2)
         seats_info = generate_seats(1, 2, Area::SEAT_AVALIABLE)
         area4.update_attributes seats_info: seats_info
-        seats = {}.tap { |h|
-          sf = area4.seats_info["seats"]
-          h[area4.id.to_s] = { "1|1" => sf['1|1']['price'] }
-        }
+        seats = []
+        sf = area4.seats_info["seats"]
+        seats << [area4.id, 1, 1, sf['1|1']['price']].join(':')
         params[:seats] = seats.to_json
 
         get :check_inventory, sign_params(params)
@@ -461,10 +461,9 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         show2.show_area_relations.create(area: area3, price: rand(300..500), seats_count: 2)
         seats_info = generate_seats(1, 2, Area::SEAT_LOCKED, [], true, ['1|1', '1|2'])
         area3.update_attributes seats_info: seats_info
-        seats = {}.tap { |h|
-          sf = area3.seats_info["seats"]
-          h[area3.id.to_s] = { "1|1" => sf['1|1']['price'] }
-        }
+        seats = []
+        sf = area3.seats_info["seats"]
+        seats << [area3.id, 1, 1, sf['1|1']['price']].join(':')
         params[:seats] = seats.to_json
         get :check_inventory, sign_params(params)
         un_seat = show2.seats.first
