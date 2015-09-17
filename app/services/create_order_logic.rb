@@ -82,8 +82,20 @@ class CreateOrderLogic
       #   end
       # end
       @quantity = if options[:seats].present?
-        # options[:seats] = { area_id => {'row|col' => 价格, ......'] }
-        @seats_params = JSON.parse(options[:seats])
+        # options[:seats] = ['area_id:row:col:price']
+        # 根据上面的结构来堆砌出 @seats_params
+        @seats_params = {}
+        s_json = JSON.parse(options[:seats])
+        s_json.each do |s|
+          args_array = s.split(':')
+          area_id, row, col, price = args_array[0], args_array[1], args_array[2], args_array[3]
+          if @seats_params[area_id].nil?
+            @seats_params[area_id] = {"#{[row, col].join('|')}" => price }
+          else
+            @seats_params[area_id].merge!({"#{[row, col].join('|')}" => price })
+          end
+        end
+
         @seats_params.size
       elsif options[:areas] && options[:areas].present?
         # 格式有待确定！是否 单区域选座
@@ -113,7 +125,7 @@ class CreateOrderLogic
             s.each_pair do |k, v|
               seat = seats_info[k]
               # 不存在这个行列的座位，则放进 wrong_seats 数组
-              if seat.nil? || seat['status'] != Area::SEAT_AVALIABLE || seat['price'] != v
+              if seat.nil? || seat['status'] != Area::SEAT_AVALIABLE || seat['price'].to_f != v.to_f
                 wrong_seats << k
               end
             end
