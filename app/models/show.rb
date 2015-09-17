@@ -61,7 +61,7 @@ class Show < ActiveRecord::Base
   # 该区域已出票，但订单未支付的票数
   def unpaid_tickets_count(area_id)
     if orders.any?
-      tickets.area_unpaid_tickets_count(area_id, order_ids)
+      orders.pending.sum(:tickets_count)
     else
       0
     end
@@ -70,7 +70,7 @@ class Show < ActiveRecord::Base
   # 该区域已出票，并且订单已支付的票数
   def sold_tickets_count(area_id)
     if orders.any?
-      tickets.area_sold_tickets_count(area_id, order_ids)
+      orders.success.sum(:tickets_count)
     else
       0
     end
