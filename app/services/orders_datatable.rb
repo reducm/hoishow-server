@@ -62,19 +62,19 @@ private
     end
     # 按支付状态过滤
     if params[:status].present?
-      orders = orders.where("orders.status like ?",  params[:status])
+      orders = orders.where("orders.status like :status", status: "%#{params[:status]}%")
     end
     # 按下单来源过滤
     if params[:channel].present?
-      orders = orders.where("orders.channel like ?", params[:channel])
+      orders = orders.where("orders.channel like :channel", channel: "%#{params[:channel]}%")
     end
     # 按下单平台过滤
     if params[:buy_origin].present?
-      orders = orders.where("orders.buy_origin like ?", params[:buy_origin])
+      orders = orders.where("orders.buy_origin like :buy_origin", buy_origin: "%#{params[:buy_origin]}%")
     end
     # 按演出过滤
     if params[:show].present?
-      orders = orders.where("orders.show_id like ?", params[:show])
+      orders = orders.where("orders.show_id like :show", show: "%#{params[:show]}%")
     end
     # 按下单时间称过滤
     if params[:start_date].present? && params[:end_date].present?

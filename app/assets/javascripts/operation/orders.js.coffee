@@ -75,29 +75,30 @@ $ ->
         initComplete: ->
           api = @api()
           # 按支付状态过滤
-          select = $('<select><option value="%%">支付状态：全部</option></select>').attr("id", "status_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="">支付状态：全部</option></select>').attr("id", "status_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
-          select.val("%%")
+          # 默认显示全部，下同
+          select.val("")
           $.each f_data["statusFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "支付状态：" + key + '</option>'
           # 按下单来源过滤
-          select = $('<select><option value="%%">下单来源：全部</option></select>').attr("id", "channel_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="">下单来源：全部</option></select>').attr("id", "channel_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
-          select.val("%%")
+          select.val("")
           $.each f_data["channelFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单来源：" + key + '</option>'
           # 按下单平台过滤
-          select = $('<select><option value="%%">下单平台：全部</option></select>').attr("id", "buy_origin_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="">下单平台：全部</option></select>').attr("id", "buy_origin_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
-          select.val("%%")
+          select.val("")
           $.each f_data["buyOriginFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单平台：" + key + '</option>'
           # 按演出过滤
           # 如果从演出详情页访问的，不生成过滤框
           unless $('#show_id').length > 0
-            select = $('<select><option value="%%">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+            select = $('<select><option value="">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
               api.ajax.reload()
-            select.val("%%")
+            select.val("")
             $.each f_data["showFilter"], (key, value) ->
               select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
           # 时间过滤预设
@@ -145,10 +146,10 @@ $ ->
           $('#end_date_filter').datetimepicker()
           # 重置
           $('<button>重置所有条件</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
-            $('#status_filter').val('%%')
-            $('#channel_filter').val('%%')
-            $('#buy_origin_filter').val('%%')
-            $('#show_filter').val('%%')
+            $('#status_filter').val('')
+            $('#channel_filter').val('')
+            $('#buy_origin_filter').val('')
+            $('#show_filter').val('')
             $('#start_date_filter').val('')
             $('#end_date_filter').val('')
             api.search('').draw()
@@ -167,7 +168,7 @@ $ ->
 
     # 页面（主要是快递单详情）刷新后，保持显示之前浏览的tab
     $('a[data-toggle="tab"]').on 'shown.bs.tab', (e) ->
-      localStorage.setItem 'activeTab', $(e.target).attr('href')
-    activeTab = localStorage.getItem('activeTab')
+      sessionStorage.setItem 'activeTab', $(e.target).attr('href')
+    activeTab = sessionStorage.getItem('activeTab')
     if activeTab
       $('#orderTab a[href="' + activeTab + '"]').tab 'show'
