@@ -14,6 +14,7 @@ module Routes
                 get :seats_info, on: :member
               end
               # resources :seats, only: [:index, :show]
+              get '/query_seats' => 'seats#query_seats'
               # api about orders
               resources :orders, only: [:create] do
                 collection do
@@ -23,6 +24,7 @@ module Routes
                   # post ':out_id/unlock_seat' => 'orders#unlock_seat'
                   post ':out_id/confirm' => 'orders#confirm'
                   post ':out_id/cancel_order' => 'orders#cancel_order'
+                  post ':out_id/unlock_seat' => 'orders#unlock_seat'
                 end
               end
             end

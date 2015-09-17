@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover orders">
+<table id="orders_table" class="table table-hover orders" width="100%" data-source="<%= operation_orders_url(format: "json") %>">
   <thead>
     <tr>
       <th>订单号</th>
@@ -14,32 +14,18 @@
       <th>总金额</th>
       <th>手机号</th>
       <th>订单状态</th>
+      <th>退款</th>
       <th>操作</th>
     </tr>
   </thead>
   <tbody>
-    <% orders.each do|order| %>
-      <% user = order.user %>
-      <tr>
-        <td><%= order.out_id%></td>
-        <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
-        <td><%= order.buy_origin %></td>
-        <td><%= order.channel %></td>
-        <td><%= order.show.try(:ticket_type_cn) %></td>
-        <td><%= order.created_at_format %></td>
-        <td><%= order.generate_ticket_at_format %></td>
-        <td><%= order.tickets_count %></td>
-        <td><%= order.amount %></td>
-        <td><%= link_to order.get_username(user), operation_user_path(user) %></td>
-        <td class="order_status_cn"><%= order.status_cn %></td>
-        <td>
-          <% if order.need_refund? %>
-            <%= link_to '退款', manual_refund_operation_order_path(order), method: :post %> / 
-          <% end %>
-          <%= link_to "查看详情", operation_order_path(order) %>
-        </td>
-      </tr>
-    <% end %>
   </tbody>
 </table>
-<%= paginate orders %>
+
+<%= content_tag :div, id: "orders_filters", data: {
+  status_filter: ( @status_filter ),
+  channel_filter: ( @channel_filter ),
+  buy_origin_filter: ( @buy_origin_filter ),
+  show_filter: ( @show_filter )
+} do %>
+<% end %>

@@ -213,25 +213,25 @@ class Order < ActiveRecord::Base
   #创建order时,
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
   #2. new order执行order.set_tickets_and_price(show和area的中间表数组), 例如买三张三区，所以就扔三个三区的中间表数组[show_area_relation, show_area_relation, show_area_relation]
-  def self.to_csv(options = {})
-    CSV.generate(options) do |csv|
-      csv << ["订单号", "演出", "下单平台", "下单来源", "门票类型", "下单时间",
-              "付款时间", "购票数量", "总金额", "手机号", "订单状态",
-              "收货人姓名", "收货人电话", "收货人地址", "快递单号"]
-      all.each do |o|
-        if o.show.r_ticket?
-          # 实体票
-          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
-                  o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
-                  o.user_name, o.user_mobile, o.user_address, o.express_id]
-        else
-          # 电子票
-          csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
-                  o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
-        end
-      end
-    end
-  end
+  #def self.to_csv(options = {})
+    #CSV.generate(options) do |csv|
+      #csv << ["订单号", "演出", "下单平台", "下单来源", "门票类型", "下单时间",
+              #"付款时间", "购票数量", "总金额", "手机号", "订单状态",
+              #"收货人姓名", "收货人电话", "收货人地址", "快递单号"]
+      #all.each do |o|
+        #if o.show.r_ticket?
+          ## 实体票
+          #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+                  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
+                  #o.user_name, o.user_mobile, o.user_address, o.express_id]
+        #else
+          ## 电子票
+          #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+                  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
+        #end
+      #end
+    #end
+  #end
 
   class << self
     def init_from_show(show, options={})
@@ -253,6 +253,10 @@ class Order < ActiveRecord::Base
         # create order
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
+
+        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
+        pending_order.overtime! if pending_order
+
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
         order.save!
 
@@ -283,6 +287,10 @@ class Order < ActiveRecord::Base
         # seats_params = { "area_id" => { "row|col" => "price" } }
         # create order
         order = Order.init_from_show(show, order_attrs)
+
+        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
+        pending_order.overtime! if pending_order
+
         order.save!
         # count ticket count
         tickets_count = 0

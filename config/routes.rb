@@ -161,6 +161,7 @@ Rails.application.routes.draw do
       collection do
         get "get_city_stadiums"
         get :search
+        post :upload
       end
       member do
         post "update_area_data"
