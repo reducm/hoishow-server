@@ -86,7 +86,8 @@
   margin:0 auto;
   overflow-y:scroll;
   img {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
   }
   video {
     height: 200px;
