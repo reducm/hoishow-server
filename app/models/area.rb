@@ -27,7 +27,7 @@ class Area < ActiveRecord::Base
 
   def seats_info
     si = read_attribute(:seats_info)
-    return si unless si
+    return si if si.nil? || si == ''
     ActiveSupport::JSON::decode(si)
   end
 
