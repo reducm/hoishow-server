@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <!-- Nav tabs -->
-<ul class="nav nav-pills mb10 order_index_tab" role="tablist">
+<ul class="nav nav-tabs mb10 order_index_tab" id="orderTab" role="tablist">
   <li role="presentation" class="active" id="orders_tab"><a href="#orders_list" aria-controls="orders_list" role="tab" data-toggle="tab">订单列表</a></li>
   <li role="presentation" id="express_tab"><a href="#express_list" aria-controls="express_list" role="tab" data-toggle="tab">实体票快递详情</a></li>
 </ul>
@@ -19,6 +19,7 @@
         <%= form_tag(operation_orders_path, class: 'form-inline', method: 'get') do %>
           <%= text_field_tag "q_express", params[:q_express],  class: 'form-control', placeholder: "订单号或收货人信息" %>
           <%= submit_tag "搜索", class: 'btn btn-default', id: 'express_search' %>
+          <%= submit_tag "重置", class: 'btn btn-default', id: 'express_reset' %>
         <% end %>
       </div>
     </div>
@@ -50,7 +51,8 @@
               <td class="text-center">
                 <button class="btn btn-default change_express_data" data-order-id="<%= order.id %>">修改单号</button>
                 <%= link_to '发送短信', manual_send_sms_operation_order_path(order), class: 'btn btn-default' if order.express_id.present? %>
-                <%= link_to "查看详情", operation_order_path(order), class: 'btn btn-default' %>
+                <%= link_to "订单详情", operation_order_path(order), class: 'btn btn-default' %>
+                <%= link_to "快递详情", express_detail_path(code: order.express_id), class: 'btn btn-default' %>
               </td>
             </tr>
           <% end %>

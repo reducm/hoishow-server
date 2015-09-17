@@ -16,12 +16,10 @@ $ ->
         location.reload()
     )
 
-  # 快递单搜索后，高亮快递tab
-  unless $('#q_express').val() == ""
-    $('#orders_tab').removeClass('active')
-    $('#orders_list').removeClass('active')
-    $('#express_tab').addClass('active')
-    $('#express_list').addClass('active')
+  # 快递单搜索重置
+  $('#express_reset').on 'click', ->
+    $('input#q_express').val('')
+    location.reload
 
   # 服务器提供的过滤条件数据源
   f_data = $('#orders_filters').data()
@@ -70,23 +68,26 @@ $ ->
               'end_date': $('#end_date_filter').val()
         # 导出。这里有两个问题：csv导出不能；导出的是分页数据
         dom: "Blfrtip"
-        buttons: ['excel']
+        buttons: [
+          extend: 'excel'
+          text: '导出EXCEL'
+        ]
         initComplete: ->
           api = @api()
           # 按支付状态过滤
-          select = $('<select><option value="%%">支付状态：全部</option></select>').attr("id", "status_filter").appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="%%">支付状态：全部</option></select>').attr("id", "status_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           select.val("%%")
           $.each f_data["statusFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "支付状态：" + key + '</option>'
           # 按下单来源过滤
-          select = $('<select><option value="%%">下单来源：全部</option></select>').attr("id", "channel_filter").appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="%%">下单来源：全部</option></select>').attr("id", "channel_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           select.val("%%")
           $.each f_data["channelFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单来源：" + key + '</option>'
           # 按下单平台过滤
-          select = $('<select><option value="%%">下单平台：全部</option></select>').attr("id", "buy_origin_filter").appendTo($("#orders_table_length")).on 'change', ->
+          select = $('<select><option value="%%">下单平台：全部</option></select>').attr("id", "buy_origin_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           select.val("%%")
           $.each f_data["buyOriginFilter"], (key, value) ->
@@ -94,7 +95,7 @@ $ ->
           # 按演出过滤
           # 如果从演出详情页访问的，不生成过滤框
           unless $('#show_id').length > 0
-            select = $('<select><option value="%%">演出：全部</option></select>').attr("id", "show_filter").appendTo($("#orders_table_length")).on 'change', ->
+            select = $('<select><option value="%%">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
               api.ajax.reload()
             select.val("%%")
             $.each f_data["showFilter"], (key, value) ->
@@ -103,47 +104,58 @@ $ ->
           timenow = moment().format('YYYY/MM/DD hh:mm')
           # 时间过滤预设：全部
           $('<br />').appendTo($("#orders_table_length"))
-          $('<button>全部</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>全部</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val("")
             $('#end_date_filter').val("")
             api.ajax.reload()
           # 时间过滤预设：今天
-          $('<button>今天</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>今天</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val(moment().format('YYYY/MM/DD 00:00'))
             $('#end_date_filter').val(timenow)
             api.ajax.reload()
           # 时间过滤预设：本周
-          $('<button>本周</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>本周</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val(moment().startOf('week').format('YYYY/MM/DD 00:00'))
             $('#end_date_filter').val(timenow)
             api.ajax.reload()
           # 时间过滤预设：本月
-          $('<button>本月</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>本月</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val(moment().startOf('month').format('YYYY/MM/DD 00:00'))
             $('#end_date_filter').val(timenow)
             api.ajax.reload()
           # 时间过滤预设：本季
-          $('<button>本季</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>本季</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val(season_start_date)
             $('#end_date_filter').val(timenow)
             api.ajax.reload()
           # 时间过滤预设：本年
-          $('<button>本年</button>').appendTo($("#orders_table_length")).on 'click', ->
+          $('<button>本年</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
             $('#start_date_filter').val(moment().startOf('year').format('YYYY/MM/DD 00:00'))
             $('#end_date_filter').val(timenow)
             api.ajax.reload()
           # 按下单开始时间过滤
           $('<br />').appendTo($("#orders_table_length"))
-          input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '订单时间').appendTo($("#orders_table_length")).on 'change', ->
+          input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '订单时间').addClass('form-control date_range').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           $('<label>至</label>').appendTo($("#orders_table_length"))
           $('#start_date_filter').datetimepicker()
           # 按下单结束时间过滤
-          input = $('<input></input>').attr('id', 'end_date_filter').attr('placeholder', '订单时间').appendTo($("#orders_table_length")).on 'change', ->
+          input = $('<input></input>').attr('id', 'end_date_filter').attr('placeholder', '订单时间').addClass('form-control date_range').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
           $('#end_date_filter').datetimepicker()
+          # 重置
+          $('<button>重置所有条件</button>').addClass('btn btn-default orders_buttons').appendTo($("#orders_table_length")).on 'click', ->
+            $('#status_filter').val('%%')
+            $('#channel_filter').val('%%')
+            $('#buy_origin_filter').val('%%')
+            $('#show_filter').val('%%')
+            $('#start_date_filter').val('')
+            $('#end_date_filter').val('')
+            api.search('').draw()
           # 文本搜索提示
-          $('div#orders_table_filter.dataTables_filter label input').attr('placeholder', '手机号或订单号')
+          $('div#orders_table_filter.dataTables_filter label input').attr('placeholder', '手机号或订单号').removeClass('input-sm')
+          # 导出按钮
+          $('a.btn.btn-default.buttons-excel.buttons-html5').removeClass('btn-default').addClass('btn-success')
       )
     {
       init: ->
@@ -152,3 +164,10 @@ $ ->
 
   jQuery(document).ready ->
     ShowOrders.init()
+
+    # 页面（主要是快递单详情）刷新后，保持显示之前浏览的tab
+    $('a[data-toggle="tab"]').on 'shown.bs.tab', (e) ->
+      localStorage.setItem 'activeTab', $(e.target).attr('href')
+    activeTab = localStorage.getItem('activeTab')
+    if activeTab
+      $('#orderTab a[href="' + activeTab + '"]').tab 'show'
