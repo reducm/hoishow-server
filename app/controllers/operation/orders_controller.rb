@@ -7,10 +7,15 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
+    binding.pry
+    v = OrdersDatatable.new(view_context)
+    filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
       format.html
       # 订单json数据组装, 详见app/services/orders_datatable.rb
-      format.json { render json: OrdersDatatable.new(view_context) }
+      format.json { render json: v }
+      format.xls { headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\"" }
+      #format.xls { render json: OrdersDatatable.new(view_context) }
     end
   end
 
