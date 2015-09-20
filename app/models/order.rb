@@ -178,7 +178,7 @@ class Order < ActiveRecord::Base
             key = t.seat_key
             # 回滚库存
             sf['selled'].delete(key)
-            sf['seats'][key]['status'] = Area::SEAT_AVALIABLE
+            sf['seats'][t.row.to_s][t.column.to_s]['status'] = Area::SEAT_AVALIABLE
 
             area.update_attributes!(seats_info: sf)
           end
@@ -308,6 +308,7 @@ class Order < ActiveRecord::Base
           area = sar.area
           # load the seats info
           sf = area.select_from_seats_info(s.keys)
+          all_seat_info = area.seats_info
 
           tickets_count += s.size
           total_price += sf.values.map{|item| item['price'].to_i}.sum
@@ -318,20 +319,19 @@ class Order < ActiveRecord::Base
 
           # create tickets
           s.each_pair do |k, v|
-            row_col = k.split('|').map(&:to_i)
+            row_col = k.split('|')
             Ticket.create(show_id: show.id, area_id: area_id, order_id: order.id,
               price: sf[k]['price'].to_f, seat_name: sf[k]['seat_no'],
               row: row_col[0], column: row_col[1])
 
             # update seat status 相当于更新库存
-            sf[k]['status'] = Area::SEAT_LOCKED # need to change to contant
+            all_seat_info['seats'][row_col[0]][row_col[1]]['status'] = Area::SEAT_LOCKED
             selled_seats << k
           end
 
           # update seats info in area
-          all_seat_info = area.seats_info
           all_seat_info.update(selled_seats: selled_seats)
-          all_seat_info['seats'].update(sf)
+          # all_seat_info['seats'].update(sf)
           # p all_seat_info
           area.update_attributes!(seats_info: all_seat_info)
         end

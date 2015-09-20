@@ -111,8 +111,8 @@ describe CreateOrderLogic do
       @show2.areas.map do |area|
         sf = area.seats_info["seats"]
         # h[area.id.to_s] = { "1|2" => sf['1|2']['price'], "1|3" => sf['1|3']['price'] }
-        seats << [area.id, 1, 2, sf['1|2']['price']].join(':')
-        seats << [area.id, 1, 3, sf['1|3']['price']].join(':')
+        seats << [area.id, 1, 2, sf['1']['2']['price']].join(':')
+        seats << [area.id, 1, 3, sf['1']['3']['price']].join(':')
       end
       {
         user: user, quantity: 1, area_id: first_area.id,
@@ -136,8 +136,8 @@ describe CreateOrderLogic do
       @show2.areas.map do |area|
         area.reload
         sf = area.seats_info["seats"]
-        expect(sf["1|2"]['status']).to eq Area::SEAT_LOCKED
-        expect(sf["1|3"]['status']).to eq Area::SEAT_LOCKED
+        expect(sf["1"]["2"]['status']).to eq Area::SEAT_LOCKED
+        expect(sf["1"]["3"]['status']).to eq Area::SEAT_LOCKED
         expect(area.seats_info['selled_seats']).to eq(["1|2", "1|3"])
       end
     end
@@ -173,7 +173,7 @@ describe CreateOrderLogic do
       @show2.show_area_relations.create(area: area, seats_count: 2, left_seats: 2)
       seats = {}.tap { |h|
         sf = area.seats_info["seats"]
-        h[area.id.to_s] = { "1|1" => sf['1|1']['price'] }
+        h[area.id.to_s] = { "1|1" => sf['1']['1']['price'] }
       }
 
       params = { user: user, quantity: 1, seats: seats.to_json, area_id: area.id, way: @way }
@@ -208,7 +208,7 @@ describe CreateOrderLogic do
       seats = []
       sf = area.seats_info["seats"]
       # h[area.id.to_s] = { "1|1" => sf['1|1']['price'] }
-      seats << [area.id, 1, 1, sf['1|1']['price']].join(':')
+      seats << [area.id, 1, 1, sf['1']['1']['price']].join(':')
 
       params = { user: user, quantity: 1, seats: seats.to_json, area_id: area.id, way: @way }
       co_logic = CreateOrderLogic.new(@show2, params)

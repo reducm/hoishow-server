@@ -6,8 +6,14 @@ module SeatsInfoGenerateHelper
 
     1.upto(max_row) do |row|
       column_array.each do |col|
-        seats_info["#{[row, col].join('|')}"] = { status: status,
-          price: price, channels: channels, seat_no: "#{row}排#{col}座" }
+        value = { col.to_s => { status: status, price: price,
+          channels: channels, seat_no: "#{row}排#{col}座" } }
+
+        if seats_info[row.to_s].nil?
+          seats_info[row.to_s] = value
+        else
+          seats_info[row.to_s].merge! value
+        end
       end
     end
 
