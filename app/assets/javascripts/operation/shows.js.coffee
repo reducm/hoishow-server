@@ -33,7 +33,7 @@ set_title = (el)->
   $(el).attr('data-original-title', text)
   $('ul.seats span').tooltip()
 
-# for hash merge
+# for hash merge, need to move to comman place
 merge = (xs...) ->
   if xs?.length > 0
     tap {}, (m) -> m[k] = v for k, v of x for x in xs
