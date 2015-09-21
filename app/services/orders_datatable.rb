@@ -18,7 +18,14 @@ class OrdersDatatable
 private
 
   def data
-    orders_per_page.map do |order|
+    if params[:orders_all_page] == '1'
+      # 需要导出时取全部order
+      o = orders
+    else
+      # 浏览时取分页order
+      o = orders_per_page
+    end
+    o.map do |order|
       user = order.user
       [
         order.out_id,

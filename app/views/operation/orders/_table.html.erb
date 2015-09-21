@@ -1,9 +1,5 @@
 <%# encoding: utf-8 %>
 
-<p>
-  <%= button_tag "导出", class: 'btn btn-success', id: 'export_button' %>
-</p>
-
 <table id="orders_table" class="table table-hover orders" width="100%" data-source="<%= operation_orders_url(format: "json") %>">
   <thead>
     <tr>
