@@ -7,12 +7,10 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
       format.html
       # 订单json数据组装, 详见app/services/orders_datatable.rb
       format.json { render json: OrdersDatatable.new(view_context) }
-      format.xls { headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\"" }
     end
   end
 
