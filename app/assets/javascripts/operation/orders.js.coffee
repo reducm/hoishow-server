@@ -78,10 +78,12 @@ $ ->
           # 分页标识
           select = $('<select><option selected="selected" value="0">分页</option></select>').attr("id", "orders_all_page_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             if $(this).val() == '1'
+              $('.dt-buttons').show()
               $('#orders_table_length label:first').hide()
               $('#orders_table_info').hide()
               $('#orders_table_paginate').hide()
             else
+              $('.dt-buttons').hide()
               $('#orders_table_length label:first').show()
               $('#orders_table_info').show()
               $('#orders_table_paginate').show()
