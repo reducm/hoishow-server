@@ -25,7 +25,7 @@
       <% user = order.user %>
       <tr>
         <td><%= order.out_id%></td>
-        <td><%= link_to order.show_name, operation_show_path(order.show) %></td>
+        <td><%= order.show_name %></td>
         <td><%= order.buy_origin %></td>
         <td><%= order.channel %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
@@ -33,7 +33,7 @@
         <td><%= order.generate_ticket_at_format %></td>
         <td><%= order.tickets_count %></td>
         <td><%= order.amount %></td>
-        <td><%= link_to order.get_username(user), operation_user_path(user) %></td>
+        <td><%= order.get_username(user) %></td>
         <td class="order_status_cn"><%= order.status_cn %></td>
         <% if order.show.r_ticket? %>
           <td><%= order.user_name  %></td>

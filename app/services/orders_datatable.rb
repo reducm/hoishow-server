@@ -18,7 +18,14 @@ class OrdersDatatable
 private
 
   def data
-    orders_per_page.map do |order|
+    if params[:orders_all_page] == '1'
+      # 需要导出时取全部order
+      o = orders
+    else
+      # 浏览时取分页order
+      o = orders_per_page
+    end
+    o.map do |order|
       user = order.user
       [
         order.out_id,
@@ -55,10 +62,12 @@ private
   end
 
   def fetch_orders
-    orders = Order.order(:created_at)
+    orders = Order.order(created_at: :desc)
     # 搜订单号和手机号
-    if params[:search][:value].present?
-      orders = orders.joins(:user).where("orders.out_id like :search or users.mobile like :search", search: "%#{params[:search][:value]}%" )
+    if params[:search].present?
+      if params[:search][:value].present?
+        orders = orders.joins(:user).where("orders.out_id like :search or users.mobile like :search", search: "%#{params[:search][:value]}%" )
+      end
     end
     # 按支付状态过滤
     if params[:status].present?
