@@ -27,14 +27,21 @@ class ChangeOldSeatsToSeatsInfo < ActiveRecord::Migration
             seats_info['seats'] = {}
 
             seats.each do |st|
-              key = [st.row, st.column].join('|')
+              row, col = st.row.to_s, st.column.to_s
+              key = [row, col].join('|')
               # 将已经卖出去的票加入到 已售列表
               if st.status == 'locked' && st.order_id != nil
                 seats_info['selled'] << key
               end
 
-              seats_info['seats'][key] = { status: st.status, price: st.price,
-                channels: st.channels, seat_no: st.name }
+              value = { col => { status: st.status, price: st.price.to_f,
+                channels: st.channels, seat_no: st.name } }
+
+              if seats_info['seats'][row].nil?
+                seats_info['seats'][row] = value
+              else
+                seats_info['seats'][row].merge! value
+              end
             end
             p "seat_info ----> #{seats_info}"
             p "after seats count ----> #{seats_info['seats'].size}"

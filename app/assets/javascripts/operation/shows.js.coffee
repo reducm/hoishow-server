@@ -33,6 +33,13 @@ set_title = (el)->
   $(el).attr('data-original-title', text)
   $('ul.seats span').tooltip()
 
+# for hash merge, need to move to comman place
+merge = (xs...) ->
+  if xs?.length > 0
+    tap {}, (m) -> m[k] = v for k, v of x for x in xs
+
+tap = (o, fn) -> fn(o); o
+
 get_seats_info = (target)->
   show_id = $('#show_id').val()
   area_id = $('#area_id').val()
@@ -46,10 +53,15 @@ get_seats_info = (target)->
     $li.children().each(()->
       status = $(this).data('status')
       if status != undefined && status != ''
-        key = "#{$(this).data('row-id')}|#{$(this).data('column-id')}"
-        seat_no = "#{$(this).data('row-id')}排#{$(this).data('column-id')}座"
-        value = { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no }
-        data['seats'][key] = value
+        row_key = $(this).data('row-id')
+        col_key = $(this).data('column-id')
+        seat_no = "#{row_key}排#{col_key}座"
+        value = {"#{col_key}": { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no } }
+        # 组成 hash
+        data['seats'][row_key] = if data['seats'][row_key] != undefined
+          merge data['seats'][row_key], value
+        else
+          value
     )
   )
   # set max row and column

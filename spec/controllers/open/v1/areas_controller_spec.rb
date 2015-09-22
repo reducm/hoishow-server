@@ -91,7 +91,8 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
 
       get :seats_info, encrypted_params_in_open({id: a.id, show_id: show.id})
       expect(json[:result_code]).to eq 0
-      expect(json[:data][:seats].size).to eq 10
+      expect(json[:data][:seats].size).to eq 2
+      expect(json[:data][:seats]['1'].size).to eq 5
       expect(json[:data].has_key?('total') ).to be_truthy
       expect(json[:data].has_key?('sort_by') ).to be_truthy
       expect(json[:data].has_key?('selled') ).to be_truthy

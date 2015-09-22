@@ -46,7 +46,7 @@
           <% 1.upto(@max_row) do |row| %>
             <li class="row_<%= row %> row_li">
               <% column_array.each do |col| %>
-                <%seat = @seats["#{row}|#{col}"]
+                <%seat = @seats[row.to_s][col.to_s] if @seats[row.to_s].present?
                   default_seat_no = "#{row}排#{col}座"
                   if seat.nil?
                     status, price, channels, seat_no = '', '', '', default_seat_no

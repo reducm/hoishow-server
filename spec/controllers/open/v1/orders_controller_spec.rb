@@ -214,8 +214,8 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         seats = []
         show2.areas.map do |area|
           sf = area.seats_info["seats"]
-          seats << [area.id, 1, 2, sf['1|2']['price']].join(':')
-          seats << [area.id, 1, 1, sf['1|1']['price']].join(':')
+          seats << [area.id, 1, 2, sf['1']['2']['price']].join(':')
+          seats << [area.id, 1, 1, sf['1']['1']['price']].join(':')
         end
         {
           mobile: '15900001111', quantity: 1, area_id: area2.id, show_id: show2.id,
@@ -448,7 +448,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         area4.update_attributes seats_info: seats_info
         seats = []
         sf = area4.seats_info["seats"]
-        seats << [area4.id, 1, 1, sf['1|1']['price']].join(':')
+        seats << [area4.id, 1, 1, sf['1']['1']['price']].join(':')
         params[:seats] = seats.to_json
 
         get :check_inventory, sign_params(params)
@@ -463,7 +463,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
         area3.update_attributes seats_info: seats_info
         seats = []
         sf = area3.seats_info["seats"]
-        seats << [area3.id, 1, 1, sf['1|1']['price']].join(':')
+        seats << [area3.id, 1, 1, sf['1']['1']['price']].join(':')
         params[:seats] = seats.to_json
         get :check_inventory, sign_params(params)
         un_seat = show2.seats.first
