@@ -75,6 +75,8 @@ $ ->
               'orders_all_page': $('#orders_all_page_filter').val()
         initComplete: ->
           api = @api()
+          # 默认分页，所以把导出按钮隐藏
+          $('.dt-buttons').hide()
           # 分页标识
           select = $('<select><option selected="selected" value="0">分页</option></select>').attr("id", "orders_all_page_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             if $(this).val() == '1'
