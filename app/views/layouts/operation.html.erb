@@ -30,7 +30,7 @@
     })
 </script>
 
-  <% if current_admin %>
+  <% if current_admin && request.path_info.exclude?( '/signin'  ) %>
     <%= render partial: "layouts/sidebar" %>
   <% else %>
     <%= yield %>
