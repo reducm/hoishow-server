@@ -62,7 +62,7 @@ $ ->
               'status': $('#status_filter').val()
               'channel': $('#channel_filter').val()
               'buy_origin': $('#buy_origin_filter').val()
-              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisshowid"] else $('#show_filter').val()
+              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
               # 控件有问题，现固定每页显示10行
@@ -163,6 +163,6 @@ $ ->
       $('#orderTab a[href="' + activeTab + '"]').tab 'show'
 
     # 下载excel时向服务器回传过滤条件
-    url = 'orders.xls'
+    url = '/operation/orders.xls'
     $('#export_excel').on 'click', ->
-      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisshowid"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
+      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
