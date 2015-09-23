@@ -50,7 +50,6 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def show
-    @show_id = params[:id]
   end
 
   def edit

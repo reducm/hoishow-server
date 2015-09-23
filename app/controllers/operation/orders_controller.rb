@@ -7,10 +7,15 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
+    filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
       format.html
       # 订单json数据组装, 详见app/services/orders_datatable.rb
       format.json { render json: OrdersDatatable.new(view_context) }
+      format.xls do
+        filter_orders
+        headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\""
+      end
     end
   end
 
@@ -63,5 +68,36 @@ class Operation::OrdersController < Operation::ApplicationController
     end
     r_ticket_orders = r_ticket_orders.page(params[:r_ticket_orders_page])
     @r_ticket_orders = r_ticket_orders
+  end
+
+  def filter_orders
+    @orders_for_export = Order.order(created_at: :desc)
+    # 搜订单号和手机号
+    if params[:search].present?
+      if params[:search][:value].present?
+        @orders_for_export = @orders_for_export.joins(:user).where("orders.out_id like :search or users.mobile like :search", search: "%#{params[:search][:value]}%" )
+      end
+    end
+    # 按支付状态过滤
+    if params[:status].present?
+      @orders_for_export = @orders_for_export.where("orders.status like :status", status: "%#{params[:status]}%")
+    end
+    # 按下单来源过滤
+    if params[:channel].present?
+      @orders_for_export = @orders_for_export.where("orders.channel like :channel", channel: "%#{params[:channel]}%")
+    end
+    # 按下单平台过滤
+    if params[:buy_origin].present?
+      @orders_for_export = @orders_for_export.where("orders.buy_origin like :buy_origin", buy_origin: "%#{params[:buy_origin]}%")
+    end
+    # 按演出过滤
+    if params[:show].present?
+      @orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
+    end
+    # 按下单时间称过滤
+    if params[:start_date].present? && params[:end_date].present?
+      @orders_for_export = @orders_for_export.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])
+    end
+    @orders_for_export
   end
 end

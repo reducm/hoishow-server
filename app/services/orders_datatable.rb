@@ -18,14 +18,7 @@ class OrdersDatatable
 private
 
   def data
-    if params[:orders_all_page] == '1'
-      # 需要导出时取全部order
-      o = orders
-    else
-      # 浏览时取分页order
-      o = orders_per_page
-    end
-    o.map do |order|
+    orders_per_page.map do |order|
       user = order.user
       [
         order.out_id,
@@ -96,7 +89,9 @@ private
     params[:start].to_i/per_page + 1
   end
 
+  # 控件有问题，现固定每页显示10行
   def per_page
-    params[:length].to_i > 0 ? params[:length].to_i : 10
+    #params[:length].to_i > 0 ? params[:length].to_i : 10
+    10
   end
 end

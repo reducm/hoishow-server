@@ -21,7 +21,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @orders.each do|order| %>
+    <% @orders_for_export.each do |order| %>
       <% user = order.user %>
       <tr>
         <td><%= order.out_id%></td>
