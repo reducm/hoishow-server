@@ -48,18 +48,12 @@ $ ->
         # 基本配置
         stateSave: true
         ordering: false
-        # 语言文件需要放服务器吗？
+        # 语言文件放在public下面
         language:
           url: "/Chinese.json"
         # 从服务器的Order#index获取数据
         processing: true
         serverSide: true
-        # 导出excel
-        dom: 'Blfrtip'
-        buttons: [
-          text: '导出excel'
-          extend: 'excel'
-        ]
         # 把过滤条件回传服务器
         ajax:
           url: $("#orders_table").data("source")
@@ -68,29 +62,13 @@ $ ->
               'status': $('#status_filter').val()
               'channel': $('#channel_filter').val()
               'buy_origin': $('#buy_origin_filter').val()
-              # 从演出详情页访问的话，取该演出的订单
-              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
+              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisshowid"] else $('#show_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
-              'orders_all_page': $('#orders_all_page_filter').val()
+              # 控件有问题，现固定每页显示10行
+              'length': 10
         initComplete: ->
           api = @api()
-          # 默认分页，所以把导出按钮隐藏
-          $('.dt-buttons').hide()
-          # 分页标识
-          select = $('<select><option selected="selected" value="0">分页</option></select>').attr("id", "orders_all_page_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
-            if $(this).val() == '1'
-              $('.dt-buttons').show()
-              $('#orders_table_length label:first').hide()
-              $('#orders_table_info').hide()
-              $('#orders_table_paginate').hide()
-            else
-              $('.dt-buttons').hide()
-              $('#orders_table_length label:first').show()
-              $('#orders_table_info').show()
-              $('#orders_table_paginate').show()
-            api.ajax.reload()
-          select.append '<option value="1">' + "不分页" + '</option>'
           # 按支付状态过滤
           select = $('<select><option selected="selected" value="">支付状态：全部</option></select>').attr("id", "status_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
             api.ajax.reload()
@@ -106,8 +84,7 @@ $ ->
             api.ajax.reload()
           $.each f_data["buyOriginFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单平台：" + key + '</option>'
-          # 按演出过滤
-          # 如果从演出详情页访问的，不生成过滤框
+          # 按演出过滤：如果从演出详情页访问的，不生成过滤框
           unless $('#show_id').length > 0
             select = $('<select><option selected="selected" value="">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
               api.ajax.reload()
@@ -167,6 +144,8 @@ $ ->
             api.search('').draw()
           # 文本搜索提示
           $('div#orders_table_filter.dataTables_filter label input').attr('placeholder', '手机号或订单号').removeClass('input-sm')
+          # 隐藏显示行数控件
+          $('#orders_table_length label:first').hide()
     )
     {
       init: ->
@@ -183,4 +162,7 @@ $ ->
     if activeTab
       $('#orderTab a[href="' + activeTab + '"]').tab 'show'
 
-    
+    # 下载excel时向服务器回传过滤条件
+    url = 'orders.xls'
+    $('#export_excel').on 'click', ->
+      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisshowid"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()

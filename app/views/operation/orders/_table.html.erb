@@ -1,5 +1,7 @@
 <%# encoding: utf-8 %>
 
+<%= button_tag "导出excel", class: "btn btn-success", id: "export_excel" %>
+
 <table id="orders_table" class="table table-hover orders" width="100%" data-source="<%= operation_orders_url(format: "json") %>">
   <thead>
     <tr>
