@@ -165,7 +165,7 @@ class Show < ActiveRecord::Base
     price_array = if selected?
                     show_area_relations.map{|relation| relation.price.to_i}
                   elsif selectable?
-                    seats.select{|seat| seat.price.present?}.map{|seat| seat.price.to_i}
+                    areas.map(&:all_price_with_seats).flatten
                   else
                     []
                   end

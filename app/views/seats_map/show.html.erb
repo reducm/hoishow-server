@@ -36,8 +36,6 @@
                 <% column_array.each do |col| %>
                   <% seat = @seats[row.to_s][col.to_s] if @seats[row.to_s].present?
                      default_seat_no = "#{row}排|#{col}座"
-                    #  兼容之前 api, 写死每个 seat 的 id
-                     hardcode_seat_id = 1
                   %>
                   <%
                      if seat
@@ -54,7 +52,7 @@
                      end
                   %>
 
-                  <span><i class="<%= status %>" data-id="<%= hardcode_seat_id %>" data-seat-name="<%= seat_no %>" data-seat-price="<%= price %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-remark=""></i></span>
+                  <span><i class="<%= status %>" data-id="<%= rand(1..1000) %>" data-seat-name="<%= seat_no %>" data-seat-price="<%= price %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-remark=""></i></span>
 
                 <% end %>
               </li>

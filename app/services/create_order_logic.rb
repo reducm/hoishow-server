@@ -100,7 +100,16 @@ class CreateOrderLogic
       elsif options[:areas] && options[:areas].present?
         # 格式有待确定！是否 单区域选座
         @areas = JSON.parse options[:areas]
-        @seats_params = @areas.flat_map { |a| a['seats'].map { |item| item['row'] + '|' + item['col'] } }
+        @seats_params = {}
+        seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+        Seat.where(id: seat_ids).each do |s|
+          area_id = s.area_id
+          if @seats_params[area_id].nil?
+            @seats_params[area_id] = {"#{[s.row, s.column].join('|')}" => s.price.to_i }
+          else
+            @seats_params[area_id].merge!({"#{[s.row, s.column].join('|')}" => s.price.to_i })
+          end
+        end
         @seats_params.size
       else
         @response, @error_msg = 3014, "缺少参数"

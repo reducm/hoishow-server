@@ -63,7 +63,7 @@ class Area < ActiveRecord::Base
   def all_price_with_seats
     return [] if self.seats_info.nil?
 
-    self.seats_info['seats'].flat_map{ |k1, v1| v1.map { |k2, v2| v2['price'].to_i } }
+    self.seats_info['seats'].flat_map{ |k1, v1| v1.map { |k2, v2| v2['price'].to_i } }.uniq
   end
 
   # def draw_seats_info_for_apis(channel)
