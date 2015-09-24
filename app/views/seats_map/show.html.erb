@@ -23,17 +23,42 @@
       </div>
       <div class="seats_box">
         <ul class="list-unstyled">
-          <% @seats.maximum('row').times.each do |row| %>
-            <span class="row-bar pull-left"><%= row + 1 %></span>
-            <li>
-              <% @seats.where(row: row + 1).each do |seat| %>
-                <% if seat.channels.present? && !seat.channels.include?('hoishow') %>
-                  <span><i class="locked" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
-                <% else %>
-                  <span><i class="<%= seat.status %>" data-id="<%= seat.id %>" data-seat-name="<%= seat.name %>" data-seat-price="<%= seat.price %>" data-remark=""></i></span>
+          <% if @max_row.present? && @max_col.present? %>
+            <% 1.upto(@max_row) do |row| %>
+              <span class="row-bar pull-left"><%= row %></span>
+              <li>
+                <% column_array =if @sort_by == 'asc'
+                    1.upto(@max_col)
+                  else
+                    @max_col.downto(1)
+                  end
+                %>
+                <% column_array.each do |col| %>
+                  <% seat = @seats[row.to_s][col.to_s] if @seats[row.to_s].present?
+                     default_seat_no = "#{row}排|#{col}座"
+                    #  兼容之前 api, 写死每个 seat 的 id
+                     hardcode_seat_id = 1
+                  %>
+                  <%
+                     if seat
+                       status = if seat['channels'].include?('hoishow')
+                         # 其他渠道的 seat 一律设置为 locked
+                         Area::SEAT_LOCKED
+                       else
+                         seat['status']
+                       end
+
+                       price, seat_no = seat['price'], seat['seat_no']
+                     else
+                       status, price, seat_no = '', '', default_seat_no
+                     end
+                  %>
+
+                  <span><i class="<%= status %>" data-id="<%= hardcode_seat_id %>" data-seat-name="<%= seat_no %>" data-seat-price="<%= price %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-remark=""></i></span>
+
                 <% end %>
-              <% end %>
-            </li>
+              </li>
+            <% end %>
           <% end %>
         </ul>
       </div>

@@ -30,6 +30,7 @@ RSpec.configure do |config|
   config.include SpecTestHelper
   config.include Response::JsonHelpers, type: :controller
   config.include Response::XmlHelpers,  type: :controller
+  config.include SeatsInfoGenerateHelper
   config.color = true
   config.tty = true
   config.order = "random"
