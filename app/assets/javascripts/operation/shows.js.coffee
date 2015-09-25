@@ -1,30 +1,30 @@
 set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) ->
-    option =
-      title:
-        text: area_name + "(共" + tickets_count + "张)"
-        x: "center"
-      tooltip:
-        show: true
-      calculable: false
-      series: [
-        type: "pie"
-        radius: "40%"
-        # 标签文本和引导线
-        itemStyle:
-          normal:
-            label:
-              textStyle:
-                fontWeight: "bolder"
-                fontSize: 16
-            labelLine: length: 0
-        data: [
-          {value: sold_count, name: "售出"}
-          {value: unpaid_count, name: "未支付"}
-          {value: left_count, name: "剩余"}
-        ]
+  option =
+    title:
+      text: area_name + "(共" + tickets_count + "张)"
+      x: "center"
+    tooltip:
+      show: true
+    calculable: false
+    series: [
+      type: "pie"
+      radius: "40%"
+      # 标签文本和引导线
+      itemStyle:
+        normal:
+          label:
+            textStyle:
+              fontWeight: "bolder"
+              fontSize: 16
+          labelLine: length: 0
+      data: [
+        {value: sold_count, name: "售出"}
+        {value: unpaid_count, name: "未支付"}
+        {value: left_count, name: "剩余"}
       ]
-    myChart = echarts.init(document.getElementById(area_name))
-    myChart.setOption(option)
+    ]
+  myChart = echarts.init(document.getElementById(area_name))
+  myChart.setOption(option)
 
 set_title = (el)->
   seat_no = $(el).data('seat-no')
@@ -169,6 +169,22 @@ pop_content = (content)->
   $('#pop-modal').modal('show')
 
 $ ->
+  $('.change_show_area_data').hide()
+
+  # 修改按钮
+  $('.editable_toggle').on 'click', ->
+    $(this).siblings().eq(0).show()
+    $(this).parent().siblings().children().attr('disabled', false)
+    $(this).hide()
+
+  $(document).ajaxComplete ->
+    $('.change_show_area_data').hide()
+    $('.editable_toggle').parent().siblings().children().attr('disabled', true)
+    $('.editable_toggle').on 'click', ->
+      $(this).siblings().eq(0).show()
+      $(this).parent().siblings().children().attr('disabled', false)
+      $(this).hide()
+
   $('.image-uploader').change ->
     readURL this
 
@@ -176,7 +192,7 @@ $ ->
     $('#show_description').qeditor({})
     init_editor()
 
-#show show
+  #show show
   if $(".show_show").length > 0
     $("#pie_cake div").each(() ->
       left_count = $(this).attr("left_count")
@@ -188,7 +204,7 @@ $ ->
         $(this).width(325).height(325)
         set_pie_cake(unpaid_count, left_count, sold_count, area_name, tickets_count))
 
-#show new form
+  #show new form
   if $(".new_show").length > 0
     toggle_show_time()
 
@@ -305,7 +321,9 @@ $ ->
       else
         $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
           $('.areas tbody').html(data)
-          alert("修改成功")
+          $.notify "修改成功",
+            globalPosition: 'top center'
+            className: 'success'
         )
 
     #设置渠道
@@ -344,7 +362,9 @@ $ ->
         $.post("/operation/shows/#{show_id}/set_area_channels", {area_id: $('#area_id').val(), ids: ids}, (data)->
           $('#setChannelModal').modal('hide')
           $('.areas tbody').html(data)
-          alert('渠道设置成功')
+          $.notify "渠道设置成功",
+            globalPosition: 'top center'
+            className: 'success'
         )
 
   # 删除topic
