@@ -5,19 +5,20 @@
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr>
     <% if show.selected? %>
-      <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control' %></td>
-      <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control' %></td>
-      <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control' %></td>
-      <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+      <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
+      <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
+      <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control', disabled: true %></td>
+      <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
       <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">
-        <%= link_to "修改", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
+        <%= button_tag "修改", class: "btn btn-default editable_toggle" %>
+        <%= link_to "保存", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
         <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
         <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-info' if can? :set_channels, current_admin %>
       </td>
     <% elsif show.selectable? %>
       <td><%= area.name %></td>
       <td><%= relation.try(:seats_count) %></td>
-      <td class="text-center sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+      <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
       <td data-id="<%= area.id %>">
         <%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id), class: 'btn btn-default' %>
         <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
