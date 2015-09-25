@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<% show.areas.each_with_index do |area| %>
+<% show.areas.each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr>
