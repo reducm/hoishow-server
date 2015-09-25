@@ -27,7 +27,28 @@ a.del_star.btn.btn-danger
     .add_stadium
       margin-left: 20px
 
+.event_list
+  margin-top: 20px
+  .toolbar
+    padding: 10px 0
+    .upload_stadium_map, .upload_coordinate_map
+      position: relative
+      overflow: hidden
+      margin-bottom: 10px
+      input
+        position: absolute
+        top: 0
+        right: 5px
+        margin: 0
+        opacity: 0
+        -ms-filter: 'alpha(opacity=0)'
+        width: 109px
+        direction: ltr
+        cursor: pointer
 
+.addEventModal, .editEventModal
+  form
+    min-height: 70px
 
 // 选座图
 .seats-info

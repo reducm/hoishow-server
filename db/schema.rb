@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150902063220) do
+ActiveRecord::Schema.define(version: 20150925073544) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -38,11 +38,15 @@ ActiveRecord::Schema.define(version: 20150902063220) do
     t.string   "name",        limit: 255
     t.integer  "seats_count", limit: 4
     t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.string   "sort_by",     limit: 255
+    t.text     "coordinates", limit: 65535
+    t.string   "color",       limit: 255
+    t.integer  "event_id",    limit: 4
   end
 
+  add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
   add_index "areas", ["stadium_id"], name: "index_areas_on_stadium_id", using: :btree
 
   create_table "banners", force: :cascade do |t|
@@ -117,6 +121,17 @@ ActiveRecord::Schema.define(version: 20150902063220) do
     t.datetime "updated_at",             null: false
     t.integer  "city_id",    limit: 4
   end
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "show_id",        limit: 4
+    t.datetime "show_time"
+    t.string   "stadium_map",    limit: 255
+    t.string   "coordinate_map", limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree
 
   create_table "expresses", force: :cascade do |t|
     t.integer  "user_id",      limit: 4

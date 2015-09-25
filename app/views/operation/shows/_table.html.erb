@@ -30,6 +30,7 @@
         <td><%= tickets.sold_tickets.count %> / <%= show.total_seats_count %></td>
         <td>
           <%= link_to "查看详情", operation_show_path(show)%>
+          <%= link_to "场次管理", event_list_operation_show_path(show) %>
           <% if can? :update, show%>
             <%= link_to "编辑", edit_operation_show_path(show)%>
             <%= link_to (show.is_top ? "取消置顶" : "置顶"), toggle_is_top_operation_show_path(show), method: 'PATCH' %>

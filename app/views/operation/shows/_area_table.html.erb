@@ -1,9 +1,9 @@
 <%# encoding: utf-8 %>
 
-<% show.areas.each do |area| %>
+<% event.areas.each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
-  <tr>
+  <tr area_id="<%= area.id %>" color="<%= area.color %>" area_name="<%= area.name %>">
     <% if show.selected? %>
       <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control' %></td>
       <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control' %></td>
@@ -25,33 +25,3 @@
     <% end %>
   </tr>
 <% end %>
-
-<!-- Modal -->
-<div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="setChannelModalLabel">设置渠道</h4>
-      </div>
-      <div class="modal-body">
-        <%= form_tag do %>
-          <%= check_box_tag 'check_all' %>
-          <%= label_tag 'check_all', '全选' %>
-          <%= check_box_tag 'anti_all' %>
-          <%= label_tag 'anti_all', '反选' %>
-          <div class='channels'>
-            <%= check_box_tag 'channel_hoishow', 'hoishow' %>
-            <%= label_tag 'channel_hoishow', '自有'%>
-            <% ApiAuth.other_channels.each do |channel| %>
-              <%= check_box_tag "channel_#{channel.user}", channel.id %>
-              <%= label_tag "channel_#{channel.user}", channel.user %>
-            <% end %>
-          </div>
-          <%= hidden_field_tag 'area_id' %>
-          <%= submit_tag '提交', class: 'btn btn-primary submit_channel'%>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
