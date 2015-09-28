@@ -51,7 +51,6 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def show
-    @show_id = params[:id]
   end
 
   def edit
@@ -157,21 +156,36 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @seats = @show.seats.where(area_id: @area.id).order(:row, :column)
+
+    seats_info = @area.seats_info
+    if seats_info
+      @seats = seats_info['seats']
+      total = seats_info['total'].split('|').map(&:to_i)
+      @max_row = total[0]
+      @max_col = total[1]
+      @sort_by = seats_info['sort_by']
+    end
+
     @channels = ApiAuth.other_channels
   end
 
   def update_seats_info
     @area = @show.areas.find_by_id(params[:area_id])
-    @area.update(name: params[:area_name], sort_by: params[:sort_by])
-    Seat.transaction do
-      @show.seats.where('area_id = ? and order_id is null', @area.id).destroy_all
-      set_seats(params[:seats_info])
-      seats_count = @show.seats.avaliable_and_locked_seats.where(area_id: @area.id).count
-      left_seats = @show.seats.avaliable_seats.where(area_id: @area.id).count
-      @show.show_area_relations.where(area_id: @area.id).first.update(seats_count: seats_count, left_seats: left_seats, price: @area.seats.maximum('price'))
+    new_seats_info = JSON.parse params[:seats_info]
+    si = @area.seats_info || {}
+    si.merge! new_seats_info
+
+    if @area.update_attributes seats_info: si
+      # 兼容之前的 show_area_relations, 暂时还是先 update 一下
+      @show.show_area_relations.where(area_id: @area.id).first.update(
+        seats_count: @area.avaliable_and_locked_seats_count,
+        left_seats: @area.avaliable_seats_count,
+        price: @area.all_price_with_seats.max)
+
+      render json: {success: true}
+    else
+      render json: {error: true}
     end
-    render json: {success: true}
   end
 
   def update_mode
@@ -292,30 +306,5 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def get_show
     @show = Show.find(params[:id])
-  end
-
-  def set_seats(str)
-    seats_info = JSON.parse str
-    rowId = 1
-    seats_info['seats'].each do |row|
-      columnId = seats_info['sort_by'] == 'asc' ? 1 : row.select{|s| s['seat_status'] != 'unused'}.size
-      row.each do |s|
-        @seat = @show.seats.where(area_id: @area.id,row: s['row'], column: s['column']).first_or_create
-        @seat.update(channels: s['channel_ids'], status: s['seat_status'])
-        if @seat.status != 'unused'
-          if s['seat_no'].blank?
-            @seat.update(name: "#{rowId}排#{columnId}座", price: s['price'])
-          else
-            @seat.update(name: s['seat_no'], price: s['price'])
-          end
-          if seats_info['sort_by'] == 'asc'
-            columnId += 1
-          else
-            columnId -= 1
-          end
-        end
-      end
-      rowId += 1 unless row.all? {|s| s['seat_status'] == 'unused'}
-    end
   end
 end

@@ -1,5 +1,3 @@
-need_seats ||= false
-
 json.(area, :id, :name, :stadium_id)
 json.show_id show.id
 # json.created_at area.created_at.to_ms
@@ -14,10 +12,4 @@ if show && relation
   json.seats_left relation.left_seats
   # 没设置channel，则对所有渠道皆可售
   json.is_sold_out relation.is_sold_out || relation.channels.present? && !relation.channels.include?('bike_ticket')
-
-  if need_seats
-    json.seats_info do
-      json.array! show.seats.where(area_id: area.id), partial: "api_partials/seat", as: :seat
-    end
-  end
 end

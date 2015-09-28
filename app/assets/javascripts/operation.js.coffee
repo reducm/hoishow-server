@@ -31,6 +31,7 @@
 #= require jquery-fileupload/basic
 #= require dropzone
 #= require datatables.min
+#= require moment.min
 #
 #= require simditor/module
 #= require simditor/hotkeys

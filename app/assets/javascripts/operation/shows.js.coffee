@@ -1,30 +1,30 @@
 set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) ->
-    option =
-      title:
-        text: area_name + "(共" + tickets_count + "张)"
-        x: "center"
-      tooltip:
-        show: true
-      calculable: false
-      series: [
-        type: "pie"
-        radius: "40%"
-        # 标签文本和引导线
-        itemStyle:
-          normal:
-            label:
-              textStyle:
-                fontWeight: "bolder"
-                fontSize: 16
-            labelLine: length: 0
-        data: [
-          {value: sold_count, name: "售出"}
-          {value: unpaid_count, name: "未支付"}
-          {value: left_count, name: "剩余"}
-        ]
+  option =
+    title:
+      text: area_name + "(共" + tickets_count + "张)"
+      x: "center"
+    tooltip:
+      show: true
+    calculable: false
+    series: [
+      type: "pie"
+      radius: "40%"
+      # 标签文本和引导线
+      itemStyle:
+        normal:
+          label:
+            textStyle:
+              fontWeight: "bolder"
+              fontSize: 16
+          labelLine: length: 0
+      data: [
+        {value: sold_count, name: "售出"}
+        {value: unpaid_count, name: "未支付"}
+        {value: left_count, name: "剩余"}
       ]
-    myChart = echarts.init(document.getElementById(area_name))
-    myChart.setOption(option)
+    ]
+  myChart = echarts.init(document.getElementById(area_name))
+  myChart.setOption(option)
 
 set_title = (el)->
   seat_no = $(el).data('seat-no')
@@ -33,23 +33,47 @@ set_title = (el)->
   $(el).attr('data-original-title', text)
   $('ul.seats span').tooltip()
 
+# for hash merge, need to move to comman place
+merge = (xs...) ->
+  if xs?.length > 0
+    tap {}, (m) -> m[k] = v for k, v of x for x in xs
+
+tap = (o, fn) -> fn(o); o
+
 get_seats_info = (target)->
   show_id = $('#show_id').val()
   area_id = $('#area_id').val()
   area_name = $('#area_name').val()
   sort_by = $('#area_sort_by').val()
-  seats = []
+  data = { seats: {}, total: '', sort_by: '' }
+
+  # set seats
   $('ul.seats li.row_li').each(()->
     $li = $(this)
-    row_seats = []
     $li.children().each(()->
-      row_seats.push({row: $(this).data('row-id'), column: $(this).data('column-id'), seat_status: $(this).data('status'), seat_no: $(this).data('seat-no'), price: $(this).data('seat-price'), channel_ids: $(this).data('channel-ids')})
+      status = $(this).data('status')
+      if status != undefined && status != ''
+        row_key = $(this).data('row-id')
+        col_key = $(this).data('column-id')
+        seat_no = "#{row_key}排#{col_key}座"
+        value = {"#{col_key}": { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no } }
+        # 组成 hash
+        data['seats'][row_key] = if data['seats'][row_key] != undefined
+          merge data['seats'][row_key], value
+        else
+          value
     )
-    seats.push(row_seats)
   )
-  result = {seats: seats, sort_by: sort_by}
+  # set max row and column
+  row_size = $('#row_size').val()
+  column_size = $('#column_size').val()
+  data['total'] = "#{row_size}|#{column_size}"
+
+  # set sort_by
+  data['sort_by'] = sort_by
+
   pop_content('数据保存中,请稍等......')
-  $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(result), area_name: area_name, sort_by: sort_by}, (data)->
+  $.post("/operation/shows/#{show_id}/update_seats_info", {area_id: area_id, seats_info: JSON.stringify(data), area_name: area_name}, (data)->
     if data.success
       if target == 'reload'
         location.reload()
@@ -198,6 +222,22 @@ get_coordinates = (show_id, event_id)->
     draw_areas(canvas.getContext("2d"), $("##{event_id} .coordinate_hash").data('area-coordinates'), $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates"))
   )
 $ ->
+  $('.change_show_area_data').hide()
+
+  # 修改按钮
+  $('.editable_toggle').on 'click', ->
+    $(this).siblings().eq(0).show()
+    $(this).parent().siblings().children().attr('disabled', false)
+    $(this).hide()
+
+  $(document).ajaxComplete ->
+    $('.change_show_area_data').hide()
+    $('.editable_toggle').parent().siblings().children().attr('disabled', true)
+    $('.editable_toggle').on 'click', ->
+      $(this).siblings().eq(0).show()
+      $(this).parent().siblings().children().attr('disabled', false)
+      $(this).hide()
+
   $('.image-uploader').change ->
     readURL this
 
@@ -216,7 +256,7 @@ $ ->
         $(this).width(325).height(325)
         set_pie_cake(unpaid_count, left_count, sold_count, area_name, tickets_count))
 
-#show new form
+  #show new form
   if $(".new_show").length > 0
     toggle_show_time()
 

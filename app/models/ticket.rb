@@ -32,6 +32,18 @@ class Ticket < ActiveRecord::Base
 
   paginates_per 10
 
+  def self.area_sold_tickets_count(area_id)
+    where("area_id = ? and (status = ? or status = ?)", area_id, statuses[:success], statuses[:used]).count
+  end
+
+  def self.area_unpaid_tickets_count(area_id)
+    where("area_id = ? and status = ?", area_id, statuses[:pending]).count
+  end
+
+  def seat_key
+    [self.row, self.column].join('|')
+  end
+
   protected
   def generate_code
     if self.code.blank? && self.order.ticket_type == 'e_ticket'

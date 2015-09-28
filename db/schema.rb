@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20150925073544) do
     t.text     "coordinates", limit: 65535
     t.string   "color",       limit: 255
     t.integer  "event_id",    limit: 4
+    t.text     "seats_info",  limit: 16777215
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
