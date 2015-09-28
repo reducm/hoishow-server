@@ -472,7 +472,9 @@ $ ->
       else
         $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
           $(".#{event_id}_areas tbody").html(data)
-          alert("修改成功")
+          $.notify "修改成功",
+            globalPosition: 'top center'
+            className: 'success'
         )
 
     #设置渠道
@@ -512,7 +514,9 @@ $ ->
         $.post("/operation/shows/#{show_id}/set_area_channels", {area_id: $('#area_id').val(), ids: ids}, (data)->
           $('#setChannelModal').modal('hide')
           $(".#{event_id}_areas tbody").html(data)
-          alert('渠道设置成功')
+          $.notify "渠道设置成功",
+            globalPosition: 'top center'
+            className: 'success'
         )
 
   # 删除topic
