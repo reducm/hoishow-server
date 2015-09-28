@@ -229,6 +229,36 @@ description: 获取指定区域的详情
 ```
 
 -----------------------------------
+###场次列表
+[/api/open/v1/events]
+
+type `GET`
+
+description: 根据show_id获取全部场次信息
+
+必须参数
+```javascript
+  {
+    show_id: 1 //演出id
+  }
+```
+
+成功时返回
+```javascript
+  {
+    result_code: 0,
+    data: [
+      {
+        id: 1, //event对象的id
+        show_id: 1, //演出id
+        show_time: '201504102140270000' //show场次的时间
+      },......
+    ]
+  }
+```
+
+
+-----------------------------------
 ###区域座位信息
 [/api/open/v1/areas/:id/seats_info]
 
@@ -249,11 +279,11 @@ description: 区域的所有座位信息
     result_code: 0,
     data: [
       {
-        id: 1 //座位id
-        row: 1 //行号
-        column: 1 //列号
-        name: '1排1座' //座位号
-        price: 1 //价格
+        id: 1, //座位id
+        row: 1, //行号
+        column: 1, //列号
+        name: '1排1座', //座位号
+        price: 1, //价格
         status: 'avaliable' //座位状态
       },......
     ]
@@ -283,11 +313,11 @@ description: 根据ID查询座位信息
     result_code: 0,
     data: [
       {
-        id: 1 //座位id
-        row: 1 //行号
-        column: 1 //列号
-        name: '1排1座' //座位号
-        price: 1 //价格
+        id: 1, //座位id
+        row: 1, //行号
+        column: 1, //列号
+        name: '1排1座', //座位号
+        price: 1, //价格
         status: 'avaliable' //座位状态
       },......
     ]
