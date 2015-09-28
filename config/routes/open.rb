@@ -13,6 +13,7 @@ module Routes
               resources :areas, only: [:index, :show] do
                 get :seats_info, on: :member
               end
+              resources :events, only: [:index]
               # resources :seats, only: [:index, :show]
               get '/query_seats' => 'seats#query_seats'
               # api about orders
