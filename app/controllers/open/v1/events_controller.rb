@@ -2,6 +2,7 @@
 require "bmp_reader"
 class Open::V1::EventsController < Open::V1::ApplicationController
   before_action :show_auth!, only: [:index] 
+  skip_before_filter :api_verify!, only: [:areas_map]
   def index
     @events = @show.events.all
   end
