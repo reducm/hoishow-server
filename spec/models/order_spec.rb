@@ -10,7 +10,7 @@ describe Order do
     3.times do|n|
       area =  create :area, stadium: @stadium
       sar = @show.show_area_relations.create(area: area, price: rand(1..10), seats_count: 2, left_seats: 2)
-      2.times { create :avaliable_seat, show_id: @show.id, area_id: area.id, price: sar.price}
+      # 2.times { create :avaliable_seat, show_id: @show.id, area_id: area.id, price: sar.price}
     end
     relation = @show.show_area_relations.first
     @order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: 2, amount: relation.price * 2}, relation)
@@ -179,8 +179,8 @@ describe Order do
         expect(payment.status).to eq 'success'
         expect(t.status).to eq 'success'
 
-        new_order.refunds!({payment: payment, refund_amount: '100'})
-        expect(t.reload.status).to eq 'refund'
+        new_order.refunds!({payment: payment, refund_amount: '100', handle_ticket_method: 'refund'})
+        expect(t.reload.status).to eq 'pending'
         payment.reload
         expect(payment.status).to eq 'refund'
         expect(payment.refund_amount).to eq 100
@@ -190,27 +190,37 @@ describe Order do
 
     context 'overtime' do
       it 'selectable will set tickets info and seat info after update status' do
-        @show.update_attributes seat_type: 0
-        relation2 = ShowAreaRelation.last
-        relation2.update_attributes seats_count: 3, left_seats: 2
-        seat1 = @show.seats.first
-        seat2 = create :locked_seat, show_id: @show.id, area_id: relation2.area_id,
-          order_id: new_order.id, price: relation2.price
-        expect(seat1.status).to eq 'locked'
-        expect(seat2.status).to eq 'locked'
-        expect(sar.left_seats).to eq 1
-        expect(relation2.left_seats).to eq 2
+        seats_info = generate_seats(2, 2, Area::SEAT_AVALIABLE, [], true, ['1|1'])
+        seats_info['seats']['1']['1']['status'] = Area::SEAT_LOCKED
+        seat1 = seats_info['seats']['1']['1']
 
-        new_order.overtime!
-        expect(sar.reload.left_seats).to eq 3
-        expect(relation2.reload.left_seats).to eq 3
-        expect(new_order.reload.status).to eq 'outdate'
-        expect(new_order.tickets.count).to eq 0
+        @show.update_attributes seat_type: 0
+        area =  create :area, stadium: @stadium, seats_info: seats_info
+        relation2 = @show.show_area_relations.create(area: area, price: rand(1..10), seats_count: 4, left_seats: 3)
+        expect(relation2.area).not_to be_nil
+
+        o = create(:pending_order_with_payment, city: @city, concert: @concert,
+          stadium: @stadium, show: @show, user: @user)
+
+        o_ticket = create :ticket, show_id: @show.id, area_id: relation2.area_id,
+          order_id: o.id, price: relation2.price, row: 1, column: 1
+        expect(seat1['status']).to eq Area::SEAT_LOCKED
+        expect(relation2.left_seats).to eq 3
+
+        o.overtime!({handle_ticket_method: 'outdate'})
+        # expect(sar.reload.left_seats).to eq 4
+        expect(relation2.reload.left_seats).to eq 4
+
+        sf = relation2.area.reload.seats_info
+        expect(sf['seats']['1']['1']['status']).to eq(Area::SEAT_AVALIABLE)
+        expect(sf['selled']).to be_blank
+        expect(o.reload.status).to eq 'outdate'
+        expect(o_ticket.reload.status).to eq 'outdate'
       end
 
       it 'selected will set show_area_relation left_seats' do
         sar.update_attributes left_seats: 1
-        new_order.overtime!
+        new_order.overtime!({handle_ticket_method: 'outdate'})
         expect(sar.reload.left_seats).to eq 3
         # expect(s.map(&:status).uniq).to eq ['pending']
         expect(new_order.reload.status).to eq 'outdate'

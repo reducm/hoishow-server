@@ -14,6 +14,7 @@ module Routes
                 get :seats_info, on: :member
               end
               # resources :seats, only: [:index, :show]
+              get '/query_seats' => 'seats#query_seats'
               # api about orders
               resources :orders, only: [:create] do
                 collection do
