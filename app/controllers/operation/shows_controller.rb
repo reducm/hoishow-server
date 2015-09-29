@@ -175,11 +175,18 @@ class Operation::ShowsController < Operation::ApplicationController
     si = @area.seats_info || {}
     si.merge! new_seats_info
 
+    #TODO
+    #更新sort_by
     if @area.update_attributes seats_info: si
       # 兼容之前的 show_area_relations, 暂时还是先 update 一下
+      seats_count = @area.avaliable_and_locked_seats_count
+      left_seats = @area.avaliable_seats_count
+
+      @area.update_attributes(seats_count: seats_count, left_seats: left_seats)
+
       @show.show_area_relations.where(area_id: @area.id).first.update(
-        seats_count: @area.avaliable_and_locked_seats_count,
-        left_seats: @area.avaliable_seats_count,
+        seats_count: seats_count,
+        left_seats: left_seats,
         price: @area.all_price_with_seats.max)
 
       render json: {success: true}
