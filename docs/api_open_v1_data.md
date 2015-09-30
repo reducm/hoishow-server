@@ -120,6 +120,7 @@ description: 获取全部的区域
       name: "A区", //区域名称
       seats_count: 11, //座位数
       show_id: 1 //演出id
+      event_id: 1 //场次id
       stadium_id: 22, //场馆id
       price: 1,  //票价
       seats_left: 10,  //剩余票数
