@@ -67,28 +67,4 @@ describe Show do
       end
     end
   end
-
-  context "#unpaid_tickets_count" do
-    before('each') do
-      @user = create :user
-      @stadium = create :stadium
-      10.times{create :area, stadium: @stadium}
-      @show = create :show, stadium: @stadium
-      @quantity = 2
-    end
-
-    it "show's unpaid_tickets_count should be right" do
-      area = Area.first
-      # 出票前
-      expect(@show.unpaid_tickets_count(area)).to eq 0
-      # 出票后
-      Area.all.each_with_index do |area, i|
-        relation = create :show_area_relation, area: area, show: @show
-        order = @user.orders.init_and_create_tickets_by_relations(@show, {tickets_count: @quantity}, relation)
-        order.save
-        create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id
-      end
-      expect(@show.unpaid_tickets_count(area)).to eq @quantity
-    end
-  end
 end
