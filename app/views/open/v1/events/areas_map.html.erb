@@ -2,7 +2,7 @@
 <% if @event.stadium_map_url %>
   <%width = @map_width%>
   <%height = @map_height%>
-  <%areas_data = @event.areas.pluck(:coordinates, :id, :left_seats) %>
+  <%areas_data = @event.areas.pluck(:coordinates, :id, :left_seats, :name) %>
   <div id="container">
   <div id="stadium_pic_div" style="background-image: url('<%=@event.stadium_map%>'); width: <%=width%>px; height: <%=height%>px; background-size: <%=width%>px <%=height%>px;">
     <canvas id="mobile_stadium_canvas" style="width: <%=width%>px; height: <%=height%>px;">你的浏览器不支持canvas！！！！！！</canvas>

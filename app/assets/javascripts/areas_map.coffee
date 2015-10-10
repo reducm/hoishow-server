@@ -22,7 +22,8 @@ set_area = ()->
   for area_data in areas_data
     coordinate_string = area_data[0]
     area_id = area_data[1]
-    $("#stadium_pic_map").append("<area shape=\"poly\" coords=\"#{coordinate_string}\" href =\"#\" area_id=\"#{area_id}\" left_seats=\"#{area_data[2]}\" />")
+    area_name = area_data[3]
+    $("#stadium_pic_map").append("<area shape=\"poly\" coords=\"#{coordinate_string}\" href =\"#\" area_id=\"#{area_id}\" left_seats=\"#{area_data[2]}\" area_name=#{area_name} />")
 
 document.addEventListener "touchmove", ((e) ->
   e.preventDefault()
@@ -38,15 +39,15 @@ $(document).ready ->
     canvas.height = canvas.parentNode.clientHeight
     context = canvas.getContext("2d")
 
-    screen_width = $(window).width()
-    screen_height = $(window).height()
+    screen_width = window.innerWidth
+    screen_height = window.innerHeight
 
     widthRatio = screen_width / canvas.width
     heightRatio = screen_height / canvas.height
 
     minScale = Math.min(widthRatio, heightRatio)
-
-    $('#container').height( $(window).innerHeight() )
+    
+    $('#container').height( window.innerHeight)
 
     $("body").css("overflow", "hidden")
     
@@ -74,10 +75,11 @@ $(document).ready ->
       $(element).on "click", (e)->
         show_id = $("#show_area_data").data("show-id")
         area_id = $(element).attr("area_id")
+        area_name = $(element).attr("area_name")
         left_seats = $(element).attr("left_seats")
         if left_seats == "0"
          alert "此区域的票已经售罄，请选择其他区域购买"
         else
-         location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}"
+         location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
 
   )
