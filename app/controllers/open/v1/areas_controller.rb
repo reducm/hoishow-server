@@ -14,6 +14,20 @@ class Open::V1::AreasController < Open::V1::ApplicationController
   # 座位信息查询
   def seats_info
     area = @show.areas.find(params[:id])
-    return render json: { result_code: 0, data: area.seats_info, message: 'ok' }
+    seats_info = area.seats_info
+    seats_hash = seats_info["seats"]
+    result = []
+    seats_hash.each do |row, row_info|
+      row_info.each do |column, seat_info|
+        result.push({
+          "row": row,
+          "column": column,
+          "name": seat_info["seat_no"],
+          "price": seat_info["price"],
+          "status": seat_info["status"]
+        })
+      end
+    end
+    return render json: { result_code: 0, data: result, message: 'ok' }
   end
 end
