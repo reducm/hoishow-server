@@ -1,4 +1,5 @@
 <%# encoding: utf-8 %>
+<img src="/areas_map_loading.gif"  id="areas_map_loading" />
 <% if @event.stadium_map_url %>
   <%width = @map_width%>
   <%height = @map_height%>
@@ -16,4 +17,13 @@
   <% end %>
 <% end %>
 </div>
+
+<div class="modal fade" id="areas_map_pop_wrap" tabindex="-1" role="dialog" aria-labelledby="areas_map_pop_wrap">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <p class='text'>此区域的票已经售罄，请选择其他区域购买</p>
+        <div class='btn' data-dismiss="modal">知道啦</div>
+      </div>
+    </div>
+  </div>
 </div>

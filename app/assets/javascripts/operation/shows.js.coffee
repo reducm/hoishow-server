@@ -78,7 +78,7 @@ get_seats_info = (target)->
       if target == 'reload'
         location.reload()
       else
-        location.href = "/operation/shows/#{show_id}/edit"
+        location.href = "/operation/shows/#{show_id}/event_list"
   )
 
 insert_obj = (obj)->

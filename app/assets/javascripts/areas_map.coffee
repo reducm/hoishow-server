@@ -31,7 +31,8 @@ document.addEventListener "touchmove", ((e) ->
 ),false
 
 
-$(document).ready ->
+load_page = ()->
+
   canvas = $("#mobile_stadium_canvas")[0]
   if canvas
     set_area()
@@ -78,8 +79,15 @@ $(document).ready ->
         area_name = $(element).attr("area_name")
         left_seats = $(element).attr("left_seats")
         if left_seats == "0"
-         alert "此区域的票已经售罄，请选择其他区域购买"
+          $("#areas_map_pop_wrap").modal('show')
+          return false
         else
-         location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
+          location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
 
   )
+
+window.onload = () ->
+  $('#areas_map_loading').hide()
+  $('#container').show()
+  load_page()
+  return

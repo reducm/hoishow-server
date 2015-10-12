@@ -110,7 +110,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def new_area
-    area = @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name], event_id: params[:event_id])
+    area = @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name], event_id: params[:event_id], seats_count: 0, left_seats: 0)
     if area
       if params[:coordinates] && params[:color]
         area.update(coordinates: params[:coordinates], color: params[:color])
@@ -135,10 +135,12 @@ class Operation::ShowsController < Operation::ApplicationController
         @show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
         new_left_seats = old_left_seats - rest_tickets
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: new_left_seats)
+        area.update(seats_count: params[:seats_count], left_seats: new_left_seats)
       elsif old_seats_count < seats_count #增加了座位
         rest_tickets = seats_count - old_seats_count
         rest_tickets.times { @show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: params[:price]) }
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
+        area.update(seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
       elsif old_seats_count == seats_count #座位不变
         relation.update(price: params[:price])
       end
