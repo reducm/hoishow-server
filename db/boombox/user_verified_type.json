@@ -1,0 +1,7 @@
+{"_id":{"$oid":"53066285e13823168e3ef3fc"},"code":"common","date_creation":{"$date":"2014-02-20T20:16:05.922Z"},"name":"普通用户","removed":false,"value":0}
+{"_id":{"$oid":"53066285e13823168e3ef3fd"},"code":"dj","date_creation":{"$date":"2014-02-20T20:16:05.939Z"},"name":"唱片骑师/DJ","removed":false,"value":1}
+{"_id":{"$oid":"53066285e13823168e3ef3fe"},"code":"location","date_creation":{"$date":"2014-02-20T20:16:05.946Z"},"name":"场地","removed":false,"value":2}
+{"_id":{"$oid":"53066285e13823168e3ef3ff"},"code":"event","date_creation":{"$date":"2014-02-20T20:16:05.949Z"},"name":"活动","removed":false,"value":3}
+{"_id":{"$oid":"53066285e13823168e3ef400"},"code":"label","date_creation":{"$date":"2014-02-20T20:16:05.952Z"},"name":"唱片厂牌","removed":false,"value":4}
+{"_id":{"$oid":"53066285e13823168e3ef401"},"code":"brand","date_creation":{"$date":"2014-02-20T20:16:05.955Z"},"name":"品牌","removed":false,"value":5}
+{"_id":{"$oid":"53066285e13823168e3ef402"},"code":"famous","date_creation":{"$date":"2014-02-20T20:16:05.958Z"},"name":"名人","removed":false,"value":6}

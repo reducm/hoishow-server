@@ -1,0 +1,2 @@
+{"_id":{"$oid":"526be956e138231fd99908e9"},"code":"banner","date_creation":{"$date":"2013-10-26T16:09:58.690Z"},"name":"横幅","removed":false,"value":0}
+{"_id":{"$oid":"526be956e138231fd99908ea"},"code":"topic","date_creation":{"$date":"2013-10-26T16:09:58.694Z"},"name":"主题","removed":false,"value":1}
