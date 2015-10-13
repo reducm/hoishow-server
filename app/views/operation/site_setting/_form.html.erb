@@ -5,7 +5,7 @@
         <%= f.input :common_key, label: '参数名' %>
         <%= f.input :common_value, label: '参数值' %>
         <%= f.input :remark, label: '备注' %>
-        <%= f.submit '提交', class: 'btn btn-primary' %>
+        <%= f.submit '提交', class: 'btn btn-primary', data: { disable_with: "loading"  } %>
       <% end %>
     </div>
   </div>
