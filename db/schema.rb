@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014065102) do
+ActiveRecord::Schema.define(version: 20151014065934) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -165,6 +165,17 @@ ActiveRecord::Schema.define(version: 20151014065102) do
 
   add_index "boom_cities", ["boom_id"], name: "index_boom_cities_on_boom_id", using: :btree
 
+  create_table "boom_comments", force: :cascade do |t|
+    t.integer  "boom_topic_id", limit: 4
+    t.integer  "parent_id",     limit: 4
+    t.integer  "creator_id",    limit: 4
+    t.string   "creator_type",  limit: 255
+    t.string   "avatar",        limit: 255
+    t.text     "content",       limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
   create_table "boom_locations", force: :cascade do |t|
     t.string   "boom_id",                    limit: 255
     t.string   "boom_city_id",               limit: 255
@@ -217,6 +228,16 @@ ActiveRecord::Schema.define(version: 20151014065102) do
   end
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
+
+  create_table "boom_topics", force: :cascade do |t|
+    t.string   "created_by",   limit: 255
+    t.string   "avatar",       limit: 255
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.text     "content",      limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "boom_tracks", force: :cascade do |t|
     t.string   "boom_id",          limit: 255
