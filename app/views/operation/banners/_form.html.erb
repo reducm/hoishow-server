@@ -20,7 +20,7 @@
     </div>
     <%= f.input :poster, label:"海报 (建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <div class="form-group">
-      <%= f.submit class: 'btn btn-primary' %>
+      <%= f.submit class: 'btn btn-primary', data: { disable_with: "loading" } %>
     </div>
   <% end %>
 </div>

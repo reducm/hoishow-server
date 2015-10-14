@@ -59,7 +59,7 @@
     <%= hidden_field_tag "star_ids", params[:star_ids], id: 'hf_star_ids' %>
     <%= f.input :description, label: '图文描述' %>
   <div class="row">
-    <%= f.button :submit, "保存", class: 'marginspace', id: 'submit_concert', class: "btn btn-primary" %>
+    <%= f.button :submit, "保存", class: 'marginspace', id: 'submit_concert', class: "btn btn-primary", data: { disable_with: "loading"  } %>
   </div>
   <%end%>
 </div>
