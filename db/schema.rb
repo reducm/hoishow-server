@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014064350) do
+ActiveRecord::Schema.define(version: 20151014064841) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -703,6 +703,16 @@ ActiveRecord::Schema.define(version: 20151014064350) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
   end
+
+  create_table "user_follow_collaborators", force: :cascade do |t|
+    t.integer  "user_id",         limit: 4
+    t.integer  "collaborator_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "user_follow_collaborators", ["collaborator_id"], name: "index_user_follow_collaborators_on_collaborator_id", using: :btree
+  add_index "user_follow_collaborators", ["user_id"], name: "index_user_follow_collaborators_on_user_id", using: :btree
 
   create_table "user_follow_concerts", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
