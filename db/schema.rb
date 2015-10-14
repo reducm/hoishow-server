@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151013091617) do
+ActiveRecord::Schema.define(version: 20151014064350) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -113,6 +113,15 @@ ActiveRecord::Schema.define(version: 20151013091617) do
   add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree
   add_index "boom_activities", ["name"], name: "index_boom_activities_on_name", using: :btree
 
+  create_table "boom_albums", force: :cascade do |t|
+    t.integer  "collaborator_id", limit: 4
+    t.string   "image",           limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "boom_albums", ["collaborator_id"], name: "index_boom_albums_on_collaborator_id", using: :btree
+
   create_table "boom_articles", force: :cascade do |t|
     t.string   "boom_id",          limit: 255
     t.string   "boom_location_id", limit: 255
@@ -132,6 +141,15 @@ ActiveRecord::Schema.define(version: 20151013091617) do
   end
 
   add_index "boom_articles", ["boom_id"], name: "index_boom_articles_on_boom_id", using: :btree
+
+  create_table "boom_banners", force: :cascade do |t|
+    t.string   "poster",       limit: 255
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.integer  "position",     limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "boom_cities", force: :cascade do |t|
     t.string   "boom_id",      limit: 255
@@ -169,6 +187,13 @@ ActiveRecord::Schema.define(version: 20151013091617) do
   end
 
   add_index "boom_locations", ["boom_id"], name: "index_boom_locations_on_boom_id", using: :btree
+
+  create_table "boom_playlists", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "mode",       limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "boom_recommends", force: :cascade do |t|
     t.string   "boom_id",      limit: 255
