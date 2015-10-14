@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151014064841) do
+ActiveRecord::Schema.define(version: 20151014065102) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -723,6 +723,16 @@ ActiveRecord::Schema.define(version: 20151014064841) do
 
   add_index "user_follow_concerts", ["concert_id"], name: "index_user_follow_concerts_on_concert_id", using: :btree
   add_index "user_follow_concerts", ["user_id"], name: "index_user_follow_concerts_on_user_id", using: :btree
+
+  create_table "user_follow_playlists", force: :cascade do |t|
+    t.integer  "user_id",          limit: 4
+    t.integer  "boom_playlist_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "user_follow_playlists", ["boom_playlist_id"], name: "index_user_follow_playlists_on_boom_playlist_id", using: :btree
+  add_index "user_follow_playlists", ["user_id"], name: "index_user_follow_playlists_on_user_id", using: :btree
 
   create_table "user_follow_shows", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
