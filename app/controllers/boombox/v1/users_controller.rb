@@ -2,7 +2,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in]
 
   def verification
-
+    render json: { result: "success" }
   end
 
   def verified_mobile
