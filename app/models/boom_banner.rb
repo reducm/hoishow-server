@@ -1,7 +1,13 @@
 class BoomBanner < ActiveRecord::Base
+  default_scope {order(:position)}
+
   validates :subject_id, presence: true
   validates :subject_type, presence: true
   validates :position, uniqueness: true
+
+  mount_uploader :poster, ImageUploader
+
+  before_create :set_position
 
   def subject
      begin
@@ -12,5 +18,10 @@ class BoomBanner < ActiveRecord::Base
       Rails.logger.fatal("subject wrong, banner_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
      end
+  end
+
+  private
+  def set_position
+    self.position = BoomBanner.maximum("position").to_i + 1
   end
 end

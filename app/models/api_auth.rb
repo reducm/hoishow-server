@@ -51,6 +51,11 @@ class ApiAuth < ActiveRecord::Base
     0
   end
 
+  def boombox_valid_sign?(options = {})
+    sign = options.delete(:sign)
+    sign == self.generated_sign(options)
+  end
+
   #生成签名
   def generated_sign(params = {})
     #如果传入的参数是文档中规定的必需参数
