@@ -4,5 +4,6 @@ FactoryGirl.define do
   factory :api_auth do
     key "MyString"
     user "MyString"
+    secretcode "MyString"
   end
 end
