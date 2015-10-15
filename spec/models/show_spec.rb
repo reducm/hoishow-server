@@ -67,4 +67,35 @@ describe Show do
       end
     end
   end
+
+  context "#sold_tickets_count" do
+    before('each') do
+      @user = create :user
+      @stadium = create :stadium
+      2.times{create :area, stadium: @stadium}
+      @show = create :show, stadium: @stadium
+      Area.all.each_with_index do |area, i|
+        relation = create :show_area_relation, area: area, show: @show
+        order = @user.orders.init_from_show(@show)
+        order.save
+        create :ticket, order_id: order.id, show_id: @show.id, area_id: area.id, status: "success"
+        order.update_attributes(status: "success")
+        order.increment(:tickets_count, 1).save!
+      end
+    end
+
+    it "this area's sold_tickets_count should be right" do
+      area = Area.first
+      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
+      this_area_tickets_count = @show.orders.where(id: this_area_order_ids).success.sum(:tickets_count)
+      expect(@show.sold_tickets_count(Area.first.id)).to eq this_area_tickets_count
+    end
+
+    it "this area's sold_tickets_count should be less_than_or_equal_to all sold_tickets_count" do
+      area = Area.first
+      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
+      all_areas_tickets_count = @show.orders.success.sum(:tickets_count)
+      expect(@show.sold_tickets_count(Area.first.id) < all_areas_tickets_count).to be_truthy
+    end
+  end
 end

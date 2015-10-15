@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916091502) do
+ActiveRecord::Schema.define(version: 20151015073637) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -229,7 +229,7 @@ ActiveRecord::Schema.define(version: 20150916091502) do
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
     t.boolean  "is_sold_out", limit: 1,                           default: false
-    t.integer  "seats_count", limit: 4
+    t.integer  "seats_count", limit: 4,                           default: 0
     t.string   "channels",    limit: 255
     t.integer  "left_seats",  limit: 4,                           default: 0
   end
