@@ -22,11 +22,12 @@ class Operation::OrdersController < Operation::ApplicationController
   def show
   end
 
+  def set_order_to_success
+    redirect_to operation_orders_url if @order.success_pay!
+  end
+
   def update_express_id
-    if @order.update!(express_id: params[:content])
-      @order.success_pay!
-      render json: {success: true}
-    end
+    render json: {success: true} if @order.update!(express_id: params[:content])
   end
 
   def update_remark_content
