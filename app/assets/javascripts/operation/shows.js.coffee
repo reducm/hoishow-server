@@ -258,7 +258,6 @@ $ ->
 
   #show new form
   if $(".new_show").length > 0
-    toggle_show_time()
 
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
@@ -318,7 +317,6 @@ $ ->
         $form.submit()
 
   if $('.edit_show').length > 0
-    toggle_show_time()
     show_id = $("#show_id").val()
 
     $('.add_star').on 'click', ()->
