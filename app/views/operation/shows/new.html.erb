@@ -70,7 +70,7 @@
   </div>
     <%= f.hidden_field :concert_id, value: @concert.try(:id) %>
   <div class="row">
-    <%= f.button :submit, "设置座位信息", class: 'submit-form btn btn-primary' %>
+    <%= f.button :submit, "设置座位信息", class: 'submit-form btn btn-primary', data: { disable_with: "loading"  } %>
   </div>
   <% end %>
   <img id="stadium_pic" class="image-preview">
