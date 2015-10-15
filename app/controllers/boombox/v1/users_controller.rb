@@ -2,14 +2,35 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in]
 
   def verification
-    render json: { result: "success" }
+    mobile = params[:mobile]
+    if verify_mobile(mobile) == true
+      if Rails.cache.read(cache_key(mobile)).present?
+        return error_respond I18n.t("errors.messages.repeat_too_much")
+      else
+        sms_send_code(mobile)    
+      end
+    end
   end
 
   def verified_mobile
-
+    mobile = params[:mobile]
+    if verify_mobile(mobile) == true
+      user = User.where(mobile: mobile).first
+      if user.blank?
+        render json: { is_member: false, mobile: mobile }  
+      else
+        render json: { is_member: true, mobile: mobile }  
+      end
+    end
   end
 
   def sign_up
+    if params[:mobile] && params[:password]
+      if verify_mobile(params[:mobile]) == true
+        #TODO
+        #密码处理方式参考admin？
+      end
+    end
 
   end
 
@@ -26,7 +47,29 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def update_user
-
+    case params[:type]
+    when "avatar"
+      if params[:avatar].blank? || !params[:avatar].try(:content_type) =~ "image"
+        return error_respond I18n.t("errors.messages.avatar_not_found")
+      else
+        @user.update(avatar: params[:avatar])
+      end
+    when "nickname"
+      if params[:nickname].blank?
+        return error_respond I18n.t("errors.messages.nickname_not_found")
+      else
+        @user.update(nickname: params[:nickname])
+      end
+    when "email"
+      if params[:email].blank?
+        return error_respond I18n.t("errors.messages.email_not_found")
+      else
+        @user.update(email: params[:email])
+      end
+    else
+      return error_respond I18n.t("errors.messages.update_user_type_not_correct")
+    end
+    render json: {result: @user.nickname}
   end
 
   def reset_mobile
@@ -84,4 +127,42 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def create_playlist
 
   end
+
+  protected
+  def find_or_create_code(mobile)
+    code = Rails.cache.read(cache_key(mobile))
+    if code.blank?
+      code = Rails.cache.fetch(cache_key(mobile), expires_in: 1.minutes) do
+        Rails.env.production? ? (rand(900_000)+100_000).to_s : "123456"
+      end
+    end
+    code
+  end
+
+  def cache_key(mobile)
+    "user_code_#{mobile}"
+  end
+
+  def sms_send_code(mobile)
+    code = find_or_create_code(mobile)
+    # production 发短信
+    if Rails.env.production?
+      if ChinaSMS.to(mobile, "手机验证码为#{code}【BoomBox】")[:success]
+        render json: { result: "success" }
+      else
+        return error_respond I18n.t("errors.messages.sms_failed")
+      end
+    else
+      render json: { result: "success" }
+    end
+  end
+
+  def verify_mobile(mobile)
+    if verify_phone?(mobile)
+      true
+    else
+      error_respond I18n.t("errors.messages.mobile_not_right")
+    end
+  end
+
 end
