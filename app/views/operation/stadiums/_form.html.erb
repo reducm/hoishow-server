@@ -2,11 +2,14 @@
 
   <%= simple_form_for [:operation, stadium] do |f| %>
     <%= f.association :city, label_method: :name, value_method: :id, label: '城市', input_html: {id: 'stadium_city_select'}, selected: @city.try(:id) %>
-    <%= f.input :name, label: '场馆名' %>
+    <div class="form-group">
+      <%= f.label :name, '场馆名' %>
+      <%= f.text_field :name %>
+      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo'%>
+    </div>
     <div class="form-group">
       <%= f.label :address, '场馆地址' %>
       <%= f.text_field :address %>
-      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo'%>
     </div>
     <div class="form-group">
       <label>场馆坐标</label>
@@ -91,6 +94,7 @@
 	    //地理编码结果数组
     var geocode = new Array();
     geocode = data.geocodes;
+
     for (var i = 0; i < geocode.length; i++) {
        if(newMarker.length < 1){
          marker.setMap(null);
@@ -100,10 +104,33 @@
        }
        addmarker(geocode[i]);
     }
+
     map.setFitView();
     getMarkerPosition(newMarker)
     getMarkerDragendPosition(newMarker);
+
+    //为了得多详细的地址信息，用经纬度再请求一次
+    var lng = geocode[0].location["lng"]
+    var lat = geocode[0].location["lat"]
+
+    var more_geocoder;
+    var lnglatXY = new AMap.LngLat(lng, lat);
+    //加载地理编码插件
+    map.plugin(["AMap.Geocoder"],function(){
+      more_geocoder = new AMap.Geocoder();
+      //返回地理编码结果
+      AMap.event.addListener(more_geocoder, "complete", more_geocoder_callBack);
+      //逆地理编码
+      more_geocoder.getAddress(lnglatXY);
+    });
 	}
+
+  function more_geocoder_callBack(data){
+    var address;
+    //返回地址描述
+    address = data.regeocode.formattedAddress;
+    $('#stadium_address').val(address);
+  }
 
   function getMarkerDragendPosition(m){
     AMap.event.addListener(m,'dragend',function(){
@@ -133,8 +160,10 @@
     });
 
     $(".get_geo").on("click", function(){
-      address = $("#stadium_address").val()
-      geoCoder(address)
+      //address = $("#stadium_address").val()
+      //改按场馆名拿数据
+      name = $("#stadium_name").val()
+      geoCoder(name)
     })
   })
   </script>

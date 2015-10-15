@@ -23,7 +23,8 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def update_express_id
-    if @order.update!(express_id: params[:content], status: 2)
+    if @order.update!(express_id: params[:content])
+      @order.success_pay!
       render json: {success: true}
     end
   end
