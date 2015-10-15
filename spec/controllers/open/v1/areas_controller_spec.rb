@@ -84,13 +84,18 @@ RSpec.describe Open::V1::AreasController, :type => :controller do
 
   context "#action seats_info" do
     it "should return current area seats data" do
-      a = create :area, stadium: stadium
+      seats_info = generate_seats(2, 5, Area::SEAT_AVALIABLE)
+      a = create :area, stadium: stadium, seats_info: seats_info
       show.show_area_relations.create(area_id: a.id, channels: 'bike_ticket', seats_count: 60, left_seats: 60)
-      10.times {create :seat, area: a, show: show}
+      # 10.times {create :seat, area: a, show: show}
 
       get :seats_info, encrypted_params_in_open({id: a.id, show_id: show.id})
       expect(json[:result_code]).to eq 0
-      expect(json[:data].size).to eq 10
+      expect(json[:data][:seats].size).to eq 2
+      expect(json[:data][:seats]['1'].size).to eq 5
+      expect(json[:data].has_key?('total') ).to be_truthy
+      expect(json[:data].has_key?('sort_by') ).to be_truthy
+      expect(json[:data].has_key?('selled') ).to be_truthy
     end
   end
 end

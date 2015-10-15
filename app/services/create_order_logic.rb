@@ -60,25 +60,91 @@ class CreateOrderLogic
       end
 
     elsif show.selectable?
+      # @quantity = if options[:seats].present?
+      #   @seat_ids = JSON.parse(options[:seats])
+      #   @seat_ids.size
+      # elsif options[:areas] && options[:areas].present?
+      #   @areas = JSON.parse options[:areas]
+      #   @seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+      #   @seat_ids.size
+      # else
+      #   @response, @error_msg = 3014, "缺少参数"
+      #   0
+      # end
+
+      # 查出是否存在不可用的座位
+      # if !@seat_ids.blank?
+      #   unavaliable_seats = show.seats.not_avaliable_seats.where(id: @seat_ids).select(:id, :status, :name)
+      #
+      #   if !unavaliable_seats.blank?
+      #     seat_msg = unavaliable_seats.pluck(:name).join(',')
+      #     @response, @error_msg = 2004, "#{seat_msg}已被锁定"
+      #   end
+      # end
       @quantity = if options[:seats].present?
-        @seat_ids = JSON.parse(options[:seats])
-        @seat_ids.size
+        # options[:seats] = ['area_id:row:col:price']
+        # 根据上面的结构来堆砌出 @seats_params
+        @seats_params = {}
+        s_json = JSON.parse(options[:seats])
+        s_json.each do |s|
+          args_array = s.split(':')
+          area_id, row, col, price = args_array[0], args_array[1], args_array[2], args_array[3]
+          if @seats_params[area_id].nil?
+            @seats_params[area_id] = {"#{[row, col].join('|')}" => price }
+          else
+            @seats_params[area_id].merge!({"#{[row, col].join('|')}" => price })
+          end
+        end
+
+        @seats_params.size
       elsif options[:areas] && options[:areas].present?
+        # 格式有待确定！是否 单区域选座
         @areas = JSON.parse options[:areas]
-        @seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
-        @seat_ids.size
+        @seats_params = {}
+        seat_ids = @areas.flat_map { |a| a['seats'].map { |item| item['id'] } }
+        Seat.where(id: seat_ids).each do |s|
+          area_id = s.area_id
+          if @seats_params[area_id].nil?
+            @seats_params[area_id] = {"#{[s.row, s.column].join('|')}" => s.price.to_i }
+          else
+            @seats_params[area_id].merge!({"#{[s.row, s.column].join('|')}" => s.price.to_i })
+          end
+        end
+        @seats_params.size
       else
         @response, @error_msg = 3014, "缺少参数"
         0
       end
 
       # 查出是否存在不可用的座位
-      if !@seat_ids.blank?
-        unavaliable_seats = show.seats.not_avaliable_seats.where(id: @seat_ids).select(:id, :status, :name)
+      # seats_params = { "area_id" => { "row|col" => "price" } }
+      if !@seats_params.blank?
+        @seats_params.each_pair do |area_id, s|
+          area = ShowAreaRelation.where(show_id: show.id, area_id: area_id).first.try(:area)
+          next if area.nil? # logger ...
+          # 找出该区域的座位信息, s.keys = ["row|col", "row|col", "row|col"]
+          seats_info = area.select_from_seats_info(s.keys)
+          # seats_info['selled'] 代表已售列表
+          selled_seats = area.seats_info['selled'] & s.keys
 
-        if !unavaliable_seats.blank?
-          seat_msg = unavaliable_seats.pluck(:name).join(',')
-          @response, @error_msg = 2004, "#{seat_msg}已被锁定"
+          if selled_seats.blank?
+            # 逐个座位检查信息
+            wrong_seats = []
+            # s = { "row|col" => "price" }
+            s.each_pair do |k, v|
+              seat = seats_info[k]
+              # 不存在这个行列的座位，则放进 wrong_seats 数组
+              if seat.nil? || seat['status'] != Area::SEAT_AVALIABLE || seat['price'].to_f != v.to_f
+                wrong_seats << k
+              end
+            end
+
+            unless wrong_seats.blank?
+              @response, @error_msg = 2004, "#{wrong_seats}存在问题"
+            end
+          else
+            @response, @error_msg = 2004, "#{selled_seats}已被锁定"
+          end
         end
       end
     end
@@ -113,7 +179,7 @@ class CreateOrderLogic
       # 设置座位信息, 考虑放到 state_machine init 的 callback
       # create_order and create_tickets and callback
       begin
-        @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seat_ids)
+        @order = Order.init_and_create_tickets_by_seats(show, order_attrs, @seats_params)
       rescue ArgumentError => e
         # 先放这里
         Rails.logger.error("create_order_logic error: #{e}")
@@ -155,7 +221,7 @@ class CreateOrderLogic
   def batch_overtime!(pending_orders)
     # delay job
     user.orders.where(id: pending_orders).each do |o|
-      o.overtime!
+      o.overtime!({handle_ticket_method: 'outdate'})
     end
   end
 end

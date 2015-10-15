@@ -11,8 +11,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
     @response = 1
     begin
       Order.transaction do
-        @order.tickets.update_all(status: Ticket::statuses['refund'])
-        @order.refund!
+        @order.refunds!({handle_ticket_method: 'refund'})
         @response = 0
       end
     rescue => e

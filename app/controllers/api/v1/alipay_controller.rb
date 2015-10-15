@@ -38,7 +38,7 @@ class Api::V1::AlipayController < Api::V1::ApplicationController
           payment = Payment.where(trade_id: details.first).first
           order = payment.purchase
           if order.present? and !order.refund?
-            order.refunds!({refund_amount: details[1].to_f, payment: payment})
+            order.refunds!({refund_amount: details[1].to_f, payment: payment, handle_ticket_method: 'refund'})
           end
         #TODO 退款返回不成功的处理
         end
