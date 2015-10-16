@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151015022348) do
+ActiveRecord::Schema.define(version: 20151016085206) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -108,6 +108,10 @@ ActiveRecord::Schema.define(version: 20151015022348) do
     t.boolean  "removed",            limit: 1
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.string   "showtime",           limit: 255
+    t.integer  "boom_location_id",   limit: 4
+    t.integer  "mode",               limit: 4
+    t.integer  "boom_admin_id",      limit: 4
   end
 
   add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree
@@ -200,10 +204,12 @@ ActiveRecord::Schema.define(version: 20151015022348) do
   add_index "boom_locations", ["boom_id"], name: "index_boom_locations_on_boom_id", using: :btree
 
   create_table "boom_playlists", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.integer  "mode",       limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "name",         limit: 255
+    t.integer  "mode",         limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "creator_id",   limit: 4
+    t.string   "creator_type", limit: 255
   end
 
   create_table "boom_recommends", force: :cascade do |t|
@@ -230,13 +236,14 @@ ActiveRecord::Schema.define(version: 20151015022348) do
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
 
   create_table "boom_topics", force: :cascade do |t|
-    t.string   "created_by",   limit: 255
-    t.string   "avatar",       limit: 255
-    t.string   "subject_type", limit: 255
-    t.integer  "subject_id",   limit: 4
-    t.text     "content",      limit: 65535
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "created_by",      limit: 255
+    t.string   "avatar",          limit: 255
+    t.string   "subject_type",    limit: 255
+    t.integer  "subject_id",      limit: 4
+    t.text     "content",         limit: 65535
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "collaborator_id", limit: 4
   end
 
   create_table "boom_tracks", force: :cascade do |t|
@@ -249,6 +256,10 @@ ActiveRecord::Schema.define(version: 20151015022348) do
     t.boolean  "removed",          limit: 1
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
+    t.integer  "boom_playlist_id", limit: 4
+    t.integer  "creator_id",       limit: 4
+    t.string   "creator_type",     limit: 255
+    t.string   "artists",          limit: 255
   end
 
   add_index "boom_tracks", ["boom_id"], name: "index_boom_tracks_on_boom_id", using: :btree
@@ -281,6 +292,16 @@ ActiveRecord::Schema.define(version: 20151015022348) do
     t.datetime "updated_at",             null: false
     t.boolean  "is_hot",     limit: 1
   end
+
+  create_table "collaborator_activity_relations", force: :cascade do |t|
+    t.integer  "collaborator_id",  limit: 4
+    t.integer  "boom_activity_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "collaborator_activity_relations", ["boom_activity_id"], name: "index_collaborator_activity_relations_on_boom_activity_id", using: :btree
+  add_index "collaborator_activity_relations", ["collaborator_id"], name: "index_collaborator_activity_relations_on_collaborator_id", using: :btree
 
   create_table "collaborator_types", force: :cascade do |t|
     t.string   "boom_id",    limit: 255

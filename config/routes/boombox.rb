@@ -8,7 +8,15 @@ module Routes
             namespace :v1 do
               # api about fetch and query info
               resources :banners, only: :index
-              resources :collaborators, only: [:index, :show]
+              resources :collaborators, only: [:index, :show] do
+                member do
+                  get :timeline
+                  get :comments
+                  get :playlists
+                  get :tracks
+                  get :shows
+                end
+              end
             end
           end
         end
