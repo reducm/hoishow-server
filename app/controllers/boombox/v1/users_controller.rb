@@ -1,37 +1,41 @@
 class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in]
+  before_filter :verify_mobile, only: [:verification, :verified_mobile, :sign_up]
 
   def verification
     mobile = params[:mobile]
-    if verify_mobile(mobile) == true
-      if Rails.cache.read(cache_key(mobile)).present?
-        return error_respond I18n.t("errors.messages.repeat_too_much")
-      else
-        sms_send_code(mobile)    
-      end
+    if Rails.cache.read(cache_key(mobile)).present?
+      return error_respond I18n.t("errors.messages.repeat_too_much")
+    else
+      sms_send_code(mobile)    
     end
   end
 
   def verified_mobile
     mobile = params[:mobile]
-    if verify_mobile(mobile) == true
-      user = User.where(mobile: mobile).first
-      if user.blank?
-        render json: { is_member: false, mobile: mobile }  
-      else
-        render json: { is_member: true, mobile: mobile }  
-      end
+    user = User.where(mobile: mobile).first
+    if user.blank?
+      render json: { is_member: false, mobile: mobile }  
+    else
+      render json: { is_member: true, mobile: mobile }  
     end
   end
 
   def sign_up
-    if params[:mobile] && params[:password]
-      if verify_mobile(params[:mobile]) == true
-        #TODO
-        #密码处理方式参考admin？
+    if params[:code] && params[:mobile] && params[:password]
+      code = find_or_create_code(params[:mobile])
+      if params[:code] == code
+
+        @user = User.create(mobile: params[:mobile])
+        if @user
+          @user.sign_in_api
+          @user.set_password(params[:password])
+        end
+      else
+        return error_respond I18n.t("errors.messages.mobile_code_not_correct")
       end
     end
-
+    render partial: "user", locals:{ user: @user }
   end
 
   def sign_in
@@ -69,7 +73,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     else
       return error_respond I18n.t("errors.messages.update_user_type_not_correct")
     end
-    render json: {result: @user.nickname}
+    render partial: "user", locals:{ user: @user }
   end
 
   def reset_mobile
@@ -157,11 +161,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     end
   end
 
-  def verify_mobile(mobile)
-    if verify_phone?(mobile)
-      true
-    else
-      error_respond I18n.t("errors.messages.mobile_not_right")
+  def verify_mobile
+    unless verify_phone?(params[:mobile])
+      return error_respond I18n.t("errors.messages.mobile_not_right")
     end
   end
 

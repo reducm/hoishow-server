@@ -58,7 +58,6 @@ class Boombox::V1::ApplicationController < ApplicationController
     #这里的错误返回信息会影响app判断,不能随便改
     return error_respond("no api_token!") if params[:api_token].blank?
 
-    #get_user
     @user = User.find_by_api_token(params[:api_token])
 
     return error_respond("api_token wrong") if @user.blank?

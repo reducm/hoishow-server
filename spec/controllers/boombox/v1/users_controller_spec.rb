@@ -36,6 +36,25 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
   end
 
+  context "#sign_up" do
+    it "should create user success" do
+      options = {code: "123456", mobile: "18602987654", password: "123"}
+      post :sign_up, encrypted_params_in_boombox(api_key, options)
+      expect(json).to include "id"
+      expect(json).to include "email"
+      expect(json).to include "mobile"
+      expect(json).to include "avatar"
+      expect(json).to include "api_token"
+      expect(json).to include "nickname"
+    end
+
+    it "should create user fail with wrong code" do
+      options = {code: "123", mobile: "18602987654", password: "123"}
+      post :sign_up, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.mobile_code_not_correct")
+    end
+  end
+
   context "#update_user" do
     before("each") do
       @test_user = create(:user)
@@ -44,7 +63,12 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     it "update nickname success" do
       options = {api_token: @test_user.api_token, type: "nickname", nickname: "tom"}
       post :update_user, encrypted_params_in_boombox(api_key, options)
-      expect(json["result"]).to eq "tom"
+      expect(json).to include "id"
+      expect(json).to include "email"
+      expect(json).to include "mobile"
+      expect(json).to include "avatar"
+      expect(json).to include "api_token"
+      expect(json).to include "nickname"
     end
 
     it "update nickname fail while nickname is blank" do

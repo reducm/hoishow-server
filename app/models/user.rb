@@ -190,4 +190,22 @@ class User < ActiveRecord::Base
       return_user
     end
   end
+
+  def set_password(password)
+    self.salt = SecureRandom.base64(24)
+    pbkdf2 = OpenSSL::PKCS5::pbkdf2_hmac_sha1(password, self.salt, 1000, 24)
+    self.encrypted_password = ["sha1", Base64.encode64(pbkdf2)].join(':')
+    self.save!
+  end
+
+  def password_valid?(password)
+    params = self.encrypted_password.split(':')
+    return false if params.length != 2
+
+    pbkdf2 = Base64.decode64(params[1])
+    testHash = OpenSSL::PKCS5::pbkdf2_hmac_sha1(password, self.salt, 1000, pbkdf2.length)
+
+    return pbkdf2 == testHash
+  end
+
 end
