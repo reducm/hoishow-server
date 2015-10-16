@@ -1,6 +1,6 @@
 class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in, :forgot_password]
-  before_filter :verify_mobile, only: [:verification, :verified_mobile, :sign_up, :forgot_password]
+  before_filter :verify_mobile, only: [:verification, :verified_mobile, :sign_up, :forgot_password, :reset_mobile]
 
   def verification
     mobile = params[:mobile]
@@ -118,11 +118,19 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def reset_mobile
-
+    if params[:code] && params[:mobile]
+      code = find_or_create_code(params[:mobile])
+      if params[:code] == code
+        @user.update(mobile: params[:mobile])
+        render partial: "user", locals:{ user: @user }
+      else
+        return error_respond I18n.t("errors.messages.mobile_code_not_correct")
+      end
+    end
   end
 
   def get_user
-
+    render partial: "user", locals:{ user: @user }
   end
 
   def followed_collaborators
