@@ -14,9 +14,9 @@
         <% end %>
       <% end %>
     </div>
-    <div class="form-group">
-      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) , class: "form-control chooselist" %>
+    <div class="form-group"">
       <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-primary add_star' %>
+      <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) %>
     </div>
   </div>
 
