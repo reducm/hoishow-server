@@ -1,6 +1,6 @@
 class Boombox::V1::UsersController < Boombox::V1::ApplicationController
-  before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in]
-  before_filter :verify_mobile, only: [:verification, :verified_mobile, :sign_up]
+  before_filter :check_login!, except: [:verification, :verified_mobile, :sign_up, :sign_in, :forgot_password]
+  before_filter :verify_mobile, only: [:verification, :verified_mobile, :sign_up, :forgot_password]
 
   def verification
     mobile = params[:mobile]
@@ -21,6 +21,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     end
   end
 
+  #验证码正确则创建用户
   def sign_up
     if params[:code] && params[:mobile] && params[:password]
       code = find_or_create_code(params[:mobile])
@@ -34,20 +35,60 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       else
         return error_respond I18n.t("errors.messages.mobile_code_not_correct")
       end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
     end
     render partial: "user", locals:{ user: @user }
   end
 
   def sign_in
-
+    if params[:mobile] && params[:password]
+      @user = User.find_by_mobile(params[:mobile])
+      if @user.password_valid?(params[:password])
+        render partial: "user", locals:{ user: @user }
+      else
+        return error_respond I18n.t("errors.messages.password_not_correct")
+      end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
   end
 
+  #验证码正确则修改用户密码
   def forgot_password
+    if params[:code] && params[:mobile] && params[:password]
+      code = find_or_create_code(params[:mobile])
+      if params[:code] == code
 
+        @user = User.find_by_mobile(params[:mobile])
+        if @user
+          @user.sign_in_api
+          @user.set_password(params[:password])
+          render partial: "user", locals:{ user: @user }
+        end
+      else
+        return error_respond I18n.t("errors.messages.mobile_code_not_correct")
+      end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
   end
 
   def reset_password
-
+    if @user.password_valid?(params[:current_password])
+      if params[:password].blank? || params[:password_confirmation].blank?
+        return error_respond I18n.t("errors.messages.password_can_not_be_blank")
+      else
+        if params[:password_confirmation] == params[:password]
+          @user.set_password(params[:password])
+          render json: { result: "success" }
+        else
+          return error_respond I18n.t("errors.messages.password_can_not_confirm")
+        end
+      end
+    else
+      return error_respond I18n.t("errors.messages.current_password_not_correct")
+    end
   end
 
   def update_user
