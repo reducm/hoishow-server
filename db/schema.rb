@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151017064951) do
+ActiveRecord::Schema.define(version: 20151017070931) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -544,6 +544,13 @@ ActiveRecord::Schema.define(version: 20151017064951) do
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
+
+  create_table "playlist_track_relations", force: :cascade do |t|
+    t.integer  "boom_track_id",    limit: 4
+    t.integer  "boom_playlist_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
   create_table "recommend_pages", force: :cascade do |t|
     t.string   "boom_id",        limit: 255

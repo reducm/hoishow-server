@@ -2,7 +2,8 @@ class BoomTrack < ActiveRecord::Base
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
 
-  belongs_to :boom_playlist
+  has_many :playlist_track_relations
+  has_many :playlists, through: :playlist_track_relations, source: :boom_playlist
 
   has_many :activity_track_relations
   has_many :activities, through: :activity_track_relations, source: :boom_activity
