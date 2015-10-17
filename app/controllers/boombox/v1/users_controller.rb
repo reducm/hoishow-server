@@ -135,7 +135,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_collaborators
-
+    @collaborators = @user.follow_collaborators.verified
   end
 
   def followed_playlists

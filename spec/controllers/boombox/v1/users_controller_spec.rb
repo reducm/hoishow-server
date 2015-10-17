@@ -224,7 +224,30 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
   end
 
+  context "#followed_collaborators" do
+    before("each") do
+      @user = create(:user)
+      10.times do
+        collaborator = create :collaborator
+        @user.follow_collaborator(collaborator)
+      end
+    end
 
+    it "should get 10 Collaborator" do
+      options = {api_token: @user.api_token}
+      get :followed_collaborators, encrypted_params_in_boombox(api_key, options)
+      expect(json[0]).to include "id"
+      expect(json[0]).to include "name"
+      expect(json[0]).to include "email"
+      expect(json[0]).to include "contact"
+      expect(json[0]).to include "weibo"
+      expect(json[0]).to include "wechat"
+      expect(json[0]).to include "cover"
+      expect(json[0]).to include "description"
+      expect(json.is_a? Array).to be true
+      expect(json.size).to eq 10
+    end
+  end
 
 
 
