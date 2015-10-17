@@ -4,6 +4,9 @@ class BoomTrack < ActiveRecord::Base
 
   belongs_to :boom_playlist
 
+  has_many :activity_track_relations
+  has_many :activities, through: :activity_track_relations, source: :boom_activity
+
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true

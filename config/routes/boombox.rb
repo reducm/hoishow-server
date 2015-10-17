@@ -17,6 +17,7 @@ module Routes
                   get :shows
                 end
               end
+              resources :activities, only: [:index, :show]
 
               get '/radios' => 'playlists#radio_list'
               get '/playlists' => 'playlists#playlist_list'
