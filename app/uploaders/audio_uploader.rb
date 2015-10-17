@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class VideoUploader < CarrierWave::Uploader::Base
+class AudioUploader < CarrierWave::Uploader::Base
   # Filenames and unicode chars
   if Rails.env.production? || Rails.env.staging?
     storage :upyun
@@ -29,6 +29,6 @@ class VideoUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-    %w(mp4)
+    %w(mp3)
   end
 end

@@ -8,7 +8,6 @@ module Routes
             namespace :v1 do
               # api about fetch and query info
               resources :banners, only: :index
-              resources :collaborators, only: [:index, :show]
               resources :users, only: [] do
                 collection do
                   get "verification"
@@ -34,6 +33,19 @@ module Routes
                   post "create_playlist"
                 end
               end
+              resources :collaborators, only: [:index, :show] do
+                member do
+                  get :timeline
+                  get :comments
+                  get :playlists
+                  get :tracks
+                  get :shows
+                end
+              end
+              resources :activities, only: [:index, :show]
+
+              get '/radios' => 'playlists#radio_list'
+              get '/playlists' => 'playlists#playlist_list'
             end
           end
         end

@@ -1,4 +1,9 @@
 class BoomUserLike < ActiveRecord::Base
+  SUBJECT_TOPIC = 'BoomTopic'
+  SUBJECT_COMMENT = 'BoomComment'
+
+  belongs_to :user
+
   validates :subject_type, presence: true
   validates :subject_id, presence: true
 
