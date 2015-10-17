@@ -145,6 +145,12 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       post :update_user, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.nickname_not_found")
     end
+
+    it "update nickname fail while email format is wrong" do
+      options = {api_token: @user.api_token, type: "email", email: @user.email}
+      post :update_user, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.email_format_wrong")
+    end
   end
 
   context "#reset_mobile" do
@@ -178,6 +184,49 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       check_user_data
     end
   end
+
+  context "#follow_subject" do
+    before("each") do
+      @user = create(:user)
+      10.times {create :collaborator}
+    end
+
+    it "should follow Collaborator success" do
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id}
+      post :follow_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+
+    it "should follow fail while subject_type not right" do
+      options = {api_token: @user.api_token, subject_type: "Star", subject_id: Collaborator.first.id}
+      post :follow_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.subject_type_not_correct")
+    end
+
+    it "should follow fail while subject_id not right" do
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: 999}
+      post :follow_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.subject_not_found")
+    end
+  end
+
+  context "#unfollow_subject" do
+    before("each") do
+      @user = create(:user)
+      10.times {create :collaborator}
+      @user.follow_collaborator(Collaborator.first)
+    end
+
+    it "should unfollow Collaborator success" do
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id}
+      post :unfollow_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+  end
+
+
+
+
 
 
 

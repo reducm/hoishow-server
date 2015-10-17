@@ -26,7 +26,6 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if params[:code] && params[:mobile] && params[:password]
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
-
         @user = User.create(mobile: params[:mobile])
         if @user
           @user.sign_in_api
@@ -59,7 +58,6 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if params[:code] && params[:mobile] && params[:password]
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
-
         @user = User.find_by_mobile(params[:mobile])
         if @user
           @user.sign_in_api
@@ -109,6 +107,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       if params[:email].blank?
         return error_respond I18n.t("errors.messages.email_not_found")
       else
+        unless verify_email?(params[:email])
+          return error_respond I18n.t("errors.messages.email_format_wrong")
+        end
         @user.update(email: params[:email])
       end
     else
@@ -154,11 +155,27 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def follow_subject
-
+    return error_respond(I18n.t("errors.messages.subject_type_not_correct")) unless params[:subject_type].in? %W(Collaborator BoomPlaylist)
+    subject = Object::const_get(params[:subject_type]).where(id: params[:subject_id]).first
+    return error_respond(I18n.t("errors.messages.subject_not_found")) if subject.blank?
+    begin
+      @user.send("follow_#{params[:subject_type].downcase}", subject)
+      render json: { result: "success" }
+    rescue => e
+      return error_respond e
+    end
   end
 
   def unfollow_subject
-
+    return error_respond(I18n.t("errors.messages.subject_type_not_correct")) unless params[:subject_type].in? %W(Collaborator BoomPlaylist)
+    subject = Object::const_get(params[:subject_type]).where(id: params[:subject_id]).first
+    return error_respond(I18n.t("errors.messages.subject_not_found")) if subject.blank?
+    begin
+      @user.send("unfollow_#{params[:subject_type].downcase}", subject)
+      render json: { result: "success" }
+    rescue => e
+      return error_respond e
+    end
   end
 
   def create_comment
@@ -200,7 +217,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     code = find_or_create_code(mobile)
     # production 发短信
     if Rails.env.production?
-      if ChinaSMS.to(mobile, "手机验证码为#{code}【BoomBox】")[:success]
+      if ChinaSMS.to(mobile, "手机验证码为#{code}【播霸】")[:success]
         render json: { result: "success" }
       else
         return error_respond I18n.t("errors.messages.sms_failed")

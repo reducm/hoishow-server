@@ -99,6 +99,8 @@ zh-CN:
   errors:
     format: "%{attribute}%{message}"
     messages:
+      subject_type_not_correct: subject_type不正确
+      email_format_wrong: 邮箱格式不正确
       password_can_not_confirm: 确认的密码和新密码不相同
       password_can_not_be_blank: 密码不能为空
       current_password_not_correct: 旧密码不正确

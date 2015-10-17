@@ -11,6 +11,12 @@ class User < ActiveRecord::Base
   has_many :comments, -> { where creator_type: Comment::CREATOR_USER }, :foreign_key => 'creator_id'
   has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'
 
+  has_many :user_follow_collaborators
+  has_many :follow_collaborators, through: :user_follow_collaborators, source: :collaborator
+
+  has_many :user_follow_playlists
+  has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
+
   has_many :user_follow_stars
   has_many :follow_stars, through: :user_follow_stars, source: :star
 
@@ -101,6 +107,27 @@ class User < ActiveRecord::Base
   def unfollow_concert(concert)
     if destroy_concert = user_follow_concerts.where(concert_id: concert.id).first
       destroy_concert.destroy!
+    end
+  end
+
+  #boombox
+  def follow_collaborator(collaborator)
+    user_follow_collaborators.where(collaborator_id: collaborator.id).first_or_create!
+  end
+
+  def unfollow_collaborator(collaborator)
+    if destroy_collaborator = user_follow_collaborators.where(collaborator_id: collaborator.id).first
+      destroy_collaborator.destroy!
+    end
+  end
+
+  def follow_boomplaylist(playlist)
+    user_follow_playlists.where(boom_playlist_id: playlist.id).first_or_create!
+  end
+
+  def unfollow_boomplaylist(playlist)
+    if destroy_playlist = user_follow_playlists.where(boom_playlist_id: playlist.id).first
+      destroy_playlist.destroy!
     end
   end
 
