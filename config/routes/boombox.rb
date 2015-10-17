@@ -17,6 +17,9 @@ module Routes
                   get :shows
                 end
               end
+
+              get '/radios' => 'playlists#radio_list'
+              get '/playlists' => 'playlists#playlist_list'
             end
           end
         end

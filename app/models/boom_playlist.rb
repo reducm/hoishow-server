@@ -18,6 +18,8 @@ class BoomPlaylist < ActiveRecord::Base
 
   scope :open, -> { where('creator_type != ?', CREATOR_USER)}
 
+  paginates_per 10
+
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first
