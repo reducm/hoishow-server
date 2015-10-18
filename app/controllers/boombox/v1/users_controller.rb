@@ -139,7 +139,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_playlists
-
+    @playlists = @user.follow_playlists
   end
 
   def my_playlists
@@ -150,32 +150,23 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   end
 
-  def message_list
-
-  end
+  #def message_list
+  #end
 
   def follow_subject
-    return error_respond(I18n.t("errors.messages.subject_type_not_correct")) unless params[:subject_type].in? %W(Collaborator BoomPlaylist)
-    subject = Object::const_get(params[:subject_type]).where(id: params[:subject_id]).first
-    return error_respond(I18n.t("errors.messages.subject_not_found")) if subject.blank?
-    begin
-      @user.send("follow_#{params[:subject_type].downcase}", subject)
-      render json: { result: "success" }
-    rescue => e
-      return error_respond e
+    error_message, subject = find_meta_subject(%W(Collaborator BoomPlaylist))
+    unless subject
+      return error_respond error_message
     end
+    invoke_meta_method("follow", subject)
   end
 
   def unfollow_subject
-    return error_respond(I18n.t("errors.messages.subject_type_not_correct")) unless params[:subject_type].in? %W(Collaborator BoomPlaylist)
-    subject = Object::const_get(params[:subject_type]).where(id: params[:subject_id]).first
-    return error_respond(I18n.t("errors.messages.subject_not_found")) if subject.blank?
-    begin
-      @user.send("unfollow_#{params[:subject_type].downcase}", subject)
-      render json: { result: "success" }
-    rescue => e
-      return error_respond e
+    error_message, subject = find_meta_subject(%W(Collaborator BoomPlaylist))
+    unless subject
+      return error_respond error_message
     end
+    invoke_meta_method("unfollow", subject)
   end
 
   def create_comment
@@ -183,18 +174,42 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
    
   def like_subject
-
+    error_message, subject = find_meta_subject(%W(BoomTopic BoomComment))
+    unless subject
+      return error_respond error_message
+    end
+    invoke_meta_method("like", subject)
   end
 
   def unlike_subject
-
+    error_message, subject = find_meta_subject(%W(BoomTopic BoomComment))
+    unless subject
+      return error_respond error_message
+    end
+    invoke_meta_method("unlike", subject)
   end
 
   def add_to_playlist
+    if params[:playlist_id] && params[:track_id]
+      playlist = BoomPlaylist.find_by_id(params[:playlist_id])
+      if playlist
+        playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+        render json: { result: "success" }
+      else
+        return error_respond I18n.t("errors.messages.playlist_not_found")
+      end
+    end
+  end
+  
+  def delete_track_from_playlist
 
   end
 
   def create_playlist
+
+  end
+
+  def delete_playlist
 
   end
 
@@ -230,6 +245,28 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def verify_mobile
     unless verify_phone?(params[:mobile])
       return error_respond I18n.t("errors.messages.mobile_not_right")
+    end
+  end
+
+  def invoke_meta_method(method_prefix, subject)
+    begin
+      @user.send("#{method_prefix}_#{params[:subject_type].downcase}", subject)
+      render json: { result: "success" }
+    rescue => e
+      return error_respond e
+    end
+  end
+
+  def find_meta_subject(model_string_array)
+    if params[:subject_type].in? model_string_array
+      subject = Object::const_get(params[:subject_type]).where(id: params[:subject_id]).first
+      if subject.blank?
+        return I18n.t("errors.messages.subject_not_found"), false
+      else
+        return false, subject
+      end
+    else
+      return I18n.t("errors.messages.subject_type_not_correct"), false
     end
   end
 

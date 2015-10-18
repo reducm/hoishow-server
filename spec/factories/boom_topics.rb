@@ -2,5 +2,9 @@
 
 FactoryGirl.define do
   factory :boom_topic do
+    created_by "tom"
+    subject_type "Activity"
+    subject_id 1
+    content "anything content"
   end
 end

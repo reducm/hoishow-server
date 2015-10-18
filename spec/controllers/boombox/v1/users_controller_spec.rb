@@ -185,6 +185,31 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
   end
 
+  context "#followed_collaborators" do
+    before("each") do
+      @user = create(:user)
+      10.times do
+        collaborator = create :collaborator
+        @user.follow_collaborator(collaborator)
+      end
+    end
+
+    it "should get 10 Collaborator" do
+      options = {api_token: @user.api_token}
+      get :followed_collaborators, encrypted_params_in_boombox(api_key, options)
+      expect(json[0]).to include "id"
+      expect(json[0]).to include "name"
+      expect(json[0]).to include "email"
+      expect(json[0]).to include "contact"
+      expect(json[0]).to include "weibo"
+      expect(json[0]).to include "wechat"
+      expect(json[0]).to include "cover"
+      expect(json[0]).to include "description"
+      expect(json.is_a? Array).to be true
+      expect(json.size).to eq 10
+    end
+  end
+
   context "#follow_subject" do
     before("each") do
       @user = create(:user)
@@ -224,31 +249,62 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
   end
 
-  context "#followed_collaborators" do
+  context "#like_subject" do
     before("each") do
       @user = create(:user)
-      10.times do
-        collaborator = create :collaborator
-        @user.follow_collaborator(collaborator)
-      end
+      @topic = create(:boom_topic)
+      @comment = create(:boom_comment)
     end
 
-    it "should get 10 Collaborator" do
-      options = {api_token: @user.api_token}
-      get :followed_collaborators, encrypted_params_in_boombox(api_key, options)
-      expect(json[0]).to include "id"
-      expect(json[0]).to include "name"
-      expect(json[0]).to include "email"
-      expect(json[0]).to include "contact"
-      expect(json[0]).to include "weibo"
-      expect(json[0]).to include "wechat"
-      expect(json[0]).to include "cover"
-      expect(json[0]).to include "description"
-      expect(json.is_a? Array).to be true
-      expect(json.size).to eq 10
+    it "should like topic success" do
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id}
+      post :like_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+
+    it "should like comment success" do
+      options = {api_token: @user.api_token, subject_type: "BoomComment", subject_id: @comment.id}
+      post :like_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
     end
   end
 
+  context "#unlike_subject" do
+    before("each") do
+      @user = create(:user)
+      @topic = create(:boom_topic)
+      @comment = create(:boom_comment)
+    end
+
+    it "should unlike topic success" do
+      @user.like_boomtopic(@topic)
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id}
+      post :unlike_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+
+    it "should unlike comment success" do
+      @user.like_boomtopic(@comment)
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @comment.id}
+      post :unlike_subject, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+  end
+
+  context "#add_to_playlist" do
+    before("each") do
+      @user = create(:user)
+      @playlist = create(:boom_playlist)
+      @track = create(:boom_track)
+    end
+
+    it "should add track to playlist success" do
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id}
+      post :add_to_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+
+  end
 
 
 

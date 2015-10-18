@@ -99,6 +99,8 @@ zh-CN:
   errors:
     format: "%{attribute}%{message}"
     messages:
+      playlist_not_found: 找不到播放列表
+      subject_not_found: 没找到对象
       subject_type_not_correct: subject_type不正确
       email_format_wrong: 邮箱格式不正确
       password_can_not_confirm: 确认的密码和新密码不相同

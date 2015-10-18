@@ -11,11 +11,19 @@ class User < ActiveRecord::Base
   has_many :comments, -> { where creator_type: Comment::CREATOR_USER }, :foreign_key => 'creator_id'
   has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'
 
+  #----------------boombox
   has_many :user_follow_collaborators
   has_many :follow_collaborators, through: :user_follow_collaborators, source: :collaborator
 
   has_many :user_follow_playlists
   has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
+
+  has_many :boom_user_likes
+  has_many :boom_like_topics, through: :boom_user_likes, source: :boom_topic
+
+  has_many :boom_user_likes
+  has_many :boom_like_comments, through: :boom_user_likes, source: :boom_comment
+  #----------------boombox
 
   has_many :user_follow_stars
   has_many :follow_stars, through: :user_follow_stars, source: :star
@@ -34,9 +42,6 @@ class User < ActiveRecord::Base
 
   has_many :user_message_relations
   has_many :messages, through: :user_message_relations, source: :message
-
-  has_many :boom_user_likes
-  has_many :like_boom_topics, through: :boom_user_likes, source: :boom_topics
 
   validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
   validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
@@ -113,7 +118,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  #boombox
+  #----------------------boombox
   def follow_collaborator(collaborator)
     user_follow_collaborators.where(collaborator_id: collaborator.id).first_or_create!
   end
@@ -133,6 +138,31 @@ class User < ActiveRecord::Base
       destroy_playlist.destroy!
     end
   end
+
+  def like_boomtopic(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first_or_create!
+  end
+
+  def unlike_boomtopic(topic)
+    if destroy_topic = boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first
+      destroy_topic.destroy!
+    end
+  end
+
+  def like_boomcomment(comment)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT, subject_id: comment.id).first_or_create!
+  end
+
+  def unlike_boomcomment(comment)
+    if destroy_comment = boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT, subject_id: comment.id).first
+      destroy_comment.destroy!
+    end
+  end
+  
+  
+
+
+  #----------------------boombox
 
   def create_comment(topic, parent_id = nil, content)
     comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: Base64.encode64(content))
