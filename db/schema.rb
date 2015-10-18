@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(version: 20151017070931) do
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
     t.boolean  "is_sold_out", limit: 1,                           default: false
-    t.integer  "seats_count", limit: 4
+    t.integer  "seats_count", limit: 4,                           default: 0
     t.string   "channels",    limit: 255
     t.integer  "left_seats",  limit: 4,                           default: 0
   end

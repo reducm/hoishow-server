@@ -4,7 +4,7 @@
     <%= simple_form_for [:operation, page], url: url do |f| %>
       <%= f.input :title, collection: Page::ALL_PAGE, label_method: lambda {|key| t("activerecord.attributes.page_title_values.#{key}")}, prompt: '选择页面类型' %>
       <%= f.input :description %>
-      <%= f.submit '提交', class: 'btn btn-primary' %>
+      <%= f.submit '提交', class: 'btn btn-primary', data: { disable_with: "loading"  } %>
     <% end %>
   </div>
 </div>

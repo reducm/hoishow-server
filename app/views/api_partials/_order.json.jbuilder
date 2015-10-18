@@ -10,7 +10,7 @@ json.ticket_type order.show.ticket_type rescue ''
 json.qr_url show_for_qr_scan_api_v1_order_path(order)
 # json.ticket_pic order.show.ticket_pic_url || ''
 # json.valid_time order.valid_time.to_ms rescue ''
-json.generate_ticket_at order.generate_ticket_at.to_i rescue ''
+json.ticketed_at order.generate_ticket_at.to_i rescue ''
 json.express_code order.express_id || ''
 
 # about express

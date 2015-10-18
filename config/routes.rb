@@ -180,6 +180,7 @@ Rails.application.routes.draw do
     end
     resources :orders do
       member do
+        post :set_order_to_success
         post "update_express_id"
         post "update_remark_content"
         post :manual_refund
