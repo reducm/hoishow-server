@@ -1,12 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Boombox::V1::CollaboratorsController, :type => :controller do
-  render_views
-  let(:api_key){ create(:api_auth) }
-  let(:json) { JSON.parse(response.body) }
-  before(:each) do
-    request.accept = "application/json"
-  end
+  include BoomboxInitHelper
 
   context "#index" do
     before('each') do
