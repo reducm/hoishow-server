@@ -11,6 +11,8 @@ class BoomTrack < ActiveRecord::Base
   has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_TRACK }, foreign_key: 'subject_id'
   has_many :tags, through: :tag_subject_relations, source: :boom_tag
 
+  scope :recommend, -> { order('RAND()').limit(20) }
+
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true
