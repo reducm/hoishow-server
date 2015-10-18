@@ -84,7 +84,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def confirm
-    if !@order.pre_pay! || !@order.success_pay!
+    if !@order.pre_pay! || (@order.e_ticket? && !@order.success_pay!)
       @error_code = 3012
       @message = '订单确认失败'
     end

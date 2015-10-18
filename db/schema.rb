@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151017070931) do
+ActiveRecord::Schema.define(version: 20151018080441) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -240,6 +240,7 @@ ActiveRecord::Schema.define(version: 20151017070931) do
     t.boolean  "removed",    limit: 1
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.boolean  "is_hot",     limit: 1
   end
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
@@ -581,7 +582,7 @@ ActiveRecord::Schema.define(version: 20151017070931) do
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
     t.boolean  "is_sold_out", limit: 1,                           default: false
-    t.integer  "seats_count", limit: 4
+    t.integer  "seats_count", limit: 4,                           default: 0
     t.string   "channels",    limit: 255
     t.integer  "left_seats",  limit: 4,                           default: 0
   end
@@ -726,6 +727,14 @@ ActiveRecord::Schema.define(version: 20151017070931) do
   end
 
   add_index "tag_sorts", ["boom_id"], name: "index_tag_sorts_on_boom_id", using: :btree
+
+  create_table "tag_subject_relations", force: :cascade do |t|
+    t.integer  "boom_tag_id",  limit: 4
+    t.integer  "subject_id",   limit: 4
+    t.string   "subject_type", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "tickets", force: :cascade do |t|
     t.integer  "area_id",         limit: 4

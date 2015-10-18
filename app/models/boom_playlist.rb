@@ -9,6 +9,9 @@ class BoomPlaylist < ActiveRecord::Base
   has_many :playlist_track_relations, dependent: :destroy
   has_many :tracks, through: :playlist_track_relations, source: :boom_track
 
+  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_PLAYLIST }, foreign_key: 'subject_id'
+  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true
