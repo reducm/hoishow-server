@@ -127,6 +127,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       else
         return error_respond I18n.t("errors.messages.mobile_code_not_correct")
       end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
 
@@ -143,11 +145,11 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-
+    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id)
   end
 
   def comment_list
-
+    @comments = BoomComment.where(creator_type: BoomComment::CREATOR_USER, creator_id: @user.id)
   end
 
   #def message_list
@@ -170,7 +172,17 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def create_comment
-
+    if params[:topic_id] && params[:content]
+      options = { creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id] }
+      if params[:parent_id]
+        options.merge!(parent_id: params[:parent_id])
+        @comment = BoomComment.create(options)
+      else
+        @comment = BoomComment.create(options)
+      end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
   end
    
   def like_subject
@@ -198,19 +210,50 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       else
         return error_respond I18n.t("errors.messages.playlist_not_found")
       end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
   
   def delete_track_from_playlist
-
+    if params[:playlist_id] && params[:track_id]
+      playlist = BoomPlaylist.find_by_id(params[:playlist_id])
+      if playlist
+        if destroy_track = playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+          destroy_track.destroy!
+          render json: { result: "success" }
+        else
+          return error_respond I18n.t("errors.messages.track_not_found")
+        end
+      else
+        return error_respond I18n.t("errors.messages.playlist_not_found")
+      end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
   end
 
   def create_playlist
-
+    name = params[:name]
+    unless name.blank?
+      @playlist = BoomPlaylist.create(name: name, creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id) 
+    else
+      return error_respond I18n.t("errors.messages.playlist_name_can_not_blank")
+    end
   end
 
   def delete_playlist
-
+    if playlist_id = params[:playlist_id]
+      playlist = BoomPlaylist.find_by_id(playlist_id)
+      if playlist
+        playlist.destroy!
+        render json: { result: "success" }
+      else
+        return error_respond I18n.t("errors.messages.playlist_not_found")
+      end
+    else
+      return error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
   end
 
   protected

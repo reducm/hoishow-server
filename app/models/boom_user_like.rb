@@ -3,8 +3,6 @@ class BoomUserLike < ActiveRecord::Base
   SUBJECT_COMMENT = 'BoomComment'
 
   belongs_to :user
-  belongs_to :boom_topic, -> { where subject_type: SUBJECT_TOPIC }, foreign_key: 'subject_id'
-  belongs_to :boom_comment, -> { where subject_type: SUBJECT_COMMENT}, foreign_key: 'subject_id'
 
   validates :subject_type, presence: true
   validates :subject_id, presence: true

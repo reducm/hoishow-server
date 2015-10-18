@@ -6,7 +6,7 @@ class BoomPlaylist < ActiveRecord::Base
   has_many :user_follow_playlists
   has_many :followers, through: :user_follow_playlists, source: :user
 
-  has_many :playlist_track_relations
+  has_many :playlist_track_relations, dependent: :destroy
   has_many :tracks, through: :playlist_track_relations, source: :boom_track
 
   validates :name, presence: true

@@ -210,6 +210,68 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
   end
 
+  context "#followed_playlists" do
+    before("each") do
+      @user = create(:user)
+      10.times do
+        @user.follow_boomplaylist(create(:boom_playlist))
+      end
+    end
+
+    it "should get 10 playlist" do
+      options = {api_token: @user.api_token}
+      get :followed_playlists, encrypted_params_in_boombox(api_key, options)
+      expect(json[0]).to include "id"
+      expect(json[0]).to include "name"
+      expect(json[0]).to include "tracks"
+      expect(json.is_a? Array).to be true
+      expect(json.size).to eq 10
+    end
+  end
+
+  context "#my_playlists" do
+    before("each") do
+      @user = create(:user)
+      10.times do |n|
+        create(:boom_playlist, name: n.to_s)
+      end
+    end
+
+    it "should get 10 playlist" do
+      options = {api_token: @user.api_token}
+      get :my_playlists, encrypted_params_in_boombox(api_key, options)
+      expect(json[0]).to include "id"
+      expect(json[0]).to include "name"
+      expect(json[0]).to include "tracks"
+      expect(json.is_a? Array).to be true
+      expect(json.size).to eq 10
+    end
+  end
+
+  context "#comment_list" do
+    before("each") do
+      @user = create(:user)
+      3.times do |n|
+        create(:boom_comment, content: n.to_s, creator_id: @user.id)
+      end
+      3.times do |n|
+        create(:boom_comment, content: ( n+10 ).to_s, parent_id: n+1, creator_id: @user.id)
+      end
+    end
+
+    it "should get 6 comments" do
+      options = {api_token: @user.api_token}
+      get :comment_list, encrypted_params_in_boombox(api_key, options)
+      expect(json[0]).to include "id"
+      expect(json[0]).to include "content"
+      expect(json[0]).to include "created_at"
+      expect(json[0]).to include "avatar"
+      expect(json[0]).to include "created_by"
+      expect(json[0]).to include "parent"
+      expect(json.is_a? Array).to be true
+    end
+  end
+
   context "#follow_subject" do
     before("each") do
       @user = create(:user)
@@ -246,6 +308,26 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id}
       post :unfollow_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
+    end
+  end
+
+  context "#create_comment" do
+    before("each") do
+      @user = create(:user)
+      @topic = create(:boom_topic)
+      @comment = create(:boom_comment)
+    end
+
+    it "should create comment success" do
+      options = {api_token: @user.api_token, creator_type: "User", creator_id: @user.id, topic_id: @topic.id, content: "ahskjdhaksd", parent_id: @comment.id}
+      post :create_comment, encrypted_params_in_boombox(api_key, options)
+      expect(json).to include "id"
+      expect(json).to include "content"
+      expect(json).to include "created_at"
+      expect(json).to include "avatar"
+      expect(json).to include "created_by"
+      expect(json).to include "parent"
+      expect(json.is_a? Array).to be false
     end
   end
 
@@ -304,9 +386,77 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       expect(json["result"]).to eq "success"
     end
 
+    it "should add track to playlist fail while playlist_id is wrong" do
+      options = {api_token: @user.api_token, playlist_id: 999, track_id: @track.id}
+      post :add_to_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.playlist_not_found")
+    end
   end
 
+  context "#delete_track_from_playlist" do
+    before("each") do
+      @user = create(:user)
+      @playlist = create(:boom_playlist)
+      @track = create(:boom_track)
+      @playlist.playlist_track_relations.where(boom_track_id: @track.id).first_or_create!
+    end
 
+    it "should delete track from playlist success" do
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id}
+      post :delete_track_from_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["result"]).to eq "success"
+    end
+
+    it "should delete track from playlist fail while track_id is wrong" do
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: 999}
+      post :delete_track_from_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.track_not_found")
+    end
+  end
+
+  context "#create_playlist" do
+    before("each") do
+      @user = create(:user)
+    end
+
+    it "should get 1 playlist" do
+      name = "tom"
+      options = {api_token: @user.api_token, name: name}
+      post :create_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json).to include "id"
+      expect(json).to include "name"
+      expect(json).to include "tracks"
+      expect(json.is_a? Array).to be false
+      expect(json["name"]).to eq name
+    end
+
+    it "should create playlist fail while name blank" do
+      options = {api_token: @user.api_token, name: ""}
+      post :create_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.playlist_name_can_not_blank")
+    end
+  end
+
+  context "#delete_playlist" do
+    before("each") do
+      @user = create(:user)
+      @playlist = create(:boom_playlist)
+    end
+
+    it "should delete 1 playlist" do
+      options = {api_token: @user.api_token, playlist_id: @playlist.id}
+      expect {
+        post :delete_playlist, encrypted_params_in_boombox(api_key, options)
+      }.to change(BoomPlaylist, :count).by(-1)
+      expect(json["result"]).to eq "success"
+    end
+
+    it "should delete playlist fail while playlist blank" do
+      options = {api_token: @user.api_token}
+      post :delete_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.parameters_not_correct")
+    end
+  end
 
 
   def check_user_data

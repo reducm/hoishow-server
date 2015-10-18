@@ -4,6 +4,6 @@ FactoryGirl.define do
   factory :boom_comment do
     content "hahahahah"
     creator_id 1
-    creator_type "Collaborator"
+    creator_type "User"
   end
 end
