@@ -2,5 +2,8 @@
 
 FactoryGirl.define do
   factory :boom_playlist do
+    name "tommm"
+    creator_type "User"
+    creator_id 1
   end
 end

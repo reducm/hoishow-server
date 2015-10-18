@@ -4,7 +4,7 @@ class BoomTopic < ActiveRecord::Base
   has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id'
   has_many :likers, through: :boom_user_likes, source: :user
 
-  has_many :boom_comments
+  has_many :boom_comments, dependent: :destroy
 
   validates :subject_type, presence: true
   validates :content, presence: true
