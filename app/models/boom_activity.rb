@@ -8,6 +8,9 @@ class BoomActivity < ActiveRecord::Base
   has_many :activity_track_relations
   has_many :tracks, through: :activity_track_relations, source: :boom_track
 
+  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_ACTIVITY }, foreign_key: 'subject_id'
+  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+
   enum mode: {
     show: 0,
     activity: 1

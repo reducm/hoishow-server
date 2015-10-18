@@ -8,6 +8,9 @@ class BoomTrack < ActiveRecord::Base
   has_many :activity_track_relations
   has_many :activities, through: :activity_track_relations, source: :boom_activity
 
+  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_TRACK }, foreign_key: 'subject_id'
+  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true

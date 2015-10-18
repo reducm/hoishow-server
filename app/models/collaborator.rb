@@ -11,6 +11,9 @@ class Collaborator < ActiveRecord::Base
   has_many :boom_tracks, -> { where creator_type: BoomTrack::CREATOR_COLLABORATOR }, foreign_key: 'creator_id'
   has_many :boom_activities
 
+  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_COLLABORATOR }, foreign_key: 'subject_id'
+  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+
   mount_uploader :cover, ImageUploader
 
   scope :verified, -> { where(verified: true) }

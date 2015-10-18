@@ -46,6 +46,9 @@ module Routes
 
               get '/radios' => 'playlists#radio_list'
               get '/playlists' => 'playlists#playlist_list'
+
+              get '/hot_tags' => 'tags#hot_tags'
+              get '/search' => 'tags#search'
             end
           end
         end
