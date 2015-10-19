@@ -149,7 +149,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def comment_list
-    @comments = BoomComment.where(creator_type: BoomComment::CREATOR_USER, creator_id: @user.id)
+    user_comment_ids = BoomComment.where(creator_type: BoomComment::CREATOR_USER, creator_id: @user.id).pluck(:id)
+    @comments = BoomComment.where("parent_id in (?)", user_comment_ids)
   end
 
   #def message_list

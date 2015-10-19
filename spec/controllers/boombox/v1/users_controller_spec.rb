@@ -252,14 +252,13 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     before("each") do
       @user = create(:user)
       3.times do |n|
-        create(:boom_comment, content: n.to_s, creator_id: @user.id)
-      end
-      3.times do |n|
-        create(:boom_comment, content: ( n+10 ).to_s, parent_id: n+1, creator_id: @user.id)
+        user = create :user
+        comment = create(:boom_comment, content: n.to_s, creator_id: @user.id)
+        create(:boom_comment, content: ( n+10 ).to_s, parent_id: comment.id, creator_id: user.id)
       end
     end
 
-    it "should get 6 comments" do
+    it "should get comments" do
       options = {api_token: @user.api_token}
       get :comment_list, encrypted_params_in_boombox(api_key, options)
       expect(json[0]).to include "id"
