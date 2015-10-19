@@ -30,7 +30,9 @@ module Routes
                   post "like_subject"
                   post "unlike_subject"
                   post "add_to_playlist"
+                  post "delete_track_from_playlist"
                   post "create_playlist"
+                  post "delete_playlist"
                 end
               end
               resources :collaborators, only: [:index, :show] do
