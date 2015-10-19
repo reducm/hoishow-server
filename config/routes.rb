@@ -225,12 +225,15 @@ Rails.application.routes.draw do
       end
     end
     resources :comments
-    resources :cities, only: [:index] do
+    resources :cities, except: [:show, :destroy] do
       collection do
         get :search
       end
     end
     resources :stadiums, except: [:show, :destroy] do
+      collection do
+        get :search
+      end
       member do
         get :refresh_areas
         post :submit_area
