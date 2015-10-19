@@ -24,9 +24,6 @@ class CreatePageLocations < ActiveRecord::Migration
             removed: p_json['removed'],
             created_at: p_json['date_creation']['$date'].to_time
           )
-          p_json['music'].each do |item|
-            BoomMusic.where(boom_id: item['$oid']).first.update(boom_page_id: p_json['_id']['$oid'])
-          end
         end
       end
     end if Rails.env.production? || Rails.env.staging?

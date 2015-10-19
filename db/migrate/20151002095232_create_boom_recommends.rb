@@ -26,10 +26,6 @@ class CreateBoomRecommends < ActiveRecord::Migration
             removed: r_json['removed'],
             created_at: r_json['date_creation']['$date'].to_time
           )
-          r_json['music_item'].each do |item|
-            music = BoomMusic.where(boom_id: item['$oid']).first
-            music.update(boom_recommend_id: r_json['_id']['$oid']) if music
-          end
         end
       end
     end if Rails.env.production? || Rails.env.staging?
