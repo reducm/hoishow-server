@@ -1,5 +1,6 @@
 class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   before_action :get_user
+  before_action :check_login!, only: [:comments]
   before_action :get_collaborator, except: [:index]
 
   def index
