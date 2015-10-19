@@ -1,5 +1,5 @@
 <div class="nav">
-  <h1 class="pull-left">场馆列表</h1>
+  <h1 class="pull-left"><%= link_to '场馆列表', operation_stadiums_path %></h1>
   <div class="search">
     <%= form_tag(search_operation_stadiums_path, class: 'form-inline', method: 'get') do %>
       <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "城市名、拼音、场馆名" %>
