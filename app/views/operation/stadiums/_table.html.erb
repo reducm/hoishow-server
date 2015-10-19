@@ -1,0 +1,38 @@
+<div class="nav">
+  <h1 class="pull-left">场馆列表</h1>
+  <div class="search">
+    <%= form_tag(search_operation_stadiums_path, class: 'form-inline', method: 'get') do %>
+      <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "城市名、拼音、场馆名" %>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+
+  <div class="stadiums_list">
+    <div class='form-group '>
+      <%= link_to '新建场馆', new_operation_stadium_path, class: 'btn btn-primary btn-next-to-header' %>
+      <%= link_to '新建城市', new_operation_city_path, class: 'btn btn-default btn-next-to-header' %>
+      <%= link_to '城市列表', operation_cities_path, class: 'btn btn-default btn-next-to-header' %>
+    </div>
+    <table class="stadiums table">
+      <thead>
+        <tr>
+          <th>名称</th>
+          <th>城市</th>
+          <th>地址</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <% @stadiums.each do |stadium| %>
+        <tr>
+          <td><%= stadium.name %></td>
+          <td><%= stadium.city.name %></td>
+          <td><%= stadium.address %></td>
+          <td>
+            <%= link_to '编辑', edit_operation_stadium_path(stadium) %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+    <%= paginate @stadiums%>
+  </div>
+</div>
