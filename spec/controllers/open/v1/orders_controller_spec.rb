@@ -341,13 +341,13 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
     end
 
-    it 'will return success when confiemed' do
+    it 'will return paid when confirm' do
       expect(order.status).to eq 'pending'
       post :confirm, params # user id ?
 
       expect(json[:result_code]).to eq 0
       order.reload
-      expect(order.status).to eq 'success'
+      expect(order.status).to eq 'paid'
     end
 
     it 'will return error when order no found' do
@@ -388,7 +388,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
 
       expect(json[:result_code]).to eq 0
       order.reload
-      expect(order.status).to eq 'success'
+      expect(order.status).to eq 'paid'
       expect(order.user_name).to eq 'xx先生'
       expect(order.user_mobile).to eq '15900001111'
       expect(order.user_address).to eq '广东省广州市海珠区呵呵'
@@ -479,7 +479,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     it 'will return refund when order be refunded' do
-      expect(order.status).to eq 'pending'
+      order.success!
       post :cancel_order, params
       expect(json[:result_code]).to eq 0
       order.reload
