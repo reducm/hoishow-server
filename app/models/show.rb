@@ -31,6 +31,12 @@ class Show < ActiveRecord::Base
 
   delegate :stars, to: :concert
 
+  # 演出资源提供方
+  enum source: {
+    hoishow: 0, # 自有资源
+    third_party: 1, # 第三方资源
+  }
+
   enum mode: {
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
@@ -86,6 +92,12 @@ class Show < ActiveRecord::Base
     else
       show_time.strfcn_date
     end
+  end
+
+  def source_cn
+    # hoishow: "自有资源"
+    # third_party: "第三方资源"
+    tran("source")
   end
 
   def is_display_cn
