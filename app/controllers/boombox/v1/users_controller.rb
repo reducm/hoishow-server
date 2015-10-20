@@ -5,9 +5,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def verification
     mobile = params[:mobile]
     if Rails.cache.read(cache_key(mobile)).present?
-      return error_respond I18n.t("errors.messages.repeat_too_much")
+      error_respond I18n.t("errors.messages.repeat_too_much")
     else
-      sms_send_code(mobile)    
+      sms_send_code(mobile)
     end
   end
 
@@ -15,9 +15,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     mobile = params[:mobile]
     user = User.where(mobile: mobile).first
     if user.blank?
-      render json: { is_member: false, mobile: mobile }  
+      render json: { is_member: false, mobile: mobile }
     else
-      render json: { is_member: true, mobile: mobile }  
+      render json: { is_member: true, mobile: mobile }
     end
   end
 
@@ -46,10 +46,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       if @user.password_valid?(params[:password])
         render partial: "user", locals:{ user: @user }
       else
-        return error_respond I18n.t("errors.messages.password_not_correct")
+        error_respond I18n.t("errors.messages.password_not_correct")
       end
     else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
+      error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
 
@@ -65,27 +65,27 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
           render partial: "user", locals:{ user: @user }
         end
       else
-        return error_respond I18n.t("errors.messages.mobile_code_not_correct")
+        error_respond I18n.t("errors.messages.mobile_code_not_correct")
       end
     else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
+      error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
 
   def reset_password
     if @user.password_valid?(params[:current_password])
       if params[:password].blank? || params[:password_confirmation].blank?
-        return error_respond I18n.t("errors.messages.password_can_not_be_blank")
+        error_respond I18n.t("errors.messages.password_can_not_be_blank")
       else
         if params[:password_confirmation] == params[:password]
           @user.set_password(params[:password])
           render json: { result: "success" }
         else
-          return error_respond I18n.t("errors.messages.password_can_not_confirm")
+          error_respond I18n.t("errors.messages.password_can_not_confirm")
         end
       end
     else
-      return error_respond I18n.t("errors.messages.current_password_not_correct")
+      error_respond I18n.t("errors.messages.current_password_not_correct")
     end
   end
 
@@ -125,10 +125,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
         @user.update(mobile: params[:mobile])
         render partial: "user", locals:{ user: @user }
       else
-        return error_respond I18n.t("errors.messages.mobile_code_not_correct")
+        error_respond I18n.t("errors.messages.mobile_code_not_correct")
       end
     else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
+      error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
 
@@ -161,15 +161,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     unless subject
       return error_respond error_message
     end
-    invoke_meta_method("follow", subject)
-  end
-
-  def unfollow_subject
-    error_message, subject = find_meta_subject(%W(Collaborator BoomPlaylist))
-    unless subject
-      return error_respond error_message
-    end
-    invoke_meta_method("unfollow", subject)
+    is_follow = params[:follow] ? 'follow' : 'unfollow'
+    invoke_meta_method(is_follow, subject)
   end
 
   def create_comment
@@ -182,78 +175,57 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
         @comment = BoomComment.create(options)
       end
     else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
+      error_respond I18n.t("errors.messages.parameters_not_correct")
     end
   end
-   
+
   def like_subject
     error_message, subject = find_meta_subject(%W(BoomTopic BoomComment))
     unless subject
       return error_respond error_message
     end
-    invoke_meta_method("like", subject)
+    is_like = params[:like] ? 'like' : 'unlike'
+    invoke_meta_method(is_like, subject)
   end
 
-  def unlike_subject
-    error_message, subject = find_meta_subject(%W(BoomTopic BoomComment))
-    unless subject
-      return error_respond error_message
-    end
-    invoke_meta_method("unlike", subject)
-  end
-
-  def add_to_playlist
-    if params[:playlist_id] && params[:track_id]
+  def add_or_remove_track_belong_to_playlist
+    if params[:playlist_id] && params[:track_id] && params[:type]
       playlist = BoomPlaylist.find_by_id(params[:playlist_id])
       if playlist
-        playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
-        render json: { result: "success" }
-      else
-        return error_respond I18n.t("errors.messages.playlist_not_found")
-      end
-    else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
-    end
-  end
-  
-  def delete_track_from_playlist
-    if params[:playlist_id] && params[:track_id]
-      playlist = BoomPlaylist.find_by_id(params[:playlist_id])
-      if playlist
-        if destroy_track = playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
-          destroy_track.destroy!
-          render json: { result: "success" }
-        else
-          return error_respond I18n.t("errors.messages.track_not_found")
+        if params[:type] == 'add'
+          playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+        elsif params[:type] == 'remove'
+          relation = playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+          if relation
+            relation.destroy!
+          else
+            return error_respond I18n.t("errors.messages.track_not_found")
+          end
         end
-      else
-        return error_respond I18n.t("errors.messages.playlist_not_found")
-      end
-    else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
-    end
-  end
-
-  def create_playlist
-    name = params[:name]
-    unless name.blank?
-      @playlist = BoomPlaylist.create(name: name, creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id) 
-    else
-      return error_respond I18n.t("errors.messages.playlist_name_can_not_blank")
-    end
-  end
-
-  def delete_playlist
-    if playlist_id = params[:playlist_id]
-      playlist = BoomPlaylist.find_by_id(playlist_id)
-      if playlist
-        playlist.destroy!
         render json: { result: "success" }
       else
-        return error_respond I18n.t("errors.messages.playlist_not_found")
+        error_respond I18n.t("errors.messages.playlist_not_found")
       end
     else
-      return error_respond I18n.t("errors.messages.parameters_not_correct")
+      error_respond I18n.t("errors.messages.parameters_not_correct")
+    end
+  end
+
+  def add_or_remove_playlist
+    if params[:type] == 'add'
+      if params[:name].present?
+        @playlist = @user.boom_playlists.create(name: params[:name])
+        render partial: 'boombox/v1/playlists/playlist', locals: {playlist: @playlist}
+      else
+        error_respond I18n.t("errors.messages.playlist_name_can_not_blank")
+      end
+    elsif params[:type] == 'remove'
+      playlist = BoomPlaylist.find_by_id(params[:playlist_id])
+      if playlist && playlist.destroy!
+        render json: { result: "success" }
+      else
+        error_respond I18n.t("errors.messages.playlist_not_found")
+      end
     end
   end
 
@@ -288,7 +260,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def verify_mobile
     unless verify_phone?(params[:mobile])
-      return error_respond I18n.t("errors.messages.mobile_not_right")
+      error_respond I18n.t("errors.messages.mobile_not_right")
     end
   end
 
@@ -297,7 +269,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       @user.send("#{method_prefix}_#{params[:subject_type].downcase}", subject)
       render json: { result: "success" }
     rescue => e
-      return error_respond e
+      error_respond e
     end
   end
 
@@ -313,5 +285,4 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       return I18n.t("errors.messages.subject_type_not_correct"), false
     end
   end
-
 end

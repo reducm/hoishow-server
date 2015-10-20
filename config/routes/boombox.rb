@@ -25,14 +25,10 @@ module Routes
                   get "comment_list"
                   get "message_list"
                   post "follow_subject"
-                  post "unfollow_subject"
                   post "create_comment"
                   post "like_subject"
-                  post "unlike_subject"
-                  post "add_to_playlist"
-                  post "delete_track_from_playlist"
-                  post "create_playlist"
-                  post "delete_playlist"
+                  post "add_or_remove_track_belong_to_playlist"
+                  post "add_or_remove_playlist"
                 end
               end
               resources :collaborators, only: [:index, :show] do

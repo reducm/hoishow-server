@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
 
   has_many :boom_user_likes
+  has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
 
   #----------------boombox
 
@@ -155,8 +156,8 @@ class User < ActiveRecord::Base
       destroy_comment.destroy!
     end
   end
-  
-  
+
+
 
 
   #----------------------boombox

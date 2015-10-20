@@ -31,7 +31,7 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       user = create(:user, mobile: mobile)
       options = {mobile: mobile}
       get :verified_mobile, encrypted_params_in_boombox(api_key, options)
-      expect(json["is_member"]).to be true 
+      expect(json["is_member"]).to be true
       expect(json["mobile"]).to eq user.mobile
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     it "should sign_in success" do
       options = {mobile: "18602987654", password: "123"}
       post :sign_in, encrypted_params_in_boombox(api_key, options)
-      check_user_data 
+      check_user_data
     end
 
     it "should sign_in fail with wrong password" do
@@ -137,7 +137,7 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     it "update nickname success" do
       options = {api_token: @user.api_token, type: "nickname", nickname: "tom"}
       post :update_user, encrypted_params_in_boombox(api_key, options)
-      check_user_data 
+      check_user_data
     end
 
     it "update nickname fail while nickname is blank" do
@@ -278,19 +278,19 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should follow Collaborator success" do
-      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id}
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id, follow: true}
       post :follow_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
 
     it "should follow fail while subject_type not right" do
-      options = {api_token: @user.api_token, subject_type: "Star", subject_id: Collaborator.first.id}
+      options = {api_token: @user.api_token, subject_type: "Star", subject_id: Collaborator.first.id, follow: true}
       post :follow_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.subject_type_not_correct")
     end
 
     it "should follow fail while subject_id not right" do
-      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: 999}
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: 999, follow: true}
       post :follow_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.subject_not_found")
     end
@@ -304,8 +304,8 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should unfollow Collaborator success" do
-      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id}
-      post :unfollow_subject, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, subject_type: "Collaborator", subject_id: Collaborator.first.id, follow: false}
+      post :follow_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
   end
@@ -328,6 +328,12 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       expect(json).to include "parent"
       expect(json.is_a? Array).to be false
     end
+
+    it "should create comment fail with wrong params" do
+      options = {api_token: @user.api_token, creator_type: "User", creator_id: @user.id, topic_id: @topic.id, parent_id: @comment.id}
+      post :create_comment, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.parameters_not_correct")
+    end
   end
 
   context "#like_subject" do
@@ -338,13 +344,13 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should like topic success" do
-      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id}
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id, like: true}
       post :like_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
 
     it "should like comment success" do
-      options = {api_token: @user.api_token, subject_type: "BoomComment", subject_id: @comment.id}
+      options = {api_token: @user.api_token, subject_type: "BoomComment", subject_id: @comment.id, like: true}
       post :like_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
@@ -359,15 +365,15 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
 
     it "should unlike topic success" do
       @user.like_boomtopic(@topic)
-      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id}
-      post :unlike_subject, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @topic.id, like: false}
+      post :like_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
 
     it "should unlike comment success" do
       @user.like_boomtopic(@comment)
-      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @comment.id}
-      post :unlike_subject, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, subject_type: "BoomTopic", subject_id: @comment.id, like: false}
+      post :like_subject, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
   end
@@ -380,14 +386,14 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should add track to playlist success" do
-      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id}
-      post :add_to_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id, type: 'add'}
+      post :add_or_remove_track_belong_to_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
 
     it "should add track to playlist fail while playlist_id is wrong" do
-      options = {api_token: @user.api_token, playlist_id: 999, track_id: @track.id}
-      post :add_to_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, playlist_id: 999, track_id: @track.id, type: 'add'}
+      post :add_or_remove_track_belong_to_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.playlist_not_found")
     end
   end
@@ -401,14 +407,14 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should delete track from playlist success" do
-      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id}
-      post :delete_track_from_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: @track.id, type: 'remove'}
+      post :add_or_remove_track_belong_to_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json["result"]).to eq "success"
     end
 
     it "should delete track from playlist fail while track_id is wrong" do
-      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: 999}
-      post :delete_track_from_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, track_id: 999, type: 'remove'}
+      post :add_or_remove_track_belong_to_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.track_not_found")
     end
   end
@@ -420,8 +426,8 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
 
     it "should get 1 playlist" do
       name = "tom"
-      options = {api_token: @user.api_token, name: name}
-      post :create_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, name: name, type: 'add'}
+      post :add_or_remove_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json).to include "id"
       expect(json).to include "name"
       expect(json).to include "tracks"
@@ -430,8 +436,8 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should create playlist fail while name blank" do
-      options = {api_token: @user.api_token, name: ""}
-      post :create_playlist, encrypted_params_in_boombox(api_key, options)
+      options = {api_token: @user.api_token, name: "", type: 'add'}
+      post :add_or_remove_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.playlist_name_can_not_blank")
     end
   end
@@ -443,17 +449,17 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "should delete 1 playlist" do
-      options = {api_token: @user.api_token, playlist_id: @playlist.id}
+      options = {api_token: @user.api_token, playlist_id: @playlist.id, type: 'remove'}
       expect {
-        post :delete_playlist, encrypted_params_in_boombox(api_key, options)
+        post :add_or_remove_playlist, encrypted_params_in_boombox(api_key, options)
       }.to change(BoomPlaylist, :count).by(-1)
       expect(json["result"]).to eq "success"
     end
 
     it "should delete playlist fail while playlist blank" do
-      options = {api_token: @user.api_token}
-      post :delete_playlist, encrypted_params_in_boombox(api_key, options)
-      expect(json["errors"]).to eq I18n.t("errors.messages.parameters_not_correct")
+      options = {api_token: @user.api_token, type: 'remove'}
+      post :add_or_remove_playlist, encrypted_params_in_boombox(api_key, options)
+      expect(json["errors"]).to eq I18n.t("errors.messages.playlist_not_found")
     end
   end
 
