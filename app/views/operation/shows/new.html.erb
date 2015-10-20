@@ -22,7 +22,7 @@
 
   <%= simple_form_for [:operation, @show], html: {class: 'show-form form-horizontal'} do |f| %>
     <%= f.input :is_display, label: "是否显示" %>
-    <%= f.input :source, collection:[["自有资源", "hoishow"], ["第三方资源", "third_party"]], selected: "自由资源", as: :radio_buttons, label: "资源提供方" %>
+    <%= f.input :source, collection:[["自有资源", "hoishow"], ["第三方资源", "third_party"]], selected: "自有资源", as: :radio_buttons, label: "资源提供方" %>
   <div class="form-group">
     <div class="col-xs-3">
     <%= f.input :name, label: "演出名称" %>
