@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151015073637) do
+ActiveRecord::Schema.define(version: 20151020064226) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 20151015073637) do
     t.integer  "mode",             limit: 4
     t.string   "ticket_pic",       limit: 255
     t.string   "description_time", limit: 255
+    t.integer  "source",           limit: 4,                              default: 0
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
