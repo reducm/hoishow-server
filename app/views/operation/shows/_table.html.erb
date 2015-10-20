@@ -6,6 +6,7 @@
       <th class='text-center'>演出艺人</th>
       <th class='text-center'>演出名称</th>
       <th class='text-center'>是否显示</th>
+      <th class='text-center'>资源提供方</th>
       <th class='text-center'>选座类型</th>
       <th class='text-center'>购票状态</th>
       <th class='text-center'>票的类型</th>
@@ -22,6 +23,7 @@
         <td><%= show.stars.pluck(:name).join(",") %></td>
         <td><%= show.name %></td>
         <td><%= show.is_display_cn %></td>
+        <td><%= show.source_cn%></td>
         <td><%= show.seat_type_cn%></td>
         <td><%= show.status_cn%></td>
         <td><%= show.ticket_type_cn %></td>
