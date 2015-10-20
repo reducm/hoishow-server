@@ -84,11 +84,19 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def confirm
-    if !@order.pre_pay! || (@order.e_ticket? && !@order.success_pay!)
-      @error_code = 3012
-      @message = '订单确认失败'
+    # 自有库存的演出，可以直接出票
+    if @order.show.hoishow?
+      if !@order.pre_pay! || !@order.success_pay!
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
+    # 第三方的演出，必须确定库存才能出票
+    elsif @order.show.third_party?
+      if !@order.pre_pay! || (@order.e_ticket? && !@order.success_pay!)
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
     end
-
     # 实体票的话，可更新快递信息
     if @order.user_address.nil? && @order.show.r_ticket?
       # user_name 暂时就不关联到 bike_ticket_user
