@@ -24,7 +24,8 @@ class Message < ActiveRecord::Base
     new_concert: 2, #有新concert时的通知
     comment_reply: 3, #回覆评论的通知
     topic_reply: 4, #回覆主题的通知
-    manual: 5 #手动推送通知
+    manual: 5, #手动推送通知
+    delivery: 6 #发货提醒的通知
   }
 
   def has_new_send_log?
@@ -48,15 +49,6 @@ class Message < ActiveRecord::Base
       creator.default_name
     elsif creator.is_a?(Star)
       creator.name
-    end
-  end
-
-  def subject_show_name
-    case subject_type
-    when 'Concert' || 'Show' || 'Star'
-      subject.name
-    when 'Topic'
-      subject.content
     end
   end
 

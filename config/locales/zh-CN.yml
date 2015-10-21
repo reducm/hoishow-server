@@ -264,6 +264,7 @@ zh-CN:
         comment_reply: '评论有新的回覆时'
         topic_reply: '主题有新的回覆时'
         manual: '手动推送'
+        delivery: '演出发货时'
       message/creator_type:
         All: '全部用户'
         Concert: '关注投票的用户'
