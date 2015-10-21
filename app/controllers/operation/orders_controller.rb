@@ -50,10 +50,14 @@ class Operation::OrdersController < Operation::ApplicationController
     redirect_to operation_orders_url
   end
 
-  def manual_send_sms
-    SendSmsWorker.perform_async(@order.user.mobile, "您订购的演出门票已发货，顺丰速运：#{@order.express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
-
-    flash[:notice] = '短信发送成功'
+  def manual_send_msg
+    SendSmsWorker.perform_async(@order.user_mobile, "您订购的演出门票已发货，顺丰速运：#{@order.express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
+    message = Message.new(send_type: "delivery", creator_type: "Admin", creator_id: @current_admin.id, subject_type: "Order", subject_id: @order.id, notification_text: "你有一个演出订单已经发货，点击查看", title: "门票发货", content: "你有一个演出订单已经发货，点击查看")
+    if message.send_umeng_message([@order.user]) == 'success'
+      flash[:notice] = '短信/推送发送成功'
+    else
+      flash[:notice] = '短信发送成功/推送发送不成功'
+    end
     redirect_to operation_orders_url
   end
 

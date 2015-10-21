@@ -183,7 +183,7 @@ Rails.application.routes.draw do
         post "update_express_id"
         post "update_remark_content"
         post :manual_refund
-        get :manual_send_sms
+        get :manual_send_msg
       end
       collection do
         get :search
