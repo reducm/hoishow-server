@@ -164,7 +164,7 @@ class CreateOrderLogic
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
-      batch_overtime(pending_orders) unless pending_orders.blank?
+      batch_overtime!(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
@@ -187,7 +187,7 @@ class CreateOrderLogic
         return
       end
 
-      batch_overtime(pending_orders) unless pending_orders.blank?
+      batch_overtime!(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
