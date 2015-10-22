@@ -84,7 +84,7 @@ class Order < ActiveRecord::Base
 
     # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment, handle_ticket_method: 'refund'})
     event :refunds, :after => [:set_payment_to_refund, :handle_seats_and_tickets] do
-      transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
+      transitions :from => :paid, :to => :refund
     end
 
     # 调用方法 order.overtime!({handle_ticket_method: 'outdate'})
