@@ -283,6 +283,7 @@ zh-CN:
         comment_reply: '评论有新的回覆时'
         topic_reply: '主题有新的回覆时'
         manual: '手动推送'
+        delivery: '演出发货时'
       message/creator_type:
         All: '全部用户'
         Concert: '关注投票的用户'
@@ -296,6 +297,9 @@ zh-CN:
         success: '已出票'
         refund: '已退款'
         outdate: '已过期'
+      show/source:
+        hoishow: "自有资源"
+        third_party: "第三方资源"
       show/is_display:
         'true': '显示'
         'false': '不显示'

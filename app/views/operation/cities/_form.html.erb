@@ -1,0 +1,19 @@
+<%# encoding: utf-8 %>
+
+<%= simple_form_for [:operation, city] do |f| %>
+  <div class="form-group">
+    <%= f.label :name, '城市名' %>
+    <%= f.text_field :name %>
+  </div>
+  <div class="form-group">
+    <%= f.label :pinyin, '城市拼音' %>
+    <%= f.text_field :pinyin %>
+  </div>
+  <div class="form-group">
+    <%= f.input :is_hot, label: "是否热门城市" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.submit "提交", class: 'btn btn-primary' %>
+  </div>
+<% end %>

@@ -84,7 +84,7 @@ class Order < ActiveRecord::Base
 
     # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment, handle_ticket_method: 'refund'})
     event :refunds, :after => [:set_payment_to_refund, :handle_seats_and_tickets] do
-      transitions :from => :success, :to => :refund # 确认是否只能 success 到 refund
+      transitions :from => :paid, :to => :refund
     end
 
     # 调用方法 order.overtime!({handle_ticket_method: 'outdate'})
@@ -170,7 +170,7 @@ class Order < ActiveRecord::Base
         elsif show.selectable? # 选座也要更新库存
           # 更新座位信息
           self.tickets.each do |t|
-            area = t.area
+            area = t.area.reload
             sf = area.seats_info
             # 将 ticket 变过期， 如果是退款的话要传入参数
             t.send "#{options[:handle_ticket_method]}!"
@@ -254,9 +254,6 @@ class Order < ActiveRecord::Base
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
 
-        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
-        pending_order.overtime! if pending_order
-
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
         order.save!
 
@@ -288,9 +285,6 @@ class Order < ActiveRecord::Base
         # create order
         order = Order.init_from_show(show, order_attrs)
 
-        pending_order = Order.where(user_id: order.user_id, show_id: show.id, status: statuses[:pending]).first
-        pending_order.overtime! if pending_order
-
         order.save!
         # count ticket count
         tickets_count = 0
@@ -305,7 +299,7 @@ class Order < ActiveRecord::Base
           # 更新 relation 暂时保留
           sar.decrement(:left_seats, s.size).save!
           # load the current area
-          area = sar.area
+          area = sar.area.reload
           # load the seats info
           sf = area.select_from_seats_info(s.keys)
           all_seat_info = area.seats_info

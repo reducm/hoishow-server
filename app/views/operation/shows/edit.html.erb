@@ -22,6 +22,10 @@
     <div class='form-group'>
       <%= f.check_box :is_display %>
       <%= f.label :is_display, '是否显示' %>
+
+      <%= f.radio_button :source, @show.source %>
+      <%= f.label :source, @show.source_cn %>
+
       <%= f.radio_button :ticket_type, @show.ticket_type %>
       <%= f.label :ticket_type, @show.ticket_type_cn %>
     </div>

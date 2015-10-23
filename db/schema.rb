@@ -618,6 +618,7 @@ ActiveRecord::Schema.define(version: 20151023034009) do
     t.integer  "mode",             limit: 4
     t.string   "ticket_pic",       limit: 255
     t.string   "description_time", limit: 255
+    t.integer  "source",           limit: 4,                              default: 0
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
