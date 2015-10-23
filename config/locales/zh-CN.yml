@@ -156,6 +156,9 @@ zh-CN:
       header:
         one: 有 1 个错误发生导致「%{model}」无法被保存。
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
+  boombox_controller:
+    sessions: "登录"
+    home: "首页"
   controller:
     sessions: "登录"
     home: "首页"
