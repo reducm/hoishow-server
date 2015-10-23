@@ -13,7 +13,7 @@ end
 
 json.collaborators do
   json.array! @collaborators do |colla|
-    json.(colla, :id, :name, :followed_count)
+    json.(colla, :id, :name)
     json.cover colla.cover_url || ''
   end
 end
