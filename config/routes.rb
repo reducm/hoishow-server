@@ -4,6 +4,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
   Routes::BoomboxRoutes.draw(self)
+  Routes::BoomboxOperationRoutes.draw(self)
 
   root to: 'pages#index'
 
