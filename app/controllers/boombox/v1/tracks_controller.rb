@@ -1,5 +1,5 @@
 class Boombox::V1::TracksController < Boombox::V1::ApplicationController
-  def recommend
+  def index
     @tracks = BoomTrack.recommend
   end
 

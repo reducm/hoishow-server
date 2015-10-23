@@ -10,6 +10,8 @@ class BoomTopic < ActiveRecord::Base
   validates :content, presence: true
   validates :subject_id, presence: true
 
+  before_create :set_is_top
+
   def subject
      begin
       Object::const_get(subject_type).where(id: subject_id).first
@@ -42,5 +44,10 @@ class BoomTopic < ActiveRecord::Base
 
   def content
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
+  end
+
+  private
+  def set_is_top
+    self.is_top = false
   end
 end

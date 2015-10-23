@@ -15,8 +15,8 @@ class Collaborator < ActiveRecord::Base
   has_many :tags, through: :tag_subject_relations, source: :boom_tag
 
   mount_uploader :cover, ImageUploader
-
-  scope :verified, -> { where(verified: true) }
+  after_create :set_removed_and_is_top
+  scope :display, -> { where(verified: true, removed: false).order('is_top') }
 
   paginates_per 10
 
@@ -26,5 +26,10 @@ class Collaborator < ActiveRecord::Base
 
   def followed_count
     followers.count
+  end
+
+  private
+  def set_removed_and_is_top
+    self.update(removed: 0, is_top: 0)
   end
 end

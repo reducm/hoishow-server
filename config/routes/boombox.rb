@@ -41,9 +41,9 @@ module Routes
                 end
               end
               resources :activities, only: [:index, :show]
-              resources :tracks, only: :show
+              resources :tracks, only: [:index, :show]
 
-              get '/recommend' => 'tracks#recommend'
+              get '/recommend' => 'home#index'
 
               get '/radios' => 'playlists#radio_list'
               get '/playlists' => 'playlists#playlist_list'

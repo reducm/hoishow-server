@@ -15,8 +15,9 @@ class BoomActivity < ActiveRecord::Base
     show: 0,
     activity: 1
   }
+  after_create :set_removed_and_is_top
 
-  scope :is_display, ->{ where is_display: true }
+  scope :is_display, ->{ where(is_display: true, removed: false).order('is_top')}
 
   mount_uploader :cover, ImageUploader
 
@@ -24,5 +25,10 @@ class BoomActivity < ActiveRecord::Base
 
   def location_name
     boom_location.name if boom_location
+  end
+
+  private
+  def set_removed_and_is_top
+    self.update(removed: 0, is_top: 0)
   end
 end

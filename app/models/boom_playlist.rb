@@ -20,8 +20,9 @@ class BoomPlaylist < ActiveRecord::Base
     playlist: 0,
     radio: 1
   }
-
-  scope :open, -> { where('creator_type != ?', CREATOR_USER)}
+  after_create :set_removed_and_is_top
+  mount_uploader :cover, ImageUploader
+  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top')}
 
   paginates_per 10
 
@@ -30,12 +31,17 @@ class BoomPlaylist < ActiveRecord::Base
       Object::const_get(creator_type).where(id: creator_id).first
     rescue => e
       ExceptionNotifier::Notifier.background_exception_notification(e).deliver_now
-      Rails.logger.fatal("creator wrong, boom_comment_id: #{id}, creator_type: #{creator_type}, creator_id: #{creator_id}")
+      Rails.logger.fatal("creator wrong, boom_playlist_id: #{id}, creator_type: #{creator_type}, creator_id: #{creator_id}")
       nil
     end
   end
 
   def is_followed(user_id)
     user_id.in?(user_follow_playlists.pluck(:user_id))
+  end
+
+  private
+  def set_removed_and_is_top
+    self.update(removed: 0, is_top: 0)
   end
 end

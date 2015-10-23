@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151018080441) do
+ActiveRecord::Schema.define(version: 20151023034009) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 20151018080441) do
     t.integer  "boom_admin_id",      limit: 4
     t.integer  "status",             limit: 4
     t.boolean  "is_display",         limit: 1
+    t.boolean  "is_top",             limit: 1
   end
 
   add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree
@@ -219,6 +220,9 @@ ActiveRecord::Schema.define(version: 20151018080441) do
     t.datetime "updated_at",               null: false
     t.integer  "creator_id",   limit: 4
     t.string   "creator_type", limit: 255
+    t.string   "cover",        limit: 255
+    t.boolean  "removed",      limit: 1
+    t.boolean  "is_top",       limit: 1
   end
 
   create_table "boom_recommends", force: :cascade do |t|
@@ -254,6 +258,7 @@ ActiveRecord::Schema.define(version: 20151018080441) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.integer  "collaborator_id", limit: 4
+    t.boolean  "is_top",          limit: 1
   end
 
   create_table "boom_tracks", force: :cascade do |t|
@@ -270,6 +275,8 @@ ActiveRecord::Schema.define(version: 20151018080441) do
     t.integer  "creator_id",       limit: 4
     t.string   "creator_type",     limit: 255
     t.string   "artists",          limit: 255
+    t.string   "cover",            limit: 255
+    t.boolean  "is_top",           limit: 1
   end
 
   add_index "boom_tracks", ["boom_id"], name: "index_boom_tracks_on_boom_id", using: :btree
@@ -339,6 +346,7 @@ ActiveRecord::Schema.define(version: 20151018080441) do
     t.datetime "created_at",                                              null: false
     t.datetime "updated_at",                                              null: false
     t.boolean  "verified",                  limit: 1,     default: false
+    t.boolean  "is_top",                    limit: 1
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree
