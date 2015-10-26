@@ -99,6 +99,25 @@ zh-CN:
   errors:
     format: "%{attribute}%{message}"
     messages:
+      playlist_name_can_not_blank: 播放列表名称不能为空
+      playlist_not_found: 找不到播放列表
+      track_not_found: 找不到指定音轨
+      subject_not_found: 没找到对象
+      subject_type_not_correct: subject_type不正确
+      email_format_wrong: 邮箱格式不正确
+      password_can_not_confirm: 确认的密码和新密码不相同
+      password_can_not_be_blank: 密码不能为空
+      current_password_not_correct: 旧密码不正确
+      parameters_not_correct: 传递的参数不正确
+      mobile_code_not_correct: 验证码不正确
+      password_not_correct: 密码不正确
+      avatar_not_found: 用户头像不存在
+      nickname_not_found: 用户昵称不存在
+      email_not_found: 用户邮箱不存在
+      update_user_type_not_correct: 更新用户资料的类型不正确
+      sms_failed: 短信发送失败，请再次获取
+      repeat_too_much: 您操作太过于频繁了
+      mobile_not_right: 手机号码格式不对
       accepted: 必须是可被接受的
       blank: 不能为空字符
       present: 必须是空白
@@ -137,6 +156,9 @@ zh-CN:
       header:
         one: 有 1 个错误发生导致「%{model}」无法被保存。
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
+  boombox_controller:
+    sessions: "登录"
+    home: "首页"
   controller:
     sessions: "登录"
     home: "首页"

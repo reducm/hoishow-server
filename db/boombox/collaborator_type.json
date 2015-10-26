@@ -1,0 +1,3 @@
+{"_id":{"$oid":"52e24136e13823200e131a31"},"code":"common","date_creation":{"$date":"2014-01-24T10:32:22.603Z"},"name":"普通用户","removed":false,"value":0}
+{"_id":{"$oid":"52e24136e13823200e131a32"},"code":"dj","date_creation":{"$date":"2014-01-24T10:32:22.606Z"},"name":"DJ","removed":false,"value":1}
+{"_id":{"$oid":"52e24136e13823200e131a33"},"code":"location","date_creation":{"$date":"2014-01-24T10:32:22.609Z"},"name":"场地","removed":false,"value":2}

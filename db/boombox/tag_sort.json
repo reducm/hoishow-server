@@ -1,0 +1,49 @@
+{"_id":{"$oid":"5241c08fe13823275b6a0b0f"},"date_creation":{"$date":"2013-09-24T16:40:47.638Z"},"name":"地点","removed":true}
+{"_id":{"$oid":"5241c382e13823275b6a0b12"},"date_creation":{"$date":"2013-11-12T07:33:22.677Z"},"name":"情景","removed":false}
+{"_id":{"$oid":"5241c604e13823275b6a0b14"},"date_creation":{"$date":"2013-11-16T22:50:44.255Z"},"name":"全球音乐场地","removed":false}
+{"_id":{"$oid":"5241c60de13823275b6a0b15"},"date_creation":{"$date":"2013-11-08T20:24:13.491Z"},"name":"城市","removed":false}
+{"_id":{"$oid":"5241c658e13823275b6a0b17"},"date_creation":{"$date":"2013-11-11T03:58:48.976Z"},"name":"音乐风格 ","removed":false}
+{"_id":{"$oid":"5241c9c5e13823275b6a0b47"},"date_creation":{"$date":"2013-11-10T00:26:45.002Z"},"name":"时间","removed":false}
+{"_id":{"$oid":"5249e130e13823275b6a0b72"},"date_creation":{"$date":"2013-09-30T20:38:08.469Z"},"name":"迈阿密","removed":true}
+{"_id":{"$oid":"524c1496e13823275b6a0e37"},"date_creation":{"$date":"2013-10-02T12:41:58.144Z"},"name":"01_国家","removed":true}
+{"_id":{"$oid":"524c14f8e13823275b6a0e38"},"date_creation":{"$date":"2013-11-07T09:50:16.886Z"},"name":"国家","removed":true}
+{"_id":{"$oid":"524c17c6e13823275b6a0e41"},"date_creation":{"$date":"2013-10-02T12:55:34.955Z"},"name":"02_城市","removed":true}
+{"_id":{"$oid":"524cdf93e13823275b6a10d6"},"date_creation":{"$date":"2013-11-13T19:08:03.128Z"},"name":"情景","removed":true}
+{"_id":{"$oid":"524ce181e13823275b6a10e6"},"date_creation":{"$date":"2013-11-16T02:49:37.453Z"},"name":"音乐节艺术节","removed":false}
+{"_id":{"$oid":"524d012fe138236ab7f50887"},"date_creation":{"$date":"2013-10-03T05:31:27.269Z"},"name":"派对品牌","removed":false}
+{"_id":{"$oid":"524d0186e138236ab7f50888"},"date_creation":{"$date":"2013-11-15T01:19:34.853Z"},"name":"时尚品牌","removed":false}
+{"_id":{"$oid":"524d01c2e138236ab7f50889"},"date_creation":{"$date":"2013-10-03T05:33:54.416Z"},"name":"唱片品牌","removed":false}
+{"_id":{"$oid":"524ffe26e138237b5ae1a16e"},"date_creation":{"$date":"2013-10-05T11:55:18.883Z"},"name":"布加勒斯特","removed":true}
+{"_id":{"$oid":"525029b0e138237b5ae1a1d1"},"date_creation":{"$date":"2013-10-05T15:01:04.564Z"},"name":"风格_2","removed":true}
+{"_id":{"$oid":"5252c05ce1382338e354be67"},"date_creation":{"$date":"2013-10-07T14:08:28.783Z"},"name":"test01","removed":true}
+{"_id":{"$oid":"525d29ede1382338e354c277"},"date_creation":{"$date":"2013-10-15T11:41:33.133Z"},"name":"冷静","removed":true}
+{"_id":{"$oid":"525ebcf0e13823770107c4d4"},"date_creation":{"$date":"2013-10-16T16:21:04.672Z"},"name":"类别","removed":true}
+{"_id":{"$oid":"5267b087e1382378e1b5ed37"},"date_creation":{"$date":"2013-10-23T11:18:31.799Z"},"name":"推荐","removed":true}
+{"_id":{"$oid":"5267d4a0e1382378e1b5edde"},"date_creation":{"$date":"2013-10-23T13:52:32.268Z"},"name":"最新鲜音乐","removed":true}
+{"_id":{"$oid":"5267d4b2e1382378e1b5eddf"},"date_creation":{"$date":"2013-10-23T13:52:50.292Z"},"name":"最有品的牌","removed":true}
+{"_id":{"$oid":"5267d4c7e1382378e1b5ede0"},"date_creation":{"$date":"2013-10-23T13:53:11.908Z"},"name":"最酷城市","removed":true}
+{"_id":{"$oid":"5267d4dfe1382378e1b5ede1"},"date_creation":{"$date":"2013-10-23T13:53:35.153Z"},"name":"最IN场所","removed":true}
+{"_id":{"$oid":"5267d4e9e1382378e1b5ede2"},"date_creation":{"$date":"2013-10-23T13:53:45.256Z"},"name":"活动现场","removed":true}
+{"_id":{"$oid":"5267d4f8e1382378e1b5ede3"},"date_creation":{"$date":"2013-10-23T13:54:00.142Z"},"name":"百大DJ","removed":true}
+{"_id":{"$oid":"526aae95e138230c4ccad0a1"},"date_creation":{"$date":"2013-10-25T17:47:01.424Z"},"name":"梅赛德斯奔驰中心","removed":true}
+{"_id":{"$oid":"5280b397e138237c976a03ef"},"date_creation":{"$date":"2013-11-18T18:28:15.011Z"},"name":"唱片骑师 / DJ","removed":false}
+{"_id":{"$oid":"52a0b42ae13823411c7c535e"},"date_creation":{"$date":"2013-12-05T17:13:14.337Z"},"name":"Po's Atelier","removed":true}
+{"_id":{"$oid":"52b9580ee138234f933f8da9"},"date_creation":{"$date":"2013-12-24T09:46:54.993Z"},"name":"dj_TØm∑™","removed":true}
+{"_id":{"$oid":"52b98acbe138234f933f8db6"},"date_creation":{"$date":"2013-12-24T13:23:23.666Z"},"name":"Oh You Pretty Things","removed":true}
+{"_id":{"$oid":"52bcfa25e138234f933f8de6"},"date_creation":{"$date":"2013-12-27T03:55:17.169Z"},"name":"Jimmy Edgar","removed":true}
+{"_id":{"$oid":"52c7ca16e138236568202bf0"},"date_creation":{"$date":"2014-01-04T08:45:10.288Z"},"name":"Flamenco","removed":true}
+{"_id":{"$oid":"52c95c3ce138236568202c02"},"date_creation":{"$date":"2014-01-05T13:21:00.626Z"},"name":"Adam Kvasnica","removed":true}
+{"_id":{"$oid":"52d15d28e138233b68912c9b"},"date_creation":{"$date":"2014-01-11T15:03:04.230Z"},"name":"芭芘酒吧","removed":true}
+{"_id":{"$oid":"52e36d54e1382307a12d093b"},"date_creation":{"$date":"2014-01-25T07:52:52.575Z"},"name":"test","removed":true}
+{"_id":{"$oid":"52edd61de1382308d819e249"},"date_creation":{"$date":"2014-02-02T05:22:37.016Z"},"name":"live","removed":true}
+{"_id":{"$oid":"5304453de1382308d819e27e"},"date_creation":{"$date":"2014-02-19T05:46:37.094Z"},"name":"montauk","removed":true}
+{"_id":{"$oid":"5304d846e1382308d819e291"},"date_creation":{"$date":"2014-02-19T16:13:58.346Z"},"name":"Dong7Dong7","removed":true}
+{"_id":{"$oid":"5306fba4e1382316a63f2fec"},"date_creation":{"$date":"2014-02-21T07:09:24.040Z"},"name":"节奏","removed":false}
+{"_id":{"$oid":"5307045ae1382316a63f300a"},"date_creation":{"$date":"2014-02-21T07:46:34.734Z"},"name":"律动","removed":true}
+{"_id":{"$oid":"530704fee1382316a63f300b"},"date_creation":{"$date":"2014-02-21T07:49:18.134Z"},"name":"调皮","removed":true}
+{"_id":{"$oid":"53075dbde1382316a63f3012"},"date_creation":{"$date":"2014-02-21T14:07:57.890Z"},"name":"热门词条","removed":false}
+{"_id":{"$oid":"5307648ce1382316a63f3015"},"date_creation":{"$date":"2014-02-21T14:37:00.349Z"},"name":"音乐风格 2","removed":false}
+{"_id":{"$oid":"53076befe1382316a63f301a"},"date_creation":{"$date":"2014-02-21T15:08:31.200Z"},"name":"drum m bass","removed":true}
+{"_id":{"$oid":"5308bfc0e1382316a63f3041"},"date_creation":{"$date":"2014-02-22T15:18:24.210Z"},"name":"轰趴","removed":true}
+{"_id":{"$oid":"53098678e1382316a63f306c"},"date_creation":{"$date":"2014-02-23T05:26:16.954Z"},"name":"跳舞","removed":true}
+{"_id":{"$oid":"538eeb02e1382313a91b1eb5"},"date_creation":{"$date":"2014-06-04T09:46:42.952Z"},"name":"Drumcode","removed":true}

@@ -3,6 +3,8 @@ Dir.glob("#{Rails.root.to_s}/config/routes/**/*.rb").each {|route_file| load(rou
 require 'sidekiq/web'
 Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
+  Routes::BoomboxRoutes.draw(self)
+  Routes::BoomboxOperationRoutes.draw(self)
 
   root to: 'pages#index'
 
