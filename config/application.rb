@@ -25,6 +25,6 @@ module HoishowServer
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     # config.active_record.raise_in_transactional_callbacks = true
-    Rails.application.config.assets.precompile += %w( operation.css operation.js mobile.css mobile.js seats_map.css seats_map.js)
+    Rails.application.config.assets.precompile += %w( boombox_operation.css boombox_operation.js operation.css operation.js mobile.css mobile.js seats_map.css seats_map.js)
   end
 end
