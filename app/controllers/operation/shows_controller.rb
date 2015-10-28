@@ -1,4 +1,5 @@
 # encoding: utf-8
+require "get_bmp_coordinate"
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
@@ -34,7 +35,7 @@ class Operation::ShowsController < Operation::ApplicationController
       else
         flash[:alert] = @show.errors.full_messages
       end
-      redirect_to edit_operation_show_url(@show)
+      redirect_to event_list_operation_show_url(@show)
     else
       concert = Concert.create(name: "(自动生成)", is_show: "auto_hide", status: "finished", start_date: Time.now, end_date: Time.now + 1)
       Star.where('id in (?)', params[:star_ids].split(',')).each {|star| star.hoi_concert(concert)}
@@ -45,7 +46,7 @@ class Operation::ShowsController < Operation::ApplicationController
       else
         flash[:alert] = @show.errors.full_messages
       end
-      redirect_to edit_operation_show_url(@show)
+      redirect_to event_list_operation_show_url(@show)
     end
   end
 
@@ -70,7 +71,7 @@ class Operation::ShowsController < Operation::ApplicationController
     relation = @show.show_area_relations.where(area_id: params[:area_id]).first
     relation.channels = params[:ids]
     if relation.save
-      render partial: "area_table", locals:{show: @show}
+      render partial: "area_table", locals:{show: @show, event: relation.area.event}
     else
       render json: {success: false}
     end
@@ -109,11 +110,14 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def new_area
-    area = @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name])
+    area = @show.areas.create(stadium_id: @show.stadium_id, name: params[:area_name], event_id: params[:event_id], seats_count: 0, left_seats: 0)
     if area
+      if params[:coordinates] && params[:color]
+        area.update(coordinates: params[:coordinates], color: params[:color])
+      end
       @show.show_area_relations.where(area_id: area.id).first.update(price: 0.0, seats_count: 0)
     end
-    render partial: "area_table", locals: {show: @show}
+    render partial: "area_table", locals: {show: @show, event: area.event}
   end
 
   def update_area_data
@@ -131,22 +135,24 @@ class Operation::ShowsController < Operation::ApplicationController
         @show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
         new_left_seats = old_left_seats - rest_tickets
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: new_left_seats)
+        area.update(seats_count: params[:seats_count], left_seats: new_left_seats)
       elsif old_seats_count < seats_count #增加了座位
         rest_tickets = seats_count - old_seats_count
         rest_tickets.times { @show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: params[:price]) }
         relation.update(price: params[:price], seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
+        area.update(seats_count: params[:seats_count], left_seats: rest_tickets + old_left_seats)
       elsif old_seats_count == seats_count #座位不变
         relation.update(price: params[:price])
       end
     end
 
-    render partial: "area_table", locals:{show: @show}
+    render partial: "area_table", locals:{show: @show, event: area.event}
   end
 
   def del_area
     area = @show.areas.find_by_id(params[:area_id])
     if area && area.destroy
-      render partial: "area_table", locals: {show: @show}
+      render partial: "area_table", locals: {show: @show, event: area.event}
     end
   end
 
@@ -171,11 +177,18 @@ class Operation::ShowsController < Operation::ApplicationController
     si = @area.seats_info || {}
     si.merge! new_seats_info
 
+    #TODO
+    #更新sort_by
     if @area.update_attributes seats_info: si
       # 兼容之前的 show_area_relations, 暂时还是先 update 一下
+      seats_count = @area.avaliable_and_locked_seats_count
+      left_seats = @area.avaliable_seats_count
+
+      @area.update_attributes(seats_count: seats_count, left_seats: left_seats)
+
       @show.show_area_relations.where(area_id: @area.id).first.update(
-        seats_count: @area.avaliable_and_locked_seats_count,
-        left_seats: @area.avaliable_seats_count,
+        seats_count: seats_count,
+        left_seats: left_seats,
         price: @area.all_price_with_seats.max)
 
       render json: {success: true}
@@ -235,6 +248,63 @@ class Operation::ShowsController < Operation::ApplicationController
       video = Video.create(source: params[:file])
       render json: {file_path: video.source_url}
     else
+    end
+  end
+
+  def event_list
+    @events = @show.events
+  end
+
+  def add_event
+    event = @show.events.new(show_time: params[:show_time])
+    if event.save
+      flash[:notice] = '增加场次成功'
+    else
+      flash[:error] = '增加场次失败'
+    end
+    redirect_to event_list_operation_show_url(@show)
+  end
+
+  def update_event
+    event = @show.events.find_by_id params[:event_id]
+    if event && event.update(show_time: params[:show_time])
+      flash[:notice] = '修改场次成功'
+    else
+      flash[:error] = '修改场次失败'
+    end
+    redirect_to event_list_operation_show_url(@show)
+  end
+
+  def upload_map
+    event = @show.events.find_by_id params[:event_id]
+    if event
+      if params[:stadium_map]
+        event.update(stadium_map: params[:stadium_map])
+        render json: {file_path: event.stadium_map_url}
+      elsif params[:coordinate_map]
+        event.update(coordinate_map: params[:coordinate_map])
+        render json: {success: true}
+      end
+    end
+  end
+
+  def get_coordinates
+    event = @show.events.find_by_id params[:event_id]
+    coordinates = draw_image(event.coordinate_map.current_path)
+    render json: {
+      coords: coordinates,
+      color_ids: event.areas.pluck(:color, :id),
+      area_id_name: event.areas.pluck(:id, :name).to_h,
+      area_coordinates: event.areas.pluck(:coordinates).compact
+    }
+  end
+
+  def del_event
+    event = @show.events.find_by_id params[:event_id]
+    if event && event.destroy
+      render json: {success: true}
+    else
+      render json: {error: true}
     end
   end
 

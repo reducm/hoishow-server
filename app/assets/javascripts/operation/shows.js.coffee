@@ -78,7 +78,7 @@ get_seats_info = (target)->
       if target == 'reload'
         location.reload()
       else
-        location.href = "/operation/shows/#{show_id}/edit"
+        location.href = "/operation/shows/#{show_id}/event_list"
   )
 
 insert_obj = (obj)->
@@ -148,26 +148,79 @@ init_editor = ()->
 
   toolbar.append(video, image)
 
-toggle_show_time = ()->
-  $('#show_status').on 'change', ()->
-    if $(this).val() == 'going_to_open'
-      $('.show_description_time').show()
-      $('.show_show_time').hide()
-    else
-      $('.show_description_time').hide()
-      $('.show_show_time').show()
-
-  if $('#show_status').val() == 'going_to_open'
-    $('.show_description_time').show()
-    $('.show_show_time').hide()
-  else
-    $('.show_description_time').hide()
-    $('.show_show_time').show()
-
 pop_content = (content)->
   $('#pop-modal p').text(content)
   $('#pop-modal').modal('show')
 
+#设置热区
+set_area = (event_id)->
+  coordinate_hash = $("##{event_id} .coordinate_hash").data("coordinate-data")
+  color_ids = $("##{event_id} .coordinate_hash").data("color-ids")
+  area_id_name = $("##{event_id} .coordinate_hash").data("area-id-name")
+  colors_array = Object.keys(coordinate_hash)
+  $("##{event_id} .stadium_pic_map area").remove()
+  for color in colors_array
+    return false if color == "width"
+    return false if color == "height"
+    binding_color=area_id=area_name = ""
+    if color_ids.length > 0
+      for color_id in color_ids
+        if color_id[0] == color
+          binding_color = color_id[0]
+          area_id = color_id[1]
+          area_name = area_id_name[area_id]
+    coordinate_string = coordinate_hash[color]
+    $("##{event_id} .stadium_pic_map").append("<area id=\"#{color}_#{event_id}\" shape=\"poly\" coords=\"#{coordinate_string}\" href =\"#\" color=\"#{binding_color}\" area_id=\"#{area_id}\" area_name=\"#{area_name}\"   />")
+
+#画出区域
+draw_area_with_coords = (coords, context, fill_style="rgba(0, 0, 0, 0.7)")->
+  context.beginPath()
+  x = y = 0
+  for coordinate, coordinate_index in coords
+    if coordinate_index % 2 == 0
+      x = coordinate
+    if coordinate_index % 2 == 1
+      y = coordinate
+      if coordinate_index == 1
+        context.moveTo(x, y)
+      else
+        context.lineTo(x, y)
+  context.fillStyle = fill_style
+  context.fill()
+  context.closePath()
+
+#画出所有的区域
+draw_areas = (context, selected_area, no_selected_area)->
+  if selected_area.length > 0
+    for coords in selected_area
+      coords = coords.split(",")
+      draw_area_with_coords(coords, context, "rgba(255, 255, 255, 0.4)")
+  if no_selected_area.length > 0
+    for coords in no_selected_area
+      coords = coords.split(",")
+      draw_area_with_coords(coords, context, "rgba(0, 0, 0, 0.4)")
+
+#拿到坐标
+get_coordinates = (show_id, event_id)->
+  $.get("/operation/shows/#{show_id}/get_coordinates", {event_id: event_id}, (data_hash)->
+    result = data_hash.coords
+    values = $.map(result, (v)->  return v)
+    $("##{event_id} .coordinate_hash").data('area-coordinates', data_hash.area_coordinates)
+    select_areas = $("##{event_id} .coordinate_hash").data('area-coordinates') || []
+    no_selected_areas = values[0..-3].filter((el)-> return select_areas.indexOf(el) < 0)
+    $("##{event_id} .coordinate_hash").data('no-bind-area-coordinates', no_selected_areas)
+    $("##{event_id} .coordinate_hash").data('color-ids', data_hash.color_ids)
+    $("##{event_id} .coordinate_hash").data('area-id-name', data_hash.area_id_name)
+    $("##{event_id} .coordinate_hash").data('coordinate-data', result).data('width', result['width']).data('height', result['height'])
+    $("##{event_id} .stadium_pic_div, ##{event_id} canvas, ##{event_id} img").width(result['width']).height(result['height'])
+    $("##{event_id} .stadium_pic_div").css('background-size', "#{result['width']}px #{result['height']}px")
+
+    canvas = $("##{event_id} canvas")[0]
+    canvas.width = canvas.parentNode.clientWidth
+    canvas.height = canvas.parentNode.clientHeight
+    set_area(event_id)
+    draw_areas(canvas.getContext("2d"), $("##{event_id} .coordinate_hash").data('area-coordinates'), $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates"))
+  )
 $ ->
   star_ids = []
   # 艺人搜索
@@ -197,8 +250,7 @@ $ ->
   if $('#show_description').length > 0
     $('#show_description').qeditor({})
     init_editor()
-
-  #show show
+#show show
   if $(".show_show").length > 0
     $("#pie_cake div").each(() ->
       left_count = $(this).attr("left_count")
@@ -212,7 +264,6 @@ $ ->
 
   #show new form
   if $(".new_show").length > 0
-    toggle_show_time()
 
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
@@ -276,7 +327,6 @@ $ ->
         $form.submit()
 
   if $('.edit_show').length > 0
-    toggle_show_time()
     show_id = $("#show_id").val()
 
     $('.add_star').on 'click', ()->
@@ -293,28 +343,127 @@ $ ->
             location.reload()
         )
 
+  if $('.event_list').length > 0
+    show_id = $("#show_id").val()
+    $('.addEventModal #show_time, .editEventModal #show_time').datetimepicker()
+    if location.hash
+      $("#event_tabs a[href='" + location.hash + "']").tab('show')
+      get_coordinates(show_id, location.hash.substr(1))
 
+    $("#event_tabs a").on "click", (e) ->
+      e.preventDefault()
+      $(this).tab('show')
+      get_coordinates(show_id, $(this).attr("href").substr(1))
+
+    $("ul.nav-tabs > li > a").on "shown.bs.tab", (e) ->
+      id = $(e.target).attr("href").substr(1)
+      location.hash = id
+
+    #修改场次
+    $('.edit_event').on 'click', ()->
+      $('#event_id').val($(this).data('id'))
+      $('.editEventModal').modal('show')
+
+    #删除场次
+    $('.event_list li .close').on 'click', ()->
+      if confirm('确定要删除该场次吗?')
+        $.post("/operation/shows/#{show_id}/del_event", {_method: 'delete', event_id: $(this).data('id')}, (data)->
+          if data.success
+            location.reload()
+        )
+
+    #上传场馆图
+    $('.upload_stadium_map').on 'click', ()->
+      event_id = $(this).data('id')
+      $(this).find('input').fileupload
+        url: "/operation/shows/#{show_id}/upload_map"
+        dataType: 'json'
+        formData: {event_id: event_id}
+        done: (e, data)->
+          if $("##{event_id} .stadium_map_preview img").length > 0
+            $("##{event_id} .stadium_map_preview img").attr("src", data.result.file_path)
+          else
+            $("##{event_id} .stadium_map_preview").append("<img src='#{data.result.file_path}' width='500'/>")
+
+    #更新坐标图
+    $('.upload_coordinate_map').on 'click', ()->
+      event_id = $(this).data('id')
+      $(this).find('input').fileupload
+        url: "/operation/shows/#{show_id}/upload_map"
+        dataType: 'json'
+        formData: {event_id: event_id}
+        add: (e, data) ->
+          types = /(\.|\/)(bmp)$/i
+          file = data.files[0]
+          if types.test(file.type) || types.test(file.name)
+            data.submit()
+          else
+            alert("图片必须是bmp格式")
+        done: (e, data)->
+          location.reload()
+
+    #绑定区域
+    $('.event_list').on 'click', '.stadium_pic_map area', (el)->
+      coords_hash = $(this).parents('.stadium_map_preview').find('.coordinate_hash').data('coordinate-data')
+      event_id = $(this).parents('.stadium_map_preview').data('id')
+      context = $("##{event_id} canvas")[0].getContext('2d')
+      el.preventDefault()
+      color = $(this).attr('id').substr(0, 6)
+      #区域已绑定
+      if $(this).attr('area_id')
+        name = prompt('修改区域名称', $(this).attr('area_name'))
+        if name && name.length > 0
+          $.post("/operation/shows/#{show_id}/update_area_data", {area_id: $(this).attr('area_id'), area_name: name}, (data)->
+            $(".#{event_id}_areas tbody").html(data)
+            $("##{color}_#{event_id}").attr("area_name", name)
+          )
+      else
+        name = prompt('请输入区域名称')
+        if name && name.length > 0
+          area_coordinates = coords_hash[color]
+          $.post("/operation/shows/#{show_id}/new_area", {event_id: event_id, area_name: name, color: color, coordinates: area_coordinates}, (data)->
+            $(".#{event_id}_areas tbody").html(data)
+            #向area热区添加属性
+            $("##{color}_#{event_id}").attr({
+              area_id: $(".#{event_id}_areas tbody tr").last().attr("area_id"),
+              color: $(".#{event_id}_areas tbody tr").last().attr("color"),
+              area_name: $(".#{event_id}_areas tbody tr").last().attr("area_name")
+            })
+            #添加已经绑定的区域的坐标
+            selected_area = $("##{event_id} .coordinate_hash").data("area-coordinates")
+            no_selected_area = $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates")
+            selected_area.push(area_coordinates)
+            no_selected_area.splice(no_selected_area.indexOf(area_coordinates),1)
+            context.clearRect(0, 0, coords_hash['width'], coords_hash['height'])
+            draw_areas(context, selected_area, no_selected_area)
+          )
+        else
+          alert('区域名不能为空')
+
+    #增加区域
     $('.add_area').on 'click', ()->
+      event_id = $(this).data('id')
       name = prompt('请输入区域名称')
       if name.length > 0
-        $.post("/operation/shows/#{show_id}/new_area", {area_name: name}, (data)->
-          $('.areas tbody').html(data)
+        $.post("/operation/shows/#{show_id}/new_area", {area_name: name, event_id: event_id}, (data)->
+          $(".#{event_id}_areas tbody").html(data)
         )
       else
         alert('区域名不能为空')
 
+    #删除区域
     $('.areas').on 'click', '.del_area', ()->
       if confirm('确定要删除该区域吗')
+        event_id = $(this).parents('table').data('id')
         area_id = $(this).parent().data('id')
         if area_id
           $.post("/operation/shows/#{show_id}/del_area", {area_id: area_id, _method: 'delete'}, (data)->
-            $('.areas tbody').html(data)
+            location.reload()
           )
-        else
-          $(this).parents('tr').remove()
 
-    #change area data
-    $("#show_areas").on "click", ".change_show_area_data", () ->
+    #修改区域
+    $('.areas').on "click", ".change_show_area_data", () ->
+      event_id = $(this).parents('table').data('id')
       area_id = $(this).parent().data("id")
       price = $(".price_#{area_id} input").val()
       area_name = $(".area_name_#{area_id} input").val()
@@ -330,7 +479,7 @@ $ ->
         alert("座位数不能少于售出票数")
       else
         $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
-          $('.areas tbody').html(data)
+          $(".#{event_id}_areas tbody").html(data)
           $.notify "修改成功",
             globalPosition: 'top center'
             className: 'success'
@@ -366,12 +515,13 @@ $ ->
       if $('.channels input[type="checkbox"]:checked').length < 1
         alert('请选择一个渠道')
       else
+        event_id = $(this).parents('table').data('id')
         ids = $('.channels input[type="checkbox"]:checked').map(()->
                 return $(this).val()
               ).toArray()
         $.post("/operation/shows/#{show_id}/set_area_channels", {area_id: $('#area_id').val(), ids: ids}, (data)->
           $('#setChannelModal').modal('hide')
-          $('.areas tbody').html(data)
+          $(".#{event_id}_areas tbody").html(data)
           $.notify "渠道设置成功",
             globalPosition: 'top center'
             className: 'success'

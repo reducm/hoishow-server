@@ -328,20 +328,20 @@ $ ->
       $(this).remove()
       star_ids.pop(star_id)
 
-  if location.hash
-    $("#concert_edit_tabs a[href='" + location.hash + "']").tab('show')
-
-    init_map(concert_id) #初始化地图标注
-
-  $("#concert_edit_tabs a").on "click", (e) ->
-    e.preventDefault()
-    $(this).tab('show')
-
-  $("ul.nav-pills > li > a").on "shown.bs.tab", (e) ->
-    id = $(e.target).attr("href").substr(1)
-    location.hash = id
-
   if concert_id
+    if location.hash
+      $("#concert_edit_tabs a[href='" + location.hash + "']").tab('show')
+
+      init_map(concert_id) #初始化地图标注
+
+    $("#concert_edit_tabs a").on "click", (e) ->
+      e.preventDefault()
+      $(this).tab('show')
+
+    $("ul.nav-pills > li > a").on "shown.bs.tab", (e) ->
+      id = $(e.target).attr("href").substr(1)
+      location.hash = id
+
     from_create = $("#from_create").val()
     if from_create
       $("#concert_edit_tabs a[href='#profile']").tab('show')
