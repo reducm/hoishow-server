@@ -1,15 +1,15 @@
 # encoding: utf-8
 class Operation::StadiumsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_stadium, except: [:index, :new, :create]
+  before_action :get_stadium, except: [:index, :new, :create, :search]
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    if params[:q]
-      city = City.where('name like ?', "%#{params[:q]}%").first
-      @stadiums = city ? city.stadiums.page(params[:page]) : Stadium.where('name like ?', "%#{params[:q]}%")
+    params[:page] ||= 1
+    if params[:city_id]
+      @stadiums = Stadium.where(city_id: params[:city_id]).order(created_at: :desc).page(params[:page])
     else
-      @stadiums = Stadium.page(params[:page])
+      @stadiums = Stadium.order(created_at: :desc).page(params[:page])
     end
   end
 
@@ -37,6 +37,13 @@ class Operation::StadiumsController < Operation::ApplicationController
     else
       render :edit
     end
+  end
+
+  def search
+    params[:page] ||= 1
+    stadiums = Stadium.order(created_at: :desc)
+    @stadiums = stadiums.joins(:city).where("stadiums.name like :search or cities.name or cities.pinyin like :search", search: "%#{params[:q]}%").page(params[:page])
+    render :index
   end
 
   def refresh_areas

@@ -157,14 +157,14 @@ class CreateOrderLogic
   def create_order_with_selected
     if check_inventory # 库存检查
       # todo: callback style
-      # pending_orders = get_pending_orders_ids
+      pending_orders = pending_orders_ids
 
       # set order attr
       order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity, ticket_type: show.ticket_type})
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
-      # batch_overtime(pending_orders) unless pending_orders.blank?
+      batch_overtime!(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
@@ -173,7 +173,7 @@ class CreateOrderLogic
 
   def create_order_with_selectable
     if check_inventory # 库存检查
-      # pending_orders = get_pending_orders_ids
+      pending_orders = pending_orders_ids
 
       order_attrs = prepare_order_attrs({tickets_count: @quantity, ticket_type: show.ticket_type})
       # 设置座位信息, 考虑放到 state_machine init 的 callback
@@ -187,7 +187,7 @@ class CreateOrderLogic
         return
       end
 
-      # batch_overtime(pending_orders) unless pending_orders.blank?
+      batch_overtime!(pending_orders) unless pending_orders.blank?
 
       @response = 0
     end
