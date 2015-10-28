@@ -32,6 +32,12 @@ class Show < ActiveRecord::Base
 
   delegate :stars, to: :concert
 
+  # 演出资源提供方
+  enum source: {
+    hoishow: 0, # 自有资源
+    third_party: 1, # 第三方资源
+  }
+
   enum mode: {
     voted_users: 0, #只给有投票的用户购买
     all_users: 1, #全部用户都可以购买
@@ -62,7 +68,9 @@ class Show < ActiveRecord::Base
   # 该区域已出票，但订单未支付的票数
   def unpaid_tickets_count(area_id)
     if orders.any?
-      orders.pending.sum(:tickets_count)
+      area = Area.find(area_id)
+      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
+      orders.where(id: this_area_order_ids).pending.sum(:tickets_count)
     else
       0
     end
@@ -71,7 +79,9 @@ class Show < ActiveRecord::Base
   # 该区域已出票，并且订单已支付的票数
   def sold_tickets_count(area_id)
     if orders.any?
-      orders.success.sum(:tickets_count)
+      area = Area.find(area_id)
+      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
+      orders.where(id: this_area_order_ids).success.sum(:tickets_count)
     else
       0
     end
@@ -83,6 +93,12 @@ class Show < ActiveRecord::Base
     else
       show_time.strfcn_date
     end
+  end
+
+  def source_cn
+    # hoishow: "自有资源"
+    # third_party: "第三方资源"
+    tran("source")
   end
 
   def is_display_cn

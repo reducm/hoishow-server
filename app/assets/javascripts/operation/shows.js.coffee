@@ -222,8 +222,14 @@ get_coordinates = (show_id, event_id)->
     draw_areas(canvas.getContext("2d"), $("##{event_id} .coordinate_hash").data('area-coordinates'), $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates"))
   )
 $ ->
-  $('.change_show_area_data').hide()
+  star_ids = []
+  # 艺人搜索
+  $('#select_star').addClass('selectpicker')
+  $('#select_star').attr('data-live-search', true)
+  $('#select_star').attr('data-width', '135px')
+  $('#select_star').selectpicker()
 
+  $('.change_show_area_data').hide()
   # 修改按钮
   $('.editable_toggle').on 'click', ->
     $(this).siblings().eq(0).show()
@@ -264,8 +270,12 @@ $ ->
       if $selected.val()
         star_id = $selected.val()
         star_name = $selected.text()
-        $selected.remove()
-        $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-danger'>删除</a>")
+        if star_id in star_ids
+          alert("该艺人已选，请不要重复添加")
+        else
+          #$selected.remove()
+          $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-danger'>删除</a>")
+          star_ids.push(star_id)
 
     $('.stars').on 'click', '.del_star', ()->
       $span = $(this).prev()

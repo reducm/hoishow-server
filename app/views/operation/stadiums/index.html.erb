@@ -1,37 +1,3 @@
 <%# encoding: utf-8 %>
 
-<div class="nav">
-  <h1>场馆列表</h1>
-  <div class="search">
-    <%= form_tag(operation_stadiums_path, class: 'form-inline', method: 'get') do %>
-      <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入城市或场馆搜索" %>
-      <%= submit_tag "搜索", class: 'btn btn-default' %>
-    <% end %>
-  </div>
-
-  <div class="stadiums_list">
-    <div class='form-group'>
-      <%= link_to '新建场馆', new_operation_stadium_path, class: 'btn btn-primary' %>
-    </div>
-    <table class="stadiums table">
-      <thead>
-        <tr>
-          <th>名称</th>
-          <th>城市</th>
-          <th>地址</th>
-          <th>操作</th>
-        </tr>
-      </thead>
-      <% @stadiums.each do |stadium| %>
-        <tr>
-          <td><%= stadium.name %></td>
-          <td><%= stadium.city.name %></td>
-          <td><%= stadium.address %></td>
-          <td>
-            <%= link_to '编辑', edit_operation_stadium_path(stadium) %>
-          </td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-</div>
+<%= render partial: 'table' %>

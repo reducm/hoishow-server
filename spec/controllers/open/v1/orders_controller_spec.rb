@@ -341,7 +341,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
       # allow_any_instance_of(Open::V1::ApplicationController).to receive(:api_verify) { true }
     end
 
-    it 'will return success when confiemed' do
+    it 'will return success when confirm' do
       expect(order.status).to eq 'pending'
       post :confirm, params # user id ?
 
@@ -479,7 +479,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     it 'will return refund when order be refunded' do
-      expect(order.status).to eq 'pending'
+      order.success!
       post :cancel_order, params
       expect(json[:result_code]).to eq 0
       order.reload

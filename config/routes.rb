@@ -185,10 +185,11 @@ Rails.application.routes.draw do
     end
     resources :orders do
       member do
+        post :set_order_to_success
         post "update_express_id"
         post "update_remark_content"
         post :manual_refund
-        get :manual_send_sms
+        get :manual_send_msg
       end
       collection do
         get :search
@@ -230,12 +231,15 @@ Rails.application.routes.draw do
       end
     end
     resources :comments
-    resources :cities, only: [:index] do
+    resources :cities, except: [:show, :destroy] do
       collection do
         get :search
       end
     end
     resources :stadiums, except: [:show, :destroy] do
+      collection do
+        get :search
+      end
       member do
         get :refresh_areas
         post :submit_area
