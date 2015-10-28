@@ -61,6 +61,10 @@ class User < ActiveRecord::Base
   }
 
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
+  # hoishow用户
+  scope :from_hoishow, ->{ where("boom_id IS NULL") }
+  # 播霸用户
+  scope :from_boombox, ->{ where("boom_id IS NOT NULL") }
 
   def sex_cn
     # male: '男'

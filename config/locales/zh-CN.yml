@@ -159,6 +159,7 @@ zh-CN:
   boombox_controller:
     sessions: "登录"
     home: "首页"
+    collaborators: "艺人"
   controller:
     sessions: "登录"
     home: "首页"

@@ -20,6 +20,22 @@ class Collaborator < ActiveRecord::Base
 
   paginates_per 10
 
+  def is_top_cn
+    if is_top?
+      "推荐"
+    else
+      ""
+    end
+  end
+
+  def verified_cn
+    if verified?
+      "已审核"
+    else
+      "审核中"
+    end
+  end
+
   def is_followed(user_id)
     user_id.in?(user_follow_collaborators.pluck(:user_id))
   end

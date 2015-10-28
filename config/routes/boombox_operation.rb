@@ -10,6 +10,8 @@ module Routes
             resources :sessions, only: [:new, :create, :destroy]
             match "/signin" => "sessions#new", via: [:get]
             match "/signout" => "sessions#destroy", via: [:delete]
+
+            resources :collaborators, except: :destroy
           end
         end
       end

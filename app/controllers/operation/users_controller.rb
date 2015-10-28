@@ -5,11 +5,11 @@ class Operation::UsersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    @users = User.page(params[:page]).order("created_at desc")
+    @users = User.from_hoishow.page(params[:page]).order("created_at desc")
   end
 
   def search
-    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    @users = User.from_hoishow.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
     render :index
   end
 
@@ -32,6 +32,6 @@ class Operation::UsersController < Operation::ApplicationController
 
   private
   def get_user
-    @user = User.find(params[:id])
+    @user = User.from_hoishow.find(params[:id])
   end
 end

@@ -1,0 +1,34 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>头像</th>
+      <th>名称</th>
+      <th>标签</th>
+      <th>粉丝数</th>
+      <th>创建时间</th>
+      <th>修改时间</th>
+      <th>审核状态</th>
+      <th>是否推荐</th>
+      <th>操作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @collaborators.each do|collaborator|%>
+      <% if collaborator.cover_url %>
+        <td><%= image_tag(collaborator.cover_url, size: "50x50") %></td>
+      <%else %>
+        <td>无头像</td>
+      <% end %>
+      <td><%= collaborator.name %></td>
+      <td><%= collaborator.tags.pluck(:name).join(", ")%></td>
+      <td><%= collaborator.followers.count %></td>
+      <td><%= collaborator.created_at.strfcn_time %></td>
+      <td><%= collaborator.updated_at.strfcn_time %></td>
+      <td><%= collaborator.verified_cn %></td>
+      <td><%= collaborator.is_top_cn %></td>
+      <td>
+        todo
+      </td>
+    <% end %>
+  </tbody>
+</table>
