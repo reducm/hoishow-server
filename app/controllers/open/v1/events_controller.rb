@@ -11,7 +11,7 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   def areas_map
     @event = Event.find_by_id(params[:id])
     @show = @event.show
-    read_bmp = BMP::Reader.new(@event.coordinate_map.current_path)
+    read_bmp = BMP::Reader.new(@event.coordinate_map_url)
     @map_width = read_bmp.width
     @map_height = read_bmp.height
     render layout: "mobile"
