@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :boom_user_likes
   has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
 
+  has_many :user_track_relations
   #----------------boombox
 
   has_many :user_follow_stars
