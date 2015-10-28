@@ -6,7 +6,7 @@ class BMP
     DIB_HEADER_SIZE    = 40
 
     def initialize(bmp_filename)
-      File.open(bmp_filename, "rb") do |file|
+      open(bmp_filename, "rb") do |file|
         read_bmp_header(file)
         read_dib_header(file)
         read_pixels(file)
