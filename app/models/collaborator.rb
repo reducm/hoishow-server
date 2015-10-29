@@ -16,7 +16,7 @@ class Collaborator < ActiveRecord::Base
 
   mount_uploader :cover, ImageUploader
   after_create :set_removed_and_is_top
-  scope :display, -> { where(verified: true, removed: false).order('is_top') }
+  scope :verified, -> { where(verified: true, removed: false).order('is_top') }
 
   paginates_per 10
 
