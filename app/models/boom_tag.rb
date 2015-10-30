@@ -1,4 +1,6 @@
 class BoomTag < ActiveRecord::Base
+  has_many :tag_subject_relations
+
   scope :hot_tags, -> { where is_hot: true }
 
   def collaborators

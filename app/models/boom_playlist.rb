@@ -22,7 +22,7 @@ class BoomPlaylist < ActiveRecord::Base
   }
   after_create :set_removed_and_is_top
   mount_uploader :cover, ImageUploader
-  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top')}
+  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top, RAND()')}
 
   paginates_per 10
 

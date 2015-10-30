@@ -11,8 +11,6 @@ class BoomTrack < ActiveRecord::Base
   has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_TRACK }, foreign_key: 'subject_id'
   has_many :tags, through: :tag_subject_relations, source: :boom_tag
 
-  scope :recommend, -> { order('is_top, RAND()').limit(20) }
-
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true
@@ -21,6 +19,12 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
 
   after_create :set_removed_and_is_top
+
+  def self.recommend(user=nil)
+    Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
+      user ? user.recommend_tracks : BoomTrack.order('is_top, RAND()').limit(20).to_a
+    end
+  end
 
   def creator
     begin
