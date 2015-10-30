@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151023074359) do
+ActiveRecord::Schema.define(version: 20151030030815) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -143,8 +143,9 @@ ActiveRecord::Schema.define(version: 20151023074359) do
   create_table "boom_albums", force: :cascade do |t|
     t.integer  "collaborator_id", limit: 4
     t.string   "image",           limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.boolean  "is_cover",        limit: 1,   default: true
   end
 
   add_index "boom_albums", ["collaborator_id"], name: "index_boom_albums_on_collaborator_id", using: :btree
@@ -360,6 +361,7 @@ ActiveRecord::Schema.define(version: 20151023074359) do
     t.datetime "updated_at",                                              null: false
     t.boolean  "verified",                  limit: 1,     default: false
     t.boolean  "is_top",                    limit: 1
+    t.string   "avatar",                    limit: 255
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree

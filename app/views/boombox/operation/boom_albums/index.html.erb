@@ -1,0 +1,6 @@
+<div class="row">
+  <h3>艺人相册</h3>
+  <%= simple_form_for(BoomAlbum.new, html: { class: 'dropzone', id: 'image-dz-form', multipart: :true }) do |f| %>
+    <%= f.hidden_field :collaborator_id, value: @collaborator.id %>
+  <% end %>
+</div>

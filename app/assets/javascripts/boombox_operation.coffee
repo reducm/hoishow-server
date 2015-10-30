@@ -7,6 +7,8 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
+#= require boombox/operation/collaborators
+#= require boombox/operation/boom_albums
 #
 #= require jquery-fileupload/basic
 #= require dropzone

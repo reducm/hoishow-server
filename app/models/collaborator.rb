@@ -15,10 +15,9 @@ class Collaborator < ActiveRecord::Base
   has_many :tags, through: :tag_subject_relations, source: :boom_tag
 
   mount_uploader :cover, ImageUploader
+  mount_uploader :avatar, ImageUploader
   after_create :set_removed_and_is_top
   scope :display, -> { where(verified: true, removed: false).order('is_top') }
-
-  paginates_per 10
 
   def is_top_cn
     if is_top?

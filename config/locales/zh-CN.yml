@@ -160,6 +160,7 @@ zh-CN:
     sessions: "登录"
     home: "首页"
     collaborators: "艺人"
+    boom_albums: "艺人相册"
   controller:
     sessions: "登录"
     home: "首页"

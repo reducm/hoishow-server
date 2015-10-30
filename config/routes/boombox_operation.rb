@@ -11,7 +11,8 @@ module Routes
             match "/signin" => "sessions#new", via: [:get]
             match "/signout" => "sessions#destroy", via: [:delete]
 
-            resources :collaborators, except: :destroy
+            resources :collaborators, except: [:new, :create, :destroy]
+            resources :boom_albums
           end
         end
       end

@@ -25,8 +25,7 @@
     </tr>
   </thead>
   <tbody>
-  <% if @collaborators.any? %>
-    <% @collaborators.each do|collaborator| %>
+    <% @collaborators.each do|collaborator|%>
       <tr class="tr-collaborator">
         <% if collaborator.avatar_url %>
           <td><%= image_tag(collaborator.avatar_url, size: "50x50") %></td>
@@ -45,9 +44,6 @@
         </td>
       </tr>
     <% end %>
-  <% else %>
-    <tr><td>无数据</td></tr>
-  <% end %>
   </tbody>
 </table>
 
