@@ -1,0 +1,36 @@
+<%# encoding: utf-8 %>
+
+<table class="table table-hover tracks">
+  <thead>
+    <tr>
+      <th class='text-center'>ID</th>
+      <th class='text-center'>封面</th>
+      <th class='text-center'>标题</th>
+      <th class='text-center'>艺人</th>
+      <th class='text-center'>时长</th>
+      <th class='text-center'>标签</th>
+      <th class='text-center'>上传者</th>
+      <th class='text-center'>上传时间</th>
+      <th class='text-center'>操作</th>
+    </tr>
+  </thead>
+  <tbody class='text-center'>
+    <% tracks.each do|track| %>
+      <tr>
+        <td><%= track.id %></td>
+        <td><%= image_tag(track.cover_url, size: "50x50") if track.cover_url %></td>
+        <td><%= track.name %></td>
+        <td><%= track.artists %></td>
+        <td><%= track.duration_to_time %></td>
+        <td><%= %></td>
+        <td><%= track.creator.name if track.creator %></td>
+        <td><%= track.created_at.try(:strfcn_time) %></td>
+        <td>
+          <%= link_to track.is_top_cn, change_is_top_boombox_operation_track_path(track), method: 'POST' %>
+          <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
+        </td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>
+

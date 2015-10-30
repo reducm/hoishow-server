@@ -32,8 +32,27 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 
+  def is_top_cn
+    if is_top
+      "取消推荐"
+    else
+      "推荐"
+    end
+  end
+
+  def duration_to_time
+    if duration
+      m, s = duration.to_i.divmod(60)
+      "#{m}:#{s}"
+    end
+  end
+
   private
   def set_removed_and_is_top
-    self.update(removed: 0, is_top: 0)
+    unless is_top
+      self.update(removed: 0, is_top: 0)
+    else
+      self.update(removed: 0)
+    end
   end
 end

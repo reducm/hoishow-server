@@ -8,6 +8,10 @@
 #= require operation/echarts-all
 #= require operation/notify
 #
+#= require boombox/operation/home
+#= require boombox/operation/sessions
+#= require boombox/operation/tracks
+#
 #= require jquery-fileupload/basic
 #= require dropzone
 #= require datatables.min
