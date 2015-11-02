@@ -273,15 +273,13 @@ $ ->
         if star_id in star_ids
           alert("该艺人已选，请不要重复添加")
         else
-          #$selected.remove()
-          $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-danger'>删除</a>")
+          $('.stars').append("<span class='btn btn-default' data-id='#{star_id}'>#{star_name}</span><a class='del_star btn btn-danger' data-id='#{star_id}'>删除</a>")
           star_ids.push(star_id)
 
     $('.stars').on 'click', '.del_star', ()->
-      $span = $(this).prev()
-      $('#select_star').append("<option value='#{$span.data('id')}'>#{$span.text()}</option>")
-      $span.remove()
+      $(this).prev().remove()
       $(this).remove()
+      star_ids.pop($(this).data('id'))
 
     $('#show_stadium_select').prev().after("<a class='add_stadium' target='_blank'>添加场馆</a>")
     $("#show_city_select").attr("data-live-search", true)
