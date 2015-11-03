@@ -4,7 +4,7 @@ json.city_name show.city.name rescue ''
 json.stadium_name show.stadium.name rescue ''
 json.description show.description || ''
 json.description_time show.description_time || ''
-json.show_time show.show_time.to_i
+json.show_time show.events.first.show_time.to_i
 json.poster show.poster_url || ''
 json.ticket_pic show.ticket_pic_url || ''
 json.stadium_map show.stadium_map_url || ''
