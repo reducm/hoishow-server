@@ -18,6 +18,7 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     @collaborators = collaborators.order(created_at: :desc).page(params[:page]).per(params[:per])
     # 将参数回传 
     @is_top = params[:is_top]
+    @per = params[:per]
   end
 
   def show

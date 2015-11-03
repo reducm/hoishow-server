@@ -1,8 +1,9 @@
 <%# encoding: utf-8 %>
 
 <div class="row">
-  <div class="col-md-2 col-md-offset-4">
-    <h3 class="pull-left header-primary"><%= collaborator.name ? "艺人资料" : "新增艺人" %></h3>
+  <div class="col-md-5 col-md-offset-2">
+    <h3 class="pull-left header-primary">艺人资料</h3>
+    <%= link_to '通过审核', '#', class: 'btn btn-primary pull-right' %>
   </div>
 </div>
 
@@ -10,13 +11,13 @@
   <div class="row">
     <div class="col-md-2 col-md-offset-2 avatar-area">
       <div class="avatar-content">
-        头像区
+        社交信息（公开） 
       </div>
     </div>
 
     <div class="col-md-3 information-area">
       <div class="information-content">
-        资料区 
+        个人信息（保密） 
       </div>
     </div>
   </div>
@@ -24,7 +25,7 @@
   <div class="row">
     <div class="col-md-5 col-md-offset-2 poster-area">
       <div class="poster-content">
-        海报区 
+        海报
       </div>
     </div>
   </div>
@@ -32,7 +33,7 @@
   <div class="row">
     <div class="col-md-5 col-md-offset-2 introduction-area">
       <div class="introduction-content">
-        个人简介区 
+        个人简介
       </div>
     </div>
   </div>

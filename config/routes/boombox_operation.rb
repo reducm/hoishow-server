@@ -12,7 +12,11 @@ module Routes
             match "/signout" => "sessions#destroy", via: [:delete]
 
             resources :collaborators, except: [:new, :create, :destroy]
-            resources :boom_albums
+            resources :boom_albums, only: [:index, :create, :destroy] do
+              member do
+                post :set_cover
+              end
+            end
           end
         end
       end

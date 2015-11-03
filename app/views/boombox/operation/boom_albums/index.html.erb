@@ -1,6 +1,44 @@
-<div class="row">
+<div class="row boom-albums-list">
   <h3>艺人相册</h3>
-  <%= simple_form_for(BoomAlbum.new, html: { class: 'dropzone', id: 'image-dz-form', multipart: :true }) do |f| %>
+  <%= simple_form_for([:boombox, :operation, @boom_album], html: { class: 'dropzone upload-boom-album', id: 'image-dz-form', multipart: :true }) do |f| %> 
     <%= f.hidden_field :collaborator_id, value: @collaborator.id %>
   <% end %>
+
+  <div class="gallery col-md-8 col-md-offset-2">
+  <% if @boom_albums.any? %>
+    <% @boom_albums.each do |boom_album| %>
+      <% if boom_album.is_cover %>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image-is-cover" data-toggle="modal"><img src=<%= boom_album.image %> style="width: 160px; height: 160px;"></img></a>
+      <% else %>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image" data-toggle="modal"><img src=<%= boom_album.image %> style="width: 160px; height: 160px;"></img></a>
+      <% end %>
+    <% end %>
+    <p style="clear: both;">
+    <%= paginate @boom_albums %>
+  <% else %>
+    <figure>没有相片</figure>
+  <% end %>
+  </div>
 </div>
+
+<% if @boom_albums.any? %>
+  <% @boom_albums.each do |boom_album| %>
+    <div class="modal fade image-original" id="imageModal<%= boom_album.id %>" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img src=<%= boom_album.image %> style="width: 100%">
+            <figcaption>
+              <% if !boom_album.is_cover %>
+                <%= link_to "设置封面", set_cover_boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :post %>
+              <% else %>
+                已是封面
+              <% end %> ｜ 
+              <%= link_to "删除", boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :delete, confirm: '确定吗？' %>
+            </figcaption>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

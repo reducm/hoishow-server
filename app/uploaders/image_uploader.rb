@@ -42,9 +42,19 @@ class ImageUploader < CarrierWave::Uploader::Base
     @md5 ||= Digest::MD5.hexdigest(chunk.read.to_s)
   end
 
+  # by 华哥
+  # Override the filename of the uploaded files:
   def filename
-    @name ||= "#{md5}#{File.extname(super)}" if super
+    if original_filename
+      # current_path 是 Carrierwave 上传过程临时创建的一个文件，有时间标记
+      # 例如: /Users/jason/work/ruby-china/public/uploads/tmp/20131105-1057-46664-5614/_____2013-11-05___10.37.50.png
+      @name ||= Digest::MD5.hexdigest(current_path)
+      "#{@name}.#{file.extension}"
+    end
   end
+  #def filename
+    #@name ||= "#{md5}#{File.extname(super)}" if super
+  #end
 
   private
   def image_version_name

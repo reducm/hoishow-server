@@ -1,5 +1,8 @@
+<h4 class="pull-left"><%= "艺人总数：#{@collaborators.count}" %></h3>
+
 <div class="search">
   <%= form_tag(boombox_operation_collaborators_path, class: 'form-inline', method: 'get') do %>
+    <%= hidden_field_tag :per, @per %>
     <% if @is_top.present? %>
       <%= select_tag "is_top", "<option value=''>全部</option><option selected='selected' value='1'>推荐</option>".html_safe, class: 'form-control' %>
     <% else %>
