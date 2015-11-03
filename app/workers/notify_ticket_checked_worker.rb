@@ -1,5 +1,7 @@
 class NotifyTicketCheckedWorker
   include Sidekiq::Worker
+  sidekiq_options retry: 5, dead: false
+
   def perform(order_id)
     url = "#{BikeSetting['notify_url']}?open_trade_no=#{order_id}"
 

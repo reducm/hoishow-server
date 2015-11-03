@@ -7,10 +7,10 @@
     <%= hidden_field_tag "show_id", @show.id %>
     <label>参演艺人</label>
     <div class='stars'>
-    <% @show.stars.each do |star| %>
-      <span data-id="<%= star.id %>" class='btn btn-default'><%= star.name %></span>
-      <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-danger del_star' %>
-    <% end %>
+      <% @show.stars.each do |star| %>
+        <span data-id="<%= star.id %>" class='btn btn-default'><%= star.name %></span>
+        <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-danger del_star' %>
+      <% end %>
     </div>
     <div class="form-group"">
       <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-primary add_star' %>
@@ -31,22 +31,17 @@
     </div>
     <div class="form-group">
       <div class="col-xs-3">
-      <%= f.input :name, label: "演出名称" %>
+        <%= f.input :name, label: "演出名称" %>
       </div>
     </div>
     <div class="form-group">
       <div class="col-xs-1">
-      <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: @show.status, label: '演出购票状态' %>
+        <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: @show.status, label: '演出购票状态' %>
       </div>
     </div>
     <div class="form-group">
       <div class="col-xs-2">
-      <%= f.input :show_time, label: "演出日期", as: :datetimepicker, input_html:{ value: get_datetime(@show.show_time) } %>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="col-xs-2">
-      <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
+        <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
       </div>
     </div>
     <div class="form-group">
@@ -55,60 +50,29 @@
         <%= image_tag(@show.poster_url, width: '640')  %>
       <% end %>
     </div>
-      <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
+    <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <div class="form-group">
       <% if @show.ticket_pic_url %>
         <%= label_tag "当前门票图片" %>
         <%= image_tag(@show.ticket_pic_url, size: "270x270")  %>
       <% end %>
     </div>
-      <%= f.input :ticket_pic, label: "上传门票图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
-      <%= f.input :description, label: '图文描述' %>
-
+    <%= f.input :ticket_pic, label: "上传门票图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
+    <%= f.input :description, label: '图文描述' %>
     <div class="form-group">
       <div class="col-xs-1">
-      <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
-      <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true, label: '场馆' %>
-     </div>
+        <%= f.association :city, label_method: :name, value_method: :id, disabled: true, label: '城市' %>
+        <%= f.association :stadium, required: false, label_method: :name, value_method: :id, disabled: true, label: '场馆' %>
+      </div>
     </div>
-    <div class="form-group">
-      <% if @show.stadium_map_url %>
-        <%= label_tag "当前场馆地图" %>
-        <%= image_tag(@show.stadium_map, size: "400x200") %>
-    <% end %>
-    </div>
-    <%= f.input :stadium_map, label: '上传场馆地图', input_html: {class: "image-uploader"} %>
     <div class="form-group">
       <div class="col-xs-1">
-      <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: @show.seat_type, label: '选座设置' %>
+        <%= f.input :seat_type, collection:[["只能选区", "selected"], ["可以选座", "selectable"]], selected: @show.seat_type, label: '选座设置' %>
       </div>
     </div>
     <%= f.hidden_field :concert_id, value: @concert.id %>
     <div class="row">
-    <%= f.button :submit, "保存", class: 'btn-primary' %>
+      <%= f.button :submit, "保存", class: 'btn-primary' %>
     </div>
   <% end %>
-
-  <div id='show_areas'>
-    <div class="row">
-      <h3 class="pull-left">区域管理</h3>
-      <%= link_to "新增区域", "javascript:void(0);", class: 'btn btn-default btn-xs add_area' %>
-      <table class="table table-hover areas">
-        <thead>
-          <tr>
-            <th>区域名</th>
-            <% if @show.selected? %>
-              <th>票价</th>
-            <% end %>
-            <th>座位数(座位数不能少于已售出数量)</th>
-            <th>当前区域售出票数</th>
-            <th>操作</th>
-          </tr>
-          <tbody>
-            <%= render partial: "area_table", locals: {show: @show} %>
-          </tbody>
-        </thead>
-      </table>
-    </div>
-  </div>
 </div>
