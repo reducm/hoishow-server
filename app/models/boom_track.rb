@@ -24,6 +24,8 @@ class BoomTrack < ActiveRecord::Base
 
   after_create :set_removed_and_is_top
 
+  paginates_per 10
+
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first

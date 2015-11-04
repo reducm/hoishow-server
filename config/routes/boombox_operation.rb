@@ -19,6 +19,25 @@ module Routes
                 get :search
               end
             end
+
+            resources :playlists do
+              member do
+                post :change_is_top
+              end
+              collection do
+                get :search
+              end
+            end
+
+            resources :radios do
+              member do
+                post :change_is_top
+              end
+              collection do
+                get :search
+              end
+            end
+
           end
         end
       end

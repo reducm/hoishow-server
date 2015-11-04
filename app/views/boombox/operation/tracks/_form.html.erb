@@ -19,7 +19,7 @@
           <div class="text-center" id="cover_preview">
             <%= f.input :cover, label: "封面(建议大小:500x500, 支持格式:jpg jpeg gif png), 支持拖文件进框上传", input_html: {class: "track-cover-uploader dropzone", id: "track_cover"} %>
             <% if params[:action] == 'edit' %>
-              <img id="track_cover_url" src=<%= track.cover_url %>></img>
+              <img id="track_cover_url" src=<%= track.cover_url %> />
             <% end %>
           </div>
         </div>
