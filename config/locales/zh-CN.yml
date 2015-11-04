@@ -160,6 +160,8 @@ zh-CN:
     sessions: "登录"
     home: "首页"
     tracks: "音乐"
+    playlists: "Playlist"
+    radios: "电台"
   controller:
     sessions: "登录"
     home: "首页"

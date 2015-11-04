@@ -11,6 +11,8 @@
 #= require boombox/operation/home
 #= require boombox/operation/sessions
 #= require boombox/operation/tracks
+#= require boombox/operation/playlists
+#= require boombox/operation/radios
 #
 #= require jquery-fileupload/basic
 #= require dropzone

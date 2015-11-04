@@ -7,25 +7,22 @@ $ ->
     tag_ids = []
 
   #tag-filter
-  $("#tag_list").addClass('selectpicker')
-  $("#tag_list").attr('data-live-search', true)
-  $("#tag_list").attr('data-width', '135px')
-  $("#tag_list").selectpicker()
+  $("#track_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#add_tag").on "click", (e) ->
+  $("#track_add_tag").on "click", (e) ->
     e.preventDefault()
-    tag_name = $("#tag_list option:selected").text()
-    tag_id = $("#tag_list option:selected").val()
+    tag_name = $("#track_tag_list option:selected").text()
+    tag_id = $("#track_tag_list option:selected").val()
     if tag_id in tag_ids
       alert("该标签已选，请不要重复添加")
     else
-      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#delete_tag")
-      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#delete_tag")
+      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#track_delete_tag")
+      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#track_delete_tag")
       tag_ids.push(tag_id)
 
   #删除tag
-  $("#delete_tag").on "click", ".remove_tag", (e) ->
+  $("#track_delete_tag").on "click", ".remove_tag", (e) ->
     e.preventDefault()
     tag_id = $(this).data("tag-id")
     $(this).prev().remove()
