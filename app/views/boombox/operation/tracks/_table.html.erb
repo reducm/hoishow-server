@@ -30,7 +30,7 @@
         <td><%= track.duration_to_time %></td>
         <td>
           <% tags = track.tags.pluck(:name)%>
-          <% if tags %>
+          <% if tags.present? %>
             <%= tags.join(",") %>
           <% end %>
         </td>

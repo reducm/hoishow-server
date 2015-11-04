@@ -1,0 +1,15 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='radios'>
+  <div class="text-center">
+    <h1>电台</h1>
+    <%= link_to "新建电台", new_boombox_operation_radio_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="radios_search_form mt20">
+    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_radios_path} %>
+  </div>
+
+  <div class="radios_list mt20">
+    <%= render partial: "table", locals: {radios: @radios} %>
+  </div>
+</div>
