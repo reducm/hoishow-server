@@ -1,33 +1,3 @@
 <%# encoding: utf-8 %>
-<div class="nav">
-  <div class="text-center">
-    <h1>上传音乐</h1>
-  </div>
-  <div id="new_track">
-    <%= simple_form_for( @track, url: "/boombox/operation/tracks", method: "POST", html: { class: 'form-horizontal', id:'new_track_form', multipart: :true }) do |f| %>
-      <div class="row">
-        <div class="col-xs-3 col-sm-4">
-          <div class="text-center" id="cover_preview">
-            <%= f.input :cover, label: "封面(建议大小:500x500), 支持拖文件进框", input_html: {class: "track-cover-uploader dropzone", id: "new_track_cover"} %>
-          </div>
-        </div>
 
-        <div class="col-xs-9 col-sm-6">
-          <div class="form-group">
-            <%= f.input :file, label: "拖文件进框上传", input_html: {class: "dropzone track-file-uploader", id: "new_track_file"} %>
-            <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
-            <%= f.hidden_field :duration %>
-            <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题" %>
-            <%= f.input :artists, label: "艺人", placeholder: "请输入艺人名字" %>
-            <%= f.input :is_top, label: "打勾推荐此音乐" %>
-          </div>
-        </div>
-      </div>
-
-
-  </div>
-  <div class="form-group text-center">
-    <%= submit_tag "保存", class: "btn btn-primary", id: "track-submit", data: { disable_with: "loading" } %>
-  </div>
-<% end %>
-</div>
+<%= render partial: "form", locals: {track: @track} %>

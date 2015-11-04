@@ -1,5 +1,39 @@
 $ ->
+  #如果当前track有标签的话就把标签id保存起来
+  track_tag_ids_val = $("#track_tag_ids").val()
+  if track_tag_ids_val
+    tag_ids = track_tag_ids_val.split(" ")
+  else
+    tag_ids = []
+
+  #tag-filter
+  $("#tag_list").addClass('selectpicker')
+  $("#tag_list").attr('data-live-search', true)
+  $("#tag_list").attr('data-width', '135px')
+  $("#tag_list").selectpicker()
+
+  #添加tag
+  $("#add_tag").on "click", (e) ->
+    e.preventDefault()
+    tag_name = $("#tag_list option:selected").text()
+    tag_id = $("#tag_list option:selected").val()
+    if tag_id in tag_ids
+      alert("该标签已选，请不要重复添加")
+    else
+      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#delete_tag")
+      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#delete_tag")
+      tag_ids.push(tag_id)
+
+  #删除tag
+  $("#delete_tag").on "click", ".remove_tag", (e) ->
+    e.preventDefault()
+    tag_id = $(this).data("tag-id")
+    $(this).prev().remove()
+    $(this).remove()
+    tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
+
   $('.track-cover-uploader').change ->
+    $("#track_cover_url").hide()
     readURL this
 
   $('.track-file-uploader').change ->
@@ -10,7 +44,13 @@ $ ->
       reader.readAsDataURL this.files[0]
     return
 
+#1.提交前将标签id数组组装成字符串，并传入hidden field
+#2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
+    #1
+    tag_ids.join(",")
+    $("#boom_tag_ids").val(tag_ids)
+    #2
     duration = $("#track-file-pre")[0].duration
     if duration
       $("#boom_track_duration").attr("value", duration)

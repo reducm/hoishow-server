@@ -15,6 +15,9 @@ module Routes
               member do
                 post :change_is_top
               end
+              collection do
+                get :search
+              end
             end
           end
         end

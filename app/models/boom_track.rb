@@ -12,6 +12,8 @@ class BoomTrack < ActiveRecord::Base
   has_many :tags, through: :tag_subject_relations, source: :boom_tag
 
   scope :recommend, -> { order('is_top, RAND()').limit(20) }
+  #取出合集得时候不要忘记过滤
+  scope :valid_tracks, -> {where removed: false}
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -43,8 +45,18 @@ class BoomTrack < ActiveRecord::Base
   def duration_to_time
     if duration
       m, s = duration.to_i.divmod(60)
+      if m < 10
+        m = "0" + m.to_s
+      end
+      if s < 10
+        s = "0" + s.to_s
+      end
       "#{m}:#{s}"
     end
+  end
+
+  def tag_for_track(tag)
+    tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
   end
 
   private
