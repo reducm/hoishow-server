@@ -1,0 +1,53 @@
+<%# encoding: utf-8 %>
+<div class="nav">
+  <div class="text-center">
+    <% if params[:action] == 'new' %>
+      <% form_url = "/boombox/operation/playlists" %>
+      <% form_method = "POST" %>
+      <h1>新建Playlist</h1>
+    <% elsif params[:action] == 'edit' %>
+      <% form_url = "/boombox/operation/playlists/#{playlist.id}" %>
+      <% form_method = "PATCH" %>
+      <h1>编辑Playlist</h1>
+    <% end %>
+  </div>
+  <div id="playlist_form">
+    <%= hidden_field_tag "playlist_tag_ids", playlist.tags.pluck(:id) %>
+    <%= simple_form_for( playlist, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
+      <div class="row">
+        <div class="col-xs-3 col-sm-4">
+          <div class="text-center" id="cover_preview">
+            <%= f.input :cover, label: "封面(建议大小:500x500, 支持格式:jpg jpeg gif png), 支持拖文件进框上传", input_html: {class: "playlist-cover-uploader dropzone", id: "playlist_cover"} %>
+            <% if params[:action] == 'edit' %>
+              <img id="playlist_cover_url" src=<%= playlist.cover_url %> />
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-xs-9 col-sm-6">
+          <div class="form-group">
+            <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
+            <%= f.input :is_top, label: "打勾推荐此Playlist" %>
+
+            <%= label_tag "tags", "标签" %>
+            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
+            <div id="playlist_delete_tag">
+              <% tags = playlist.tags.pluck(:name, :id) %>
+              <% tags.each do |playlist_tag| %>
+                <span class="btn btn-default"><%= playlist_tag[0] + "" %></span><button data-tag-id="<%= playlist_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
+              <% end %>
+            </div>
+            <div class="form-group">
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), class:"form-control", id: "playlist_tag_list" %>
+              <a class="btn btn-primary" id="playlist_add_tag">添加选中标签</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group text-center">
+        <%= submit_tag "保存", class: "btn btn-primary", id: "playlist-submit", data: { disable_with: "loading" } %>
+      </div>
+    <% end %>
+  </div>
+</div>

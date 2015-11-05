@@ -20,9 +20,16 @@ class BoomPlaylist < ActiveRecord::Base
     playlist: 0,
     radio: 1
   }
+
   after_create :set_removed_and_is_top
+
   mount_uploader :cover, ImageUploader
+
+  #for api
   scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top')}
+  #取出合集得时候不要忘记过滤
+  scope :valid_playlists, -> { where("removed = false and mode = 0") }
+  scope :valid_radios, -> { where("removed = false and mode = 1") }
 
   paginates_per 10
 
@@ -38,6 +45,18 @@ class BoomPlaylist < ActiveRecord::Base
 
   def is_followed(user_id)
     user_id.in?(user_follow_playlists.pluck(:user_id))
+  end
+
+  def is_top_cn
+    if is_top
+      "取消推荐"
+    else
+      "推荐"
+    end
+  end
+
+  def tag_for_playlist(tag)
+    tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
   end
 
   private

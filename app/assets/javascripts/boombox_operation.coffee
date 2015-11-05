@@ -10,6 +10,12 @@
 #= require boombox/operation/collaborators
 #= require boombox/operation/boom_albums
 #
+#= require boombox/operation/home
+#= require boombox/operation/sessions
+#= require boombox/operation/tracks
+#= require boombox/operation/playlists
+#= require boombox/operation/radios
+#
 #= require jquery-fileupload/basic
 #= require dropzone
 #= require datatables.min

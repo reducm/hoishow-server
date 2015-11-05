@@ -161,6 +161,9 @@ zh-CN:
     home: "首页"
     collaborators: "艺人"
     boom_albums: "艺人相册"
+    tracks: "音乐"
+    playlists: "Playlist"
+    radios: "电台"
   controller:
     sessions: "登录"
     home: "首页"
