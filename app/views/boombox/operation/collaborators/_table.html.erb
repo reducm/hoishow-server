@@ -1,4 +1,4 @@
-<h4 class="pull-left"><%= "艺人总数：#{@collaborators.count}" %></h3>
+<h4 class="pull-left"><%= "艺人总数：#{@collaborators_count}" %></h3>
 
 <div class="search">
   <%= form_tag(boombox_operation_collaborators_path, class: 'form-inline', method: 'get') do %>
@@ -45,6 +45,11 @@
         <td><%= collaborator.is_top_cn %></td>
         <td>
           <%= link_to "查看详情", boombox_operation_collaborator_path(collaborator)%>
+          <% if collaborator.is_top? %>
+            已置顶
+          <% else %>
+            <%= link_to "推荐", set_top_boombox_operation_collaborator_path(collaborator), method: :post %>
+          <% end %>
         </td>
       </tr>
     <% end %>

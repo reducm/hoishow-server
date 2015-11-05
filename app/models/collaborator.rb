@@ -19,6 +19,35 @@ class Collaborator < ActiveRecord::Base
   after_create :set_removed_and_is_top
   scope :display, -> { where(verified: true, removed: false).order('is_top') }
 
+  validates :identity, presence: {message: "身份不能为空"}
+  validates :nickname, presence: {message: "昵称不能为空"}
+  validates :name, presence: {message: "真实姓名不能为空"}
+  validates :sex, presence: {message: "性别不能为空"}
+  validates :birth, presence: {message: "生日不能为空"}
+  validates :email, presence: {message: "性别不能为空"}
+  # 艺人简介字数上限100字
+  validates :description, length: { maximum: 200}
+
+  # 身份 
+  enum identity: {
+    dj: 0, # DJ
+    producer: 1, # 制作人
+    party_planer: 2, # 派对搞手
+  }
+
+  enum sex: {
+    male: 0,
+    female: 1
+  }
+
+  def nickname_changeable?(collaborator, new_nickname)
+    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30 
+      false
+    else
+      true
+    end
+  end
+
   def is_top_cn
     if is_top?
       "推荐"

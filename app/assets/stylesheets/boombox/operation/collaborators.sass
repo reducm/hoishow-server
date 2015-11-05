@@ -1,10 +1,7 @@
-// Place all the styles related to the boombox/operation/collaborator controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-
-$area_height: 260px
+//$area_height: 400px
 $table_bg_color: #444C51
 $table_fore_color: white 
+$border_color: #E5E5E5
 
 // 艺人列表
 .header-primary
@@ -32,29 +29,29 @@ $table_fore_color: white
   margin-top: 16px
 
 // 艺人form
+.legend-without-border
+  border-bottom-style: none
 .avatar-area
-  height: $area_height
+  //height: $area_height
   border-right-style: solid
-  border-bottom-style: solid
-  border-width: thin
-.avatar-content
-  //margin: 50%
-
 .information-area
-  height: $area_height
-  border-bottom-style: solid
-  border-width: thin
+  //height: $area_height
 .information-content
   //margin: 50%
-
 .poster-area
-  height: $area_height
+  //height: $area_height
+  border-top-style: solid
   border-bottom-style: solid
-  border-width: thin
 .poster-content
   //margin: 50%
-
 .introduction-area
-  height: $area_height
+  //height: $area_height
 .introduction-content
   //margin: 50%
+form div
+  border-color: $border_color
+  border-width: thin
+form div legend
+  margin-top: 20px
+  margin-bottom: 20px
+  font-size: 18px

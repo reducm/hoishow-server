@@ -6,6 +6,8 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     params[:page] ||= 1
     params[:per] ||= 10
     collaborators = Collaborator.all
+    # 列表显示艺人总数
+    @collaborators_count = collaborators.count
     # 按推荐过滤
     if params[:is_top].present?
       collaborators = collaborators.where(is_top: params[:is_top])
@@ -30,21 +32,37 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def update
-    if @collaborator.update(collaborator_params)
-      redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
+    if nickname_changeable?(@collaborator, params[:collaborator][:nickname])
+      if @collaborator.update(collaborator_params)
+        redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
+      else
+        flash[:alert] = @collaborator.errors.full_messages.to_sentence
+        render action: 'edit'
+      end
     else
-      flash[:alert] = @collaborator.errors.full_messages.to_sentence
+      flash[:alert] = '昵称一个月只能改一次' 
       render action: 'edit'
     end
   end
 
-  # 置顶
+  # 推荐 
   def set_top 
     @collaborator.update_attributes(is_top: true)
+    redirect_to boombox_operation_collaborators_url, notice: '推荐成功'
+  end
+
+  # 通过审核
+  def verify 
+    if @collaborator.update_attributes(verified: true)
+      redirect_to boombox_operation_collaborator_url(@collaborator), notice: '通过审核成功'
+    else
+      flash[:alert] = @collaborator.errors.full_messages.to_sentence
+      render :edit
+    end
   end
 
   private
   def collaborator_params
-    params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at"]}.map &:to_sym)
+    params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at", "name"]}.map &:to_sym)
   end
 end

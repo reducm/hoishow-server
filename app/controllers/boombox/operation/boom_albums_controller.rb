@@ -50,7 +50,7 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
     unless @collaborator.boom_albums.where(is_cover: true).any?
       flash[:warning] = "艺人没有设置封面，请设置或上传" 
     end
-    flash[:notice] = "相片已删除" 
+    flash[:notice] = "相片删除成功" 
     redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
   end
 
