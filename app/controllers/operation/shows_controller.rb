@@ -290,11 +290,9 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def get_coordinates
     event = @show.events.find_by_id params[:event_id]
-    coordinates = Rails.cache.write("#{event.id}_all_areas_coodinates") do
-      draw_image(event.coordinate_map_url)
-    end
+    Rails.cache.write("#{event.id}_all_areas_coodinates",draw_image(event.coordinate_map_url))
     render json: {
-      coords: coordinates,
+      coords: Rails.cache.read("#{event.id}_all_areas_coodinates"),
       color_ids: event.areas.pluck(:color, :id),
       area_id_name: event.areas.pluck(:id, :name).to_h,
       area_coordinates: event.areas.pluck(:coordinates).compact
