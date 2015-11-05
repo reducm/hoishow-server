@@ -62,15 +62,12 @@ load_page = ()->
     }
     myScroll.zoom(minScale)
 
-    areas_data = $("#show_area_data").data("areas-data")
+    areas_data = $("#show_area_data").data("invalid-areas")
 
     for area_data in areas_data
-      area_coordinate = area_data[0]
-      fill_style = "rgba(255, 255, 255, 0.5)"
-      if area_data[2] == 0
-        fill_style = "rgba(0, 0, 0, 0.5)"
+      area_coordinate = area_data
       area_coordinate = area_coordinate.split(",")
-      draw_area_with_coords(area_coordinate, context, fill_style)
+      draw_area_with_coords(area_coordinate, context)
 
   $("#stadium_pic_map area").each((index, element)->
       $(element).on "click", (e)->
@@ -78,16 +75,11 @@ load_page = ()->
         area_id = $(element).attr("area_id")
         area_name = $(element).attr("area_name")
         left_seats = $(element).attr("left_seats")
-        if left_seats == "0"
-          $("#areas_map_pop_wrap").modal('show')
-          return false
-        else
-          location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
+        location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
 
   )
 
 window.onload = () ->
-  $('#areas_map_loading').hide()
   $('#container').show()
   load_page()
   return
