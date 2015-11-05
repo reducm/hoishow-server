@@ -15,7 +15,7 @@ class Open::V1::EventsController < Open::V1::ApplicationController
     @map_width = read_bmp.width
     @map_height = read_bmp.height
     valid_areas = @event.areas.where("left_seats != 0").pluck(:coordinates)
-    @invalid_areas = draw_image(@event.coordinate_map.current_path).values - valid_areas
+    @invalid_areas = draw_image(@event.coordinate_map_url).values - valid_areas
     @invalid_areas.pop
     @invalid_areas.pop
     render layout: "mobile"
