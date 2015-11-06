@@ -65,9 +65,9 @@ load_page = ()->
     areas_data = $("#show_area_data").data("invalid-areas")
 
     for area_data in areas_data
-      area_coordinate = area_data
-      area_coordinate = area_coordinate.split(",")
+      area_coordinate = area_data.split(",")
       draw_area_with_coords(area_coordinate, context)
+      $("#stadium_pic_map").append("<area shape=\"poly\" coords=\"#{area_coordinate}\" href =\"#\" left_seats=\"0\" />")
 
   $("#stadium_pic_map area").each((index, element)->
       $(element).on "click", (e)->
@@ -75,7 +75,11 @@ load_page = ()->
         area_id = $(element).attr("area_id")
         area_name = $(element).attr("area_name")
         left_seats = $(element).attr("left_seats")
-        location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
+        if left_seats == "0"
+          $("#areas_map_pop_wrap").modal('show')
+          return false
+        else
+          location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
 
   )
 
