@@ -38,6 +38,9 @@ module Routes
               end
             end
 
+            resources :boom_admins do
+            end
+
           end
         end
       end

@@ -162,6 +162,7 @@ zh-CN:
     tracks: "音乐"
     playlists: "Playlist"
     radios: "电台"
+    boom_admins: "管理员"
   controller:
     sessions: "登录"
     home: "首页"
@@ -261,6 +262,10 @@ zh-CN:
     models:
       admin: 管理员
     attributes:
+      boom_admin/admin_type:
+        admin: '管理员'
+        operator: '运营'
+        dj: 'dj'
       admin/admin_type:
         admin: '管理员'
         operator: '运营'

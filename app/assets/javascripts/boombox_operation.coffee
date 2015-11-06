@@ -13,6 +13,7 @@
 #= require boombox/operation/tracks
 #= require boombox/operation/playlists
 #= require boombox/operation/radios
+#= require boombox/operation/boom_admins
 #
 #= require jquery-fileupload/basic
 #= require dropzone
