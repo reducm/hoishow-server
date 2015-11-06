@@ -69,6 +69,7 @@ class Ability
         # 后台需要的模块加这里
         can :manage, Collaborator
         can :manage, BoomAlbum 
+        can :manage, BoomTopic 
       end
     else
       #TODO

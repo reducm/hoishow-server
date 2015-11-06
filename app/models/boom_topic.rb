@@ -34,6 +34,14 @@ class BoomTopic < ActiveRecord::Base
     boom_comments.count
   end
 
+  def last_reply_time
+    if boom_comments.any?
+      boom_comments.order('updated_at desc').last.updated_at
+    else
+      self.created_at
+    end
+  end
+
   def is_liked(user_id)
     user_id.in?(boom_user_likes.pluck(:user_id))
   end
@@ -49,5 +57,8 @@ class BoomTopic < ActiveRecord::Base
   private
   def set_is_top
     self.is_top = false
+    # 这里的最后返回值刚好是false，会导致save失败，before callback最后要返回true
+    # http://makandracards.com/makandra/791-dealing-with-activerecord-recordnotsaved
+    true
   end
 end

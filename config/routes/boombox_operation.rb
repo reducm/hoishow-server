@@ -24,7 +24,11 @@ module Routes
               end
             end
 
-            resources :boom_topics, only: [:index, :show, :destroy]
+            resources :boom_topics, only: [:index, :show, :destroy] do
+              member do
+                post :set_top
+              end
+            end
 
             resources :tracks do
               member do

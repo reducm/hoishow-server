@@ -10,11 +10,30 @@
     <p>无头像</p>
   <% end %>
   <%= link_to '查看相册', boombox_operation_boom_albums_path(collaborator_id: @collaborator.id), class: 'btn btn-default' %>
+
   <ul class="nav nav-tabs associates">
-    <li role="presentation" class="active"><a href="#">Timeline</a></li>
-    <li role="presentation"><a href="#">Tracks</a></li>
-    <li role="presentation"><a href="#">Playlists</a></li>
-    <li role="presentation"><a href="#">Shows</a></li>
-    <li role="presentation"><a href="#">Fans</a></li>
+    <li role="presentation" class="active"><a href="#timeline" aria-controls="timeline" role="tab" data-toggle="tab">Timeline</a></li>
+    <li role="presentation"><a href="#tracks" aria-controls="tracks" role="tab" data-toggle="tab">Tracks</a></li>
+    <li role="presentation"><a href="#playlists" aria-controls="playlists" role="tab" data-toggle="tab">Playlists</a></li>
+    <li role="presentation"><a href="#shows" aria-controls="shows" role="tab" data-toggle="tab">Shows</a></li>
+    <li role="presentation"><a href="#fans" aria-controls="fans" role="tab" data-toggle="tab">Fans</a></li>
   </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="timeline">
+      <%= render partial: 'boombox/operation/boom_topics/table', locals: {boom_topics: @collaborator.boom_topics.order(created_at: :desc).page(params[:page])} %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="tracks">
+      <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @collaborator.boom_tracks.page(params[:page])} %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="playlists">
+      <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @collaborator.boom_playlists.page(params[:page])} %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="shows">
+      TODO
+    </div>
+    <div role="tabpanel" class="tab-pane" id="fans">
+      TODO
+    </div>
+  </div>
 </div>
