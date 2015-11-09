@@ -8,7 +8,7 @@ module Routes
             namespace :v1 do
               # api about fetch and query info
               resources :banners, only: :index
-              resources :users, only: [] do
+              resources :users do
                 collection do
                   get "verification"
                   get "verified_mobile"
@@ -29,6 +29,7 @@ module Routes
                   post "like_subject"
                   post "add_or_remove_track_belong_to_playlist"
                   post "add_or_remove_playlist"
+                  post "listened"
                 end
               end
               resources :collaborators, only: [:index, :show] do
@@ -42,6 +43,7 @@ module Routes
               end
               resources :activities, only: [:index, :show]
               resources :tracks, only: [:index, :show]
+              resources :playlists, only: [:show]
 
               get '/recommend' => 'home#index'
 

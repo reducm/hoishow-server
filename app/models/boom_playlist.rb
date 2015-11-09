@@ -1,4 +1,9 @@
+require 'elasticsearch/model'
+
 class BoomPlaylist < ActiveRecord::Base
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
@@ -9,8 +14,8 @@ class BoomPlaylist < ActiveRecord::Base
   has_many :playlist_track_relations, dependent: :destroy
   has_many :tracks, through: :playlist_track_relations, source: :boom_track
 
-  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_PLAYLIST }, foreign_key: 'subject_id'
-  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+  has_many :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -25,11 +30,10 @@ class BoomPlaylist < ActiveRecord::Base
 
   mount_uploader :cover, ImageUploader
 
-  #for api
-  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top')}
   #取出合集得时候不要忘记过滤
   scope :valid_playlists, -> { where("removed = false and mode = 0") }
   scope :valid_radios, -> { where("removed = false and mode = 1") }
+  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top, RAND()')}
 
   paginates_per 10
 

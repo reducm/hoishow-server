@@ -49,5 +49,6 @@ class BoomTopic < ActiveRecord::Base
   private
   def set_is_top
     self.is_top = false
+    nil
   end
 end

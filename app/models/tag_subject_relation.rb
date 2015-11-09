@@ -5,10 +5,7 @@ class TagSubjectRelation < ActiveRecord::Base
   SUBJECT_PLAYLIST = 'BoomPlaylist'
 
   belongs_to :boom_tag
-  belongs_to :boom_playlist
-  belongs_to :collaborator
-  belongs_to :boom_activity
-  belongs_to :boom_track
+  belongs_to :subject, polymorphic: true
 
   validates :subject_type, presence: true
   validates :subject_id, presence: true

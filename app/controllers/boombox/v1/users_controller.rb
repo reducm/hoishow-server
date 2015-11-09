@@ -229,6 +229,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     end
   end
 
+  def listened
+    relation = @user.user_track_relations.where(boom_track_id: params[:track_id]).first_or_create
+    relation.increment(:play_count).save!
+    render json: { result: "success" }
+  end
+
   protected
   def find_or_create_code(mobile)
     code = Rails.cache.read(cache_key(mobile))
