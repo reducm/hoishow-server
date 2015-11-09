@@ -6,8 +6,6 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     params[:page] ||= 1
     params[:per] ||= 10
     collaborators = Collaborator.all
-    # 列表显示艺人总数
-    @collaborators_count = collaborators.count
     # 按推荐过滤
     if params[:is_top].present?
       collaborators = collaborators.where(is_top: params[:is_top])
@@ -16,16 +14,25 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     if params[:q].present?
       collaborators = collaborators.where("collaborators.name like :search", search: "%#{params[:q]}%")
     end
+    # 艺人数
+    @collaborators_count = collaborators.count
     # 分页，每页显示数量
     @collaborators = collaborators.order(created_at: :desc).page(params[:page]).per(params[:per])
     # 将参数回传 
     @is_top = params[:is_top]
-    @per = params[:per]
+    #@per = params[:per]
+    respond_to do |format|
+     format.html
+     format.js
+    end
   end
 
   def show
-    @boom_albums = BoomAlbum.where(collaborator_id: params[:id])
+    @boom_albums = @collaborator.boom_albums.order(is_cover: :asc, created_at: :desc)
     # timeline/tracks/playlists/shows/fans
+    @boom_topics = @collaborator.boom_topics.order(created_at: :desc).page(1).per(10)
+    @boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
+    @boom_playlists = @collaborator.boom_playlists.order(created_at: :desc).page(1).per(10)
   end
 
   def edit
