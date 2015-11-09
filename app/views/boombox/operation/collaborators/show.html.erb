@@ -21,13 +21,15 @@
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="timeline">
-      <%= render partial: 'boombox/operation/boom_topics/table', locals: {boom_topics: @collaborator.boom_topics.order(created_at: :desc).page(params[:page])} %>
+      <%= render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>
     </div>
     <div role="tabpanel" class="tab-pane" id="tracks">
-      <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @collaborator.boom_tracks.page(params[:page])} %>
+      <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_tracks_path} %>
+      <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @boom_tracks} %>
     </div>
     <div role="tabpanel" class="tab-pane" id="playlists">
-      <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @collaborator.boom_playlists.page(params[:page])} %>
+      <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_tracks_path} %>
+      <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @boom_playlists} %>
     </div>
     <div role="tabpanel" class="tab-pane" id="shows">
       TODO
