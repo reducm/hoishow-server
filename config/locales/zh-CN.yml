@@ -163,6 +163,7 @@ zh-CN:
     playlists: "Playlist"
     radios: "电台"
     boom_admins: "管理员"
+    boom_feedbacks: "意见反馈"
   controller:
     sessions: "登录"
     home: "首页"

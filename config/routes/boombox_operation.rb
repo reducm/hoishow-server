@@ -41,6 +41,11 @@ module Routes
             resources :boom_admins do
             end
 
+            resources :boom_feedbacks, only: [:index] do
+              collection do
+                get :search
+              end
+            end
           end
         end
       end

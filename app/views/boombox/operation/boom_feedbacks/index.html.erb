@@ -1,0 +1,36 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='boom_feedbacks'>
+  <div class="text-center">
+    <h1>意见反馈</h1>
+  </div>
+
+  <div class="boom_feedbacks_search_form mt20">
+    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_boom_feedbacks_path} %>
+  </div>
+
+  <div class="boom_feedbacks_list mt20">
+    <table class="table table-hover boom_feedbacks">
+      <thead>
+        <tr>
+          <th class='text-center'>ID</th>
+          <th class='text-center'>内容</th>
+          <th class='text-center'>联系方式</th>
+          <th class='text-center'>创建时间</th>
+        </tr>
+      </thead>
+      <tbody class='text-center'>
+        <% if @boom_feedbacks.any? %>
+          <% @boom_feedbacks.each do|feedback| %>
+            <tr>
+              <td><%= feedback.id %></td>
+              <td><%= feedback.content %></td>
+              <td><%= feedback.contact %></td>
+              <td><%= feedback.created_at.try(:strfcn_time) %></td>
+            </tr>
+          <%end%>
+        <%end%>
+      </tbody>
+    </table>
+    <%= paginate @boom_feedbacks%>
+  </div>
+</div>
