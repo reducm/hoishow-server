@@ -47,10 +47,11 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
   def destroy
     @boom_album.destroy
     @collaborator = Collaborator.find(params[:collaborator_id])
-    unless @collaborator.boom_albums.where(is_cover: true).any?
-      flash[:warning] = "艺人没有设置封面，请设置或上传" 
+    if @collaborator.boom_albums.where(is_cover: true).any?
+      flash[:notice] = "相片删除成功"
+    else
+      flash[:warning] = "封面删除成功，请设置或上传封面"
     end
-    flash[:notice] = "相片删除成功" 
     redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
   end
 
