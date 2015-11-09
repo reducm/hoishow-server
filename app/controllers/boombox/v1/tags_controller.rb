@@ -1,4 +1,6 @@
-class Boombox::V1::TagsController < ApplicationController
+include BoomboxSearch
+
+class Boombox::V1::TagsController < Boombox::V1::ApplicationController
   def hot_tags
     @tags = BoomTag.hot_tags.pluck(:name)
 
@@ -6,6 +8,6 @@ class Boombox::V1::TagsController < ApplicationController
   end
 
   def search
-    @tag = BoomTag.where(name: params[:keyword]).first
+    query_search(params[:keyword])
   end
 end
