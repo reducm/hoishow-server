@@ -1,7 +1,7 @@
 class BoomTopic < ActiveRecord::Base
   belongs_to :collaborator
 
-  has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id'
+  has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id', dependent: :destroy
   has_many :likers, through: :boom_user_likes, source: :user
 
   has_many :boom_comments, dependent: :destroy
