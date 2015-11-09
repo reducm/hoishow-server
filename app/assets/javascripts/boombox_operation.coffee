@@ -14,6 +14,8 @@
 #= require boombox/operation/playlists
 #= require boombox/operation/radios
 #= require boombox/operation/boom_admins
+#= require boombox/operation/boom_users
+#= require boombox/operation/boom_feedbacks
 #
 #= require jquery-fileupload/basic
 #= require dropzone

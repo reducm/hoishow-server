@@ -1,0 +1,40 @@
+<%# encoding: utf-8 %>
+
+<table class="table table-hover boom_users">
+  <thead>
+    <tr>
+      <th class='text-center'>ID</th>
+      <th class='text-center'>头像</th>
+      <th class='text-center'>用户名</th>
+      <th class='text-center'>手机号码</th>
+      <th class='text-center'>评论数</th>
+      <th class='text-center'>动态点赞数</th>
+      <th class='text-center'>评论点赞数</th>
+      <th class='text-center'>操作</th>
+    </tr>
+  </thead>
+  <tbody class='text-center'>
+    <% if users.any? %>
+      <% users.each do|user| %>
+        <tr>
+          <td class="text-center"><%= user.id %></td>
+          <td class="text-center"><%= get_avatar(user, '50x50') %></td>
+          <td class="text-center"><%= user.nickname || user.mobile %></td>
+          <td class="text-center"><%= user.mobile %></td>   
+          <td class="text-center"><%= user.boom_comments.count %></td>
+          <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC).count %></td>
+          <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT).count %></td>
+          <td class="text-center">
+            <%= link_to "查看详情", boombox_operation_boom_user_path(user)%>
+            <% if user.is_block %>
+              <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 0), method: 'post' %>
+            <% else %>
+              <%= link_to "屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 1), method: 'post' %>
+            <% end %>
+          </td>
+        </tr>
+      <%end%>
+    <%end%>
+  </tbody>
+</table>
+<%= paginate users%>

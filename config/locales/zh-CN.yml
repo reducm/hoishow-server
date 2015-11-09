@@ -164,6 +164,7 @@ zh-CN:
     radios: "电台"
     boom_admins: "管理员"
     boom_feedbacks: "意见反馈"
+    boom_users: "用户"
   controller:
     sessions: "登录"
     home: "首页"

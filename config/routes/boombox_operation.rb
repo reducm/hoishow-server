@@ -46,6 +46,16 @@ module Routes
                 get :search
               end
             end
+
+            resources :boom_users, only: [:index, :show] do
+              member do
+                post :block_user
+              end
+              collection do
+                get :search
+              end
+            end
+
           end
         end
       end
