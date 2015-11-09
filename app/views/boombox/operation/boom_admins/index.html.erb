@@ -17,16 +17,18 @@
         </tr>
       </thead>
       <tbody class='text-center'>
-        <% @boom_admins.each do|admin| %>
-          <tr>
-            <td><%= admin.id %></td>
-            <td><%= admin.name %></td>
-            <td><%= admin.type_cn %></td>
-            <td><%= admin.created_at.try(:strfcn_time) %></td>
-            <td>
-              <%= link_to "修改密码", edit_boombox_operation_boom_admin_path(admin)%>
-            </td>
-          </tr>
+        <% if @boom_admins.any? %>
+          <% @boom_admins.each do|admin| %>
+            <tr>
+              <td><%= admin.id %></td>
+              <td><%= admin.name %></td>
+              <td><%= admin.type_cn %></td>
+              <td><%= admin.created_at.try(:strfcn_time) %></td>
+              <td>
+                <%= link_to "修改密码", edit_boombox_operation_boom_admin_path(admin)%>
+              </td>
+            </tr>
+          <%end%>
         <%end%>
       </tbody>
     </table>
