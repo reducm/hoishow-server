@@ -34,7 +34,7 @@
               <% else %>
                 已是封面
               <% end %> ｜ 
-              <%= link_to "删除", boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :delete, confirm: '确定吗？' %>
+              <%= link_to "删除", boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :delete, data: {confirm: '确定吗？'} %>
             </figcaption>
           </div>
         </div>
