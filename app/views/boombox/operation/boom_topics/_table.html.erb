@@ -1,8 +1,5 @@
 <div class="search">
-  <%= form_tag(boombox_operation_boom_topics_path, class: 'form-inline', method: 'get') do %>
-    <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入关键词" %>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
-  <% end %>
+  <%= render partial: "boombox/operation/search_form", locals: {form_path: boombox_operation_boom_topics_path} %>
 </div>
 
 <table class="table table-hover boom_topics_list">
@@ -17,8 +14,8 @@
     </tr>
   </thead>
   <tbody>
-  <% if boom_topics.any? %>
-    <% boom_topics.each do |boom_topic| %>
+  <% if @boom_topics.any? %>
+    <% @boom_topics.each do |boom_topic| %>
       <tr>
         <td style="width: 30%"><%= truncate(boom_topic.content, length: 150) %></td>
         <td><%= boom_topic.likes_count %></td>
@@ -41,16 +38,4 @@
   </tbody>
 </table>
 
-<div class="dropup topic-per">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    每页显示数量
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-    <li><%= link_to "5", boombox_operation_boom_topics_path(q: params[:q], page: params[:page], per: 5) %></li> 
-    <li><%= link_to "10", boombox_operation_boom_topics_path(q: params[:q], page: params[:page], per: 10) %></li> 
-    <li><%= link_to "20", boombox_operation_boom_topics_path(q: params[:q], page: params[:page], per: 20) %></li> 
-  </ul>
-</div>
-
-<%= paginate boom_topics %>
+<%= paginate @boom_topics %>
