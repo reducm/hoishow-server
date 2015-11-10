@@ -39,6 +39,9 @@ module Routes
             end
 
             resources :boom_admins do
+              member do
+                post :block_admin
+              end
             end
 
             resources :boom_feedbacks, only: [:index] do

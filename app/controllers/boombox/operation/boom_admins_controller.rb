@@ -40,6 +40,11 @@ class Boombox::Operation::BoomAdminsController < Boombox::Operation::Application
   def edit
   end
 
+  def block_admin
+    @boom_admin.update(is_block: params[:block])
+
+    redirect_to boombox_operation_boom_admins_url
+  end
 
   private
   def get_boom_admin

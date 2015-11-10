@@ -26,6 +26,11 @@
               <td><%= admin.created_at.try(:strfcn_time) %></td>
               <td>
                 <%= link_to "修改密码", edit_boombox_operation_boom_admin_path(admin)%>
+                <% if admin.is_block %>
+                  <%= link_to "解除锁定", block_admin_boombox_operation_boom_admin_path(admin, block: 0), method: 'post' %>
+                <% else %>
+                  <%= link_to "锁定", block_admin_boombox_operation_boom_admin_path(admin, block: 1), method: 'post' %>
+                <% end %>
               </td>
             </tr>
           <%end%>
