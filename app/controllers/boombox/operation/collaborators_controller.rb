@@ -26,11 +26,25 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def show
-    @boom_albums = @collaborator.boom_albums.order(is_cover: :asc, created_at: :desc)
-    # timeline/tracks/playlists/shows/fans
-    @boom_topics = @collaborator.boom_topics.order(created_at: :desc).page(1).per(10)
+    # timeline
+    params[:page] ||= 1
+    params[:per] ||= 10
+    boom_topics = @collaborator.boom_topics
+    ## 按关键词过滤
+    #if params[:q].present?
+      #boom_topics = boom_topics.where("content like :search", search: "%#{params[:q]}%")
+    #end
+    # 分页，每页显示数量
+    @boom_topics = boom_topics.order(created_at: :desc).page(params[:page]).per(params[:per])
+
+    # tracks/playlists/shows/fans
     @boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
     @boom_playlists = @collaborator.boom_playlists.order(created_at: :desc).page(1).per(10)
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def edit

@@ -24,12 +24,18 @@
       <%= render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>
     </div>
     <div role="tabpanel" class="tab-pane" id="tracks">
-      <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_tracks_path} %>
-      <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @boom_tracks} %>
+      <% if @boom_tracks.any? %>
+        <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @boom_tracks} %>
+      <% else %>
+        无tracks数据
+      <% end %>
     </div>
     <div role="tabpanel" class="tab-pane" id="playlists">
-      <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_tracks_path} %>
-      <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @boom_playlists} %>
+      <% if @boom_playlists.any? %>
+        <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @boom_playlists} %>
+      <% else %>
+        无playlists数据
+      <% end %>
     </div>
     <div role="tabpanel" class="tab-pane" id="shows">
       TODO
