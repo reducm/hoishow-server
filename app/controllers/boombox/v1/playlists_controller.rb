@@ -6,7 +6,12 @@ class Boombox::V1::PlaylistsController < Boombox::V1::ApplicationController
   end
 
   def playlist_list
-    @playlists = BoomPlaylist.open.playlist
+    if params[:keyword]
+      @playlists = BoomboxSearch.query_search(params[:keyword])[:playlists]
+      @playlists = Kaminari.paginate_array(@playlists).page(params[:page]).per(10)
+    else
+      @playlists = BoomPlaylist.open.playlist.page(params[:page])
+    end
   end
 
   def show

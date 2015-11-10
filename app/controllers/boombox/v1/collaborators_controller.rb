@@ -4,7 +4,12 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   before_action :get_collaborator, except: [:index]
 
   def index
-    @collaborators = Collaborator.verified.page(params[:page])
+    if params[:keyword]
+      @collaborators = BoomboxSearch.query_search(params[:keyword])[:collaborators]
+      @collaborators = Kaminari.paginate_array(@collaborators).page(params[:page]).per(10)
+    else
+      @collaborators = Collaborator.verified.page(params[:page])
+    end
   end
 
   def show

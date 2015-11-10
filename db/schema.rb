@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151028073629) do
+ActiveRecord::Schema.define(version: 20151110091313) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -272,6 +272,9 @@ ActiveRecord::Schema.define(version: 20151028073629) do
     t.datetime "updated_at",                    null: false
     t.integer  "collaborator_id", limit: 4
     t.boolean  "is_top",          limit: 1
+    t.string   "image",           limit: 255
+    t.string   "video_title",     limit: 255
+    t.string   "video_url",       limit: 255
   end
 
   create_table "boom_tracks", force: :cascade do |t|
