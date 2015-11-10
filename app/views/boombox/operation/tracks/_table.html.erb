@@ -30,7 +30,7 @@
           <td><%= track.artists %></td>
           <td><%= track.duration_to_time %></td>
           <td>
-            <% tags = track.tags.pluck(:name)%>
+            <% tags = track.boom_tags.pluck(:name)%>
             <% if tags.present? %>
               <%= tags.join(",") %>
             <% end %>

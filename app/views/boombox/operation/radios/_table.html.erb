@@ -23,7 +23,7 @@
           <td><%= radio.name %></td>
           <td><%= radio.tracks.count %></td>
           <td>
-            <% tags = radio.tags.pluck(:name)%>
+            <% tags = radio.boom_tags.pluck(:name)%>
             <% if tags.present? %>
               <%= tags.join(",") %>
             <% end %>

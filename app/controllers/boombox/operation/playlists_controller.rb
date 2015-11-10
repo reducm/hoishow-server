@@ -42,7 +42,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
       target_tag_ids = params[:tag_ids]
       if target_tag_ids
         target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @playlist.tags.pluck(:id)
+        source_tag_ids = @playlist.boom_tags.pluck(:id)
         #关联新tag，删除多余的tag
         new_tag_ids = target_tag_ids - source_tag_ids
         if new_tag_ids.present?

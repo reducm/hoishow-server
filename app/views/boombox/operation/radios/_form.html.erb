@@ -12,7 +12,7 @@
     <% end %>
   </div>
   <div id="radio_form">
-    <%= hidden_field_tag "radio_tag_ids", radio.tags.pluck(:id) %>
+    <%= hidden_field_tag "radio_tag_ids", radio.boom_tags.pluck(:id) %>
     <%= simple_form_for( radio, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
       <div class="row">
         <div class="col-xs-3 col-sm-4">
@@ -32,7 +32,7 @@
             <%= label_tag "tags", "标签" %>
             <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
             <div id="radio_delete_tag">
-              <% tags = radio.tags.pluck(:name, :id) %>
+              <% tags = radio.boom_tags.pluck(:name, :id) %>
               <% tags.each do |radio_tag| %>
                 <span class="btn btn-default"><%= radio_tag[0] + "" %></span><button data-tag-id="<%= radio_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
               <% end %>

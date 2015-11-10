@@ -23,7 +23,7 @@
           <td><%= playlist.name %></td>
           <td><%= playlist.tracks.count %></td>
           <td>
-            <% tags = playlist.tags.pluck(:name)%>
+            <% tags = playlist.boom_tags.pluck(:name)%>
             <% if tags.present? %>
               <%= tags.join(",") %>
             <% end %>
