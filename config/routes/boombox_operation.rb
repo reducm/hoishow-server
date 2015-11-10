@@ -42,6 +42,9 @@ module Routes
             end
 
             resources :boom_feedbacks, only: [:index] do
+              member do
+                post :update_status
+              end
               collection do
                 get :search
               end

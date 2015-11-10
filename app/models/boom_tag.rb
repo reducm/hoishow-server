@@ -25,6 +25,10 @@ class BoomTag < ActiveRecord::Base
   end
 
   def set_removed_and_is_hot
-    self.update(removed: 0, is_hot: 0)
+    if is_hot
+      self.update(removed: 0)
+    else
+      self.update(removed: 0, is_hot: 0)
+    end
   end
 end

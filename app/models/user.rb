@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
   has_many :boom_comments, -> { where creator_type: BoomComment::CREATOR_USER }, foreign_key: "creator_id"
 
   has_many :user_track_relations
+
+  has_many :boom_feedbacks
   #----------------boombox
 
   has_many :user_follow_stars
