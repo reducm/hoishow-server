@@ -4,4 +4,8 @@ $(function() {
   $('select#per').change(function() {
     $('#collaborators_form').submit();
   });
+
+  $('input[type=submit]').change(function() {
+    $('#collaborators_form').submit();
+  });
 });

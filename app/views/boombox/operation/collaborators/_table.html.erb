@@ -56,5 +56,5 @@
     <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: 'form-control' %>
   </div>
 
-  <%= paginate @collaborators %>
+  <%= paginate @collaborators, remote: true %>
 <% end %>

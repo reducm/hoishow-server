@@ -18,9 +18,7 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     @collaborators_count = collaborators.count
     # 分页，每页显示数量
     @collaborators = collaborators.order(created_at: :desc).page(params[:page]).per(params[:per])
-    # 将参数回传 
-    @is_top = params[:is_top]
-    #@per = params[:per]
+
     respond_to do |format|
      format.html
      format.js
