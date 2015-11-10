@@ -12,7 +12,7 @@
       <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-danger del_star' %>
     <% end %>
     </div>
-    <div class="form-group"">
+    <div class="form-group">
       <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-primary add_star' %>
       <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) %>
     </div>
@@ -101,6 +101,7 @@
               <th>票价</th>
             <% end %>
             <th>座位数(座位数不能少于已售出数量)</th>
+            <th>库存</th>
             <th>当前区域售出票数</th>
             <th>操作</th>
           </tr>
