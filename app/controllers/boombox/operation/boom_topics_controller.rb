@@ -3,17 +3,6 @@ class Boombox::Operation::BoomTopicsController < Boombox::Operation::Application
   load_and_authorize_resource
 
   def index
-    params[:page] ||= 1
-    params[:per] ||= 10
-    # 按关键词过滤
-    if params[:q].present?
-      @boom_topics = @boom_topics.where("content like :search", search: "%#{params[:q]}%")
-    end
-    # 分页，每页显示数量
-    @boom_topics = @boom_topics.page(params[:page]).per(params[:per])
-    # 将参数回传 
-    @is_top = params[:is_top]
-    @per = params[:per]
   end
 
   # 置顶 
@@ -24,22 +13,20 @@ class Boombox::Operation::BoomTopicsController < Boombox::Operation::Application
   end
 
   def show
-    # comments/users
-    params[:page] ||= 1
-    params[:per] ||= 10
-
-    comments = @boom_topic.boom_comments 
-    if params[:q]
-      comments = comments.where("content like :search", search: "%#{params[:q]}%")
-    end
-    @comments = comments.page(params[:page]).per(params[:per])
-
-    @users = @boom_topic.likers.page(params[:page]).per(params[:per])
+    params[:comments_page] ||= 1
+    params[:likers_page] ||= 1
+    params[:comments_per] ||= 10
+    params[:likers_per] ||= 10
+    # comments
+    @comments = @boom_topic.boom_comments.order(created_at: :desc).page(params[:comments_page]).per(params[:comments_per])
+    # likers，按关注先后排序
+    likers = User.unscoped.joins(:boom_user_likes).where(boom_user_likes: { subject_id: @boom_topic.id, subject_type: 'BoomTopic' })
+    @likers = likers.order("boom_user_likes.created_at").page(params[:likers_page]).per(params[:likers_per])
   end
 
   def destroy 
     collaborator = @boom_topic.collaborator
-    if @boom_topic.delete
+    if @boom_topic.destroy
       redirect_to boombox_operation_collaborator_url(collaborator), notice: '删除成功'
     else
       flash[:alert] = @boom_topic.errors.full_messages.to_sentence
