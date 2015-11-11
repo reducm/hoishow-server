@@ -43,3 +43,5 @@ class Collaborator < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
+
+Collaborator.import(force: true)

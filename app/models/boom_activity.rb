@@ -28,6 +28,12 @@ class BoomActivity < ActiveRecord::Base
 
   paginates_per 10
 
+  def as_indexed_json(options={})
+    as_json(
+      only: :name
+    )
+  end
+
   def location_name
     boom_location.name if boom_location
   end
@@ -37,3 +43,5 @@ class BoomActivity < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
+
+BoomActivity.import(force: true)

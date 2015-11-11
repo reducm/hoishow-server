@@ -282,6 +282,9 @@ ActiveRecord::Schema.define(version: 20151111070538) do
     t.datetime "updated_at",                    null: false
     t.integer  "collaborator_id", limit: 4
     t.boolean  "is_top",          limit: 1
+    t.string   "image",           limit: 255
+    t.string   "video_title",     limit: 255
+    t.string   "video_url",       limit: 255
   end
 
   create_table "boom_tracks", force: :cascade do |t|

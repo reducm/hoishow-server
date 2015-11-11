@@ -42,3 +42,5 @@ class BoomTag < ActiveRecord::Base
   end
 
 end
+
+BoomTag.import(force: true)

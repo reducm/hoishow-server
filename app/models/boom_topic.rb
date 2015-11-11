@@ -1,4 +1,8 @@
+require 'elasticsearch/model'
+
 class BoomTopic < ActiveRecord::Base
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
   belongs_to :collaborator
 
   has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id'
@@ -6,11 +10,16 @@ class BoomTopic < ActiveRecord::Base
 
   has_many :boom_comments, dependent: :destroy
 
-  validates :subject_type, presence: true
   validates :content, presence: true
-  validates :subject_id, presence: true
 
+  mount_uploader :image, ImageUploader
   before_create :set_is_top
+
+  def as_indexed_json(options={})
+    as_json(
+      only: :content
+    )
+  end
 
   def subject
      begin
@@ -52,3 +61,5 @@ class BoomTopic < ActiveRecord::Base
     nil
   end
 end
+
+BoomTopic.import(force: true)

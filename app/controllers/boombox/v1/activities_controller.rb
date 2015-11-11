@@ -2,7 +2,12 @@ class Boombox::V1::ActivitiesController < Boombox::V1::ApplicationController
   before_action :get_user
 
   def index
-    @activities = BoomActivity.is_display.page(params[:page])
+    if params[:keyword]
+      @activities = BoomboxSearch.query_search(params[:keyword])[:activities]
+      @activities = Kaminari.paginate_array(@activities).page(params[:page]).per(10)
+    else
+      @activities = BoomActivity.is_display.page(params[:page])
+    end
   end
 
   def show

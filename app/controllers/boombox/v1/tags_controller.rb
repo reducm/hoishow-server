@@ -8,6 +8,6 @@ class Boombox::V1::TagsController < Boombox::V1::ApplicationController
   end
 
   def search
-    query_search(params[:keyword])
+    @records = BoomboxSearch.query_search(params[:keyword])
   end
 end
