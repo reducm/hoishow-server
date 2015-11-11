@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151104033512) do
+ActiveRecord::Schema.define(version: 20151110033641) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -205,8 +205,9 @@ ActiveRecord::Schema.define(version: 20151104033512) do
     t.string   "creator_type",  limit: 255
     t.string   "avatar",        limit: 255
     t.text     "content",       limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "is_hidden",     limit: 1,     default: false
   end
 
   create_table "boom_locations", force: :cascade do |t|

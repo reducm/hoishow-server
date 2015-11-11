@@ -68,8 +68,10 @@ class Ability
       if user.admin? || user.operator?
         # 后台需要的模块加这里
         can :manage, Collaborator
-        can :manage, BoomAlbum 
-        can :manage, BoomTopic 
+        can :manage, BoomAlbum
+        can :manage, BoomTopic
+        can :manage, BoomComment
+        can :manage, User
       end
     else
       #TODO

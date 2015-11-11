@@ -21,12 +21,19 @@ module Routes
             resources :boom_albums, only: [:index, :create, :destroy] do
               member do
                 post :set_cover
+                post :unset_cover
               end
             end
 
             resources :boom_topics, only: [:index, :show, :destroy] do
               member do
                 post :set_top
+              end
+            end
+
+            resources :boom_comments, only: :index do
+              member do
+                post :hide
               end
             end
 

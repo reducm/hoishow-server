@@ -9,6 +9,9 @@
 #= require operation/notify
 #= require boombox/operation/collaborators
 #= require boombox/operation/boom_albums
+#= require boombox/operation/boom_topics
+#= require boombox/operation/boom_comments
+#= require boombox/operation/users
 #
 #= require boombox/operation/home
 #= require boombox/operation/sessions
