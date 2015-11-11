@@ -19,14 +19,7 @@ json.collaborators do
 end
 
 json.radios do
-  json.array! @radios do |playlist|
-    json.(playlist, :id, :name)
-    json.cover playlist.cover_url || ''
-    json.is_followed playlist.is_followed(@user.try(:id))
-    json.tracks do
-      json.array! playlist.tracks.order('RAND()'), partial: 'boombox/v1/tracks/track', as: :track
-    end
-  end
+  json.array! @radios, partial: 'boombox/v1/playlists/playlist', as: :playlist, user: @user
 end
 
 json.playlists do

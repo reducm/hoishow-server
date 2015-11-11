@@ -26,6 +26,8 @@ class BoomTrack < ActiveRecord::Base
   after_create :set_removed_and_is_top
   scope :valid, -> {where(removed: false).order('is_top')}
 
+  paginates_per 10
+
   def as_indexed_json(options={})
     as_json(
       only: [:name, :artists]

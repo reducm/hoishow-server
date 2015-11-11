@@ -2,7 +2,7 @@
 
 class AudioUploader < CarrierWave::Uploader::Base
   # Filenames and unicode chars
-  if Rails.env.production? || Rails.env.staging?
+  if Rails.env.production? || Rails.env.boombox?
     storage :upyun
   else
     storage :file

@@ -141,11 +141,11 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_playlists
-    @playlists = @user.follow_playlists
+    @playlists = @user.follow_playlists.page(params[:page])
   end
 
   def my_playlists
-    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id)
+    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id).page(params[:page])
   end
 
   def comment_list
