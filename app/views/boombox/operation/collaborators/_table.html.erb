@@ -1,8 +1,8 @@
 <%= form_tag(boombox_operation_collaborators_path, class: 'form-inline', id: 'collaborators_form', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "艺人数/总数：#{@collaborators_count}/#{Collaborator.all.count}"%></h3>
+  <h4 class="pull-left"><%= "艺人数/总数：#{@collaborators.total_count}/#{Collaborator.count}"%></h3>
   <div class="search">
-    <%= select_tag :is_top, options_for_select([["全部", ""], ["推荐", "1"]], selected: params[:is_top] || ""), class: 'form-control' %>
-    <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入关键词" %>
+    <%= select_tag :is_top, options_for_select([["全部", ""], ["推荐", "1"]], selected: params[:is_top] || ""), class: 'form-control collaborators_filter' %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control collaborators_filter', placeholder: "输入关键词" %>
     <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
@@ -53,7 +53,7 @@
   </table>
 
   <div>每页显示数量
-    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: 'form-control' %>
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: 'form-control collaborators_filter' %>
   </div>
 
   <%= paginate @collaborators, remote: true %>

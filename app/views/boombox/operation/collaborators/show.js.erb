@@ -1,11 +1,1 @@
 $('#timeline').html("<%= j render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>");
-
-$(function() {
-  $('select#per').change(function() {
-    $('#topics_form').submit();
-  });
-
-  $('input[type=submit]').change(function() {
-    $('#topics_form').submit();
-  });
-});
