@@ -4,7 +4,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   before_filter :get_playlist, except: [:search, :index, :new, :create]
 
   def index
-    @playlists = BoomPlaylist.valid_playlists.page(params[:page]).order("created_at desc")
+    @playlists = BoomPlaylist.valid_playlists.page(params[:playlists_page]).order("created_at desc")
   end
 
   def search

@@ -47,4 +47,4 @@
     <%end%>
   </tbody>
 </table>
-<%= paginate tracks %>
+<%= paginate tracks, param_name: "tracks_page", remote: true %>

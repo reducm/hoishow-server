@@ -162,6 +162,7 @@ zh-CN:
     tracks: "音乐"
     playlists: "Playlist"
     radios: "电台"
+    boom_tags: "标签"
     boom_admins: "管理员"
     boom_feedbacks: "意见反馈"
     boom_users: "用户"

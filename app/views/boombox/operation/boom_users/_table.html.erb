@@ -37,4 +37,4 @@
     <%end%>
   </tbody>
 </table>
-<%= paginate users%>
+<%= paginate users, param_name: "users_page", remote: true %>

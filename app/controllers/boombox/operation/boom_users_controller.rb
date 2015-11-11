@@ -3,7 +3,7 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   before_filter :check_login!
 
   def index
-    @users = User.page(params[:page]).order("created_at desc")
+    @users = User.page(params[:users_page]).order("created_at desc")
   end
 
   def search

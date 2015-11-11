@@ -4,7 +4,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   before_filter :get_track, except: [:search, :index, :new, :create]
 
   def index
-    @tracks = BoomTrack.valid.page(params[:page]).order("created_at desc")
+    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
   end
 
   def search

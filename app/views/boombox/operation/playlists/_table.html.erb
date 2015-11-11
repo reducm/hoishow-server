@@ -41,4 +41,4 @@
     <%end%>
   </tbody>
 </table>
-<%= paginate playlists %>
+<%= paginate playlists, param_name: "playlists_page", remote: true %>
