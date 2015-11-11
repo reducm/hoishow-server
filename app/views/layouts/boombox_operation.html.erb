@@ -13,17 +13,21 @@
 
 <script type="text/javascript">
   $(function(){
-    var notice = "<%= flash[:notice] || flash[:alert] || flash[:warning]%>"
+    var notice = "<%= flash[:notice] %>";
+    var alert = "<%=  flash[:alert] %>";
+    var warning = "<%= flash[:warning] %>";
     <% if flash[:notice] %>
       $.notify(notice, {
         globalPosition:"top center",
         className: 'success',} );
-    <% elsif flash[:alert] %>
-      $.notify(notice, {
+    <% end %>
+    <% if flash[:alert] %>
+      $.notify(alert, {
         globalPosition:"top center",
         className: 'error'  } );
-    <% elsif flash[:warning] %>
-      $.notify(notice, {
+    <% end %>
+    <% if flash[:warning] %>
+      $.notify(warning, {
         globalPosition:"top center",
         className: 'warning'  } );
     <% end %>

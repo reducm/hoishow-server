@@ -36,22 +36,26 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
   end
 
   def set_cover 
-    @boom_albums = BoomAlbum.where(collaborator_id: params[:collaborator_id])
-    @boom_albums.update_all(is_cover: false)
     @boom_album.update(is_cover: true)
-
     flash[:notice] = "设置封面成功" 
+    redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
+  end
+
+  def unset_cover 
+    @boom_album.update(is_cover: false)
+    flash[:notice] = "取消封面成功" 
+    @collaborator = Collaborator.find(params[:collaborator_id])
+    warn_if_current_no_cover(@collaborator)
+
     redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
   end
 
   def destroy
     @boom_album.destroy
+    flash[:notice] = "相片删除成功"
     @collaborator = Collaborator.find(params[:collaborator_id])
-    if @collaborator.boom_albums.where(is_cover: true).any?
-      flash[:notice] = "相片删除成功"
-    else
-      flash[:warning] = "封面删除成功，请设置或上传封面"
-    end
+    warn_if_current_no_cover(@collaborator)
+
     redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
   end
 
@@ -60,5 +64,11 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
   def boom_album_params
     params[:boom_album][:image] = params[:file]
     params.require(:boom_album).permit(:collaborator_id, :image, :is_cover)
+  end
+
+  def warn_if_current_no_cover(collaborator)
+    unless collaborator.boom_albums.where(is_cover: true).any?
+      flash[:warning] = "艺人当前没有封面，请设置或上传"
+    end
   end
 end

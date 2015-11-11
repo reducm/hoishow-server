@@ -4,13 +4,13 @@
     <%= f.hidden_field :collaborator_id, value: @collaborator.id %>
   <% end %>
 
-  <div class="gallery col-md-8 col-md-offset-2">
+  <div class="gallery">
   <% if @boom_albums.any? %>
     <% @boom_albums.each do |boom_album| %>
       <% if boom_album.is_cover %>
-        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image-is-cover" data-toggle="modal"><img src=<%= boom_album.image %> style="width: 160px; height: 160px;"></img></a>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image-is-cover" data-toggle="modal"><img src=<%= boom_album.image %>  style="float: left; height: 15em; margin-right: 1%; margin-bottom: 0.5em;"></img></a>
       <% else %>
-        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image" data-toggle="modal"><img src=<%= boom_album.image %> style="width: 160px; height: 160px;"></img></a>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image" data-toggle="modal"><img src=<%= boom_album.image %>  style="float: left; height: 15em; margin-right: 1%; margin-bottom: 0.5em;"></img></a>
       <% end %>
     <% end %>
     <p style="clear: both;">
@@ -32,7 +32,7 @@
               <% if !boom_album.is_cover %>
                 <%= link_to "设置封面", set_cover_boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :post %>
               <% else %>
-                已是封面
+                <%= link_to "取消封面", unset_cover_boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :post %>
               <% end %> ｜ 
               <%= link_to "删除", boombox_operation_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :delete, data: {confirm: '确定吗？'} %>
             </figcaption>
