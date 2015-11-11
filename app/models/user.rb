@@ -145,6 +145,11 @@ class User < ActiveRecord::Base
     boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first_or_create!
   end
 
+  # 点赞时间
+  def like_boomtopic_at(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first.created_at
+  end
+
   def unlike_boomtopic(topic)
     if destroy_topic = boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first
       destroy_topic.destroy!
