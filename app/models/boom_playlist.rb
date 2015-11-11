@@ -51,6 +51,10 @@ class BoomPlaylist < ActiveRecord::Base
     user_id.in?(user_follow_playlists.pluck(:user_id))
   end
 
+  def tracks_count
+    tracks.count
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)

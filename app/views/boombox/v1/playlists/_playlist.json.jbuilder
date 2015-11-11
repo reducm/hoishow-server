@@ -4,6 +4,7 @@ need_tracks ||= false
 json.(playlist, :id, :name)
 json.cover playlist.cover_url || ''
 json.is_followed playlist.is_followed(user.try(:id))
+json.tracks_count playlist.tracks_count
 
 if need_tracks
   json.tracks do
