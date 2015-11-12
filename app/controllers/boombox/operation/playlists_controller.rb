@@ -77,6 +77,10 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
     redirect_to boombox_operation_playlists_url
   end
 
+  def manage_tracks
+    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page]).order("created_at desc")
+    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+  end
 
   private
   def get_playlist

@@ -1,0 +1,19 @@
+<%# encoding: utf-8 %>
+
+<div role="tabpanel">
+  <ul class="nav nav-pills" role="tablist" id="playlist_manage_tab">
+    <li role="presentation" class="active"><a href="#playlist_tracks" aria-controls="playlist_tracks" role="tab" data-toggle="tab">音乐列表</a></li>
+    <li role="presentation"><a href="#all_tracks" aria-controls="all_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="playlist_tracks">
+      <%= render partial: "/boombox/operation/tracks/table", locals: {tracks: @playlist_tracks} %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="all_tracks">
+      <%= render partial: "/boombox/operation/tracks/table", locals: {tracks: @tracks} %>
+    </div>
+  </div>
+
+</div>
