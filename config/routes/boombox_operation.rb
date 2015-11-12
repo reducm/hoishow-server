@@ -38,6 +38,15 @@ module Routes
               end
             end
 
+            resources :activities do
+              member do
+                post :change_is_top
+              end
+              collection do
+                get :search
+              end
+            end
+
             resources :boom_tags, only: [:index, :create, :destroy] do
               member do
                 post :change_is_top

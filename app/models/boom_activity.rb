@@ -20,7 +20,7 @@ class BoomActivity < ActiveRecord::Base
     show: 0,
     activity: 1
   }
-  after_create :set_removed_and_is_top
+  after_create :set_activity_param
 
   scope :is_display, ->{ where(is_display: true, removed: false).order('is_top')}
 
@@ -38,9 +38,40 @@ class BoomActivity < ActiveRecord::Base
     boom_location.name if boom_location
   end
 
+  def is_display_cn
+    if is_display
+      "显示"
+    else
+      "不显示"
+    end
+  end
+
+  def is_hot_cn
+    if is_hot
+      "正在推荐"
+    else
+      "没有推荐"
+    end
+  end
+
+  def tag_for_activity(tag)
+    tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
+  end
+
+  def relate_collaborator(collaborator)
+    collaborator_activity_relations.where(collaborator_id: collaborator.id).first_or_create!
+  end
+
   private
-  def set_removed_and_is_top
-    self.update(removed: 0, is_top: 0)
+  def set_activity_param
+    activity_param = { removed: 0, is_top: 0, is_display: 0, is_hot: 0 }
+    if is_hot
+      activity_param.delete(:is_hot)
+    end
+    if is_display
+      activity_param.delete(:is_display)
+    end
+    self.update(activity_param)
   end
 end
 
