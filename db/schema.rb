@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151111070538) do
+ActiveRecord::Schema.define(version: 20151111092915) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 20151111070538) do
     t.integer  "status",             limit: 4
     t.boolean  "is_display",         limit: 1
     t.boolean  "is_top",             limit: 1
+    t.boolean  "is_hot",             limit: 1
   end
 
   add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree

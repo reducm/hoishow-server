@@ -34,6 +34,7 @@
           <td>
             <%= link_to playlist.is_top_cn, change_is_top_boombox_operation_playlist_path(playlist), method: 'POST' %>
             <%= link_to "编辑", edit_boombox_operation_playlist_path(playlist)%>
+            <%= link_to "管理音乐", manage_tracks_boombox_operation_playlist_path(playlist)%>
             <%= link_to "删除", boombox_operation_playlist_path(playlist), method: "delete", data: {confirm: "确定删除吗？"} %>
           </td>
         </tr>

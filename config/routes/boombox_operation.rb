@@ -49,6 +49,7 @@ module Routes
             resources :playlists do
               member do
                 post :change_is_top
+                get :manage_tracks
               end
               collection do
                 get :search
@@ -56,6 +57,15 @@ module Routes
             end
 
             resources :radios do
+              member do
+                post :change_is_top
+              end
+              collection do
+                get :search
+              end
+            end
+
+            resources :activities do
               member do
                 post :change_is_top
               end

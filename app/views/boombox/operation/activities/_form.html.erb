@@ -1,0 +1,69 @@
+<%# encoding: utf-8 %>
+<div class="nav">
+  <div class="text-center">
+    <% if params[:action] == 'new' %>
+      <% form_url = "/boombox/operation/activities" %>
+      <% form_method = "POST" %>
+      <h1>新建活动</h1>
+    <% elsif params[:action] == 'edit' %>
+      <% form_url = "/boombox/operation/activities/#{activity.id}" %>
+      <% form_method = "PATCH" %>
+      <h1>编辑活动</h1>
+    <% end %>
+  </div>
+  <div id="activity_form">
+    <%= hidden_field_tag "activity_tag_ids", activity.boom_tags.pluck(:id) %>
+    <%= hidden_field_tag "activity_collaborator_ids", activity.collaborators.pluck(:id) %>
+    <%= simple_form_for( activity, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
+      <div class="row">
+        <div class="col-xs-3 col-sm-4">
+          <div class="text-center" id="cover_preview">
+            <%= f.input :cover, label: "请上传 1280x720 jpg 类型图像文件", input_html: {class: "activity-cover-uploader dropzone", id: "activity_cover"} %>
+            <% if params[:action] == 'edit' %>
+              <img id="activity_cover_url" src=<%= activity.cover_url %> />
+            <% end %>
+          </div>
+        </div>
+
+        <div class="col-xs-9 col-sm-6">
+          <div class="form-group">
+            <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
+            <%= f.input :is_hot, label: "打勾推荐此活动" %>
+            <%= f.input :is_display, label: "打勾显示此活动" %>
+
+            <%= label_tag "tags", "标签" %>
+            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
+            <div id="activity_delete_tag">
+              <% tags = activity.boom_tags.pluck(:name, :id) %>
+              <% tags.each do |activity_tag| %>
+                <span class="btn btn-default"><%= activity_tag[0] + "" %></span><button data-tag-id="<%= activity_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
+              <% end %>
+            </div>
+            <div class="form-group">
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), class:"form-control", id: "activity_tag_list" %>
+              <a class="btn btn-primary" id="activity_add_tag">添加选中标签</a>
+            </div>
+
+            <%= label_tag "collaborators", "艺人" %>
+            <%= hidden_field_tag "collaborator_ids", params[:boom_collaborator_ids], id: 'boom_collaborator_ids' %>
+            <div id="activity_delete_collaborator">
+              <% collaborators = activity.collaborators.pluck(:name, :id) %>
+              <% collaborators.each do |activity_collaborator| %>
+                <span class="btn btn-default"><%= activity_collaborator[0] + "" %></span><button data-collaborator-id="<%= activity_collaborator[1] %>" class="btn btn-danger remove_collaborator">删除</button>
+              <% end %>
+            </div>
+            <div class="form-group">
+              <%= select_tag "select_collaborators", options_for_select(Collaborator.verified.collect{|collaborator| [collaborator.name, collaborator.id]}), class:"form-control", id: "activity_collaborator_list" %>
+              <a class="btn btn-primary" id="activity_add_collaborator">添加选中艺人</a>
+            </div>
+          </div>
+        </div>
+      </div>
+        <%= f.input :description, label: '图文描述' %>
+
+      <div class="form-group text-center">
+        <%= submit_tag "保存", class: "btn btn-primary", id: "activity-submit", data: { disable_with: "loading" } %>
+      </div>
+    <% end %>
+  </div>
+</div>
