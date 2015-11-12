@@ -27,7 +27,12 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     # timeline
     params[:topics_page] ||= 1
     params[:topics_per] ||= 10
-    @boom_topics = @collaborator.boom_topics.order(created_at: :desc).page(params[:topics_page]).per(params[:topics_per])
+    boom_topics = @collaborator.boom_topics
+    if params[:topics_q].present?
+      @boom_topics = boom_topics.search(params[:topics_q]).page(params[:topics_page]).per(params[:topics_per]).records
+    else
+      @boom_topics = boom_topics.order(created_at: :desc).page(params[:topics_page]).per(params[:topics_per])
+    end
 
     # tracks/playlists/shows/fans
     @boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)

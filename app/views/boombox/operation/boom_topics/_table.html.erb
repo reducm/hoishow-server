@@ -1,4 +1,9 @@
 <%= form_tag(boombox_operation_collaborator_path(@collaborator), class: 'form-inline', id: 'topics_form', method: 'get', remote: true) do %>
+  <div class="search">
+    <%= text_field_tag "topics_q", params[:topics_q],  class: 'form-control topicss_filter', placeholder: "输入关键词" %>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
   <table class="table table-hover boom_topics_list">
     <thead>
       <tr>

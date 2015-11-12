@@ -1,8 +1,6 @@
-require 'elasticsearch/model'
-
 class BoomTopic < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include BoomTopicSearchable
+  
   belongs_to :collaborator
 
   has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id', dependent: :destroy

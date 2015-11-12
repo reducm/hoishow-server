@@ -6,17 +6,46 @@ brew install elasticsearch
 
 安装完后,按照文档可以设置开机启动
 
-> ln -sfv /usr/local/opt/elasticsearch/*.plist ~/Library/LaunchAgents
-> launchctl load ~/Library/LaunchAgents/homebrew.mxcl.elasticsearch.plist
+```
+ln -sfv /usr/local/opt/elasticsearch/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.elasticsearch.plist
+```
 
 然后跑以下命令启动
-> elasticsearch --config=/usr/local/opt/elasticsearch/config/elasticsearch.yml
+`elasticsearch --config=/usr/local/opt/elasticsearch/config/elasticsearch.yml`
 
-##添加Model到elasticsearch中搜索, 例如把Star搜索加入
-> RAILS_ENV=development bundle exec rake environment elasticsearch:import:model CLASS='Star' FORCE=y
+####第一次跑es的rake task前
+先要在lib/tasks/elasticsearch.rake加上
 
-##所有model添加到elasticsearch
-> rake environment elasticsearch:import:all
+`require 'elasticsearch/rails/tasks/import'`
+
+####添加Model到elasticsearch中搜索, 例如把Star搜索加入
+`RAILS_ENV=development bundle exec rake environment elasticsearch:import:model CLASS='Star' FORCE=y`
+
+####所有model添加到elasticsearch
+`rake environment elasticsearch:import:all`
+
+##elasticsearch-rails使用参考
+
+####定义索引
+
+定义后需重建索引
+```
+BoomTopic.__elasticsearch__.create_index! force: true
+BoomTopic.imort
+```
+
+####排序
+
+####搜索后返回数据库对象
+`BoomTopic.search('勇士').records`
+
+```
+=> #<Elasticsearch::Model::Response::Records:0x007f9883a983f0 
+  ... 
+```
+需要分页的话
+`BoomTopic.search(params[:topics_q]).page(params[:topics_page]).records`
 
 ##Sidekiq
 bundle exec sidekiq
