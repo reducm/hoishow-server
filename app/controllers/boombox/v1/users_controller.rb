@@ -142,11 +142,11 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_playlists
-    @playlists = @user.follow_playlists
+    @playlists = @user.follow_playlists.page(params[:page])
   end
 
   def my_playlists
-    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id)
+    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id).page(params[:page])
   end
 
   def comment_list
@@ -228,6 +228,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
         error_respond I18n.t("errors.messages.playlist_not_found")
       end
     end
+  end
+
+  def listened
+    relation = @user.user_track_relations.where(boom_track_id: params[:track_id]).first_or_create
+    relation.increment(:play_count).save!
+    render json: { result: "success" }
   end
 
   protected

@@ -1,4 +1,9 @@
+require 'elasticsearch/model'
+
 class BoomActivity < ActiveRecord::Base
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   belongs_to :boom_location
   belongs_to :boom_admin
 
@@ -8,8 +13,8 @@ class BoomActivity < ActiveRecord::Base
   has_many :activity_track_relations
   has_many :tracks, through: :activity_track_relations, source: :boom_track
 
-  has_many :tag_subject_relations, -> { where subject_type: TagSubjectRelation::SUBJECT_ACTIVITY }, foreign_key: 'subject_id'
-  has_many :tags, through: :tag_subject_relations, source: :boom_tag
+  has_many :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject
 
   enum mode: {
     show: 0,
@@ -23,6 +28,12 @@ class BoomActivity < ActiveRecord::Base
 
   paginates_per 10
 
+  def as_indexed_json(options={})
+    as_json(
+      only: :name
+    )
+  end
+
   def location_name
     boom_location.name if boom_location
   end
@@ -32,3 +43,5 @@ class BoomActivity < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
+
+BoomActivity.import(force: true)

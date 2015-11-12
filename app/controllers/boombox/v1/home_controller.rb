@@ -3,9 +3,9 @@ class Boombox::V1::HomeController < Boombox::V1::ApplicationController
 
   def index
     @banners = BoomBanner.all
-    @tracks = BoomTrack.recommend.limit(3)
-    @collaborators = Collaborator.display.limit(4)
+    @collaborators = Collaborator.verified.limit(4)
     @radios = BoomPlaylist.radio.open.limit(6)
-    @playlists = BoomPlaylist.playlist.open.limit(3)
+    @tracks = BoomTrack.recommend(@user).first(3)
+    @playlists = @user ? @user.recommend_playlists.first(3) : BoomPlaylist.playlist.open.limit(3)
   end
 end

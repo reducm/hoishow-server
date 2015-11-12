@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151110033641) do
+ActiveRecord::Schema.define(version: 20151110091313) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -279,6 +279,9 @@ ActiveRecord::Schema.define(version: 20151110033641) do
     t.datetime "updated_at",                    null: false
     t.integer  "collaborator_id", limit: 4
     t.boolean  "is_top",          limit: 1
+    t.string   "image",           limit: 255
+    t.string   "video_title",     limit: 255
+    t.string   "video_url",       limit: 255
   end
 
   create_table "boom_tracks", force: :cascade do |t|
@@ -884,6 +887,17 @@ ActiveRecord::Schema.define(version: 20151110033641) do
 
   add_index "user_message_relations", ["message_id"], name: "index_user_message_relations_on_message_id", using: :btree
   add_index "user_message_relations", ["user_id"], name: "index_user_message_relations_on_user_id", using: :btree
+
+  create_table "user_track_relations", force: :cascade do |t|
+    t.integer  "user_id",       limit: 4
+    t.integer  "boom_track_id", limit: 4
+    t.integer  "play_count",    limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "user_track_relations", ["boom_track_id"], name: "index_user_track_relations_on_boom_track_id", using: :btree
+  add_index "user_track_relations", ["user_id"], name: "index_user_track_relations_on_user_id", using: :btree
 
   create_table "user_verified_info_types", force: :cascade do |t|
     t.string   "boom_id",    limit: 255

@@ -1,1 +1,1 @@
-json.array! @playlists, partial: "playlist", as: :playlist 
+json.array! @playlists, partial: 'boombox/v1/playlists/playlist', as: :playlist 

@@ -1,4 +1,9 @@
+require 'elasticsearch/model'
+
 class BoomTrack < ActiveRecord::Base
+  include Elasticsearch::Model
+  include Elasticsearch::Model::Callbacks
+
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
 
@@ -14,6 +19,8 @@ class BoomTrack < ActiveRecord::Base
   scope :recommend, -> { order('is_top, RAND()').limit(20) }
   #取出合集得时候不要忘记过滤
   scope :valid_tracks, -> {where removed: false}
+  has_many :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -23,6 +30,21 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
 
   after_create :set_removed_and_is_top
+  scope :valid, -> {where(removed: false).order('is_top')}
+
+  paginates_per 10
+
+  def as_indexed_json(options={})
+    as_json(
+      only: [:name, :artists]
+    )
+  end
+
+  def self.recommend(user=nil)
+    Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
+      user ? user.recommend_tracks : BoomTrack.order('is_top, RAND()').limit(20).to_a
+    end
+  end
 
   paginates_per 10
 
@@ -70,3 +92,5 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 end
+
+BoomTrack.import(force: true)

@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :boom_user_likes
   has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
 
+  has_many :user_track_relations
   #----------------boombox
 
   has_many :user_follow_stars
@@ -166,9 +167,25 @@ class User < ActiveRecord::Base
     end
   end
 
+  def recommend_tags
+    Rails.cache.fetch("user:#{id}:recommend_tags", expires_in: 1.day) do
+      track_ids = user_track_relations.order('play_count desc').limit(3).pluck(:boom_track_id).uniq
+      tag_ids = TagSubjectRelation.where(subject_type: TagSubjectRelation::SUBJECT_TRACK, subject_id: track_ids).pluck(:boom_tag_id).uniq
+      BoomTag.where(id: tag_ids)
+    end
+  end
 
+  def recommend_tracks
+    Rails.cache.fetch("user:#{id}:recommend_tracks", expires_in: 1.day) do
+      recommend_tags.map{|tag| tag.tracks}.flatten.shuffle.first(20)
+    end
+  end
 
-
+  def recommend_playlists
+    Rails.cache.fetch("user:#{id}:recommend_playlists", expires_in: 1.day) do
+      recommend_tags.map{|tag| tag.playlists.playlist}.flatten.shuffle.first(10)
+    end
+  end
   #----------------------boombox
 
   def create_comment(topic, parent_id = nil, content)
