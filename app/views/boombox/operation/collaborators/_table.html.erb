@@ -30,7 +30,7 @@
             <td>无头像</td>
           <% end %>
           <td><%= collaborator.name %></td>
-          <td><%= collaborator.tags.pluck(:name).join(", ")%></td>
+          <td><%= collaborator.boom_tags.pluck(:name).join(", ")%></td>
           <td><%= collaborator.followers.count %></td>
           <td><%= collaborator.created_at.strfcn_time %></td>
           <td><%= collaborator.updated_at.strfcn_time %></td>
