@@ -18,7 +18,13 @@ class Boombox::Operation::BoomTopicsController < Boombox::Operation::Application
     params[:comments_per] ||= 10
     params[:likers_per] ||= 10
     # comments
-    @comments = @boom_topic.boom_comments.order(created_at: :desc).page(params[:comments_page]).per(params[:comments_per])
+    boom_comments = @boom_topic.boom_comments
+    if params[:comments_q].present?
+      @comments = boom_comments.search(params[:comments_q]).page(params[:comments_page]).per(params[:comments_per]).records
+    else
+      @comments = boom_comments.order(created_at: :desc).page(params[:comments_page]).per(params[:comments_per])
+    end
+
     # likers，按关注先后排序
     likers = User.unscoped.joins(:boom_user_likes).where(boom_user_likes: { subject_id: @boom_topic.id, subject_type: 'BoomTopic' })
     @likers = likers.order("boom_user_likes.created_at").page(params[:likers_page]).per(params[:likers_per])

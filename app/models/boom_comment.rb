@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomComment < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include BoomCommentSearchable 
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
