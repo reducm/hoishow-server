@@ -1,3 +1,5 @@
+include BoomboxSearch
+
 class Boombox::V1::TagsController < Boombox::V1::ApplicationController
   def hot_tags
     @tags = BoomTag.hot_tags.pluck(:name)

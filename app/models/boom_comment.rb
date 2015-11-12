@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomComment < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include BoomCommentSearchable 
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
@@ -11,6 +8,8 @@ class BoomComment < ActiveRecord::Base
   has_many :likers, through: :boom_user_likes, source: :user
 
   belongs_to :boom_topic
+  belongs_to :user
+
   validates :creator_id, presence: true
   validates :creator_type, presence: true
 

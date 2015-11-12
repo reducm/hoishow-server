@@ -1,0 +1,55 @@
+<div class="row edit_collaborator">
+  <%= link_to '编辑资料', edit_boombox_operation_collaborator_path(@collaborator), class: 'btn btn-default btn-edit-collaborator' %>
+</div>
+
+<div class="row boom_albums">
+  <h3><%= @collaborator.name %></h3>
+  <% if @collaborator.avatar_url %>
+    <p><%= image_tag(@collaborator.avatar_url, size: "50x50") %></p>
+  <%else %>
+    <p>无头像</p>
+  <% end %>
+  <%= link_to '查看相册', boombox_operation_boom_albums_path(collaborator_id: @collaborator.id), class: 'btn btn-default' %>
+
+  <ul class="nav nav-tabs associates">
+    <li role="presentation" class="active"><a href="#timeline" aria-controls="timeline" role="tab" data-toggle="tab">Timeline (<%= @boom_topics.total_count %>)</a></li>
+    <li role="presentation"><a href="#tracks" aria-controls="tracks" role="tab" data-toggle="tab">Tracks (<%= @boom_tracks.total_count %>)</a></li>
+    <li role="presentation"><a href="#playlists" aria-controls="playlists" role="tab" data-toggle="tab">Playlists (<%= @boom_playlists.total_count %>)</a></li>
+    <li role="presentation"><a href="#shows" aria-controls="shows" role="tab" data-toggle="tab">Shows(<%= @activities.total_count %>)</a></li>
+    <li role="presentation"><a href="#fans" aria-controls="fans" role="tab" data-toggle="tab">Fans(<%= @users.total_count %>)</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="timeline">
+      <%= render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="tracks">
+      <% if @boom_tracks.any? %>
+        <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @boom_tracks} %>
+      <% else %>
+        无tracks数据
+      <% end %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="playlists">
+      <% if @boom_playlists.any? %>
+        <%= render partial: 'boombox/operation/playlists/table', locals: {playlists: @boom_playlists} %>
+      <% else %>
+        无playlists数据
+      <% end %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="shows">
+      <% if @activities.any? %>
+        <%= render partial: 'boombox/operation/activities/table', locals: {activities: @activities} %>
+      <% else %>
+        无tracks数据
+      <% end %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="fans">
+      <% if @users.any? %>
+        <%= render partial: 'boombox/operation/boom_users/table', locals: {users: @users} %>
+      <% else %>
+        无playlists数据
+      <% end %>
+    </div>
+  </div>
+</div>

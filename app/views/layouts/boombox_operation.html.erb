@@ -4,8 +4,8 @@
 <html>
 <head>
   <title>播霸后台-<%= t( "boombox_controller.#{ params[:controller].split('/')[2] }")%> </title>
-  <%= stylesheet_link_tag    'operation', media: 'all' %>
-  <%= javascript_include_tag 'operation' %>
+  <%= stylesheet_link_tag    'boombox_operation', media: 'all' %>
+  <%= javascript_include_tag 'boombox_operation' %>
   <%= favicon_link_tag '/admin_avatar.png', :type => 'image/png' %>
   <%= csrf_meta_tags %>
 </head>
@@ -13,17 +13,21 @@
 
 <script type="text/javascript">
   $(function(){
-    var notice = "<%= flash[:notice] || flash[:alert] || flash[:warning]%>"
+    var notice = "<%= flash[:notice] %>";
+    var alert = "<%=  flash[:alert] %>";
+    var warning = "<%= flash[:warning] %>";
     <% if flash[:notice] %>
       $.notify(notice, {
         globalPosition:"top center",
         className: 'success',} );
-    <% elsif flash[:alert] %>
-      $.notify(notice, {
+    <% end %>
+    <% if flash[:alert] %>
+      $.notify(alert, {
         globalPosition:"top center",
         className: 'error'  } );
-    <% elsif flash[:warning] %>
-      $.notify(notice, {
+    <% end %>
+    <% if flash[:warning] %>
+      $.notify(warning, {
         globalPosition:"top center",
         className: 'warning'  } );
     <% end %>

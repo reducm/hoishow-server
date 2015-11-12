@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151110091313) do
+ActiveRecord::Schema.define(version: 20151111092915) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -81,8 +81,13 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.datetime "updated_at",                   null: false
     t.string   "sort_by",     limit: 255
     t.text     "seats_info",  limit: 16777215
+    t.text     "coordinates", limit: 65535
+    t.string   "color",       limit: 255
+    t.integer  "event_id",    limit: 4
+    t.integer  "left_seats",  limit: 4
   end
 
+  add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
   add_index "areas", ["stadium_id"], name: "index_areas_on_stadium_id", using: :btree
 
   create_table "banners", force: :cascade do |t|
@@ -122,6 +127,7 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.integer  "status",             limit: 4
     t.boolean  "is_display",         limit: 1
     t.boolean  "is_top",             limit: 1
+    t.boolean  "is_hot",             limit: 1
   end
 
   add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree
@@ -143,8 +149,9 @@ ActiveRecord::Schema.define(version: 20151110091313) do
   create_table "boom_albums", force: :cascade do |t|
     t.integer  "collaborator_id", limit: 4
     t.string   "image",           limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "is_cover",        limit: 1,   default: false
   end
 
   add_index "boom_albums", ["collaborator_id"], name: "index_boom_albums_on_collaborator_id", using: :btree
@@ -199,8 +206,18 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.string   "creator_type",  limit: 255
     t.string   "avatar",        limit: 255
     t.text     "content",       limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "is_hidden",     limit: 1,     default: false
+  end
+
+  create_table "boom_feedbacks", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.string   "contact",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "user_id",    limit: 4
+    t.boolean  "status",     limit: 1
   end
 
   create_table "boom_locations", force: :cascade do |t|
@@ -252,12 +269,13 @@ ActiveRecord::Schema.define(version: 20151110091313) do
   add_index "boom_recommends", ["boom_id"], name: "index_boom_recommends_on_boom_id", using: :btree
 
   create_table "boom_tags", force: :cascade do |t|
-    t.string   "boom_id",    limit: 255
-    t.string   "name",       limit: 255
-    t.boolean  "removed",    limit: 1
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.boolean  "is_hot",     limit: 1
+    t.string   "boom_id",      limit: 255
+    t.string   "name",         limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.boolean  "is_hot",       limit: 1
+    t.string   "lower_string", limit: 255
   end
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
@@ -363,6 +381,11 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.datetime "updated_at",                                              null: false
     t.boolean  "verified",                  limit: 1,     default: false
     t.boolean  "is_top",                    limit: 1
+    t.string   "avatar",                    limit: 255
+    t.integer  "identity",                  limit: 4
+    t.string   "nickname",                  limit: 255
+    t.integer  "sex",                       limit: 4
+    t.datetime "birth"
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree
@@ -417,6 +440,17 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.datetime "updated_at",             null: false
     t.integer  "city_id",    limit: 4
   end
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "show_id",        limit: 4
+    t.datetime "show_time"
+    t.string   "stadium_map",    limit: 255
+    t.string   "coordinate_map", limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree
 
   create_table "expresses", force: :cascade do |t|
     t.integer  "user_id",      limit: 4

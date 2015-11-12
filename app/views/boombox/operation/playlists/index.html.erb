@@ -1,0 +1,15 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='playlists'>
+  <div class="text-center">
+    <h1>Playlist</h1>
+    <%= link_to "新建Playlist", new_boombox_operation_playlist_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="playlists_search_form mt20">
+    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_playlists_path} %>
+  </div>
+
+  <div class="playlists_list mt20">
+    <%= render partial: "table", locals: {playlists: @playlists} %>
+  </div>
+</div>

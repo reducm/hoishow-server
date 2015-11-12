@@ -33,7 +33,7 @@ gem "dropzonejs-rails"
 #gem 'devise'
 
 gem 'whenever', :require => false
-gem 'sidekiq'
+gem 'sidekiq', '>= 3.5.1'
 gem 'sinatra', :require => nil
 
 gem 'jbuilder', '~> 2.0'
@@ -120,4 +120,4 @@ gem 'aasm', '~> 4.1'
 
 #node
 gem 'execjs'
-gem 'therubyracer', :platforms => :ruby
+gem 'therubyracer', '~> 0.12.2', :platforms => :ruby

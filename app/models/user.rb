@@ -21,7 +21,11 @@ class User < ActiveRecord::Base
   has_many :boom_user_likes
   has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
 
+  has_many :boom_comments, -> { where creator_type: BoomComment::CREATOR_USER }, foreign_key: "creator_id"
+
   has_many :user_track_relations
+
+  has_many :boom_feedbacks
   #----------------boombox
 
   has_many :user_follow_stars
@@ -42,7 +46,7 @@ class User < ActiveRecord::Base
   has_many :user_message_relations
   has_many :messages, through: :user_message_relations, source: :message
 
-  validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
+  #validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
   validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
 
   mount_uploader :avatar, ImageUploader
@@ -62,6 +66,10 @@ class User < ActiveRecord::Base
   }
 
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
+  # hoishow用户
+  scope :from_hoishow, ->{ where("boom_id IS NULL") }
+  # 播霸用户
+  scope :from_boombox, ->{ where("boom_id IS NOT NULL") }
 
   def sex_cn
     # male: '男'
@@ -140,6 +148,11 @@ class User < ActiveRecord::Base
 
   def like_boomtopic(topic)
     boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first_or_create!
+  end
+
+  # 点赞时间
+  def like_boomtopic_at(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first.created_at
   end
 
   def unlike_boomtopic(topic)
