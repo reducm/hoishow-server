@@ -37,6 +37,8 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     # tracks/playlists/shows/fans
     @boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
     @boom_playlists = @collaborator.boom_playlists.order(created_at: :desc).page(1).per(10)
+    @activities = @collaborator.activities.order(created_at: :desc).page(1).per(10)
+    @users = @collaborator.followers.order(created_at: :desc).page(1).per(10)
 
     respond_to do |format|
       format.html
