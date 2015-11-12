@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151110091313) do
+ActiveRecord::Schema.define(version: 20151111070538) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -210,6 +210,15 @@ ActiveRecord::Schema.define(version: 20151110091313) do
     t.boolean  "is_hidden",     limit: 1,     default: false
   end
 
+  create_table "boom_feedbacks", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.string   "contact",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "user_id",    limit: 4
+    t.boolean  "status",     limit: 1
+  end
+
   create_table "boom_locations", force: :cascade do |t|
     t.string   "boom_id",                    limit: 255
     t.string   "boom_city_id",               limit: 255
@@ -259,12 +268,13 @@ ActiveRecord::Schema.define(version: 20151110091313) do
   add_index "boom_recommends", ["boom_id"], name: "index_boom_recommends_on_boom_id", using: :btree
 
   create_table "boom_tags", force: :cascade do |t|
-    t.string   "boom_id",    limit: 255
-    t.string   "name",       limit: 255
-    t.boolean  "removed",    limit: 1
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.boolean  "is_hot",     limit: 1
+    t.string   "boom_id",      limit: 255
+    t.string   "name",         limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.boolean  "is_hot",       limit: 1
+    t.string   "lower_string", limit: 255
   end
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree

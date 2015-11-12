@@ -1,0 +1,42 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='boom_admins'>
+  <div class="text-center">
+    <h1>管理员列表</h1>
+    <%= link_to "新建管理员", new_boombox_operation_boom_admin_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="boom_admins_list mt20">
+    <table class="table table-hover boom_admins">
+      <thead>
+        <tr>
+          <th class='text-center'>ID</th>
+          <th class='text-center'>名称</th>
+          <th class='text-center'>类型</th>
+          <th class='text-center'>创建时间</th>
+          <th class='text-center'>操作</th>
+        </tr>
+      </thead>
+      <tbody class='text-center'>
+        <% if @boom_admins.any? %>
+          <% @boom_admins.each do|admin| %>
+            <tr>
+              <td><%= admin.id %></td>
+              <td><%= admin.name %></td>
+              <td><%= admin.type_cn %></td>
+              <td><%= admin.created_at.try(:strfcn_time) %></td>
+              <td>
+                <%= link_to "修改密码", edit_boombox_operation_boom_admin_path(admin)%>
+                <% if admin.is_block %>
+                  <%= link_to "解除锁定", block_admin_boombox_operation_boom_admin_path(admin, block: 0), method: 'post' %>
+                <% else %>
+                  <%= link_to "锁定", block_admin_boombox_operation_boom_admin_path(admin, block: 1), method: 'post' %>
+                <% end %>
+              </td>
+            </tr>
+          <%end%>
+        <%end%>
+      </tbody>
+    </table>
+    <%= paginate @boom_admins%>
+  </div>
+</div>

@@ -30,8 +30,6 @@ class BoomPlaylist < ActiveRecord::Base
 
   mount_uploader :cover, ImageUploader
 
-  #for api
-  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top')}
   #取出合集得时候不要忘记过滤
   scope :valid_playlists, -> { where("removed = false and mode = 0") }
   scope :valid_radios, -> { where("removed = false and mode = 1") }

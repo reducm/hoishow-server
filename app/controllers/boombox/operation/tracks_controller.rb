@@ -4,7 +4,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   before_filter :get_track, except: [:search, :index, :new, :create]
 
   def index
-    @tracks = BoomTrack.valid_tracks.page(params[:page]).order("created_at desc")
+    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
   end
 
   def search
@@ -12,11 +12,11 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
       is_hot = true
     end
     if params[:q].present?
-      @tracks = BoomTrack.valid_tracks.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
     elsif is_hot
-      @tracks = BoomTrack.valid_tracks.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
+      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
     else
-      @tracks = BoomTrack.valid_tracks.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
     end
     render :index
   end
@@ -42,7 +42,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
       target_tag_ids = params[:tag_ids]
       if target_tag_ids
         target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @track.tags.pluck(:id)
+        source_tag_ids = @track.boom_tags.pluck(:id)
         #关联新tag，删除多余的tag
         new_tag_ids = target_tag_ids - source_tag_ids
         if new_tag_ids.present?

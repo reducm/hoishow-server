@@ -12,7 +12,7 @@
     <% end %>
   </div>
   <div id="playlist_form">
-    <%= hidden_field_tag "playlist_tag_ids", playlist.tags.pluck(:id) %>
+    <%= hidden_field_tag "playlist_tag_ids", playlist.boom_tags.pluck(:id) %>
     <%= simple_form_for( playlist, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
       <div class="row">
         <div class="col-xs-3 col-sm-4">
@@ -32,7 +32,7 @@
             <%= label_tag "tags", "标签" %>
             <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
             <div id="playlist_delete_tag">
-              <% tags = playlist.tags.pluck(:name, :id) %>
+              <% tags = playlist.boom_tags.pluck(:name, :id) %>
               <% tags.each do |playlist_tag| %>
                 <span class="btn btn-default"><%= playlist_tag[0] + "" %></span><button data-tag-id="<%= playlist_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
               <% end %>

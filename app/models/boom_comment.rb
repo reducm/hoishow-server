@@ -8,6 +8,8 @@ class BoomComment < ActiveRecord::Base
   has_many :likers, through: :boom_user_likes, source: :user
 
   belongs_to :boom_topic
+  belongs_to :user
+
   validates :creator_id, presence: true
   validates :creator_type, presence: true
 

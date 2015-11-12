@@ -64,6 +64,39 @@ module Routes
               end
             end
 
+            resources :boom_tags, only: [:index, :create, :destroy] do
+              member do
+                post :change_is_top
+              end
+              collection do
+                get :search
+              end
+            end
+
+            resources :boom_admins do
+              member do
+                post :block_admin
+              end
+            end
+
+            resources :boom_feedbacks, only: [:index] do
+              member do
+                post :update_status
+              end
+              collection do
+                get :search
+              end
+            end
+
+            resources :boom_users, only: [:index, :show] do
+              member do
+                post :block_user
+              end
+              collection do
+                get :search
+              end
+            end
+
           end
         end
       end

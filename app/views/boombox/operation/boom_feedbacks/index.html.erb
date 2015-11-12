@@ -1,0 +1,62 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='boom_feedbacks'>
+  <div class="text-center">
+    <h1>意见反馈</h1>
+  </div>
+
+  <div class="search">
+    <%= form_tag(search_boombox_operation_boom_feedbacks_path, class: 'form-inline', method: 'get') do |f| %>
+      <div class="datetimepicker form-group">
+        <label> 反馈时间</label>
+        <%= text_field_tag "start_time", Time.now.strftime("%Y-%m-%d %H:%M"),  class: 'form-control', placeholder: "起始时间", size:30 %>
+        <label> 至</label>
+        <%= text_field_tag "end_time", ( Time.now + 1.month ).strftime("%Y-%m-%d %H:%M"),  class: 'form-control', placeholder: "结束时间", size:30 %>
+      </div>
+      <%= select_tag "select_options", options_for_select([["全部",0], ["待处理",1], ["已处理",2]]), class:"form-control" %>
+      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入关键词进行搜索", size:30%>
+      <%= submit_tag "搜索", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+
+  <div class="boom_feedbacks_list mt20">
+    <table class="table table-hover boom_feedbacks">
+      <thead>
+        <tr>
+          <th class='text-center'>用户</th>
+          <th class='text-center'>内容</th>
+          <th class='text-center'>联系方式</th>
+          <th class='text-center'>创建时间</th>
+          <th class='text-center'>状态</th>
+        </tr>
+      </thead>
+      <tbody class='text-center'>
+        <% if @boom_feedbacks.any? %>
+          <% @boom_feedbacks.each do|feedback| %>
+            <tr>
+              <td><%= feedback.user.mobile %></td>
+              <td class="boom_feedback_float"><%= feedback.content %></td>
+              <td><%= feedback.contact %></td>
+              <td><%= feedback.created_at.try(:strfcn_time) %></td>
+              <td>
+                <% if feedback.status %>
+                  已处理
+                <% else %>
+                  <%= link_to "确认处理", update_status_boombox_operation_boom_feedback_path(feedback, status: 1), method: 'post' %>
+                <% end %>
+              </td>
+            </tr>
+          <%end%>
+        <%end%>
+      </tbody>
+    </table>
+    <%= paginate @boom_feedbacks%>
+  </div>
+</div>
+
+<div class="modal fade" id="boom_feedback_pop_wrap" tabindex="-1" role="dialog" aria-labelledby="boom_feedback_pop_wrap">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <h4 class='text-center' id="boom_fb_content"></h4>
+    </div>
+  </div>
+</div>
