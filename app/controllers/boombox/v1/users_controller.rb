@@ -137,20 +137,20 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_collaborators
-    @collaborators = @user.follow_collaborators.verified
+    @collaborators = @user.follow_collaborators.verified.page(params[:page])
   end
 
   def followed_playlists
-    @playlists = @user.follow_playlists
+    @playlists = @user.follow_playlists.page(params[:page])
   end
 
   def my_playlists
-    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id)
+    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id).page(params[:page])
   end
 
   def comment_list
     user_comment_ids = BoomComment.where(creator_type: BoomComment::CREATOR_USER, creator_id: @user.id).pluck(:id)
-    @comments = BoomComment.where("parent_id in (?)", user_comment_ids)
+    @comments = BoomComment.where("parent_id in (?)", user_comment_ids).page(params[:page])
   end
 
   #def message_list

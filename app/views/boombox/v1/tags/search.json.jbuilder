@@ -23,11 +23,6 @@ end
 json.playlists do
   json.array! @records[:playlists].first(3) do |playlist|
     json.(playlist, :id, :name)
-    json.tracks do
-      json.array! playlist.tracks do |track|
-        json.(track, :id, :name, :artists, :duration)
-        json.file track.file_url || ''
-      end
-    end
+    json.cover playlist.cover_url || ''
   end
 end

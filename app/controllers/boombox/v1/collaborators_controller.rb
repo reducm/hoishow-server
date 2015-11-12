@@ -16,28 +16,28 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def timeline
-    @topics = @collaborator.boom_topics
+    @topics = @collaborator.boom_topics.page(params[:page])
   end
 
   def comments
     topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
     if topic
-      @comments = topic.boom_comments
+      @comments = topic.boom_comments.page(params[:page])
     else
       error_respond('topic not found')
     end
   end
 
   def playlists
-    @playlists = @collaborator.boom_playlists.playlist
+    @playlists = @collaborator.boom_playlists.playlist.page(params[:page])
   end
 
   def tracks
-    @tracks = @collaborator.boom_tracks
+    @tracks = @collaborator.boom_tracks.page(params[:page])
   end
 
   def shows
-    @shows = @collaborator.activities
+    @shows = @collaborator.activities.page(params[:page])
   end
 
   private

@@ -16,6 +16,11 @@ class Boombox::V1::PlaylistsController < Boombox::V1::ApplicationController
 
   def show
     @playlist = BoomPlaylist.find_by_id params[:id]
-    render partial: 'playlist', locals: {playlist: @playlist}
+    @tracks = if @playlist.radio?
+                @playlist.tracks.order('RAND()')
+              elsif @playlist.playlist?
+                @playlist.tracks.order('playlist_track_relations.created_at').page(params[:page])
+              end
+    render partial: 'playlist', locals: {playlist: @playlist, tracks: @tracks, need_tracks: true}
   end
 end

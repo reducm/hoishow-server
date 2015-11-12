@@ -223,7 +223,6 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       get :followed_playlists, encrypted_params_in_boombox(api_key, options)
       expect(json[0]).to include "id"
       expect(json[0]).to include "name"
-      expect(json[0]).to include "tracks"
       expect(json.is_a? Array).to be true
       expect(json.size).to eq 10
     end
@@ -242,7 +241,6 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       get :my_playlists, encrypted_params_in_boombox(api_key, options)
       expect(json[0]).to include "id"
       expect(json[0]).to include "name"
-      expect(json[0]).to include "tracks"
       expect(json.is_a? Array).to be true
       expect(json.size).to eq 10
     end
@@ -430,7 +428,6 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
       post :add_or_remove_playlist, encrypted_params_in_boombox(api_key, options)
       expect(json).to include "id"
       expect(json).to include "name"
-      expect(json).to include "tracks"
       expect(json.is_a? Array).to be false
       expect(json["name"]).to eq name
     end
