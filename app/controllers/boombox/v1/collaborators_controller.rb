@@ -1,6 +1,5 @@
 class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   before_action :get_user
-  before_action :check_login!, only: [:comments]
   before_action :get_collaborator, except: [:index]
 
   def index
@@ -20,9 +19,9 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def comments
-    topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
-    if topic
-      @comments = topic.boom_comments.page(params[:page])
+    @topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
+    if @topic
+      @comments = @topic.boom_comments.page(params[:page])
     else
       error_respond('topic not found')
     end

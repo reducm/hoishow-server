@@ -1,6 +1,6 @@
 class BoomTopic < ActiveRecord::Base
   include BoomTopicSearchable
-  
+
   belongs_to :collaborator
 
   has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_TOPIC }, foreign_key: 'subject_id', dependent: :destroy
@@ -12,6 +12,8 @@ class BoomTopic < ActiveRecord::Base
 
   mount_uploader :image, ImageUploader
   before_create :set_is_top
+
+  paginates_per 10
 
   def as_indexed_json(options={})
     as_json(

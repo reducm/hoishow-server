@@ -1,5 +1,5 @@
 class BoomComment < ActiveRecord::Base
-  include BoomCommentSearchable 
+  include BoomCommentSearchable
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
@@ -12,6 +12,8 @@ class BoomComment < ActiveRecord::Base
 
   validates :creator_id, presence: true
   validates :creator_type, presence: true
+
+  paginates_per 10
 
   def as_indexed_json(options={})
     as_json(
