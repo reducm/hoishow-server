@@ -203,6 +203,7 @@ draw_areas = (context, selected_area, no_selected_area)->
 #拿到坐标
 get_coordinates = (show_id, event_id)->
   $.get("/operation/shows/#{show_id}/get_coordinates", {event_id: event_id}, (data_hash)->
+    return false unless typeof(data_hash.coords) == "object"
     result = data_hash.coords
     values = $.map(result, (v)->  return v)
     $("##{event_id} .coordinate_hash").data('area-coordinates', data_hash.area_coordinates)
@@ -342,15 +343,20 @@ $ ->
         )
 
   if $('.event_list').length > 0
+    $(window).scrollTop(0)
     show_id = $("#show_id").val()
     $('.addEventModal #show_time, .editEventModal #show_time').datetimepicker()
     if location.hash
       $("#event_tabs a[href='" + location.hash + "']").tab('show')
       get_coordinates(show_id, location.hash.substr(1))
+    else
+      $('#event_tabs a:first').tab('show')
+      get_coordinates(show_id, $('#event_tabs a:first').attr('href').substr(1))
 
     $("#event_tabs a").on "click", (e) ->
       e.preventDefault()
       $(this).tab('show')
+      $(window).scrollTop(0)
       get_coordinates(show_id, $(this).attr("href").substr(1))
 
     $("ul.nav-tabs > li > a").on "shown.bs.tab", (e) ->

@@ -22,6 +22,9 @@
             <span class="btn btn-default">更新场馆图坐标</span>
             <input type="file" name="coordinate_map">
           </span>
+          <% unless event.coordinate_map_url %>
+            <span class="warning">请上传坐标图</span>
+          <% end %>
         </div>
         <div class='stadium_map_preview' data-id="<%= event.id %>">
           <% if event.stadium_map_url %>
