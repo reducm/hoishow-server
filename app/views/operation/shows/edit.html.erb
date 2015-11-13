@@ -12,7 +12,7 @@
         <%= link_to '删除', 'javascript:void(0);', class: 'btn btn-danger del_star' %>
       <% end %>
     </div>
-    <div class="form-group"">
+    <div class="form-group">
       <%= link_to '添加选中艺人', 'javascript:void(0);', class: 'btn btn-primary add_star' %>
       <%= select_tag "select_star", options_for_select(Star.all.collect{|star| [star.name, star.id]}) %>
     </div>
