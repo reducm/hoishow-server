@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomComment < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include BoomCommentSearchable
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
@@ -15,6 +12,8 @@ class BoomComment < ActiveRecord::Base
 
   validates :creator_id, presence: true
   validates :creator_type, presence: true
+
+  paginates_per 10
 
   def as_indexed_json(options={})
     as_json(
@@ -62,5 +61,3 @@ class BoomComment < ActiveRecord::Base
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
   end
 end
-
-BoomComment.import(force: true)

@@ -1,4 +1,4 @@
-json.(area, :id, :name, :stadium_id)
+json.(area, :id, :name, :stadium_id, :event_id)
 json.show_id show.id
 # json.created_at area.created_at.to_ms
 # json.updated_at area.updated_at.to_ms

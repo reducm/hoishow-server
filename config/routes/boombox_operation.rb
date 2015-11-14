@@ -11,6 +11,32 @@ module Routes
             match "/signin" => "sessions#new", via: [:get]
             match "/signout" => "sessions#destroy", via: [:delete]
 
+            resources :collaborators, except: [:new, :create, :destroy] do
+              member do
+                post :set_top
+                post :verify
+              end
+            end
+
+            resources :boom_albums, only: [:index, :create, :destroy] do
+              member do
+                post :set_cover
+                post :unset_cover
+              end
+            end
+
+            resources :boom_topics, only: [:index, :show, :destroy] do
+              member do
+                post :set_top
+              end
+            end
+
+            resources :boom_comments, only: :index do
+              member do
+                post :hide
+              end
+            end
+
             resources :tracks do
               member do
                 post :change_is_top

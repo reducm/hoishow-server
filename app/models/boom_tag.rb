@@ -10,6 +10,10 @@ class BoomTag < ActiveRecord::Base
   has_many :activities, through: :tag_subject_relations, source: :subject, source_type: BoomActivity.name
   has_many :tracks, through: :tag_subject_relations, source: :subject, source_type: BoomTrack.name
 
+  #取出合集得时候不要忘记过滤
+  scope :valid_tags, -> {where removed: false}
+  after_create :set_removed_and_is_hot
+  validates :subject_type, presence: true
   scope :hot_tags, -> { where is_hot: true }
 
   #取出合集得时候不要忘记过滤
@@ -40,7 +44,4 @@ class BoomTag < ActiveRecord::Base
       "推荐"
     end
   end
-
 end
-
-BoomTag.import(force: true)

@@ -66,6 +66,10 @@ class User < ActiveRecord::Base
   }
 
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
+  # hoishow用户
+  scope :from_hoishow, ->{ where("boom_id IS NULL") }
+  # 播霸用户
+  scope :from_boombox, ->{ where("boom_id IS NOT NULL") }
 
   def sex_cn
     # male: '男'
@@ -144,6 +148,11 @@ class User < ActiveRecord::Base
 
   def like_boomtopic(topic)
     boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first_or_create!
+  end
+
+  # 点赞时间
+  def like_boomtopic_at(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first.created_at
   end
 
   def unlike_boomtopic(topic)

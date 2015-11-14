@@ -86,5 +86,3 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 end
-
-BoomTrack.import(force: true)

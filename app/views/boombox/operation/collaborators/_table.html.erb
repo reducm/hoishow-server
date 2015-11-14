@@ -1,0 +1,60 @@
+<%= form_tag(boombox_operation_collaborators_path, class: 'form-inline', id: 'collaborators_form', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "艺人数/总数：#{@collaborators.total_count}/#{Collaborator.count}"%></h3>
+  <div class="search">
+    <%= select_tag :is_top, options_for_select([["全部", ""], ["推荐", "1"]], selected: params[:is_top] || ""), class: 'form-control collaborators_filter' %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control collaborators_filter', placeholder: "输入关键词" %>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+  <table class="table table-hover table-collaborator" id="collaborators_table">
+    <thead>
+      <tr>
+        <th>头像</th>
+        <th>名称</th>
+        <th>标签</th>
+        <th>粉丝数</th>
+        <th>创建时间</th>
+        <th>修改时间</th>
+        <th>审核状态</th>
+        <th>是否推荐</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% if @collaborators.any? %>
+      <% @collaborators.each do|collaborator| %>
+        <tr class="tr-collaborator">
+          <% if collaborator.avatar_url %>
+            <td><%= image_tag(collaborator.avatar_url, size: "50x50") %></td>
+          <%else %>
+            <td>无头像</td>
+          <% end %>
+          <td><%= collaborator.name %></td>
+          <td><%= collaborator.boom_tags.pluck(:name).join(", ")%></td>
+          <td><%= collaborator.followers.count %></td>
+          <td><%= collaborator.created_at.strfcn_time %></td>
+          <td><%= collaborator.updated_at.strfcn_time %></td>
+          <td><%= collaborator.verified_cn %></td>
+          <td><%= collaborator.is_top_cn %></td>
+          <td>
+            <%= link_to "查看详情", boombox_operation_collaborator_path(collaborator)%>
+            <% if collaborator.is_top? %>
+              已推荐
+            <% else %>
+              <%= link_to "推荐", set_top_boombox_operation_collaborator_path(collaborator), method: :post %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr><td>无数据</td></tr>
+    <% end %>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: 'form-control collaborators_filter' %>
+  </div>
+
+  <%= paginate @collaborators, remote: true %>
+<% end %>

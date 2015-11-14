@@ -177,6 +177,12 @@ Rails.application.routes.draw do
         post :add_star
         delete :del_star
         post :set_area_channels
+        get :event_list
+        post :add_event
+        post :update_event
+        delete :del_event
+        post :upload_map
+        get :get_coordinates
       end
     end
     resources :orders do

@@ -3,6 +3,11 @@ class Boombox::Operation::ApplicationController < ApplicationController
   layout "boombox_operation"
 
   before_filter :check_login!
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to boombox_operation_root_url, :alert => exception.message
+  end
+
   protected
 
   def check_login!

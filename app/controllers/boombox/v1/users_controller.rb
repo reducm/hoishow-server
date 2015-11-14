@@ -30,6 +30,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
         if @user
           @user.sign_in_api
           @user.set_password(params[:password])
+          # 播霸新用户注册时给个boom_id？
         end
       else
         return error_respond I18n.t("errors.messages.mobile_code_not_correct")

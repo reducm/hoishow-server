@@ -1,0 +1,46 @@
+<%= form_tag(boombox_operation_boom_topic_path(@boom_topic), class: 'form-inline', id: 'comments_form', method: 'get', remote: true) do %>
+  <div class="search">
+    <%= label_tag 'comments_count', '评论数：' + @comments.total_count.to_s %> 
+    <%= text_field_tag "comments_q", params[:comments_q],  class: 'form-control commentss_filter', placeholder: "输入关键词" %>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+  <div class="row">
+    <table class="table table-hover comments_list">
+      <thead>
+        <tr>
+          <th>用户名</th>
+          <th>内容</th>
+          <th>评论时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% if comments.any? %>
+        <% comments.each do |comment| %>
+          <tr>
+            <td><%= comment.creator.name %></td>
+            <td style="width: 30%"><%= truncate(comment.content, length: 150) %></td>
+            <td><%= comment.created_at.strfcn_time %></td>
+            <td>
+              <% if comment.is_hidden? %>
+                已屏蔽
+              <% else %>
+                <%= link_to "屏蔽", hide_boombox_operation_boom_comment_path(comment), method: :post %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td>无数据</td></tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <div style="text-align: left">每页显示数量
+      <%= select_tag :comments_per, options_for_select([5, 10, 15, 20], selected: params[:comments_per] || 10), class: 'form-control comments_filter' %>
+    </div>
+
+   <%= paginate comments, param_name: 'comments_page', remote: true %>
+  </div>
+<% end %>
