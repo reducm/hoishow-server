@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomTag < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   has_many :tag_subject_relations, dependent: :destroy
   has_many :collaborators, through: :tag_subject_relations, source: :subject, source_type: Collaborator.name
@@ -11,16 +8,12 @@ class BoomTag < ActiveRecord::Base
   has_many :tracks, through: :tag_subject_relations, source: :subject, source_type: BoomTrack.name
 
   #取出合集得时候不要忘记过滤
-  scope :valid_tags, -> {where removed: false}
-  after_create :set_removed_and_is_hot
-  validates :subject_type, presence: true
   scope :hot_tags, -> { where is_hot: true }
-
-  #取出合集得时候不要忘记过滤
   scope :valid_tags, -> {where removed: false}
 
   after_create :set_removed_and_is_hot
 
+  validates :subject_type, presence: true
   validates :lower_string, uniqueness: true
 
   def as_indexed_json(options={})
@@ -29,19 +22,20 @@ class BoomTag < ActiveRecord::Base
     )
   end
 
-  def set_removed_and_is_hot
-    if is_hot
-      self.update(removed: 0)
-    else
-      self.update(removed: 0, is_hot: 0)
-    end
-  end
-
   def is_hot_cn
     if is_hot
       "取消推荐"
     else
       "推荐"
+    end
+  end
+
+  private
+  def set_removed_and_is_hot
+    if is_hot
+      self.update(removed: 0)
+    else
+      self.update(removed: 0, is_hot: 0)
     end
   end
 end

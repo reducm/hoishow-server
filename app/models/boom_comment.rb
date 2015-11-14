@@ -1,5 +1,5 @@
 class BoomComment < ActiveRecord::Base
-  include BoomCommentSearchable
+  include Searchable
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'

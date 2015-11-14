@@ -91,32 +91,13 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def update_user
-    case params[:type]
-    when "avatar"
-      if params[:avatar].blank? || !params[:avatar].try(:content_type) =~ "image"
-        return error_respond I18n.t("errors.messages.avatar_not_found")
-      else
-        @user.update(avatar: params[:avatar])
-      end
-    when "nickname"
-      if params[:nickname].blank?
-        return error_respond I18n.t("errors.messages.nickname_not_found")
-      else
-        @user.update(nickname: params[:nickname])
-      end
-    when "email"
-      if params[:email].blank?
-        return error_respond I18n.t("errors.messages.email_not_found")
-      else
-        unless verify_email?(params[:email])
-          return error_respond I18n.t("errors.messages.email_format_wrong")
-        end
-        @user.update(email: params[:email])
-      end
+    return error_respond(I18n.t("errors.messages.email_format_wrong")) if params[:email].present? && !verify_email?(params[:email])
+
+    if @user.update(user_params)
+      render partial: "user", locals:{ user: @user }
     else
-      return error_respond I18n.t("errors.messages.update_user_type_not_correct")
+      error_respond(I18n.t("update_user_type_not_correct"))
     end
-    render partial: "user", locals:{ user: @user }
   end
 
   def reset_mobile
@@ -291,5 +272,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     else
       return I18n.t("errors.messages.subject_type_not_correct"), false
     end
+  end
+
+  def user_params
+    options = params.except(:action, :controller)
+    options.permit(:nickname, :email, :avatar)
   end
 end
