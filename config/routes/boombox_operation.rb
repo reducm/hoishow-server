@@ -23,6 +23,8 @@ module Routes
             resources :playlists do
               member do
                 post :change_is_top
+                post :add_track
+                post :remove_track
                 get :manage_tracks
               end
               collection do

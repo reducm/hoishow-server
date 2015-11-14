@@ -4,20 +4,20 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   before_filter :get_track, except: [:search, :index, :new, :create]
 
   def index
-    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+    @tracks = BoomTrack.valid.page(params[:tracks_page])
   end
 
   def search
-    if params[:select_options] == "1"
-      is_hot = true
-    end
+    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
     if params[:q].present?
-      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @tracks = BoomTrack.valid.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      query_str = query_str + " and name like '%#{params[:q]}%'"
     end
+    if params[:select_options] == "1"
+      @tracks = BoomTrack.valid.where(is_hot:true).where(query_str).page(params[:tracks_page])
+    else
+      @tracks = BoomTrack.valid.where(query_str).page(params[:tracks_page])
+    end
+    
     render :index
   end
 

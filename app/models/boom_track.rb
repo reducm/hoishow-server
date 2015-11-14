@@ -7,7 +7,7 @@ class BoomTrack < ActiveRecord::Base
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
 
-  has_many :playlist_track_relations
+  has_many :playlist_track_relations, dependent: :destroy
   has_many :playlists, through: :playlist_track_relations, source: :boom_playlist
 
   has_many :activity_track_relations
@@ -26,7 +26,7 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
 
   after_create :set_removed_and_is_top
-  scope :valid, -> {where(removed: false).order('is_top')}
+  scope :valid, -> {where(removed: false).order('is_top, created_at desc')}
 
   paginates_per 10
 
@@ -41,8 +41,6 @@ class BoomTrack < ActiveRecord::Base
       user ? user.recommend_tracks : BoomTrack.order('is_top, RAND()').limit(20).to_a
     end
   end
-
-  paginates_per 10
 
   def creator
     begin

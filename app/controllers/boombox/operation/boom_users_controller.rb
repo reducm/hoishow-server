@@ -7,7 +7,7 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   end
 
   def search
-    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
+    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:users_page]).order("created_at desc")
     render :index
   end
 

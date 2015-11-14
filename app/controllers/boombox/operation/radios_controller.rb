@@ -8,15 +8,14 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
   end
 
   def search
-    if params[:select_options] == "1"
-      is_hot = true
-    end
+    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
     if params[:q].present?
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
+      query_str = query_str + " and name like '%#{params[:q]}%'"
+    end
+    if params[:select_options] == "1"
+      @radios = BoomPlaylist.valid_radios.where(is_hot:true).where(query_str).page(params[:page]).order("created_at desc")
     else
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      @radios = BoomPlaylist.valid_radios.where(query_str).page(params[:page]).order("created_at desc")
     end
     render :index
   end

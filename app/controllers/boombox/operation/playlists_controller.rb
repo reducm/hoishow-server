@@ -8,16 +8,16 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   end
 
   def search
-    if params[:select_options] == "1"
-      is_hot = true
-    end
+    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
     if params[:q].present?
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      query_str = query_str + " and name like '%#{params[:q]}%'"
     end
+    if params[:select_options] == "1"
+      @playlists = BoomPlaylist.valid_playlists.where(is_hot:true).where(query_str).page(params[:playlists_page])
+    else
+      @playlists = BoomPlaylist.valid_playlists.where(query_str).page(params[:playlists_page])
+    end
+    
     render :index
   end
 
@@ -78,10 +78,27 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   end
 
   def manage_tracks
-    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page]).order("created_at desc")
-    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page])
+    if params[:q].present?
+      @tracks = BoomTrack.valid.where("name like '%#{params[:q]}%'").page(params[:tracks_page])
+    else
+      @tracks = BoomTrack.valid.page(params[:tracks_page])
+    end
   end
 
+  def add_track
+    @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    render json: { success: true }
+  end
+
+  def remove_track
+    relation = @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+    if relation
+      relation.destroy!
+      render json: { success: true }
+    end
+  end
+  
   private
   def get_playlist
     @playlist = BoomPlaylist.find(params[:id])
