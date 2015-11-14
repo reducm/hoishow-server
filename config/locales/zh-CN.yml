@@ -156,6 +156,14 @@ zh-CN:
       header:
         one: 有 1 个错误发生导致「%{model}」无法被保存。
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
+  dj_controller:
+    sessions: "登录"
+    home: "首页"
+    collaborators: "艺人"
+    boom_albums: "艺人相册"
+    boom_topics: "艺人动态"
+    tracks: "音乐"
+    playlists: "Playlist"
   boombox_controller:
     sessions: "登录"
     home: "首页"
