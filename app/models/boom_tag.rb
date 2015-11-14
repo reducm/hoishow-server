@@ -13,13 +13,7 @@ class BoomTag < ActiveRecord::Base
   #取出合集得时候不要忘记过滤
   scope :valid_tags, -> {where removed: false}
   after_create :set_removed_and_is_hot
-  validates :subject_type, presence: true
   scope :hot_tags, -> { where is_hot: true }
-
-  #取出合集得时候不要忘记过滤
-  scope :valid_tags, -> {where removed: false}
-
-  after_create :set_removed_and_is_hot
 
   validates :lower_string, uniqueness: true
 
