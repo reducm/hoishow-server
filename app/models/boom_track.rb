@@ -42,8 +42,6 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 
-  paginates_per 10
-
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first
@@ -88,5 +86,3 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 end
-
-BoomTrack.import(force: true)

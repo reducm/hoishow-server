@@ -78,5 +78,3 @@ class BoomPlaylist < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
-
-BoomPlaylist.import(force: true)

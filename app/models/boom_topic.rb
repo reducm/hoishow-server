@@ -71,5 +71,3 @@ class BoomTopic < ActiveRecord::Base
     true
   end
 end
-
-BoomTopic.import(force: true)

@@ -1,3 +1,5 @@
+@user ||= nil
+
 json.collaborators do
   json.array! @records[:collaborators].first(4) do |colla|
     json.(colla, :id, :name, :followed_count)
@@ -14,15 +16,9 @@ json.activities do
 end
 
 json.tracks do
-  json.array! @records[:tracks].first(3) do |track|
-    json.(track, :id, :name, :artists, :duration)
-    json.file track.file_url || ''
-  end
+  json.array! @records[:tracks].first(3), partial: 'boombox/v1/tracks/track', as: :track
 end
 
 json.playlists do
-  json.array! @records[:playlists].first(3) do |playlist|
-    json.(playlist, :id, :name)
-    json.cover playlist.cover_url || ''
-  end
+  json.array! @records[:playlists].first(3), partial: 'boombox/v1/playlists/playlist', as: :playlist, user: @user
 end

@@ -61,5 +61,3 @@ class BoomComment < ActiveRecord::Base
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
   end
 end
-
-BoomComment.import(force: true)

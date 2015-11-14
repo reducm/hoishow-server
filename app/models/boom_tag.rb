@@ -44,7 +44,4 @@ class BoomTag < ActiveRecord::Base
       "推荐"
     end
   end
-
 end
-
-BoomTag.import(force: true)

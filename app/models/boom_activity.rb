@@ -74,5 +74,3 @@ class BoomActivity < ActiveRecord::Base
     self.update(activity_param)
   end
 end
-
-BoomActivity.import(force: true)

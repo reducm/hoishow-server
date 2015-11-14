@@ -32,7 +32,7 @@ class Collaborator < ActiveRecord::Base
   # 艺人简介字数上限100字
   validates :description, length: { maximum: 200}
 
-  # 身份 
+  # 身份
   enum identity: {
     dj: 0, # DJ
     producer: 1, # 制作人
@@ -45,7 +45,7 @@ class Collaborator < ActiveRecord::Base
   }
 
   def nickname_changeable?(collaborator, new_nickname)
-    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30 
+    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30
       false
     else
       true
@@ -87,5 +87,3 @@ class Collaborator < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
-
-Collaborator.import(force: true)
