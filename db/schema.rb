@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151111092915) do
+ActiveRecord::Schema.define(version: 20151116025944) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -386,6 +386,7 @@ ActiveRecord::Schema.define(version: 20151111092915) do
     t.string   "nickname",                  limit: 255
     t.integer  "sex",                       limit: 4
     t.datetime "birth"
+    t.integer  "boom_admin_id",             limit: 4
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree

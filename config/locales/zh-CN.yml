@@ -159,11 +159,11 @@ zh-CN:
   dj_controller:
     sessions: "登录"
     home: "首页"
-    collaborators: "艺人"
-    boom_albums: "艺人相册"
-    boom_topics: "艺人动态"
-    tracks: "音乐"
-    playlists: "Playlist"
+    collaborators: "个人资料"
+    boom_albums: "相册"
+    boom_topics: "动态"
+    tracks: "个人音乐"
+    playlists: "个人Playlist"
   boombox_controller:
     sessions: "登录"
     home: "首页"

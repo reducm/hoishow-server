@@ -7,22 +7,9 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
-#= require boombox/operation/collaborators
-#= require boombox/operation/boom_albums
-#= require boombox/operation/boom_topics
-#= require boombox/operation/boom_comments
-#= require boombox/operation/users
 #
-#= require boombox/operation/home
-#= require boombox/operation/sessions
-#= require boombox/operation/tracks
-#= require boombox/operation/playlists
-#= require boombox/operation/radios
-#= require boombox/operation/activities
-#= require boombox/operation/boom_tags
-#= require boombox/operation/boom_admins
-#= require boombox/operation/boom_users
-#= require boombox/operation/boom_feedbacks
+#= require boombox/dj/boom_albums
+#= require boombox/dj/tracks
 #
 #= require jquery-fileupload/basic
 #= require dropzone
