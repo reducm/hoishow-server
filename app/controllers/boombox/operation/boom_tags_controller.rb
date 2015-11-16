@@ -21,6 +21,7 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
       format.html
       format.js
     end
+
   end
 
   def create
@@ -55,23 +56,6 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
       flash[:notice] = "更新推荐成功"
     end
     redirect_to boombox_operation_boom_tags_url
-  end
-
-  def search
-    if params[:q].present?
-      query_str = "name like '%#{params[:q]}%'"
-      if params[:select_options] == "1"
-        query_str = query_str + " and is_hot = true"
-      end
-      @boom_tags = BoomTag.valid_tags.where(query_str).page(params[:page]).order("created_at desc")
-    else
-      if params[:select_options] == "1"
-        @boom_tags = BoomTag.valid_tags.where(is_hot:true).page(params[:page]).order("created_at desc")
-      else
-        @boom_tags = BoomTag.valid_tags.page(params[:page]).order("created_at desc")
-      end
-    end
-    render :index
   end
 
 end

@@ -80,9 +80,6 @@ module Routes
               member do
                 post :change_is_hot
               end
-              collection do
-                get :search
-              end
             end
 
             resources :boom_admins do
@@ -103,9 +100,6 @@ module Routes
             resources :boom_users, only: [:index, :show] do
               member do
                 post :block_user
-              end
-              collection do
-                get :search
               end
             end
 

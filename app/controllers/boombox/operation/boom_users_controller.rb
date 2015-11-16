@@ -3,12 +3,21 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   before_filter :check_login!
 
   def index
-    @users = User.page(params[:users_page]).order("created_at desc")
-  end
+    params[:page] ||= 1
+    params[:per] ||= 10
+    boom_users = User.all
 
-  def search
-    @users = User.where("nickname like ? or mobile like ?", "%#{params[:q]}%", "%#{params[:q]}%").page(params[:users_page]).order("created_at desc")
-    render :index
+    if params[:q].present?
+      boom_users = boom_users.where("users.nickname like '%#{params[:q]}%' or users.mobile like '%#{params[:q]}%'")
+    end
+
+    @users = boom_users.page(params[:users_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def show

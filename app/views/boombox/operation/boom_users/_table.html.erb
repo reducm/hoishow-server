@@ -1,40 +1,53 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover boom_users">
-  <thead>
-    <tr>
-      <th class='text-center'>ID</th>
-      <th class='text-center'>头像</th>
-      <th class='text-center'>用户名</th>
-      <th class='text-center'>手机号码</th>
-      <th class='text-center'>评论数</th>
-      <th class='text-center'>动态点赞数</th>
-      <th class='text-center'>评论点赞数</th>
-      <th class='text-center'>操作</th>
-    </tr>
-  </thead>
-  <tbody class='text-center'>
-    <% if users.any? %>
-      <% users.each do|user| %>
-        <tr>
-          <td class="text-center"><%= user.id %></td>
-          <td class="text-center"><%= get_avatar(user, '50x50') %></td>
-          <td class="text-center"><%= user.nickname || user.mobile %></td>
-          <td class="text-center"><%= user.mobile %></td>   
-          <td class="text-center"><%= user.boom_comments.count %></td>
-          <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC).count %></td>
-          <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT).count %></td>
-          <td class="text-center">
-            <%= link_to "查看详情", boombox_operation_boom_user_path(user)%>
-            <% if user.is_block %>
-              <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 0), method: 'post' %>
-            <% else %>
-              <%= link_to "屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 1), method: 'post' %>
-            <% end %>
-          </td>
-        </tr>
+<%= form_tag(boombox_operation_boom_users_path, class: 'form-inline', id: "boom_user_form", method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "用户数/总数：#{users.total_count}/#{User.count}"%></h3>
+  <div class="search">
+    <%= text_field_tag "q", nil,  class: 'form-control boom_users_filter', placeholder: "输入用户名或手机号搜索", size: 50 %>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+  <table class="table table-hover boom_users">
+    <thead>
+      <tr>
+        <th class='text-center'>ID</th>
+        <th class='text-center'>头像</th>
+        <th class='text-center'>用户名</th>
+        <th class='text-center'>手机号码</th>
+        <th class='text-center'>评论数</th>
+        <th class='text-center'>动态点赞数</th>
+        <th class='text-center'>评论点赞数</th>
+        <th class='text-center'>操作</th>
+      </tr>
+    </thead>
+    <tbody class='text-center'>
+      <% if users.any? %>
+        <% users.each do|user| %>
+          <tr>
+            <td class="text-center"><%= user.id %></td>
+            <td class="text-center"><%= get_avatar(user, '50x50') %></td>
+            <td class="text-center"><%= user.nickname || user.mobile %></td>
+            <td class="text-center"><%= user.mobile %></td>   
+            <td class="text-center"><%= user.boom_comments.count %></td>
+            <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC).count %></td>
+            <td class="text-center"><%= user.boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT).count %></td>
+            <td class="text-center">
+              <%= link_to "查看详情", boombox_operation_boom_user_path(user)%>
+              <% if user.is_block %>
+                <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 0), method: 'post' %>
+              <% else %>
+                <%= link_to "屏蔽", block_user_boombox_operation_boom_user_path(user, is_block: 1), method: 'post' %>
+              <% end %>
+            </td>
+          </tr>
+        <%end%>
       <%end%>
-    <%end%>
-  </tbody>
-</table>
-<%= paginate users, param_name: "users_page" %>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control boom_users_filter" %>
+  </div>
+
+  <%= paginate users, param_name: "users_page", remote: true %>
+<% end %>
