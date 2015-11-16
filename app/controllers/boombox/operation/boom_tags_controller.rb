@@ -3,7 +3,24 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
   before_filter :check_login!
 
   def index
-    @boom_tags = BoomTag.valid_tags.page(params[:page]).order("created_at desc")
+    params[:page] ||= 1
+    params[:per] ||= 10
+    boom_tags = BoomTag.valid_tags
+
+    if params[:is_hot].present?
+      boom_tags = boom_tags.where(is_hot: params[:is_hot])
+    end
+
+    if params[:q].present?
+      boom_tags = boom_tags.where("boom_tags.name like '%#{params[:q]}%'")
+    end
+
+    @boom_tags = boom_tags.order("created_at desc").page(params[:page]).per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def create
@@ -28,7 +45,7 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
     redirect_to action: :index
   end
 
-  def change_is_top
+  def change_is_hot
     @boom_tag = BoomTag.find(params[:id])
     if @boom_tag.is_hot
       @boom_tag.update(is_hot: false)

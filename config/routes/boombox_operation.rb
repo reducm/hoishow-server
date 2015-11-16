@@ -78,7 +78,7 @@ module Routes
 
             resources :boom_tags, only: [:index, :create, :destroy] do
               member do
-                post :change_is_top
+                post :change_is_hot
               end
               collection do
                 get :search
