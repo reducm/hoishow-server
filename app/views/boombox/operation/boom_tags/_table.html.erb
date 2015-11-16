@@ -1,4 +1,4 @@
-
+<%# encoding: utf-8 %>
 <%= form_tag(boombox_operation_boom_tags_path, class: 'form-inline', id: "boom_tag_form", method: 'get', remote: true) do %>
   <h4 class="pull-left"><%= "标签数/总数：#{@boom_tags.total_count}/#{BoomTag.count}"%></h3>
   <div class="search">

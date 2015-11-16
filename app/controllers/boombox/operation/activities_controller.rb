@@ -4,7 +4,33 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
   before_filter :get_activity, except: [:search, :index, :new, :create]
 
   def index
-    @activities = BoomActivity.page(params[:activities_page])
+    params[:activities_page] ||= 1
+    params[:per] ||= 10
+    activities = BoomActivity.all
+
+    if params[:start_time].present?
+      activities = activities.where("created_at > '#{params[:start_time]}'")
+    end
+
+    if params[:end_time].present?
+      activities = activities.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_hot].present?
+      activities = activities.where(is_hot: params[:is_hot])
+    end
+
+    if params[:q].present?
+      activities = activities.where("boom_activities.name like '%#{params[:q]}%'")
+    end
+
+    @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def search

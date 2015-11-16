@@ -3,7 +3,7 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   before_filter :check_login!
 
   def index
-    params[:page] ||= 1
+    params[:users_page] ||= 1
     params[:per] ||= 10
     boom_users = User.all
 

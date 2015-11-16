@@ -5,11 +5,7 @@
     <%= link_to "新建活动", new_boombox_operation_activity_url, class: 'btn btn-primary' %>
   </div>
 
-  <div class="activities_search_form mt20">
-    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_activities_path} %>
-  </div>
-
-  <div class="activities_list mt20">
+  <div class="mt20" id="activities_list">
     <%= render partial: "table", locals: {activities: @activities} %>
   </div>
 </div>
