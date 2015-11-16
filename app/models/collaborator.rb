@@ -44,8 +44,8 @@ class Collaborator < ActiveRecord::Base
     female: 1
   }
 
-  def nickname_changeable?(collaborator, new_nickname)
-    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30 
+  def nickname_changeable?(new_nickname)
+    if nickname != new_nickname && (Time.now - updated_at) / 24 / 60 / 60 <= 30 
       false
     else
       true
