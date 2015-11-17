@@ -5,11 +5,12 @@ module BoomTopicSearchable
 
   included do
     include Elasticsearch::Model
-    # Set up callbacks for updating the index on model changes
-    after_commit lambda { Indexer.perform_async(:index,  self.class.to_s, self.id) }, on: :create
-    after_commit lambda { Indexer.perform_async(:update, self.class.to_s, self.id) }, on: :update
-    after_commit lambda { Indexer.perform_async(:delete, self.class.to_s, self.id) }, on: :destroy
-    after_touch  lambda { Indexer.perform_async(:update, self.class.to_s, self.id) }
+    include Elasticsearch::Model::Callbacks
+    ## Set up callbacks for updating the index on model changes
+    #after_commit lambda { Indexer.perform_async(:index,  self.class.to_s, self.id) }, on: :create
+    #after_commit lambda { Indexer.perform_async(:update, self.class.to_s, self.id) }, on: :update
+    #after_commit lambda { Indexer.perform_async(:delete, self.class.to_s, self.id) }, on: :destroy
+    #after_touch  lambda { Indexer.perform_async(:update, self.class.to_s, self.id) }
 
     # Set up index configuration and mapping
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do

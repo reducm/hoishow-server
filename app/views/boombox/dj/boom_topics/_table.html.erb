@@ -1,0 +1,46 @@
+<%= form_tag(boombox_dj_boom_topics_path, class: 'form-inline', id: 'topics_form', method: 'get', remote: true) do %>
+  <div class="search">
+    <%= text_field_tag "topics_q", params[:topics_q],  class: 'form-control topicss_filter', placeholder: "输入关键词" %>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+  <table class="table table-hover boom_topics_list">
+    <thead>
+      <tr>
+        <th>内容</th>
+        <th>点赞</th>
+        <th>评论</th>
+        <th>创建时间</th>
+        <th>最后评论时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% if topics.any? %>
+      <% topics.each do |boom_topic| %>
+        <tr>
+          <td style="width: 30%"><%= truncate(boom_topic.content, length: 150) %></td>
+          <td><%= boom_topic.likes_count %></td>
+          <td><%= boom_topic.comments_count %></td>
+          <td><%= boom_topic.created_at.strfcn_time %></td>
+          <td><%= boom_topic.last_reply_time.strfcn_time %></td>
+          <td>
+            <% if boom_topic.is_top? %>
+              已置顶
+            <% end %>
+            <%= link_to "查看详情", boombox_dj_boom_topic_path(boom_topic)%>
+          </td>
+        </tr>
+      <% end %>
+    <% else %>
+      <tr><td>无数据</td></tr>
+    <% end %>
+    </tbody>
+  </table>
+
+  <div style="text-align: left">每页显示数量
+    <%= select_tag :topics_per, options_for_select([5, 10, 15, 20], selected: params[:topics_per] || 10), class: 'form-control topics_filter' %>
+  </div>
+
+  <%= paginate topics, param_name: 'topics_page', remote: true %>
+<% end %>
