@@ -21,7 +21,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     end
 
     if params[:q].present?
-      activities = activities.where("boom_activities.name like '%#{params[:q]}%'")
+      activities = activities.where("name like '%#{params[:q]}%'")
     end
 
     @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:per])
@@ -31,19 +31,6 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
       format.js
     end
 
-  end
-
-  def search
-    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
-    if params[:q].present?
-      query_str = query_str + " and name like '%#{params[:q]}%'"
-    end
-    if params[:select_options] == "1"
-      @activities = BoomActivity.where(is_hot:true).where(query_str).page(params[:page]).order("created_at desc")
-    else
-      @activities = BoomActivity.where(query_str).page(params[:page]).order("created_at desc")
-    end
-    render :index
   end
 
   def new

@@ -71,9 +71,6 @@ module Routes
               member do
                 post :change_is_top
               end
-              collection do
-                get :search
-              end
             end
 
             resources :boom_tags, only: [:index, :create, :destroy] do
@@ -91,9 +88,6 @@ module Routes
             resources :boom_feedbacks, only: [:index] do
               member do
                 post :update_status
-              end
-              collection do
-                get :search
               end
             end
 
