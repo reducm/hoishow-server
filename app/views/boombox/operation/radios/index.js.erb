@@ -1,0 +1,12 @@
+$('#radios_list').html("<%= j render partial: 'table', locals: { radios: @radios} %>");
+
+$('.radio_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    })
+
+

@@ -1,4 +1,7 @@
 $ ->
+  $(document).on 'change', '.radios_filter', ->
+    $('#radios_form').submit()
+
   #如果当前电台有标签的话就把标签id保存起来
   tag_ids_val = $("#radio_tag_ids").val()
   if tag_ids_val

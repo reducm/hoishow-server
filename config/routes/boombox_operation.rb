@@ -41,9 +41,6 @@ module Routes
               member do
                 post :change_is_top
               end
-              collection do
-                get :search
-              end
             end
 
             resources :playlists do
@@ -53,17 +50,11 @@ module Routes
                 post :remove_track
                 get :manage_tracks
               end
-              collection do
-                get :search
-              end
             end
 
             resources :radios do
               member do
                 post :change_is_top
-              end
-              collection do
-                get :search
               end
             end
 
