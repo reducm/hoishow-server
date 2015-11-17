@@ -25,6 +25,7 @@
       <th class='text-center'>创建者</th>
       <th class='text-center'>创建时间</th>
       <th class='text-center'>修改时间</th>
+      <th class='text-center'>推荐状态</th>
       <th class='text-center'>操作</th>
     </tr>
   </thead>
@@ -45,8 +46,8 @@
           <td><%= playlist.creator.name if playlist.creator %></td>
           <td><%= playlist.created_at.try(:strfcn_time) %></td>
           <td><%= playlist.updated_at.try(:strfcn_time) %></td>
+          <td><%= playlist.is_top_cn %></td>
           <td>
-            <%= link_to playlist.is_top_cn, change_is_top_boombox_operation_playlist_path(playlist), method: 'POST' %>
             <%= link_to "编辑", edit_boombox_operation_playlist_path(playlist)%>
             <%= link_to "管理音乐", manage_tracks_boombox_operation_playlist_path(playlist)%>
             <%= link_to "删除", boombox_operation_playlist_path(playlist), method: "delete", data: {confirm: "确定删除吗？"} %>

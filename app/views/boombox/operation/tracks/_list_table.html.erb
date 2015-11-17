@@ -11,6 +11,7 @@
       <th class='text-center'>标签</th>
       <th class='text-center'>上传者</th>
       <th class='text-center'>上传时间</th>
+      <th class='text-center'>推荐状态</th>
       <th class='text-center'>操作</th>
     </tr>
   </thead>
@@ -36,6 +37,7 @@
           </td>
           <td><%= track.creator.name if track.creator %></td>
           <td><%= track.created_at.try(:strfcn_time) %></td>
+          <td><%= track.is_top_cn %></td>
           <td>
             <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
             <% if list_type == "playlist_tracks" %>
@@ -43,7 +45,6 @@
             <% elsif list_type == "search_tracks" %>
               <button data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" type="button" class="btn btn-default add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</button>
             <% else %>
-              <%= link_to track.is_top_cn, change_is_top_boombox_operation_track_path(track), method: 'POST' %>
               <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>
           </td>

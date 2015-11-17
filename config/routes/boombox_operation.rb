@@ -37,26 +37,17 @@ module Routes
               end
             end
 
-            resources :tracks do
-              member do
-                post :change_is_top
-              end
-            end
+            resources :tracks
 
             resources :playlists do
               member do
-                post :change_is_top
                 post :add_track
                 post :remove_track
                 get :manage_tracks
               end
             end
 
-            resources :radios do
-              member do
-                post :change_is_top
-              end
-            end
+            resources :radios
 
             resources :activities do
               member do

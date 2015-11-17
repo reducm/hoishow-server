@@ -25,6 +25,7 @@
         <th class='text-center'>创建者</th>
         <th class='text-center'>创建时间</th>
         <th class='text-center'>修改时间</th>
+        <th class='text-center'>推荐状态</th>
         <th class='text-center'>操作</th>
       </tr>
     </thead>
@@ -45,8 +46,8 @@
             <td><%= radio.creator.name if radio.creator %></td>
             <td><%= radio.created_at.try(:strfcn_time) %></td>
             <td><%= radio.updated_at.try(:strfcn_time) %></td>
+            <td><%= radio.is_top_cn %></td>
             <td>
-              <%= link_to radio.is_top_cn, change_is_top_boombox_operation_radio_path(radio), method: 'POST' %>
               <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
               <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
             </td>

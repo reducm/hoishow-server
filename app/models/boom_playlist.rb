@@ -60,9 +60,9 @@ class BoomPlaylist < ActiveRecord::Base
 
   def is_top_cn
     if is_top
-      "取消推荐"
+      "推荐中"
     else
-      "推荐"
+      "没有推荐"
     end
   end
 
