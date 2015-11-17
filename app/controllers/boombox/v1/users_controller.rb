@@ -143,7 +143,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     unless subject
       return error_respond error_message
     end
-    is_follow = params[:follow].to_i ? 'follow' : 'unfollow'
+    is_follow = params[:follow] == 'true' ? 'follow' : 'unfollow'
     invoke_meta_method(is_follow, subject)
   end
 
@@ -166,7 +166,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     unless subject
       return error_respond error_message
     end
-    is_like = params[:like].to_i ? 'like' : 'unlike'
+    is_like = params[:like] == 'true' ? 'like' : 'unlike'
     invoke_meta_method(is_like, subject)
   end
 
