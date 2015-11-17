@@ -9,6 +9,9 @@ $ ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 't')
     $("form").submit()
+
+  $("#playlist_search_track_table .pagination a").on "click", () ->
+    sessionStorage.setItem('show_search_tab', 't')
     
   #刷新playlist_track_list
   $("#playlist_track_list").on "click", (e) ->

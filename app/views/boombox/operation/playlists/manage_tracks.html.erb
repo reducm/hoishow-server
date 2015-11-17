@@ -8,7 +8,7 @@
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="playlist_tracks">
-      <%= render partial: "/boombox/operation/tracks/table", locals: {tracks: @playlist_tracks, list_type: "playlist_tracks"} %>
+      <%= render partial: "/boombox/operation/tracks/list_table", locals: {tracks: @playlist_tracks, list_type: "playlist_tracks"} %>
     </div>
 
     <div role="tabpanel" class="tab-pane" id="search_tracks">
@@ -19,7 +19,7 @@
         <% end %>
       </div>
       <div id="playlist_search_track_table">
-        <%= render partial: "/boombox/operation/tracks/table", locals: {tracks: @tracks, list_type: "search_tracks"} %>
+        <%= render partial: "/boombox/operation/tracks/list_table", locals: {tracks: @tracks, list_type: "search_tracks"} %>
       </div>
     </div>
   </div>
