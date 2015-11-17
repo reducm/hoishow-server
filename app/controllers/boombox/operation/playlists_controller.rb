@@ -4,21 +4,33 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   before_filter :get_playlist, except: [:search, :index, :new, :create]
 
   def index
-    @playlists = BoomPlaylist.valid_playlists.page(params[:playlists_page]).order("created_at desc")
-  end
+    params[:playlists_page] ||= 1
+    params[:per] ||= 10
+    playlists = BoomPlaylist.valid_playlists
 
-  def search
-    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
+    if params[:start_time].present?
+      playlists = playlists.where("created_at > '#{params[:start_time]}'")
+    end
+
+    if params[:end_time].present?
+      playlists = playlists.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_top].present?
+      playlists = playlists.where(is_top: params[:is_top])
+    end
+
     if params[:q].present?
-      query_str = query_str + " and name like '%#{params[:q]}%'"
+      playlists = playlists.where("name like '%#{params[:q]}%'")
     end
-    if params[:select_options] == "1"
-      @playlists = BoomPlaylist.valid_playlists.where(is_hot:true).where(query_str).page(params[:playlists_page])
-    else
-      @playlists = BoomPlaylist.valid_playlists.where(query_str).page(params[:playlists_page])
+
+    @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
     end
-    
-    render :index
+
   end
 
   def new

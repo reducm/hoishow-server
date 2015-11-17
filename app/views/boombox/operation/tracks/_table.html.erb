@@ -1,56 +1,77 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover tracks">
-  <thead>
-    <tr>
-      <th class='text-center'>ID</th>
-      <th class='text-center'>封面</th>
-      <th class='text-center'>播放</th>
-      <th class='text-center'>标题</th>
-      <th class='text-center'>艺人</th>
-      <th class='text-center'>时长</th>
-      <th class='text-center'>标签</th>
-      <th class='text-center'>上传者</th>
-      <th class='text-center'>上传时间</th>
-      <th class='text-center'>操作</th>
-    </tr>
-  </thead>
-  <tbody class='text-center'>
-    <% if tracks.any? %>
-      <% tracks.each do|track| %>
-        <tr>
-          <td><%= track.id %></td>
-          <td><%= image_tag(track.cover_url, size: "50x50") if track.cover_url %></td>
-          <td>
-            <% if track.file_url %>
-              <audio src=<%= track.file_url %> controls="controls">你的浏览器不支持audio标签</audio>
-            <% end %>
-          </td>
-          <td><%= track.name %></td>
-          <td><%= track.artists %></td>
-          <td><%= track.duration_to_time %></td>
-          <td>
-            <% tags = track.boom_tags.pluck(:name)%>
-            <% if tags.present? %>
-              <%= tags.join(",") %>
-            <% end %>
-          </td>
-          <td><%= track.creator.name if track.creator %></td>
-          <td><%= track.created_at.try(:strfcn_time) %></td>
-          <td>
-            <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
-            <% if list_type == "playlist_tracks" %>
-              <a data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
-            <% elsif list_type == "search_tracks" %>
-              <button data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" type="button" class="btn btn-default add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</button>
-            <% else %>
-              <%= link_to track.is_top_cn, change_is_top_boombox_operation_track_path(track), method: 'POST' %>
-              <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
-            <% end %>
-          </td>
-        </tr>
+<%= form_tag(boombox_operation_tracks_path, id: "tracks_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "音乐数/总数：#{tracks.total_count}/#{BoomTrack.valid.count}"%></h3>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "start_time", params[:start_time],  class: 'form-control tracks_filter track_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "end_time", params[:end_time],  class: 'form-control tracks_filter track_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control tracks_filter" %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control tracks_filter', placeholder: "输入关键词进行搜索", size:30%>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+
+  <table class="table table-hover tracks">
+    <thead>
+      <tr>
+        <th class='text-center'>ID</th>
+        <th class='text-center'>封面</th>
+        <th class='text-center'>播放</th>
+        <th class='text-center'>标题</th>
+        <th class='text-center'>艺人</th>
+        <th class='text-center'>时长</th>
+        <th class='text-center'>标签</th>
+        <th class='text-center'>上传者</th>
+        <th class='text-center'>上传时间</th>
+        <th class='text-center'>操作</th>
+      </tr>
+    </thead>
+    <tbody class='text-center'>
+      <% if tracks.any? %>
+        <% tracks.each do|track| %>
+          <tr>
+            <td><%= track.id %></td>
+            <td><%= image_tag(track.cover_url, size: "50x50") if track.cover_url %></td>
+            <td>
+              <% if track.file_url %>
+                <audio src=<%= track.file_url %> controls="controls">你的浏览器不支持audio标签</audio>
+              <% end %>
+            </td>
+            <td><%= track.name %></td>
+            <td><%= track.artists %></td>
+            <td><%= track.duration_to_time %></td>
+            <td>
+              <% tags = track.boom_tags.pluck(:name)%>
+              <% if tags.present? %>
+                <%= tags.join(",") %>
+              <% end %>
+            </td>
+            <td><%= track.creator.name if track.creator %></td>
+            <td><%= track.created_at.try(:strfcn_time) %></td>
+            <td>
+              <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
+              <% if list_type == "playlist_tracks" %>
+                <a data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
+              <% elsif list_type == "search_tracks" %>
+                <button data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" type="button" class="btn btn-default add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</button>
+              <% else %>
+                <%= link_to track.is_top_cn, change_is_top_boombox_operation_track_path(track), method: 'POST' %>
+                <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
+              <% end %>
+            </td>
+          </tr>
+        <%end%>
       <%end%>
-    <%end%>
-  </tbody>
-</table>
-<%= paginate tracks, param_name: "tracks_page" %>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control tracks_filter" %>
+  </div>
+
+  <%= paginate tracks, param_name: "tracks_page", remote: true %>
+<% end %>

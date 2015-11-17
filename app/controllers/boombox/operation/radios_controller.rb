@@ -4,7 +4,7 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
   before_filter :get_radio, except: [:search, :index, :new, :create]
 
   def index
-    params[:activities_page] ||= 1
+    params[:page] ||= 1
     params[:per] ||= 10
     radios = BoomPlaylist.valid_radios
 

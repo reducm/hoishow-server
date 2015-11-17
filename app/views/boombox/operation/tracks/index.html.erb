@@ -5,11 +5,7 @@
     <%= link_to "上传音乐", new_boombox_operation_track_url, class: 'btn btn-primary' %>
   </div>
   
-  <div class="tracks_search_form mt20">
-    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_tracks_path} %>
-  </div>
-
-  <div class="tracks_list mt20">
+  <div class="mt20" id="tracks_list">
     <%= render partial: "table", locals: {tracks: @tracks, list_type: ""} %>
   </div>
 </div>

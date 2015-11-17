@@ -1,0 +1,12 @@
+$('#tracks_list').html("<%= j render partial: 'table', locals: { tracks: @tracks, list_type: ""} %>");
+
+$('.track_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    })
+
+

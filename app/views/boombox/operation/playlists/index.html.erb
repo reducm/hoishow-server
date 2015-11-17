@@ -5,11 +5,7 @@
     <%= link_to "新建Playlist", new_boombox_operation_playlist_url, class: 'btn btn-primary' %>
   </div>
 
-  <div class="playlists_search_form mt20">
-    <%= render partial: "boombox/operation/search_form", locals: {form_path: search_boombox_operation_playlists_path} %>
-  </div>
-
-  <div class="playlists_list mt20">
+  <div class="mt20" id="playlists_list">
     <%= render partial: "table", locals: {playlists: @playlists} %>
   </div>
 </div>

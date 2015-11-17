@@ -1,4 +1,7 @@
 $ ->
+  $(document).on 'change', '.playlists_filter', ->
+    $('#playlists_form').submit()
+
   if sessionStorage.getItem('show_search_tab') == "t"
     $("#playlist_manage_tab a[href='#search_tracks']").tab("show")
 

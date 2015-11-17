@@ -4,21 +4,33 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   before_filter :get_track, except: [:search, :index, :new, :create]
 
   def index
-    @tracks = BoomTrack.valid.page(params[:tracks_page])
-  end
+    params[:tracks_page] ||= 1
+    params[:per] ||= 10
+    tracks = BoomTrack.valid
 
-  def search
-    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
+    if params[:start_time].present?
+      tracks = tracks.where("created_at > '#{params[:start_time]}'")
+    end
+
+    if params[:end_time].present?
+      tracks = tracks.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_top].present?
+      tracks = tracks.where(is_top: params[:is_top])
+    end
+
     if params[:q].present?
-      query_str = query_str + " and name like '%#{params[:q]}%'"
+      tracks = tracks.where("name like '%#{params[:q]}%'")
     end
-    if params[:select_options] == "1"
-      @tracks = BoomTrack.valid.where(is_hot:true).where(query_str).page(params[:tracks_page])
-    else
-      @tracks = BoomTrack.valid.where(query_str).page(params[:tracks_page])
+
+    @tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
     end
-    
-    render :index
+
   end
 
   def new
