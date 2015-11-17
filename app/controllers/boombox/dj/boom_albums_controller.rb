@@ -2,14 +2,10 @@ class Boombox::Dj::BoomAlbumsController < Boombox::Dj::ApplicationController
   before_filter :check_login!
 
   def index
-    # 先有艺人再上传
-    unless params[:collaborator_id].present?
-      redirect_to boombox_dj_root_url
-    end
-
     # 显示
     params[:page] ||= 1
-    @boom_albums = BoomAlbum.where(collaborator_id: params[:collaborator_id]).order(is_cover: :desc, created_at: :desc).page(params[:page]) 
+    @boom_albums = current_collaborator.boom_albums
+    @boom_albums = @boom_albums.order(is_cover: :desc, created_at: :desc).page(params[:page]) 
     # 上传
     @collaborator = Collaborator.find(params[:collaborator_id])
     @boom_album = BoomAlbum.new
