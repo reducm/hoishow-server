@@ -4,13 +4,8 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   before_filter :get_track, except: [:search, :index, :new, :create]
 
   def index
-    # 先有艺人再上传
-    unless params[:collaborator_id].present?
-      redirect_to boombox_dj_root_url
-    end
-
-    @tracks = BoomTrack.where(collaborator_id: params[:collaborator_id])
-    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+    @tracks = current_collaborator.boom_tracks 
+    @tracks = @tracks.valid.page(params[:tracks_page]).order("created_at desc")
   end
 
   def search
