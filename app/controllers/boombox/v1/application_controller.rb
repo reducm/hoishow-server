@@ -20,7 +20,7 @@ class Boombox::V1::ApplicationController < ApplicationController
   end
 
   def valid_sign?
-    options = params.except(:action, :controller, :format)
+    options = params.except(:action, :controller, :format, :avatar)
     @auth.boombox_valid_sign?(options)
   end
 

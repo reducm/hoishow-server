@@ -11,5 +11,5 @@ if comment.parent_id
     json.created_by parent_comment.created_by
   end
 else
-  json.parent ""
+  json.parent nil
 end

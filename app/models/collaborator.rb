@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class Collaborator < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   has_many :user_follow_collaborators
   has_many :followers, through: :user_follow_collaborators, source: :user

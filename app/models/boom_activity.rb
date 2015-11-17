@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomActivity < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   belongs_to :boom_location
   belongs_to :boom_admin
@@ -20,6 +17,7 @@ class BoomActivity < ActiveRecord::Base
     show: 0,
     activity: 1
   }
+
   after_create :set_activity_param
 
   scope :is_display, ->{ where(is_display: true, removed: false).order('is_top')}
@@ -64,13 +62,10 @@ class BoomActivity < ActiveRecord::Base
 
   private
   def set_activity_param
-    activity_param = { removed: 0, is_top: 0, is_display: 0, is_hot: 0 }
-    if is_hot
-      activity_param.delete(:is_hot)
-    end
-    if is_display
-      activity_param.delete(:is_display)
-    end
+    activity_param = {removed: 0, is_top: 0, is_display: 0, is_hot: 0}
+    activity_param.delete(:is_hot) if is_hot
+    activity_param.delete(:is_display) if is_display
+
     self.update(activity_param)
   end
 end
