@@ -9,7 +9,11 @@
 #= require operation/notify
 #
 #= require boombox/dj/boom_albums
+#= require boombox/dj/boom_topics
+#= require boombox/dj/boom_comments
+#= require boombox/dj/users
 #= require boombox/dj/tracks
+#= require boombox/dj/playlists
 #
 #= require jquery-fileupload/basic
 #= require dropzone

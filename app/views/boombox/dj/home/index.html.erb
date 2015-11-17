@@ -2,7 +2,7 @@
 
 <div class="row" style="text-align: center;">
   <% if @collaborator.avatar_url.present? %>
-    <p><%= image_tag(@collaborator.avatar_url, size: "50x50") %></p>
+    <p><%= image_tag(@collaborator.avatar_url, size: "160x160") %></p>
   <% else %>
     <p>无头像</p>
   <% end %>

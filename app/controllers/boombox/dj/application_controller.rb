@@ -22,6 +22,7 @@ class Boombox::Dj::ApplicationController < ApplicationController
     @current_admin ||= BoomAdmin.where(id: session[:admin_id], admin_type: BoomAdmin.admin_types[:dj]).first if session[:admin_id]
   end
 
+  # 登陆后得到该dj  
   def current_collaborator
     Collaborator.where(boom_admin_id: current_admin.id).first 
   end
@@ -29,6 +30,10 @@ class Boombox::Dj::ApplicationController < ApplicationController
   def current_ability
     @current_ability ||= ::Ability.new(current_admin)
   end
+
+  ## 新回复
+  #def unread_comments_count
+  #end
 
   helper_method :current_admin
   helper_method :current_collaborator
