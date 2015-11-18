@@ -135,19 +135,13 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
     end
 
     it "update nickname success" do
-      options = {api_token: @user.api_token, type: "nickname", nickname: "tom"}
+      options = {api_token: @user.api_token, nickname: "tom"}
       post :update_user, encrypted_params_in_boombox(api_key, options)
       check_user_data
     end
 
-    it "update nickname fail while nickname is blank" do
-      options = {api_token: @user.api_token, type: "nickname", nickname: ""}
-      post :update_user, encrypted_params_in_boombox(api_key, options)
-      expect(json["errors"]).to eq I18n.t("errors.messages.nickname_not_found")
-    end
-
     it "update nickname fail while email format is wrong" do
-      options = {api_token: @user.api_token, type: "email", email: @user.email}
+      options = {api_token: @user.api_token, email: @user.email}
       post :update_user, encrypted_params_in_boombox(api_key, options)
       expect(json["errors"]).to eq I18n.t("errors.messages.email_format_wrong")
     end

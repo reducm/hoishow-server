@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class Collaborator < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   has_many :user_follow_collaborators
   has_many :followers, through: :user_follow_collaborators, source: :user
@@ -16,7 +13,9 @@ class Collaborator < ActiveRecord::Base
   has_many :boom_tracks, -> { where creator_type: BoomTrack::CREATOR_COLLABORATOR }, foreign_key: 'creator_id'
 
   has_many :tag_subject_relations, as: :subject
-  has_many :boom_tags, through: :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject,
+            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   mount_uploader :cover, ImageUploader
   mount_uploader :avatar, ImageUploader
@@ -32,7 +31,7 @@ class Collaborator < ActiveRecord::Base
   # 艺人简介字数上限100字
   validates :description, length: { maximum: 200}
 
-  # 身份 
+  # 身份
   enum identity: {
     dj: 0, # DJ
     producer: 1, # 制作人
@@ -44,8 +43,22 @@ class Collaborator < ActiveRecord::Base
     female: 1
   }
 
-  def nickname_changeable?(new_nickname)
-    if nickname != new_nickname && (Time.now - updated_at) / 24 / 60 / 60 <= 30 
+  mapping do
+    indexes :name, analyzer: 'snowball'
+    indexes :boom_tags, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
+  end
+
+  def as_indexed_json(options={})
+    as_json(
+      only: :name,
+      include: { boom_tags: {only: :name} }
+    )
+  end
+
+  def nickname_changeable?(collaborator, new_nickname)
+    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30
       false
     else
       true
@@ -68,12 +81,6 @@ class Collaborator < ActiveRecord::Base
     end
   end
 
-  def as_indexed_json(options={})
-    as_json(
-      only: :name
-    )
-  end
-
   def is_followed(user_id)
     user_id.in?(user_follow_collaborators.pluck(:user_id))
   end
@@ -87,5 +94,3 @@ class Collaborator < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
-
-Collaborator.import(force: true)

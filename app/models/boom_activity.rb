@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomActivity < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   belongs_to :boom_location
   belongs_to :boom_admin
@@ -14,12 +11,15 @@ class BoomActivity < ActiveRecord::Base
   has_many :tracks, through: :activity_track_relations, source: :boom_track
 
   has_many :tag_subject_relations, as: :subject
-  has_many :boom_tags, through: :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject,
+            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   enum mode: {
     show: 0,
     activity: 1
   }
+
   after_create :set_activity_param
 
   scope :is_display, ->{ where(is_display: true, removed: false).order('is_top')}
@@ -28,9 +28,17 @@ class BoomActivity < ActiveRecord::Base
 
   paginates_per 10
 
+  mapping do
+    indexes :name, analyzer: 'snowball'
+    indexes :boom_tags, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
+  end
+
   def as_indexed_json(options={})
     as_json(
-      only: :name
+      only: :name,
+      include: { boom_tags: {only: :name} }
     )
   end
 
@@ -64,15 +72,10 @@ class BoomActivity < ActiveRecord::Base
 
   private
   def set_activity_param
-    activity_param = { removed: 0, is_top: 0, is_display: 0, is_hot: 0 }
-    if is_hot
-      activity_param.delete(:is_hot)
-    end
-    if is_display
-      activity_param.delete(:is_display)
-    end
+    activity_param = {removed: 0, is_top: 0, is_display: 0, is_hot: 0}
+    activity_param.delete(:is_hot) if is_hot
+    activity_param.delete(:is_display) if is_display
+
     self.update(activity_param)
   end
 end
-
-BoomActivity.import(force: true)

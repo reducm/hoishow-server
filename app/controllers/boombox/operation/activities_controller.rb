@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Boombox::Operation::ActivitiesController < Boombox::Operation::ApplicationController
   before_filter :check_login!
-  before_filter :get_activity, except: [:search, :index, :new, :create]
+  before_filter :get_activity, except: [:search, :index, :new, :create, :get_video_url]
 
   def index
     @activities = BoomActivity.page(params[:activities_page])
@@ -48,7 +48,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
         if new_tag_ids.present?
           BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @activity.tag_for_activity(tag) }
         end
-        del_tag_ids = source_tag_ids - target_tag_ids 
+        del_tag_ids = source_tag_ids - target_tag_ids
         if del_tag_ids.present?
           @activity.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
         end
@@ -63,7 +63,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
         if new_collaborator_ids.present?
           Collaborator.where('id in (?)', new_collaborator_ids).each{ |collaborator| @activity.relate_collaborator(collaborator) }
         end
-        del_collaborator_ids = source_collaborator_ids - target_collaborator_ids 
+        del_collaborator_ids = source_collaborator_ids - target_collaborator_ids
         if del_collaborator_ids.present?
           @activity.collaborator_activity_relations.where('collaborator_id in (?)', del_collaborator_ids).each{ |del_collaborator| del_collaborator.destroy! }
         end
@@ -88,6 +88,11 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     redirect_to boombox_operation_activities_url
   end
 
+  def upload_cover
+    @activity.update(activity_params)
+
+    render json: {success: true, cover_path: @activity.cover_url}
+  end
 
   private
   def get_activity

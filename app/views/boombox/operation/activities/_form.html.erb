@@ -14,18 +14,22 @@
   <div id="activity_form">
     <%= hidden_field_tag "activity_tag_ids", activity.boom_tags.pluck(:id) %>
     <%= hidden_field_tag "activity_collaborator_ids", activity.collaborators.pluck(:id) %>
-    <%= simple_form_for( activity, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
+    <%= simple_form_for(activity, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
       <div class="row">
-        <div class="col-xs-3 col-sm-4">
-          <div class="text-center" id="cover_preview">
-            <%= f.input :cover, label: "请上传 1280x720 jpg 类型图像文件", input_html: {class: "activity-cover-uploader dropzone", id: "activity_cover"} %>
-            <% if params[:action] == 'edit' %>
-              <img id="activity_cover_url" src=<%= activity.cover_url %> />
-            <% end %>
+        <div class="col-xs-9 col-sm-6 cover_area">
+          <div class="text-center">
+            <div class='cover_preview'><%= boombox_default_cover activity.cover_url %></div>
+            <span class="btn btn-primary fileinput-button">
+              <% if params[:action] == 'edit' %>
+                <%= f.input :cover, label: "上传海报", input_html: {class: "activity_cover_uploader"} %>
+              <% else %>
+                <%= f.input :cover, label: "上传海报" %>
+              <% end %>
+            </span>
+            <span>请上传 1280x720 jpg 类型图像文件</span>
           </div>
         </div>
-
-        <div class="col-xs-9 col-sm-6">
+        <div class="col-xs-3 col-sm-4">
           <div class="form-group">
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
             <%= f.input :is_hot, label: "打勾推荐此活动" %>
@@ -59,11 +63,11 @@
           </div>
         </div>
       </div>
-        <%= f.input :description, label: '图文描述' %>
-
+      <%= f.input :description, label: '图文描述' %>
       <div class="form-group text-center">
         <%= submit_tag "保存", class: "btn btn-primary", id: "activity-submit", data: { disable_with: "loading" } %>
       </div>
     <% end %>
+    <%= hidden_field_tag 'activity_id', activity.id %>
   </div>
 </div>

@@ -67,12 +67,15 @@ $ ->
   )
 
   # 图片上传预览
-  window.readURL = (input) ->
+  window.readURL = (input, $obj=nil) ->
     if input.files and input.files[0]
       output_id = 'img-prv-' + $(input).attr('id')
 
       unless $('img#' + output_id)[0]
-        $(input).after('<img id=' + output_id + ' src="#"></img>')
+        if $obj
+          $obj.html('<img id=' + output_id + ' src="#"></img>')
+        else
+          $(input).after('<img id=' + output_id + ' src="#"></img>')
 
       output = $('img#' + output_id)
       reader = new FileReader

@@ -1,5 +1,6 @@
 class BoomTopic < ActiveRecord::Base
-  include BoomTopicSearchable
+  default_scope {order('created_at DESC')}
+  include Searchable
 
   belongs_to :collaborator
 
@@ -11,7 +12,7 @@ class BoomTopic < ActiveRecord::Base
   validates :content, presence: true
 
   mount_uploader :image, ImageUploader
-  before_create :set_is_top
+  after_create :set_is_top
 
   paginates_per 10
 
@@ -65,11 +66,6 @@ class BoomTopic < ActiveRecord::Base
 
   private
   def set_is_top
-    self.is_top = false
-    # 这里的最后返回值刚好是false，会导致save失败，before callback最后要返回true
-    # http://makandracards.com/makandra/791-dealing-with-activerecord-recordnotsaved
-    true
+    self.update(is_top: 0) unless self.is_top
   end
 end
-
-BoomTopic.import(force: true)

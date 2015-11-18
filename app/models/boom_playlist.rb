@@ -1,8 +1,5 @@
-require 'elasticsearch/model'
-
 class BoomPlaylist < ActiveRecord::Base
-  include Elasticsearch::Model
-  include Elasticsearch::Model::Callbacks
+  include Searchable
 
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
@@ -15,7 +12,9 @@ class BoomPlaylist < ActiveRecord::Base
   has_many :tracks, through: :playlist_track_relations, source: :boom_track
 
   has_many :tag_subject_relations, as: :subject
-  has_many :boom_tags, through: :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject,
+            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -37,9 +36,17 @@ class BoomPlaylist < ActiveRecord::Base
 
   paginates_per 10
 
+  mapping do
+    indexes :name, analyzer: 'snowball'
+    indexes :boom_tags, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
+  end
+
   def as_indexed_json(options={})
     as_json(
-      only: :name
+      only: :name,
+      include: { boom_tags: {only: :name} }
     )
   end
 
@@ -78,5 +85,3 @@ class BoomPlaylist < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 end
-
-BoomPlaylist.import(force: true)
