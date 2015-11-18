@@ -1,0 +1,12 @@
+<%# encoding: utf-8 %>
+
+<div class="description_content">
+  <%= image_tag(@activity.cover_url) if @activity.cover_url %>
+  <%= raw(@activity.description.html_safe) if @activity.description %>
+</div>
+
+<style media="screen">
+  .description_content{
+    overflow: auto;
+  }
+</style>

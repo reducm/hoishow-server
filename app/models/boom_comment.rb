@@ -1,4 +1,5 @@
 class BoomComment < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
   include Searchable
 
   CREATOR_COLLABORATOR = 'Collaborator'

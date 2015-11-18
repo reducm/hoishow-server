@@ -1,11 +1,16 @@
 json.(@activity, :id, :name, :showtime, :mode)
+json.showtime @activity.showtime || ''
 json.poster @activity.cover_url || ''
-json.description
+json.description description_boombox_v1_activity_url(@activity)
 
 location = @activity.boom_location
 
-json.location do
-  json.(location, :name, :longitude, :latitude) rescue nil
+if location
+  json.location do
+    json.(location, :name, :longitude, :latitude)
+  end
+else
+  json.location nil
 end
 
 json.collaborators do

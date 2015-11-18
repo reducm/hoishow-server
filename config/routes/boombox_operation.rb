@@ -68,6 +68,7 @@ module Routes
             resources :activities do
               member do
                 post :change_is_top
+                patch :upload_cover
               end
               collection do
                 get :search
