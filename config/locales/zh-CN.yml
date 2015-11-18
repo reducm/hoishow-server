@@ -368,3 +368,8 @@ zh-CN:
       page_title_values:
         mobile_about: 产品介绍
         terms: 服务条款
+      boom_topic:
+        content: 内容
+        image: 上传图片
+        video_title: 视频标题
+        video_url: 上传视频

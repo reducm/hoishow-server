@@ -20,7 +20,7 @@ module Routes
               end
             end
 
-            resources :boom_topics
+            resources :boom_topics, except: [:update, :new]
 
             resources :boom_comments, only: [:index, :new, :create] 
 

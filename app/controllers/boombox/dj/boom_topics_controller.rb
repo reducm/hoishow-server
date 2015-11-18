@@ -11,8 +11,11 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
       # 调用es的search搜索（排序也用es处理）
       @boom_topics = boom_topics.search(params[:topics_q]).page(params[:topics_page]).per(params[:topics_per]).records
     else
-      @boom_topics = boom_topics.order(created_at: :desc).page(params[:topics_page]).per(params[:topics_per])
+      @boom_topics = boom_topics.order(is_top: :desc, created_at: :desc).page(params[:topics_page]).per(params[:topics_per])
     end
+
+    # 发布动态
+    @boom_topic = current_collaborator.boom_topics.new 
 
     respond_to do |format|
      format.html
@@ -42,6 +45,15 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
     @likers = likers.order("boom_user_likes.created_at").page(params[:likers_page]).per(params[:likers_per])
   end
 
+  def create
+    if @boom_topic = current_collaborator.boom_topics.create(boom_topic_params)
+      redirect_to boombox_dj_boom_topics_url, notice: '新建成功'
+    else
+      flash[:alert] = @boom_topic.errors.full_messages.to_sentence
+      render action: 'index'
+    end
+  end
+
   def destroy 
     @boom_topic = BoomTopic.find(params[:id])
     if @boom_topic.destroy
@@ -50,5 +62,11 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
       flash[:alert] = @boom_topic.errors.full_messages.to_sentence
       render action: 'show'
     end
+  end
+
+  private
+  
+  def boom_topic_params
+    params.require(:boom_topic).permit(BoomTopic.column_names.delete_if {|obj| obj.in? ["created_at", "updated_at", "is_top"]}.map &:to_sym)
   end
 end

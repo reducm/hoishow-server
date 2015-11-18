@@ -21,6 +21,7 @@ module BoomTopicSearchable
         end
 
         indexes :created_at, type: 'date'
+        indexes :is_top, type: 'boolean'
       end
     end
 
@@ -50,7 +51,7 @@ module BoomTopicSearchable
         # 关键词为空时返回全部
         @search_definition[:query] = { match_all: {} }
       end
-      @search_definition[:sort]  = { created_at: 'desc' }
+      @search_definition[:sort]  = { is_top: 'desc', created_at: 'desc' }
 
       __elasticsearch__.search(@search_definition)
     end

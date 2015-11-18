@@ -4,7 +4,7 @@
     <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
-  <table class="table table-hover boom_topics_list">
+  <table class="table table-hover" id="boom_topics_list">
     <thead>
       <tr>
         <th>内容</th>
@@ -19,15 +19,25 @@
     <% if topics.any? %>
       <% topics.each do |boom_topic| %>
         <tr>
-          <td style="width: 30%"><%= truncate(boom_topic.content, length: 150) %></td>
+          <td class="container">
+            <div>
+              <%= truncate(boom_topic.content, length: 120) %>
+              <% if boom_topic.is_top? %>
+                <span class="label label-primary">置顶</span> 
+              <% end %>
+              <% if boom_topic.image_url.present? %>
+                <span class="label label-success">图片</span> 
+              <% end %>
+              <% if boom_topic.video_url.present? %>
+                <span class="label label-info">视频</span> 
+              <% end %>
+            </div>
+          </td>
           <td><%= boom_topic.likes_count %></td>
           <td><%= boom_topic.comments_count %></td>
           <td><%= boom_topic.created_at.strfcn_time %></td>
           <td><%= boom_topic.last_reply_time.strfcn_time %></td>
           <td>
-            <% if boom_topic.is_top? %>
-              已置顶
-            <% end %>
             <%= link_to "查看详情", boombox_dj_boom_topic_path(boom_topic)%>
           </td>
         </tr>

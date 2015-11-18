@@ -14,7 +14,11 @@
     <tbody>
       <tr>
         <td><%= @boom_topic.content %></td>
-        <td>topic主图</td>
+        <td>
+          <% if @boom_topic.image_url.present? %>
+            <%= image_tag(@boom_topic.image_url) %>
+          <% end %>
+        </td>
       </tr>
     </tbody>
   </table>
