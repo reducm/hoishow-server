@@ -43,6 +43,13 @@ class Collaborator < ActiveRecord::Base
     female: 1
   }
 
+  mapping do
+    indexes :name, analyzer: 'snowball'
+    indexes :boom_tags, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
+  end
+
   def as_indexed_json(options={})
     as_json(
       only: :name,
@@ -72,12 +79,6 @@ class Collaborator < ActiveRecord::Base
     else
       "审核中"
     end
-  end
-
-  def as_indexed_json(options={})
-    as_json(
-      only: :name
-    )
   end
 
   def is_followed(user_id)

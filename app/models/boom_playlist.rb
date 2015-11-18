@@ -36,6 +36,13 @@ class BoomPlaylist < ActiveRecord::Base
 
   paginates_per 10
 
+  mapping do
+    indexes :name, analyzer: 'snowball'
+    indexes :boom_tags, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
+  end
+
   def as_indexed_json(options={})
     as_json(
       only: :name,
