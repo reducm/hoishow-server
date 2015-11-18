@@ -17,7 +17,6 @@ class Boombox::Operation::SessionsController < Boombox::Operation::ApplicationCo
       when admin.password_valid?(params[:session][:password])
         admin.update(last_sign_in_at: DateTime.now)
         session[:admin_id] = admin.id
-
         url = session[:request_page] ? session[:request_page] : boombox_operation_root_url
         redirect_to url
       else

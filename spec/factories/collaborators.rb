@@ -3,6 +3,10 @@
 FactoryGirl.define do
   factory :collaborator do
     name {Faker::Name.name}
+    nickname {Faker::Name.name}
+    sex 1
+    identity 1
+    birth Time.now
     email {Faker::Internet.email}
     weibo {Faker::Name.name}
     wechat {Faker::Name.name}
