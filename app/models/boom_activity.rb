@@ -11,7 +11,9 @@ class BoomActivity < ActiveRecord::Base
   has_many :tracks, through: :activity_track_relations, source: :boom_track
 
   has_many :tag_subject_relations, as: :subject
-  has_many :boom_tags, through: :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject,
+            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   enum mode: {
     show: 0,
@@ -28,7 +30,8 @@ class BoomActivity < ActiveRecord::Base
 
   def as_indexed_json(options={})
     as_json(
-      only: :name
+      only: :name,
+      include: { boom_tags: {only: :name} }
     )
   end
 

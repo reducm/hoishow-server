@@ -10,10 +10,10 @@ class BoomTrack < ActiveRecord::Base
   has_many :activity_track_relations
   has_many :activities, through: :activity_track_relations, source: :boom_activity
 
-  scope :recommend, -> { order('is_top, RAND()').limit(20) }
-
   has_many :tag_subject_relations, as: :subject
-  has_many :boom_tags, through: :tag_subject_relations, as: :subject
+  has_many :boom_tags, through: :tag_subject_relations, as: :subject,
+            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -24,12 +24,14 @@ class BoomTrack < ActiveRecord::Base
 
   after_create :set_removed_and_is_top
   scope :valid, -> {where(removed: false).order('is_top')}
+  scope :recommend, -> { order('is_top, RAND()').limit(20) }
 
   paginates_per 10
 
   def as_indexed_json(options={})
     as_json(
-      only: [:name, :artists]
+      only: [:name, :artists],
+      include: { boom_tags: {only: :name} }
     )
   end
 
