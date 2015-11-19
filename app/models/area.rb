@@ -7,7 +7,7 @@ class Area < ActiveRecord::Base
   SEAT_UNUSED = 'unused'
 
   belongs_to :stadium
-
+  belongs_to :event
   has_many :show_area_relations, dependent: :destroy
   has_many :shows, through: :show_area_relations
   has_many :tickets
@@ -16,8 +16,6 @@ class Area < ActiveRecord::Base
   #with_options dependent: :destroy do |option|
     #option.has_many :seats, -> { where(order_id: nil) }
   #end
-
-  validates :stadium, presence: {message: "场馆不能为空"}
 
   paginates_per 10
 
