@@ -12,8 +12,8 @@ json.price_range show.get_price_range
 json.postage show.r_ticket? ? CommonData.get_value('postage') : 0
 
 if show.events.any?
-  json.show_time show.events.first.show_time.to_i
-  json.stadium_map show.events.first.stadium_map_url || ''
+  json.show_time show.events.last.show_time.to_i
+  json.stadium_map show.events.last.stadium_map_url || ''
 else
   json.show_time show.show_time.to_i
   json.stadium_map show.stadium_map_url || ''
