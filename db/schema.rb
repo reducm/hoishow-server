@@ -241,7 +241,7 @@ ActiveRecord::Schema.define(version: 20151020064226) do
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
-    t.decimal  "price",                   precision: 6, scale: 2
+    t.decimal  "price",                   precision: 10, scale: 2
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
     t.boolean  "is_sold_out", limit: 1,                           default: false
