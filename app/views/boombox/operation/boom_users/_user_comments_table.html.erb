@@ -1,0 +1,40 @@
+<%= form_tag(boombox_operation_boom_user_path(@user), id: "boom_user_comments_form", class: 'form-inline', method: 'get', remote: true) do %>
+<h4 class="pull-left"><%= "评论总数：#{@user_comments.total_count}"%></h4>
+<div class="search pull-right">
+    <%= text_field_tag "q", params[:q],  class: 'form-control', placeholder: "输入关键词进行搜索", size:30%>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th class='text-center'>动态发表人</th>
+      <th class='text-center'>评论的动态</th>
+      <th class='text-center'>评论内容</th>
+      <th class='text-center'>评论时间</th>
+      <th class='text-center'>操作</th>
+    </tr>
+  </thead>
+  <tbody class='text-center'>
+    <% if @user_comments.any? %>
+      <% @user_comments.each do |comment| %>
+        <% topic = comment.boom_topic %>
+        <tr>
+          <td class="text-center"><%= topic.created_by %></td>
+          <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
+          <td class="text-center" style="width: 30%"><%= truncate(comment.content, length: 50) %></td>
+          <td class="text-center"><%= comment.created_at.strfcn_time %></td>
+          <td class="text-center">
+            <% if comment.is_hidden? %>
+              已屏蔽
+            <% else %>
+              <%= link_to "屏蔽", block_comment_boombox_operation_boom_user_path(@user, comment_id: comment.id), method: :post %>
+            <% end %>
+          </td>
+        </tr>
+      <%end%>
+    <%end%>
+  </tbody>
+</table>
+
+<%= paginate @user_comments, param_name: "user_comments_page", remote: true %>
+<% end %>

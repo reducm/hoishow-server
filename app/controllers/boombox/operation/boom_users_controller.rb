@@ -22,8 +22,21 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   end
 
   def show
-    @user_comments = @user.boom_comments.page(params[:user_comments_page]).order("created_at desc")
+    params[:user_comments_page] ||= 1
+    user_comments = @user.boom_comments
+
+    if params[:q].present?
+      user_comments = user_comments.search(params[:q]).records
+    end
+
+    @user_comments = user_comments.page(params[:user_comments_page]).order("created_at desc")
     @like_topics = @user.boom_like_topics.page(params[:like_topics_page]).order("created_at desc")
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def block_comment
