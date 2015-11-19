@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151111092915) do
+ActiveRecord::Schema.define(version: 20151119030905) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -265,6 +265,7 @@ ActiveRecord::Schema.define(version: 20151111092915) do
     t.string   "cover",        limit: 255
     t.boolean  "removed",      limit: 1
     t.boolean  "is_top",       limit: 1
+    t.boolean  "is_default",   limit: 1,   default: false
   end
 
   create_table "boom_recommends", force: :cascade do |t|

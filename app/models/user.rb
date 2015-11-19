@@ -48,7 +48,7 @@ class User < ActiveRecord::Base
 
   #validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
   validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
-
+  after_create :set_default_playlist
   mount_uploader :avatar, ImageUploader
 
   paginates_per 10
@@ -296,4 +296,8 @@ class User < ActiveRecord::Base
     return pbkdf2 == testHash
   end
 
+  private
+  def set_default_playlist
+    self.playlists.create(name: '我喜欢的音乐', is_default: 1)
+  end
 end

@@ -4,6 +4,7 @@ need_tracks ||= false
 json.(playlist, :id, :name)
 json.cover playlist.cover_url || ''
 json.is_followed playlist.is_followed(user.try(:id))
+json.is_default playlist.is_default
 json.tracks_count playlist.tracks_count
 
 if playlist.creator_type == BoomPlaylist::CREATOR_COLLABORATOR && playlist.creator
