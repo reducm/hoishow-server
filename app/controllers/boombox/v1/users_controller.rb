@@ -127,7 +127,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id).page(params[:page])
+    @playlists = @user.boom_playlists.order('created_at desc').page(params[:page])
   end
 
   def comment_list

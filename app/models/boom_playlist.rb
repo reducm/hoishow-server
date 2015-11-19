@@ -51,6 +51,22 @@ class BoomPlaylist < ActiveRecord::Base
     )
   end
 
+  def self.recommend(user=nil)
+    if user
+      Rails.cache.fetch("user:#{id}:playlists:recommend", expires_in: 1.day) do
+        if user.recommend_playlists.any?
+          user.recommend_playlists
+        else
+          playlist.open.to_a
+        end
+      end
+    else
+      Rails.cache.fetch("playlists:recommend", expires_in: 1.day) do
+        playlist.open.to_a
+      end
+    end
+  end
+
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first
