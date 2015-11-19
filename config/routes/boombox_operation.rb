@@ -76,6 +76,8 @@ module Routes
             resources :boom_users, only: [:index, :show] do
               member do
                 post :block_user
+                post :block_comment
+                post :remove_avatar
               end
             end
 

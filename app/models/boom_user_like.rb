@@ -3,6 +3,7 @@ class BoomUserLike < ActiveRecord::Base
   SUBJECT_COMMENT = 'BoomComment'
 
   belongs_to :user
+  belongs_to :subject, polymorphic: true
 
   validates :subject_type, presence: true
   validates :subject_id, presence: true
