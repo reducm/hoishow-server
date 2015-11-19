@@ -1,4 +1,5 @@
 class BoomTopic < ActiveRecord::Base
+  default_scope {order('created_at DESC')}
   include Searchable
 
   belongs_to :collaborator

@@ -135,8 +135,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     @comments = BoomComment.where("parent_id in (?)", user_comment_ids).page(params[:page])
   end
 
-  #def message_list
-  #end
+  def message_list
+    @messages = @user.boom_messages.page(params[:page])
+  end
 
   def follow_subject
     error_message, subject = find_meta_subject(%W(Collaborator BoomPlaylist))

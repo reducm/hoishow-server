@@ -41,7 +41,9 @@ module Routes
                   get :shows
                 end
               end
-              resources :activities, only: [:index, :show]
+              resources :activities, only: [:index, :show] do
+                get :description, on: :member
+              end
               resources :tracks, only: [:index, :show]
               resources :playlists, only: [:show]
 
