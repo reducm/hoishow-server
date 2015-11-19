@@ -40,7 +40,7 @@
             <td>
               <% tags = radio.boom_tags.pluck(:name)%>
               <% if tags.present? %>
-                <%= tags.join(",") %>
+                <%= truncate(tags.join(","), length: 50) %>
               <% end %>
             </td>
             <td><%= radio.creator.name if radio.creator %></td>

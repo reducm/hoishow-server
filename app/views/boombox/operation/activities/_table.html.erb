@@ -35,13 +35,13 @@
             <td>
               <% tags = activity.boom_tags.pluck(:name)%>
               <% if tags.present? %>
-                <%= tags.join(",") %>
+                <%= truncate(tags.join(","), length: 50) %>
               <% end %>
             </td>
             <td>
               <% collaborators = activity.collaborators.pluck(:name)%>
               <% if collaborators.present? %>
-                <%= collaborators.join(",") %>
+                <%= truncate(collaborators.join(","), length: 50) %>
               <% end %>
             </td>
             <td><%= activity.created_at.try(:strfcn_time) %></td>

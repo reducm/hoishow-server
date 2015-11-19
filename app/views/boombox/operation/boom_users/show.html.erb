@@ -71,8 +71,8 @@
               <% topic = comment.boom_topic %>
               <tr>
                 <td class="text-center"><%= topic.created_by %></td>
-                <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 150), boombox_operation_boom_topic_path(topic) %></td>
-                <td class="text-center" style="width: 30%"><%= truncate(comment.content, length: 150) %></td>
+                <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
+                <td class="text-center" style="width: 30%"><%= truncate(comment.content, length: 50) %></td>
                 <td class="text-center"><%= comment.created_at.strfcn_time %></td>
                 <td class="text-center">
                   <% if comment.is_hidden? %>
@@ -105,7 +105,7 @@
             <% @like_topics.each do |topic| %>
               <tr>
                 <td class="text-center"><%= topic.created_by %></td>
-                <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 150), boombox_operation_boom_topic_path(topic) %></td>
+                <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
                 
                 <td class="text-center"><%= @user.like_boomtopic_at(topic).strfcn_time %></td>
               </tr>

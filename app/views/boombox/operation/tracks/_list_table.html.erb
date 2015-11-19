@@ -32,7 +32,7 @@
           <td>
             <% tags = track.boom_tags.pluck(:name)%>
             <% if tags.present? %>
-              <%= tags.join(",") %>
+              <%= truncate(tags.join(","), length: 50) %>
             <% end %>
           </td>
           <td><%= track.creator.name if track.creator %></td>

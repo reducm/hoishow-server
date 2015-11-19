@@ -40,7 +40,7 @@
           <td>
             <% tags = playlist.boom_tags.pluck(:name)%>
             <% if tags.present? %>
-              <%= tags.join(",") %>
+              <%= truncate(tags.join(","), length: 50) %>
             <% end %>
           </td>
           <td><%= playlist.creator.name if playlist.creator %></td>
