@@ -1,4 +1,7 @@
 $ ->
+  $(document).on 'change', '.tracks_filter', ->
+    $('#tracks_form').submit()
+
   #如果当前track有标签的话就把标签id保存起来
   track_tag_ids_val = $("#track_tag_ids").val()
   if track_tag_ids_val

@@ -4,14 +4,6 @@
     <h1>标签列表</h1>
   </div>
 
-  <div class="search">
-    <%= form_tag(search_boombox_operation_boom_tags_path, class: 'form-inline', method: 'get') do |f| %>
-      <%= select_tag "select_options", options_for_select([["全部",0], ["推荐",1]]), class:"form-control" %>
-      <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入关键词进行搜索", size:30%>
-      <%= submit_tag "搜索", class: 'btn btn-default' %>
-    <% end %>
-  </div>
-
   <div>
     <%= form_tag("/boombox/operation/boom_tags", class: 'form-inline') do %>
       <%= text_field_tag "tag_name", nil,  class: 'form-control', placeholder: "输入标签名称", size:50%>
@@ -19,38 +11,9 @@
     <% end %>
   </div>
 
-  <div class="boom_tags_list mt20">
-    <table class="table table-hover boom_tags">
-      <thead>
-        <tr>
-          <th class='text-center'>标签名称</th>
-          <th class='text-center'>关联音乐</th>
-          <th class='text-center'>关联Playlist</th>
-          <th class='text-center'>关联电台</th>
-          <th class='text-center'>关联艺人</th>
-          <th class='text-center'>关联活动</th>
-          <th class='text-center'>操作</th>
-        </tr>
-      </thead>
-      <tbody class='text-center'>
-        <% if @boom_tags.any? %>
-          <% @boom_tags.each do|boom_tag| %>
-            <tr>
-              <td><%= boom_tag.name %></td>
-              <td><%= boom_tag.tracks.count %></td>
-              <td><%= boom_tag.playlists.playlist.count %></td>
-              <td><%= boom_tag.playlists.radio.count %></td>
-              <td><%= boom_tag.collaborators.count %></td>
-              <td><%= boom_tag.activities.count %></td>
-              <td>
-                <%= link_to boom_tag.is_hot_cn, change_is_top_boombox_operation_boom_tag_path(boom_tag), method: 'POST' %>
-                <%= link_to "删除", boombox_operation_boom_tag_path(boom_tag), method: "delete", data: {confirm: "确定删除吗？"} %>
-              </td>
-            </tr>
-          <%end%>
-        <%end%>
-      </tbody>
-    </table>
-    <%= paginate @boom_tags %>
+
+  <div id="boom_tags_list">
+    <%= render partial: 'table' %>
   </div>
+  
 </div>

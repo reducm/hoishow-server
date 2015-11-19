@@ -3,7 +3,25 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
   before_filter :check_login!
 
   def index
-    @boom_tags = BoomTag.valid_tags.page(params[:page]).order("created_at desc")
+    params[:page] ||= 1
+    params[:per] ||= 10
+    boom_tags = BoomTag.valid_tags
+
+    if params[:is_hot].present?
+      boom_tags = boom_tags.where(is_hot: params[:is_hot])
+    end
+
+    if params[:q].present?
+      boom_tags = boom_tags.where("boom_tags.name like '%#{params[:q]}%'")
+    end
+
+    @boom_tags = boom_tags.order("created_at desc").page(params[:page]).per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def create
@@ -28,7 +46,7 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
     redirect_to action: :index
   end
 
-  def change_is_top
+  def change_is_hot
     @boom_tag = BoomTag.find(params[:id])
     if @boom_tag.is_hot
       @boom_tag.update(is_hot: false)
@@ -38,23 +56,6 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
       flash[:notice] = "更新推荐成功"
     end
     redirect_to boombox_operation_boom_tags_url
-  end
-
-  def search
-    if params[:q].present?
-      query_str = "name like '%#{params[:q]}%'"
-      if params[:select_options] == "1"
-        query_str = query_str + " and is_hot = true"
-      end
-      @boom_tags = BoomTag.valid_tags.where(query_str).page(params[:page]).order("created_at desc")
-    else
-      if params[:select_options] == "1"
-        @boom_tags = BoomTag.valid_tags.where(is_hot:true).page(params[:page]).order("created_at desc")
-      else
-        @boom_tags = BoomTag.valid_tags.page(params[:page]).order("created_at desc")
-      end
-    end
-    render :index
   end
 
 end

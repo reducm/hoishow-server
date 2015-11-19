@@ -4,21 +4,33 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   before_filter :get_playlist, except: [:search, :index, :new, :create]
 
   def index
-    @playlists = BoomPlaylist.valid_playlists.page(params[:playlists_page]).order("created_at desc")
-  end
+    params[:playlists_page] ||= 1
+    params[:per] ||= 10
+    playlists = BoomPlaylist.valid_playlists
 
-  def search
-    if params[:select_options] == "1"
-      is_hot = true
+    if params[:start_time].present?
+      playlists = playlists.where("created_at > '#{params[:start_time]}'")
     end
+
+    if params[:end_time].present?
+      playlists = playlists.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_top].present?
+      playlists = playlists.where(is_top: params[:is_top])
+    end
+
     if params[:q].present?
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      playlists = playlists.where("name like '%#{params[:q]}%'")
     end
-    render :index
+
+    @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def new
@@ -78,10 +90,27 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   end
 
   def manage_tracks
-    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page]).order("created_at desc")
-    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page])
+    if params[:q].present?
+      @tracks = BoomTrack.valid.where("name like '%#{params[:q]}%'").page(params[:tracks_page])
+    else
+      @tracks = BoomTrack.valid.page(params[:tracks_page])
+    end
   end
 
+  def add_track
+    @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    render json: { success: true }
+  end
+
+  def remove_track
+    relation = @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+    if relation
+      relation.destroy!
+      render json: { success: true }
+    end
+  end
+  
   private
   def get_playlist
     @playlist = BoomPlaylist.find(params[:id])

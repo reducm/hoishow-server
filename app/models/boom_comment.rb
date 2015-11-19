@@ -5,8 +5,9 @@ class BoomComment < ActiveRecord::Base
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
 
-  has_many :boom_user_likes, -> { where subject_type: BoomUserLike::SUBJECT_COMMENT }, foreign_key: 'subject_id'
-  has_many :likers, through: :boom_user_likes, source: :user
+  has_many :boom_user_likes, as: :subject, dependent: :destroy
+  #把likers改成users则不用加source: :user
+  has_many :likers, through: :boom_user_likes, as: :subject, source: :user
 
   belongs_to :boom_topic
   belongs_to :user

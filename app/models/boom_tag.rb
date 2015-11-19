@@ -6,12 +6,10 @@ class BoomTag < ActiveRecord::Base
   has_many :tracks, through: :tag_subject_relations, source: :subject, source_type: BoomTrack.name
 
   #取出合集得时候不要忘记过滤
-  scope :hot_tags, -> { where is_hot: true }
   scope :valid_tags, -> {where removed: false}
-
   after_create :set_removed_and_is_hot
+  scope :hot_tags, -> { where is_hot: true }
 
-  validates :subject_type, presence: true
   validates :lower_string, uniqueness: true
 
   def is_hot_cn

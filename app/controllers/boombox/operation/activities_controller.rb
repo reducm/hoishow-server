@@ -4,20 +4,33 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
   before_filter :get_activity, except: [:search, :index, :new, :create, :get_video_url]
 
   def index
-    @activities = BoomActivity.page(params[:activities_page])
-  end
+    params[:activities_page] ||= 1
+    params[:per] ||= 10
+    activities = BoomActivity.all
 
-  def search
-    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
+    if params[:start_time].present?
+      activities = activities.where("created_at > '#{params[:start_time]}'")
+    end
+
+    if params[:end_time].present?
+      activities = activities.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_hot].present?
+      activities = activities.where(is_hot: params[:is_hot])
+    end
+
     if params[:q].present?
-      query_str = query_str + " and name like '%#{params[:q]}%'"
+      activities = activities.where("name like '%#{params[:q]}%'")
     end
-    if params[:select_options] == "1"
-      @activities = BoomActivity.where(is_hot:true).where(query_str).page(params[:page]).order("created_at desc")
-    else
-      @activities = BoomActivity.where(query_str).page(params[:page]).order("created_at desc")
+
+    @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
     end
-    render :index
+
   end
 
   def new

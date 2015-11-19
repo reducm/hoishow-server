@@ -18,7 +18,10 @@ class User < ActiveRecord::Base
   has_many :user_follow_playlists
   has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
 
-  has_many :boom_user_likes
+  has_many :boom_user_likes, dependent: :destroy
+  has_many :boom_like_comments, through: :boom_user_likes, source: :subject, source_type: BoomComment.name
+  has_many :boom_like_topics, through: :boom_user_likes, source: :subject, source_type: BoomTopic.name
+
   has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
 
   has_many :boom_comments, -> { where creator_type: BoomComment::CREATOR_USER }, foreign_key: "creator_id"

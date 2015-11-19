@@ -1,5 +1,19 @@
 <%# encoding: utf-8 %>
 
+<%= form_tag(boombox_operation_playlists_path, id: "playlists_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "Playlist数/总数：#{playlists.total_count}/#{BoomPlaylist.valid_playlists.count}"%></h3>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "start_time", params[:start_time],  class: 'form-control playlists_filter playlist_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "end_time", params[:end_time],  class: 'form-control playlists_filter playlist_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control playlists_filter" %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control playlists_filter', placeholder: "输入关键词进行搜索", size:30%>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
 <table class="table table-hover playlists">
   <thead>
     <tr>
@@ -11,6 +25,7 @@
       <th class='text-center'>创建者</th>
       <th class='text-center'>创建时间</th>
       <th class='text-center'>修改时间</th>
+      <th class='text-center'>推荐状态</th>
       <th class='text-center'>操作</th>
     </tr>
   </thead>
@@ -31,8 +46,8 @@
           <td><%= playlist.creator.name if playlist.creator %></td>
           <td><%= playlist.created_at.try(:strfcn_time) %></td>
           <td><%= playlist.updated_at.try(:strfcn_time) %></td>
+          <td><%= playlist.is_top_cn %></td>
           <td>
-            <%= link_to playlist.is_top_cn, change_is_top_boombox_operation_playlist_path(playlist), method: 'POST' %>
             <%= link_to "编辑", edit_boombox_operation_playlist_path(playlist)%>
             <%= link_to "管理音乐", manage_tracks_boombox_operation_playlist_path(playlist)%>
             <%= link_to "删除", boombox_operation_playlist_path(playlist), method: "delete", data: {confirm: "确定删除吗？"} %>
@@ -42,4 +57,10 @@
     <%end%>
   </tbody>
 </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control playlists_filter" %>
+  </div>
+
 <%= paginate playlists, param_name: "playlists_page", remote: true %>
+<% end %>

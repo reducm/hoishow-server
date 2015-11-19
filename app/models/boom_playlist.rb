@@ -32,6 +32,7 @@ class BoomPlaylist < ActiveRecord::Base
   #取出合集得时候不要忘记过滤
   scope :valid_playlists, -> { where("removed = false and mode = 0") }
   scope :valid_radios, -> { where("removed = false and mode = 1") }
+  #for api
   scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top, RAND()')}
 
   paginates_per 10
@@ -66,9 +67,9 @@ class BoomPlaylist < ActiveRecord::Base
 
   def is_top_cn
     if is_top
-      "取消推荐"
+      "推荐中"
     else
-      "推荐"
+      "没有推荐"
     end
   end
 
@@ -82,6 +83,10 @@ class BoomPlaylist < ActiveRecord::Base
 
   private
   def set_removed_and_is_top
-    self.update(removed: 0, is_top: 0)
+    if is_top
+      self.update(removed: 0)
+    else
+      self.update(removed: 0, is_top: 0)
+    end
   end
 end
