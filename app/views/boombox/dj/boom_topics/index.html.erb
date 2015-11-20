@@ -1,0 +1,26 @@
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#topicModal" id="showModal">
+  发布动态
+</button>
+
+<div class="modal fade" id="topicModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <%= simple_form_for([:boombox, :dj, @boom_topic ], html: { class: 'form-horizontal', id: 'topicForm' }) do |f| %>
+      <div class="modal-body" style="padding: 30px;">
+        <%= f.input :content %>
+        <%= f.input :image %>
+        <%= f.input :video_title %>
+        <%= f.input :video_url %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+        <%= submit_tag '发布', class: 'btn btn-primary' %>
+      </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div id="topics_list">
+  <%= render partial: 'table', locals: {topics: @boom_topics} %>
+</div>
