@@ -36,12 +36,13 @@
             <td><%= image_tag(radio.cover_url, size: "50x50") if radio.cover_url %></td>
             <td><%= radio.name %></td>
             <td><%= radio.tracks.count %></td>
+            <% cache tags = radio.boom_tags.pluck(:name) do %>
             <td>
-              <% tags = radio.boom_tags.pluck(:name)%>
-              <% if tags.present? %>
-                <%= truncate(tags.join(","), length: 50) %>
-              <% end %>
+                <% if tags.present? %>
+                  <%= truncate(tags.join(", "), length: 50) %>
+                <% end %>
             </td>
+            <% end %>
             <td><%= radio.creator.name if radio.creator %></td>
             <td><%= radio.created_at.try(:strfcn_time) %></td>
             <td><%= radio.updated_at.try(:strfcn_time) %></td>

@@ -29,7 +29,13 @@
             <td>无头像</td>
           <% end %>
           <td><%= collaborator.name %></td>
-          <td><%= truncate(collaborator.boom_tags.pluck(:name).join(", "), length: 50) %></td>
+          <% cache tags = collaborator.boom_tags.pluck(:name) do %>
+            <td>
+              <% if tags.present? %>
+                <%= truncate(tags.join(", "), length: 50) %>
+              <% end %>
+            </td>
+          <% end %>
           <td><%= collaborator.followers.count %></td>
           <td><%= collaborator.created_at.strfcn_time %></td>
           <td><%= collaborator.updated_at.strfcn_time %></td>

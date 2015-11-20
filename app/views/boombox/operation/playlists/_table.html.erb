@@ -37,9 +37,10 @@
           <td><%= playlist.name %></td>
           <td><%= playlist.tracks.count %></td>
           <td>
-            <% tags = playlist.boom_tags.pluck(:name)%>
-            <% if tags.present? %>
-              <%= truncate(tags.join(","), length: 50) %>
+            <% cache tags = playlist.boom_tags.pluck(:name) do %>
+              <% if tags.present? %>
+                <%= truncate(tags.join(", "), length: 50) %>
+              <% end %>
             <% end %>
           </td>
           <td><%= playlist.creator.name if playlist.creator %></td>

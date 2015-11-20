@@ -32,15 +32,16 @@
             <td><%= activity.is_display_cn %></td>
             <td><%= activity.name %></td>
             <td>
-              <% tags = activity.boom_tags.pluck(:name)%>
-              <% if tags.present? %>
-                <%= truncate(tags.join(","), length: 50) %>
+              <% cache tags = activity.boom_tags.pluck(:name) do %>
+                <% if tags.present? %>
+                  <%= truncate(tags.join(","), length: 50) %>
+                <% end %>
               <% end %>
             </td>
             <td>
               <% collaborators = activity.collaborators.pluck(:name)%>
               <% if collaborators.present? %>
-                <%= truncate(collaborators.join(","), length: 50) %>
+                <%= truncate(collaborators.join(", "), length: 50) %>
               <% end %>
             </td>
             <td><%= activity.created_at.try(:strfcn_time) %></td>
