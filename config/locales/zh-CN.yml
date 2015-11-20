@@ -158,6 +158,8 @@ zh-CN:
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
   dj_controller:
     sessions: "登录"
+    boom_admins: "申请加入"    
+    pages: "欢迎加入"
     home: "首页"
     collaborators: "个人资料"
     boom_albums: "相册"

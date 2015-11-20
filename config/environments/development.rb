@@ -40,7 +40,8 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
   config.cache_store = [:dalli_store, '127.0.0.1', {:namespace => "hsd", :compress => true}]
 
-  config.action_mailer.default_url_options = { :host => 'dan-che.com' }
+  #config.action_mailer.default_url_options = { :host => 'dan-che.com' }
+  config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   ActionMailer::Base.smtp_settings = {
     :address              => "smtp.exmail.qq.com",

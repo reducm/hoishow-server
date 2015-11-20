@@ -7,11 +7,27 @@ module Routes
           namespace :dj do
             root to: "home#index"
 
+            ## 注册步骤
+            # 注册
+            match "/signup" => "boom_admins#new", via: [:get]
+            # 发送验证邮件
+            get "/signup_send_email" => 'pages#after_create_boom_admin'
+            # 完善资料
+            match "/signup_fill_personal_form" => "collaborators#new", via: [:get]
+            # 审核
+            get "/signup_finished" => 'pages#after_create_collaborator'
+
             resources :sessions, only: [:new, :create, :destroy]
             match "/signin" => "sessions#new", via: [:get]
             match "/signout" => "sessions#destroy", via: [:delete]
 
-            resources :collaborators, only: [:edit, :update]
+            resources :boom_admins do
+              member do
+                get :confirm_email
+              end
+            end
+
+            resources :collaborators, only: [:new, :create, :edit, :update]
 
             resources :boom_albums, only: [:index, :create, :destroy] do
               member do

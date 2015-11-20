@@ -3,12 +3,16 @@ class BoomAdmin < ActiveRecord::Base
   include ModelAttrI18n
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true
 
   enum admin_type: {
     admin: 0,
     operator: 1,
     dj: 2
   }
+
+  # dj注册
+  before_create :confirmation_token
 
   def sign_in_api
     return if self.api_token.present?
@@ -58,5 +62,18 @@ class BoomAdmin < ActiveRecord::Base
     testHash = OpenSSL::PKCS5::pbkdf2_hmac_sha1(password, self.salt, 1000, pbkdf2.length)
 
     return pbkdf2 == testHash
+  end
+
+  def email_activate
+    self.email_confirmed = true
+    self.confirm_token = nil
+    save!(:validate => false)
+  end
+
+  private
+  def confirmation_token
+    if self.confirm_token.blank?
+      self.confirm_token = SecureRandom.urlsafe_base64.to_s
+    end
   end
 end

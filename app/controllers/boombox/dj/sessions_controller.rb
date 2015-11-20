@@ -14,6 +14,9 @@ class Boombox::Dj::SessionsController < Boombox::Dj::ApplicationController
       when !admin.dj?
         flash[:alert] = '账号没权限进入DJ后台，请联系管理员'
         redirect_to boombox_dj_signin_url
+      when !admin.email_confirmed
+        flash[:alert] = '账号没通过邮箱验证，请检查你的邮箱'
+        redirect_to boombox_dj_signin_url
       when admin.password_valid?(params[:session][:password])
         admin.update(last_sign_in_at: DateTime.now)
         session[:admin_id] = admin.id

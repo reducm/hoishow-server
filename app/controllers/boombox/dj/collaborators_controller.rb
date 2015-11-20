@@ -1,5 +1,21 @@
 class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
-  before_filter :check_login!
+  before_filter :check_login!, except: [:new, :create]
+
+  def new
+    @collaborator = Collaborator.new 
+    @boom_admin = BoomAdmin.find(params[:boom_admin_id])
+  end
+
+  def create
+    @collaborator = Collaborator.new(create_params) 
+    @collaborator.boom_admin_id = params[:boom_admin_id]
+    if @collaborator.save
+      redirect_to boombox_dj_signup_finished_url(collaborator_id: @collaborator.id), notice: '个人资料保存成功'
+    else
+      flash[:alert] = @collaborator.errors.full_messages.to_sentence
+      render action: 'new', locals: {boom_admin_id: params[:boom_admin_id]}
+    end
+  end
 
   def edit
     @collaborator = Collaborator.find(params[:id])
@@ -8,7 +24,7 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
   def update
     @collaborator = Collaborator.find(params[:id])
     if @collaborator.nickname_changeable?(params[:collaborator][:nickname])
-      if @collaborator.update(collaborator_params)
+      if @collaborator.update(update_params)
         redirect_to boombox_dj_root_url, notice: '个人资料更新成功。'
       else
         flash[:alert] = @collaborator.errors.full_messages.to_sentence
@@ -21,7 +37,11 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
   end
 
   private
-  def collaborator_params
+  def create_params
+    params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at"]}.map &:to_sym)
+  end
+
+  def update_params
     params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at", "name", "email"]}.map &:to_sym)
   end
 end
