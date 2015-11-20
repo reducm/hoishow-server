@@ -12,8 +12,8 @@
     <% @events.each do |event| %>
       <div role="tabpanel" class="tab-pane" id="<%= event.id %>">
         <div class="toolbar">
-          <%= link_to '修改场次', '##', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
-          <%= link_to '增加区域', '##', class: 'btn btn-default add_area', data: {id: event.id} %>
+          <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
+          <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default add_area', data: {id: event.id} %>
           <span class="upload_stadium_map" data-id="<%= event.id %>">
             <span class="btn btn-default">上传场馆地图</span>
             <input type="file" name="stadium_map">

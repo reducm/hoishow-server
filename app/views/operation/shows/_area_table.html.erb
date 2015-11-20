@@ -14,6 +14,7 @@
         <%= button_tag "修改", class: "btn btn-default editable_toggle" %>
         <%= link_to "保存", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
         <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+        <%= link_to (area.is_top ? "取消置顶" : "置顶"), 'javascript:void(0);', class: 'btn btn-default set_top' %>
         <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-info' if can? :set_channels, current_admin %>
       </td>
     <% elsif show.selectable? %>
@@ -23,6 +24,7 @@
       <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
       <td data-id="<%= area.id %>">
         <%= link_to "设置选座", seats_info_operation_show_path(show, area_id: area.id), class: 'btn btn-default' %>
+        <%= link_to (area.is_top ? "取消置顶" : "置顶"), 'javascript:void(0);', class: 'btn btn-default set_top' %>
         <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
       </td>
     <% end %>

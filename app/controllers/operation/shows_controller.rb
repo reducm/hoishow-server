@@ -308,6 +308,16 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
+  def toggle_area_is_top
+    area = @show.areas.find_by_id params[:area_id]
+    if area.is_top
+      area.update(is_top: false)
+    else
+      area.update(is_top: true)
+    end
+    render json: {success: true}
+  end
+
   protected
   def show_params
     params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source)
