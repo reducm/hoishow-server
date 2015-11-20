@@ -57,14 +57,6 @@ class Collaborator < ActiveRecord::Base
     )
   end
 
-  def nickname_changeable?(collaborator, new_nickname)
-    if collaborator.nickname != new_nickname && (Time.now - collaborator.updated_at) / 24 / 60 / 60 <= 30
-      false
-    else
-      true
-    end
-  end
-
   def is_top_cn
     if is_top?
       "推荐"

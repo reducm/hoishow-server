@@ -43,8 +43,18 @@ class BoomTrack < ActiveRecord::Base
   end
 
   def self.recommend(user=nil)
-    Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
-      user ? user.recommend_tracks : BoomTrack.order('is_top, RAND()').limit(20).to_a
+    if user
+      Rails.cache.fetch("user:#{user.id}:tracks:recommend", expires_in: 1.day) do
+        if user.recommend_tracks.any?
+          user.recommend_tracks
+        else
+          order('is_top, RAND()').limit(20).to_a
+        end
+      end
+    else
+      Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
+        order('is_top, RAND()').limit(20).to_a
+      end
     end
   end
 

@@ -127,7 +127,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = BoomPlaylist.where(creator_type: BoomPlaylist::CREATOR_USER, creator_id: @user.id).page(params[:page])
+    @playlists = @user.boom_playlists.order('created_at desc').page(params[:page])
   end
 
   def comment_list
@@ -197,7 +197,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def add_or_remove_playlist
     if params[:type] == 'add'
       if params[:name].present?
-        @playlist = @user.boom_playlists.create(name: params[:name])
+        @playlist = @user.boom_playlists.playlist.create(name: params[:name])
         render partial: 'boombox/v1/playlists/playlist', locals: {playlist: @playlist}
       else
         error_respond I18n.t("errors.messages.playlist_name_can_not_blank")

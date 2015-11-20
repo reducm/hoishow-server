@@ -50,15 +50,10 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def update
-    if nickname_changeable?(@collaborator, params[:collaborator][:nickname])
-      if @collaborator.update(collaborator_params)
-        redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
-      else
-        flash[:alert] = @collaborator.errors.full_messages.to_sentence
-        render action: 'edit'
-      end
+    if @collaborator.update(collaborator_params)
+      redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
     else
-      flash[:alert] = '昵称一个月只能改一次' 
+      flash[:alert] = @collaborator.errors.full_messages.to_sentence
       render action: 'edit'
     end
   end
