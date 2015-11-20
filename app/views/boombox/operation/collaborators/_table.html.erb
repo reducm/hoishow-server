@@ -1,9 +1,8 @@
 <%= form_tag(boombox_operation_collaborators_path, class: 'form-inline', id: 'collaborators_form', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "艺人数/总数：#{@collaborators.total_count}/#{Collaborator.count}"%></h3>
+  <h4 class="pull-left"><%= "艺人总数：#{@collaborators.total_count}"%></h4>
   <div class="search">
     <%= select_tag :is_top, options_for_select([["全部", ""], ["推荐", "1"]], selected: params[:is_top] || ""), class: 'form-control collaborators_filter' %>
     <%= text_field_tag "q", params[:q],  class: 'form-control collaborators_filter', placeholder: "输入关键词" %>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
   <table class="table table-hover table-collaborator" id="collaborators_table">
