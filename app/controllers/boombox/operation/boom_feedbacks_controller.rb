@@ -6,7 +6,11 @@ class Boombox::Operation::BoomFeedbacksController < Boombox::Operation::Applicat
     params[:page] ||= 1
     params[:per] ||= 10
     boom_feedbacks = BoomFeedback.all
-    
+
+    if params[:q].present?
+      boom_feedbacks = boom_feedbacks.search(params[:q]).records
+    end
+
     if params[:start_time].present?
       boom_feedbacks = boom_feedbacks.where("created_at > '#{params[:start_time]}'")
     end
@@ -17,10 +21,6 @@ class Boombox::Operation::BoomFeedbacksController < Boombox::Operation::Applicat
 
     if params[:status].present?
       boom_feedbacks = boom_feedbacks.where(status: params[:status])
-    end
-
-    if params[:q].present?
-      boom_feedbacks = boom_feedbacks.where("content like '%#{params[:q]}%'")
     end
 
     @boom_feedbacks = boom_feedbacks.page(params[:page]).order("created_at desc").per(params[:per])

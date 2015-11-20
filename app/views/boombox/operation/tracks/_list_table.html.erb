@@ -30,9 +30,10 @@
           <td><%= track.artists %></td>
           <td><%= track.duration_to_time %></td>
           <td>
-            <% tags = track.boom_tags.pluck(:name)%>
-            <% if tags.present? %>
-              <%= tags.join(",") %>
+            <% cache tags = track.boom_tags.pluck(:name) do %>
+              <% if tags.present? %>
+                <%= truncate(tags.join(", "), length: 50) %>
+              <% end %>
             <% end %>
           </td>
           <td><%= track.creator.name if track.creator %></td>

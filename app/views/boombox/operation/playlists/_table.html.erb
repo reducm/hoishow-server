@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <%= form_tag(boombox_operation_playlists_path, id: "playlists_form", class: 'form-inline', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "Playlist数/总数：#{playlists.total_count}/#{BoomPlaylist.valid_playlists.count}"%></h3>
+  <h4 class="pull-left"><%= "Playlist总数：#{playlists.total_count}"%></h4>
   <div class="search">
     <div class="datetimepicker form-group">
       <label> 创建时间</label>
@@ -11,7 +11,6 @@
     </div>
     <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control playlists_filter" %>
     <%= text_field_tag "q", params[:q],  class: 'form-control playlists_filter', placeholder: "输入关键词进行搜索", size:30%>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
 <table class="table table-hover playlists">
@@ -38,9 +37,10 @@
           <td><%= playlist.name %></td>
           <td><%= playlist.tracks.count %></td>
           <td>
-            <% tags = playlist.boom_tags.pluck(:name)%>
-            <% if tags.present? %>
-              <%= tags.join(",") %>
+            <% cache tags = playlist.boom_tags.pluck(:name) do %>
+              <% if tags.present? %>
+                <%= truncate(tags.join(", "), length: 50) %>
+              <% end %>
             <% end %>
           </td>
           <td><%= playlist.creator.name if playlist.creator %></td>
