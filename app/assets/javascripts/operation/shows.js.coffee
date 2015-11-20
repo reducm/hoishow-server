@@ -465,6 +465,14 @@ $ ->
             location.reload()
           )
 
+    #置顶区域
+    $('.areas').on 'click', '.set_top', ()->
+      area_id = $(this).parent().data('id')
+      if area_id
+        $.post("/operation/shows/#{show_id}/toggle_area_is_top", {area_id: area_id, _method: 'patch'}, (data)->
+          location.reload()
+        )
+
     #修改区域
     $('.areas').on "click", ".change_show_area_data", () ->
       event_id = $(this).parents('table').data('id')

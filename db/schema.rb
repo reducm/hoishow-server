@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151020064226) do
+ActiveRecord::Schema.define(version: 20151120102402) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20151020064226) do
     t.integer  "event_id",    limit: 4
     t.text     "seats_info",  limit: 16777215
     t.integer  "left_seats",  limit: 4
+    t.boolean  "is_top",      limit: 1,        default: false
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
