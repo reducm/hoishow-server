@@ -1,0 +1,39 @@
+<div class="row">
+  <h3 class="pull-left">动态详情</h3>
+  <%= link_to '删除动态', boombox_dj_boom_topic_path, method: :delete, class: 'btn btn-danger', data: {confirm: '确定吗？'} %>
+</div>
+
+<div class="row">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th class="col-md-6">内容</th>
+        <th>创建时间<%= @boom_topic.created_at.strfcn_time %></th>
+      <tr>
+    <thead>
+    <tbody>
+      <tr>
+        <td><%= @boom_topic.content %></td>
+        <td>
+          <% if @boom_topic.image_url.present? %>
+            <%= image_tag(@boom_topic.image_url) %>
+          <% end %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#comments" aria-controls="timeline" role="tab" data-toggle="tab">评论</a></li>
+  <li role="presentation"><a href="#likers" aria-controls="likers" role="tab" data-toggle="tab">点赞</a></li>
+</ul>
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="comments">
+    <%= render partial: 'boombox/dj/boom_comments/table', locals: {comments: @comments} %>
+  </div>
+  <div role="tabpanel" class="tab-pane" id="likers">
+    <%= render partial: 'boombox/dj/users/table', locals: {likers: @likers} %>
+  </div>
+</div>
