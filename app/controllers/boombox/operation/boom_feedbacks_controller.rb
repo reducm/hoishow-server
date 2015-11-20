@@ -3,27 +3,33 @@ class Boombox::Operation::BoomFeedbacksController < Boombox::Operation::Applicat
   before_filter :check_login!
 
   def index
-    @boom_feedbacks = BoomFeedback.page(params[:page])
-  end
+    params[:page] ||= 1
+    params[:per] ||= 10
+    boom_feedbacks = BoomFeedback.all
+    
+    if params[:start_time].present?
+      boom_feedbacks = boom_feedbacks.where("created_at > '#{params[:start_time]}'")
+    end
 
-  def search
-    query_str = "created_at > '#{params[:start_time]}' and created_at < '#{params[:end_time]}'"
+    if params[:end_time].present?
+      boom_feedbacks = boom_feedbacks.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:status].present?
+      boom_feedbacks = boom_feedbacks.where(status: params[:status])
+    end
 
     if params[:q].present?
-      query_str = query_str + " and content like '%#{params[:q]}%'"
+      boom_feedbacks = boom_feedbacks.where("content like '%#{params[:q]}%'")
     end
 
-    if params[:select_options].present?
-      case params[:select_options]
-      when "0"
-        @boom_feedbacks = BoomFeedback.where(query_str).page(params[:page]).order("created_at desc")
-      when "1"
-        @boom_feedbacks = BoomFeedback.where(status: false).where(query_str).page(params[:page]).order("created_at desc")
-      when "2"
-        @boom_feedbacks = BoomFeedback.where(status: true).where(query_str).page(params[:page]).order("created_at desc")
-      end
+    @boom_feedbacks = boom_feedbacks.page(params[:page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
     end
-    render :index
+
   end
 
   def update_status

@@ -6,6 +6,6 @@ class Boombox::V1::HomeController < Boombox::V1::ApplicationController
     @collaborators = Collaborator.verified.limit(4)
     @radios = BoomPlaylist.radio.open.limit(6)
     @tracks = BoomTrack.recommend(@user).first(3)
-    @playlists = @user ? @user.recommend_playlists.first(3) : BoomPlaylist.playlist.open.limit(3)
+    @playlists = BoomPlaylist.recommend(@user).first(3)
   end
 end

@@ -1,44 +1,65 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover radios">
-  <thead>
-    <tr>
-      <th class='text-center'>ID</th>
-      <th class='text-center'>封面</th>
-      <th class='text-center'>标题</th>
-      <th class='text-center'>音乐数量</th>
-      <th class='text-center'>标签</th>
-      <th class='text-center'>创建者</th>
-      <th class='text-center'>创建时间</th>
-      <th class='text-center'>修改时间</th>
-      <th class='text-center'>操作</th>
-    </tr>
-  </thead>
-  <tbody class='text-center'>
-    <% if radios.any? %>
-      <% radios.each do|radio| %>
-        <tr>
-          <td><%= radio.id %></td>
-          <td><%= image_tag(radio.cover_url, size: "50x50") if radio.cover_url %></td>
-          <td><%= radio.name %></td>
-          <td><%= radio.tracks.count %></td>
-          <td>
-            <% tags = radio.boom_tags.pluck(:name)%>
-            <% if tags.present? %>
-              <%= tags.join(",") %>
-            <% end %>
-          </td>
-          <td><%= radio.creator.name if radio.creator %></td>
-          <td><%= radio.created_at.try(:strfcn_time) %></td>
-          <td><%= radio.updated_at.try(:strfcn_time) %></td>
-          <td>
-            <%= link_to radio.is_top_cn, change_is_top_boombox_operation_radio_path(radio), method: 'POST' %>
-            <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
-            <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
-          </td>
-        </tr>
+<%= form_tag(boombox_operation_radios_path, id: "radios_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "电台数/总数：#{radios.total_count}/#{BoomPlaylist.valid_radios.count}"%></h3>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "start_time", params[:start_time],  class: 'form-control radios_filter radio_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "end_time", params[:end_time],  class: 'form-control radios_filter radio_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control radios_filter" %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control radios_filter', placeholder: "输入关键词进行搜索", size:30%>
+    <%= submit_tag "搜索", class: 'btn btn-default' %>
+  </div>
+
+  <table class="table table-hover radios">
+    <thead>
+      <tr>
+        <th class='text-center'>ID</th>
+        <th class='text-center'>封面</th>
+        <th class='text-center'>标题</th>
+        <th class='text-center'>音乐数量</th>
+        <th class='text-center'>标签</th>
+        <th class='text-center'>创建者</th>
+        <th class='text-center'>创建时间</th>
+        <th class='text-center'>修改时间</th>
+        <th class='text-center'>推荐状态</th>
+        <th class='text-center'>操作</th>
+      </tr>
+    </thead>
+    <tbody class='text-center'>
+      <% if radios.any? %>
+        <% radios.each do|radio| %>
+          <tr>
+            <td><%= radio.id %></td>
+            <td><%= image_tag(radio.cover_url, size: "50x50") if radio.cover_url %></td>
+            <td><%= radio.name %></td>
+            <td><%= radio.tracks.count %></td>
+            <td>
+              <% tags = radio.boom_tags.pluck(:name)%>
+              <% if tags.present? %>
+                <%= tags.join(",") %>
+              <% end %>
+            </td>
+            <td><%= radio.creator.name if radio.creator %></td>
+            <td><%= radio.created_at.try(:strfcn_time) %></td>
+            <td><%= radio.updated_at.try(:strfcn_time) %></td>
+            <td><%= radio.is_top_cn %></td>
+            <td>
+              <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
+              <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
+            </td>
+          </tr>
+        <%end%>
       <%end%>
-    <%end%>
-  </tbody>
-</table>
-<%= paginate radios %>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control radios_filter" %>
+  </div>
+
+  <%= paginate radios, remote: true %>
+<% end %>

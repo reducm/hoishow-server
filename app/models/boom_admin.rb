@@ -30,7 +30,7 @@ class BoomAdmin < ActiveRecord::Base
   end
 
   def avatar_url
-    "#{UpyunSetting["upyun_upload_url"]}/admin_avatar.png"
+    "#{UpyunSetting["upyun_upload_url"]}/boombox_admin_avatar.png"
   end
 
   def default_name

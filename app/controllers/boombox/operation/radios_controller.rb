@@ -4,21 +4,33 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
   before_filter :get_radio, except: [:search, :index, :new, :create]
 
   def index
-    @radios = BoomPlaylist.valid_radios.page(params[:page]).order("created_at desc")
-  end
+    params[:page] ||= 1
+    params[:per] ||= 10
+    radios = BoomPlaylist.valid_radios
 
-  def search
-    if params[:select_options] == "1"
-      is_hot = true
+    if params[:start_time].present?
+      radios = radios.where("created_at > '#{params[:start_time]}'")
     end
+
+    if params[:end_time].present?
+      radios = radios.where("created_at < '#{params[:end_time]}'")
+    end
+
+    if params[:is_top].present?
+      radios = radios.where(is_top: params[:is_top])
+    end
+
     if params[:q].present?
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @radios = BoomPlaylist.valid_radios.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      radios = radios.where("name like '%#{params[:q]}%'")
     end
-    render :index
+
+    @radios = radios.page(params[:page]).order("created_at desc").per(params[:per])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
 
   def new

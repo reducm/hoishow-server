@@ -37,50 +37,28 @@ module Routes
               end
             end
 
-            resources :tracks do
-              member do
-                post :change_is_top
-              end
-              collection do
-                get :search
-              end
-            end
+            resources :tracks
 
             resources :playlists do
               member do
-                post :change_is_top
+                post :add_track
+                post :remove_track
                 get :manage_tracks
-              end
-              collection do
-                get :search
               end
             end
 
-            resources :radios do
-              member do
-                post :change_is_top
-              end
-              collection do
-                get :search
-              end
-            end
+            resources :radios
 
             resources :activities do
               member do
                 post :change_is_top
                 patch :upload_cover
               end
-              collection do
-                get :search
-              end
             end
 
             resources :boom_tags, only: [:index, :create, :destroy] do
               member do
-                post :change_is_top
-              end
-              collection do
-                get :search
+                post :change_is_hot
               end
             end
 
@@ -94,17 +72,13 @@ module Routes
               member do
                 post :update_status
               end
-              collection do
-                get :search
-              end
             end
 
             resources :boom_users, only: [:index, :show] do
               member do
                 post :block_user
-              end
-              collection do
-                get :search
+                post :block_comment
+                post :remove_avatar
               end
             end
 

@@ -47,6 +47,9 @@ $ ->
     $('#boom_activity_description').qeditor()
     init_editor()
 
+  $(document).on 'change', '.activities_filter', ->
+    $('#activities_form').submit()
+
   #如果当前playlist有标签的话就把标签id保存起来
   tag_ids_val = $("#activity_tag_ids").val()
   if tag_ids_val

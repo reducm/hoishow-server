@@ -4,7 +4,7 @@ class BoomTrack < ActiveRecord::Base
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
 
-  has_many :playlist_track_relations
+  has_many :playlist_track_relations, dependent: :destroy
   has_many :playlists, through: :playlist_track_relations, source: :boom_playlist
 
   has_many :activity_track_relations
@@ -23,8 +23,7 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
 
   after_create :set_removed_and_is_top
-  scope :valid, -> {where(removed: false).order('is_top')}
-  scope :recommend, -> { order('is_top, RAND()').limit(20) }
+  scope :valid, -> {where(removed: false).order('is_top, created_at desc')}
 
   paginates_per 10
 
@@ -44,8 +43,18 @@ class BoomTrack < ActiveRecord::Base
   end
 
   def self.recommend(user=nil)
-    Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
-      user ? user.recommend_tracks : BoomTrack.order('is_top, RAND()').limit(20).to_a
+    if user
+      Rails.cache.fetch("user:#{user.id}:tracks:recommend", expires_in: 1.day) do
+        if user.recommend_tracks.any?
+          user.recommend_tracks
+        else
+          order('is_top, RAND()').limit(20).to_a
+        end
+      end
+    else
+      Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
+        order('is_top, RAND()').limit(20).to_a
+      end
     end
   end
 
@@ -61,9 +70,9 @@ class BoomTrack < ActiveRecord::Base
 
   def is_top_cn
     if is_top
-      "取消推荐"
+      "推荐中"
     else
-      "推荐"
+      "没有推荐"
     end
   end
 

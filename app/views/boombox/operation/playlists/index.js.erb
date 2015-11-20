@@ -1,0 +1,12 @@
+$('#playlists_list').html("<%= j render partial: 'table', locals: { playlists: @playlists} %>");
+
+$('.playlist_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    })
+
+

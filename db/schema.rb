@@ -245,6 +245,18 @@ ActiveRecord::Schema.define(version: 20151119062332) do
 
   add_index "boom_locations", ["boom_id"], name: "index_boom_locations_on_boom_id", using: :btree
 
+  create_table "boom_messages", force: :cascade do |t|
+    t.integer  "boom_admin_id",     limit: 4
+    t.integer  "subject_id",        limit: 4
+    t.integer  "send_type",         limit: 4
+    t.string   "subject_type",      limit: 255
+    t.string   "title",             limit: 255
+    t.string   "notification_text", limit: 255
+    t.text     "content",           limit: 65535
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
   create_table "boom_playlists", force: :cascade do |t|
     t.string   "name",         limit: 255
     t.integer  "mode",         limit: 4
@@ -255,6 +267,7 @@ ActiveRecord::Schema.define(version: 20151119062332) do
     t.string   "cover",        limit: 255
     t.boolean  "removed",      limit: 1
     t.boolean  "is_top",       limit: 1
+    t.boolean  "is_default",   limit: 1,   default: false
   end
 
   create_table "boom_recommends", force: :cascade do |t|
