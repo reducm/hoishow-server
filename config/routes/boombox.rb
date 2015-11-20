@@ -54,6 +54,8 @@ module Routes
 
               get '/hot_tags' => 'tags#hot_tags'
               get '/search' => 'tags#search'
+
+              post '/feedbacks' => 'feedbacks#create'
             end
           end
         end
