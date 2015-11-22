@@ -35,7 +35,31 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     end
 
     # tracks/playlists/shows/fans
-    @boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
+    # tracks
+    params[:tracks_page] ||= 1
+    params[:tracks_per] ||= 10
+    tracks = @collaborator.boom_tracks
+    if params[:tracks_start_time].present?
+      tracks = tracks.where("created_at > '#{params[:tracks_start_time]}'")
+    end
+
+    if params[:tracks_end_time].present?
+      tracks = tracks.where("created_at < '#{params[:tracks_end_time]}'")
+    end
+
+    if params[:tracks_is_top].present?
+      tracks = tracks.where(is_top: params[:tracks_is_top])
+    end
+
+    if params[:tracks_q].present?
+      tracks = tracks.where("name like '%#{params[:tracks_q]}%'")
+    end
+
+    @boom_tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:tracks_per])
+
+    #@boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
+
+    #playlists
     @boom_playlists = @collaborator.boom_playlists.order(created_at: :desc).page(1).per(10)
     @activities = @collaborator.activities.order(created_at: :desc).page(1).per(10)
     @users = @collaborator.followers.order(created_at: :desc).page(1).per(10)
@@ -50,10 +74,15 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def update
-    if @collaborator.update(collaborator_params)
-      redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
+    if nickname_changeable?(@collaborator, params[:collaborator][:nickname])
+      if @collaborator.update(collaborator_params)
+        redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
+      else
+        flash[:alert] = @collaborator.errors.full_messages.to_sentence
+        render action: 'edit'
+      end
     else
-      flash[:alert] = @collaborator.errors.full_messages.to_sentence
+      flash[:alert] = '昵称一个月只能改一次' 
       render action: 'edit'
     end
   end

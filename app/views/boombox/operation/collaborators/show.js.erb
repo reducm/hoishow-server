@@ -1,1 +1,14 @@
 $('#timeline').html("<%= j render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>");
+
+$('#tracks').html("<%= j render partial: 'boombox/operation/tracks/table', locals: { tracks: @boom_tracks, list_type: ""} %>");
+
+$('.track_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    })
+
+
