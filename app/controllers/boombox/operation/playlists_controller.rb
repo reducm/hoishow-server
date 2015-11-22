@@ -5,26 +5,26 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
 
   def index
     params[:playlists_page] ||= 1
-    params[:per] ||= 10
+    params[:playlists_per] ||= 10
     playlists = BoomPlaylist.valid_playlists
 
-    if params[:start_time].present?
-      playlists = playlists.where("created_at > '#{params[:start_time]}'")
+    if params[:playlists_start_time].present?
+      playlists = playlists.where("created_at > '#{params[:playlists_start_time]}'")
     end
 
-    if params[:end_time].present?
-      playlists = playlists.where("created_at < '#{params[:end_time]}'")
+    if params[:playlists_end_time].present?
+      playlists = playlists.where("created_at < '#{params[:playlists_end_time]}'")
     end
 
-    if params[:is_top].present?
-      playlists = playlists.where(is_top: params[:is_top])
+    if params[:playlists_is_top].present?
+      playlists = playlists.where(is_top: params[:playlists_is_top])
     end
 
-    if params[:q].present?
-      playlists = playlists.where("name like '%#{params[:q]}%'")
+    if params[:playlists_q].present?
+      playlists = playlists.where("name like '%#{params[:playlists_q]}%'")
     end
 
-    @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:per])
+    @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:playlists_per])
 
     respond_to do |format|
       format.html

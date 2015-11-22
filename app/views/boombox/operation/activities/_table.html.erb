@@ -1,16 +1,20 @@
 <%# encoding: utf-8 %>
-
-<%= form_tag(boombox_operation_activities_path, id: "activities_form", class: 'form-inline', method: 'get', remote: true) do %>
+<% if params[:controller] == "boombox/operation/collaborators" %>
+  <% form_path = boombox_operation_collaborator_path(@collaborator) %>
+<% else %>
+  <% form_path = boombox_operation_activities_path %>
+<% end %>
+<%= form_tag(form_path, id: "activities_form", class: 'form-inline', method: 'get', remote: true) do %>
   <h4 class="pull-left"><%= "活动总数：#{activities.total_count}"%></h4>
   <div class="search">
     <div class="datetimepicker form-group">
       <label> 创建时间</label>
-      <%= text_field_tag "start_time", params[:start_time],  class: 'form-control activities_filter activity_datetime', placeholder: "起始时间", size:30 %>
+      <%= text_field_tag "activities_start_time", params[:activities_start_time],  class: 'form-control activities_filter activity_datetime', placeholder: "起始时间", size:30 %>
       <label> 至</label>
-      <%= text_field_tag "end_time", params[:end_time],  class: 'form-control activities_filter activity_datetime', placeholder: "结束时间", size:30 %>
+      <%= text_field_tag "activities_end_time", params[:activities_end_time],  class: 'form-control activities_filter activity_datetime', placeholder: "结束时间", size:30 %>
     </div>
-    <%= select_tag :is_hot, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_hot] || ""), class:"form-control activities_filter" %>
-    <%= text_field_tag "q", params[:q],  class: 'form-control activities_filter', placeholder: "输入关键词进行搜索", size:30%>
+    <%= select_tag :activities_is_hot, options_for_select([["全部",""], ["推荐","1"]], selected: params[:activities_is_hot] || ""), class:"form-control activities_filter" %>
+    <%= text_field_tag "activities_q", params[:activities_q],  class: 'form-control activities_filter', placeholder: "输入关键词进行搜索", size:30%>
   </div>
 
   <table class="table table-hover activities">
@@ -57,7 +61,7 @@
   </table>
 
   <div>每页显示数量
-    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control activities_filter" %>
+    <%= select_tag :activities_per, options_for_select([5, 10, 15, 20], selected: params[:activities_per] || 10), class: "form-control activities_filter" %>
   </div>
 
   <%= paginate activities, param_name: "activities_page", remote: true %>

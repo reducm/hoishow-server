@@ -9,6 +9,28 @@ $('.track_datetime').datetimepicker({
     lang: 'zh',
     step: 15,
     scrollInput: false
-    })
+    });
 
+$('#playlists').html("<%= j render partial: 'boombox/operation/playlists/table', locals: { playlists: @boom_playlists} %>");
 
+$('.playlist_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    });
+
+$('#shows').html("<%= j render partial: 'boombox/operation/activities/table', locals: { activities: @activities } %>");
+
+$('.activity_datetime').datetimepicker({
+    format: 'Y-m-d H:i',
+    startDate: new Date(),
+    defaultDate: new Date(),
+    lang: 'zh',
+    step: 15,
+    scrollInput: false
+    });
+
+$('#fans').html("<%= j render partial: 'boombox/operation/boom_users/table', locals: { users: @users } %>");

@@ -40,11 +40,11 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     params[:tracks_per] ||= 10
     tracks = @collaborator.boom_tracks
     if params[:tracks_start_time].present?
-      tracks = tracks.where("created_at > '#{params[:tracks_start_time]}'")
+      tracks = tracks.where("boom_tracks.created_at > '#{params[:tracks_start_time]}'")
     end
 
     if params[:tracks_end_time].present?
-      tracks = tracks.where("created_at < '#{params[:tracks_end_time]}'")
+      tracks = tracks.where("boom_tracks.created_at < '#{params[:tracks_end_time]}'")
     end
 
     if params[:tracks_is_top].present?
@@ -52,17 +52,67 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     end
 
     if params[:tracks_q].present?
-      tracks = tracks.where("name like '%#{params[:tracks_q]}%'")
+      tracks = tracks.where("boom_tracks.name like '%#{params[:tracks_q]}%'")
     end
 
-    @boom_tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:tracks_per])
-
-    #@boom_tracks = @collaborator.boom_tracks.order(created_at: :desc).page(1).per(10)
+    @boom_tracks = tracks.page(params[:tracks_page]).order("boom_tracks.created_at desc").per(params[:tracks_per])
 
     #playlists
-    @boom_playlists = @collaborator.boom_playlists.order(created_at: :desc).page(1).per(10)
-    @activities = @collaborator.activities.order(created_at: :desc).page(1).per(10)
-    @users = @collaborator.followers.order(created_at: :desc).page(1).per(10)
+    params[:playlists_page] ||= 1
+    params[:playlists_per] ||= 10
+    playlists = @collaborator.boom_playlists
+
+    if params[:playlists_start_time].present?
+      playlists = playlists.where("boom_playlists.created_at > '#{params[:playlists_start_time]}'")
+    end
+
+    if params[:playlists_end_time].present?
+      playlists = playlists.where("boom_playlists.created_at < '#{params[:playlists_end_time]}'")
+    end
+
+    if params[:playlists_is_top].present?
+      playlists = playlists.where(is_top: params[:playlists_is_top])
+    end
+
+    if params[:playlists_q].present?
+      playlists = playlists.where("boom_playlists.name like '%#{params[:playlists_q]}%'")
+    end
+
+    @boom_playlists = playlists.page(params[:playlists_page]).order("boom_playlists.created_at desc").per(params[:playlists_per])
+
+    #activities
+    params[:activities_page] ||= 1
+    params[:activities_per] ||= 10
+    activities = @collaborator.activities
+
+    if params[:activities_start_time].present?
+      activities = activities.where("boom_activities.created_at > '#{params[:activities_start_time]}'")
+    end
+
+    if params[:activities_end_time].present?
+      activities = activities.where("boom_activities.created_at < '#{params[:activities_end_time]}'")
+    end
+
+    if params[:activities_is_hot].present?
+      activities = activities.where(is_hot: params[:activities_is_hot])
+    end
+
+    if params[:activities_q].present?
+      activities = activities.where("boom_activities.name like '%#{params[:activities_q]}%'")
+    end
+
+    @activities = activities.page(params[:activities_page]).order("boom_activities.created_at desc").per(params[:activities_per])
+
+    #users
+    params[:users_page] ||= 1
+    params[:users_per] ||= 10
+    boom_users = @collaborator.followers
+
+    if params[:users_q].present?
+      boom_users = boom_users.where("users.nickname like '%#{params[:users_q]}%' or users.mobile like '%#{params[:users_q]}%'")
+    end
+
+    @users = boom_users.page(params[:users_page]).order("users.created_at desc").per(params[:users_per])
 
     respond_to do |format|
       format.html
