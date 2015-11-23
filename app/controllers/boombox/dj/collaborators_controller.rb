@@ -7,13 +7,13 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
   end
 
   def create
+    @boom_admin = BoomAdmin.find(params[:collaborator][:boom_admin_id])
     @collaborator = Collaborator.new(create_params) 
-    @collaborator.boom_admin_id = params[:boom_admin_id]
     if @collaborator.save
       redirect_to boombox_dj_signup_finished_url(collaborator_id: @collaborator.id), notice: '个人资料保存成功'
     else
       flash[:alert] = @collaborator.errors.full_messages.to_sentence
-      render action: 'new', locals: {boom_admin_id: params[:boom_admin_id]}
+      render action: 'new', boom_admin_id: @boom_admin.id
     end
   end
 
