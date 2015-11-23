@@ -13,6 +13,7 @@ class BoomMessage < ActiveRecord::Base
   validates :subject_id, presence: true
   validates :send_type, presence: true
   validates :title, presence: true
+  validates :start_time, presence: true
   validates :content, length: { maximum: 150 }
 
   enum send_type: {
