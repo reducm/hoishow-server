@@ -30,7 +30,7 @@
             <td><%= feedback.user.mobile %></td>
             <td class="boom_feedback_float"><%= feedback.content %></td>
             <td><%= feedback.contact %></td>
-            <td><%= feedback.created_at.try(:strfcn_time) %></td>
+            <td><%= get_datetime( feedback.created_at ) %></td>
             <td>
               <% if feedback.status %>
                 已处理

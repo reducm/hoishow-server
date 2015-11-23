@@ -28,7 +28,7 @@
             <% end %>
           </td>
           <td><%= image_tag(banner.poster_url, class: "preview-pic") if banner.poster_url %></td>
-          <td><%= banner.updated_at.try(:strfcn_time) %></td>
+          <td><%= get_datetime( banner.updated_at ) %></td>
           <td>
             <span class="handle">[拉我排序] </span>
             <%= link_to "编辑", edit_boombox_operation_boom_banner_path(banner) %> /
