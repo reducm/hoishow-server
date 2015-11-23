@@ -23,7 +23,7 @@
               <td><%= admin.id %></td>
               <td><%= admin.name %></td>
               <td><%= admin.type_cn %></td>
-              <td><%= admin.created_at.try(:strfcn_time) %></td>
+              <td><%= get_datetime( admin.created_at ) %></td>
               <td>
                 <%= link_to "修改密码", edit_boombox_operation_boom_admin_path(admin)%>
                 <% if admin.is_block %>

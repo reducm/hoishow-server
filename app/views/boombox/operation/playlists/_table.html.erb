@@ -57,8 +57,8 @@
               <% end %>
             <% end %>
           </td>
-          <td><%= playlist.created_at.try(:strfcn_time) %></td>
-          <td><%= playlist.updated_at.try(:strfcn_time) %></td>
+          <td><%= get_datetime( playlist.created_at ) %></td>
+          <td><%= get_datetime( playlist.updated_at ) %></td>
           <td><%= playlist.is_top_cn %></td>
           <td>
             <%= link_to "编辑", edit_boombox_operation_playlist_path(playlist)%>

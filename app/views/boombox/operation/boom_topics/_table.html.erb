@@ -21,8 +21,8 @@
           <td style="width: 30%"><%= truncate(boom_topic.content, length: 150) %></td>
           <td><%= boom_topic.likes_count %></td>
           <td><%= boom_topic.comments_count %></td>
-          <td><%= boom_topic.created_at.strfcn_time %></td>
-          <td><%= boom_topic.last_reply_time.strfcn_time %></td>
+          <td><%= get_datetime( boom_topic.created_at ) %></td>
+          <td><%= get_datetime( boom_topic.last_reply_time ) %></td>
           <td>
             <% if boom_topic.is_top? %>
               已置顶

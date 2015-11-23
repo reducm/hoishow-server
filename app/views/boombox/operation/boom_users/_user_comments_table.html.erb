@@ -22,7 +22,7 @@
           <td class="text-center"><%= topic.created_by %></td>
           <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
           <td class="text-center" style="width: 30%"><%= truncate(comment.content, length: 50) %></td>
-          <td class="text-center"><%= comment.created_at.strfcn_time %></td>
+          <td class="text-center"><%= get_datetime( comment.created_at ) %></td>
           <td class="text-center">
             <% if comment.is_hidden? %>
               已屏蔽

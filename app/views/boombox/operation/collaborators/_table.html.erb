@@ -37,8 +37,8 @@
             </td>
           <% end %>
           <td><%= collaborator.followers.count %></td>
-          <td><%= collaborator.created_at.strfcn_time %></td>
-          <td><%= collaborator.updated_at.strfcn_time %></td>
+          <td><%= get_datetime( collaborator.created_at ) %></td>
+          <td><%= get_datetime( collaborator.updated_at ) %></td>
           <td><%= collaborator.verified_cn %></td>
           <td><%= collaborator.is_top_cn %></td>
           <td>

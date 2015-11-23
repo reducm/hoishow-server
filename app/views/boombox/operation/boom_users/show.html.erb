@@ -38,7 +38,7 @@
       </div>
       <div class="text-center">
         <h4>生日</h4>
-        <p><%= @user.birthday.strfcn_date %></p>
+        <p><%= get_date( @user.birthday )%></p>
       </div>
       <div class="text-center">
         <h4>邮箱</h4>
@@ -79,7 +79,7 @@
                 <td class="text-center"><%= topic.created_by %></td>
                 <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
                 
-                <td class="text-center"><%= @user.like_boomtopic_at(topic).strfcn_time %></td>
+                <td class="text-center"><%= get_datetime( @user.like_boomtopic_at(topic) )%></td>
               </tr>
             <%end%>
           <%end%>

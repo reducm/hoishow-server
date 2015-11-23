@@ -48,7 +48,7 @@
                 <%= truncate(collaborators.join(", "), length: 50) %>
               <% end %>
             </td>
-            <td><%= activity.created_at.try(:strfcn_time) %></td>
+            <td><%= get_datetime( activity.created_at ) %></td>
             <td><%= activity.is_hot_cn %></td>
             <td>
               <%= link_to activity.is_top ? "取消置顶" : "置顶", change_is_top_boombox_operation_activity_path(activity), method: "post" %>
