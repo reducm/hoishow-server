@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <%= form_tag(boombox_operation_radios_path, id: "radios_form", class: 'form-inline', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "电台数/总数：#{radios.total_count}/#{BoomPlaylist.valid_radios.count}"%></h3>
+  <h4 class="pull-left"><%= "电台总数：#{radios.total_count}"%></h4>
   <div class="search">
     <div class="datetimepicker form-group">
       <label> 创建时间</label>
@@ -11,7 +11,6 @@
     </div>
     <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control radios_filter" %>
     <%= text_field_tag "q", params[:q],  class: 'form-control radios_filter', placeholder: "输入关键词进行搜索", size:30%>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
   <table class="table table-hover radios">
@@ -37,12 +36,13 @@
             <td><%= image_tag(radio.cover_url, size: "50x50") if radio.cover_url %></td>
             <td><%= radio.name %></td>
             <td><%= radio.tracks.count %></td>
+            <% cache tags = radio.boom_tags.pluck(:name) do %>
             <td>
-              <% tags = radio.boom_tags.pluck(:name)%>
-              <% if tags.present? %>
-                <%= tags.join(",") %>
-              <% end %>
+                <% if tags.present? %>
+                  <%= truncate(tags.join(", "), length: 50) %>
+                <% end %>
             </td>
+            <% end %>
             <td><%= radio.creator.name if radio.creator %></td>
             <td><%= radio.created_at.try(:strfcn_time) %></td>
             <td><%= radio.updated_at.try(:strfcn_time) %></td>

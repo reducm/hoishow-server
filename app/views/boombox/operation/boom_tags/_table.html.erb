@@ -1,10 +1,9 @@
 <%# encoding: utf-8 %>
 <%= form_tag(boombox_operation_boom_tags_path, class: 'form-inline', id: "boom_tag_form", method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "标签数/总数：#{@boom_tags.total_count}/#{BoomTag.count}"%></h3>
+  <h4 class="pull-left"><%= "标签总数：#{@boom_tags.total_count}"%></h4>
   <div class="search">
     <%= select_tag :is_hot, options_for_select([["全部", ""], ["推荐", "1"]], selected: params[:is_hot] || ""), class:"form-control boom_tags_filter" %>
     <%= text_field_tag "q", params[:q],  class: 'form-control boom_tags_filter', placeholder: "输入关键词进行搜索", size:30%>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
     <table class="table table-hover boom_tags">

@@ -1,10 +1,9 @@
 <%# encoding: utf-8 %>
 
 <%= form_tag(boombox_operation_boom_users_path, class: 'form-inline', id: "boom_user_form", method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "用户数/总数：#{users.total_count}/#{User.count}"%></h3>
+  <h4 class="pull-left"><%= "用户总数：#{users.total_count}"%></h4>
   <div class="search">
     <%= text_field_tag "q", params[:q],  class: 'form-control boom_users_filter', placeholder: "输入用户名或手机号搜索", size: 50 %>
-    <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
   <table class="table table-hover boom_users">

@@ -1,7 +1,19 @@
 class BoomFeedback < ActiveRecord::Base
+  include Searchable
+
   acts_as_cached(:version => 1, :expires_in => 1.week)
   default_scope {order('boom_feedbacks.created_at DESC')}
   paginates_per 10
+
+  mapping do
+    indexes :content, analyzer: 'snowball'
+  end
+
+  def as_indexed_json(options={})
+    as_json(
+      only: [:content]
+    )
+  end
 
   belongs_to :user
 
