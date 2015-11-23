@@ -3,7 +3,7 @@ class BoomAdmin < ActiveRecord::Base
   include ModelAttrI18n
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true, if: :dj?
 
   enum admin_type: {
     admin: 0,
