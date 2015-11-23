@@ -29,7 +29,16 @@ class Boombox::Dj::BoomAdminsController < Boombox::Dj::ApplicationController
   end 
 
   def confirm_email
-    dj = BoomAdmin.find(params[:id])
+    dj = BoomAdmin.where(id: params[:id]).first
+
+    # 验证码只用一次
+    unless dj.present? && dj.confirm_token.present?
+      dj.delete
+      flash[:alert] = "验证失败，请重新申请"
+      redirect_to boombox_dj_signup_url
+      return
+    end
+
     boom_admin = BoomAdmin.where(confirm_token: dj.confirm_token).first
     if boom_admin
       boom_admin.email_activate
