@@ -43,7 +43,16 @@
                 <% end %>
             </td>
             <% end %>
-            <td><%= radio.creator.name if radio.creator %></td>
+            <td>
+              <% creator = radio.creator %>
+              <% if creator %>
+                <% if radio.creator_type == BoomPlaylist::CREATOR_USER %>
+                  <%= creator.show_name  %>
+                <% else %>
+                  <%= creator.name  %>
+                <% end %>
+              <% end %>
+            </td>
             <td><%= radio.created_at.try(:strfcn_time) %></td>
             <td><%= radio.updated_at.try(:strfcn_time) %></td>
             <td><%= radio.is_top_cn %></td>

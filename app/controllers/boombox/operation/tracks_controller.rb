@@ -6,26 +6,26 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
 
   def index
     params[:tracks_page] ||= 1
-    params[:per] ||= 10
+    params[:tracks_per] ||= 10
     tracks = BoomTrack.valid
 
-    if params[:start_time].present?
-      tracks = tracks.where("created_at > '#{params[:start_time]}'")
+    if params[:tracks_start_time].present?
+      tracks = tracks.where("created_at > '#{params[:tracks_start_time]}'")
     end
 
-    if params[:end_time].present?
-      tracks = tracks.where("created_at < '#{params[:end_time]}'")
+    if params[:tracks_end_time].present?
+      tracks = tracks.where("created_at < '#{params[:tracks_end_time]}'")
     end
 
-    if params[:is_top].present?
-      tracks = tracks.where(is_top: params[:is_top])
+    if params[:tracks_is_top].present?
+      tracks = tracks.where(is_top: params[:tracks_is_top])
     end
 
-    if params[:q].present?
-      tracks = tracks.where("name like '%#{params[:q]}%'")
+    if params[:tracks_q].present?
+      tracks = tracks.where("name like ?", "%#{params[:tracks_q]}%")
     end
 
-    @tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:per])
+    @tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:tracks_per])
 
     respond_to do |format|
       format.html

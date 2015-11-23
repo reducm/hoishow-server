@@ -27,7 +27,7 @@
       <% if @boom_tracks.any? %>
         <%= render partial: 'boombox/operation/tracks/table', locals: {tracks: @boom_tracks, list_type: ""} %>
       <% else %>
-        无tracks数据
+        无音乐数据
       <% end %>
     </div>
     <div role="tabpanel" class="tab-pane" id="playlists">
@@ -41,14 +41,14 @@
       <% if @activities.any? %>
         <%= render partial: 'boombox/operation/activities/table', locals: {activities: @activities} %>
       <% else %>
-        无tracks数据
+        无活动数据
       <% end %>
     </div>
     <div role="tabpanel" class="tab-pane" id="fans">
       <% if @users.any? %>
         <%= render partial: 'boombox/operation/boom_users/table', locals: {users: @users} %>
       <% else %>
-        无playlists数据
+        无粉丝数据
       <% end %>
     </div>
   </div>

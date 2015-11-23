@@ -5,14 +5,14 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
 
   def index
     params[:users_page] ||= 1
-    params[:per] ||= 10
+    params[:users_per] ||= 10
     boom_users = User.all
 
-    if params[:q].present?
-      boom_users = boom_users.where("users.nickname like '%#{params[:q]}%' or users.mobile like '%#{params[:q]}%'")
+    if params[:users_q].present?
+      boom_users = boom_users.where("users.nickname like \"%#{params[:users_q]}%\" or users.mobile like \"%#{params[:users_q]}%\"")
     end
 
-    @users = boom_users.page(params[:users_page]).order("created_at desc").per(params[:per])
+    @users = boom_users.page(params[:users_page]).order("users.created_at desc").per(params[:users_per])
 
     respond_to do |format|
       format.html
