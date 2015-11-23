@@ -24,7 +24,7 @@
           <td>
             <% subject = banner.subject %>
             <% if subject %>
-              <%= link_to subject.name, banner.subject_show_url %>
+              <%= link_to subject.name, boombox_subject_redirect_url(banner.subject_type, banner.subject_id) %>
             <% end %>
           </td>
           <td><%= image_tag(banner.poster_url, class: "preview-pic") if banner.poster_url %></td>
