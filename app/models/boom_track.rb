@@ -96,7 +96,7 @@ class BoomTrack < ActiveRecord::Base
   end
 
   def is_liked?(user)
-    id.in? (user.boom_playlists.default.tracks) rescue false
+    id.in? (user.boom_playlists.default.tracks.ids) rescue false
   end
 
   private
