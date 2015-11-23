@@ -304,6 +304,6 @@ class User < ActiveRecord::Base
 
   private
   def set_default_playlist
-    self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1)
+    self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1, mode: 0)
   end
 end
