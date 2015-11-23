@@ -47,7 +47,16 @@
               <% end %>
             <% end %>
           </td>
-          <td><%= playlist.creator.name if playlist.creator %></td>
+          <td>
+            <% creator = playlist.creator %>
+            <% if creator %>
+              <% if playlist.creator_type == BoomPlaylist::CREATOR_USER %>
+                <%= creator.show_name  %>
+              <% else %>
+                <%= creator.name  %>
+              <% end %>
+            <% end %>
+          </td>
           <td><%= playlist.created_at.try(:strfcn_time) %></td>
           <td><%= playlist.updated_at.try(:strfcn_time) %></td>
           <td><%= playlist.is_top_cn %></td>

@@ -21,7 +21,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     end
 
     if params[:activities_q].present?
-      activities = activities.where("name like '%#{params[:activities_q]}%'")
+      activities = activities.where("name like ?", "%#{params[:activities_q]}%")
     end
 
     @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:activities_per])

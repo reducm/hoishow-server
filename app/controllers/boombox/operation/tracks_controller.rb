@@ -21,7 +21,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
     end
 
     if params[:tracks_q].present?
-      tracks = tracks.where("name like '%#{params[:tracks_q]}%'")
+      tracks = tracks.where("name like ?", "%#{params[:tracks_q]}%")
     end
 
     @tracks = tracks.page(params[:tracks_page]).order("created_at desc").per(params[:tracks_per])

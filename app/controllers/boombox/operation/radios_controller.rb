@@ -21,7 +21,7 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
     end
 
     if params[:q].present?
-      radios = radios.where("name like '%#{params[:q]}%'")
+      radios = radios.where("name like ?", "%#{params[:q]}%")
     end
 
     @radios = radios.page(params[:page]).order("created_at desc").per(params[:per])

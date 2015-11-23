@@ -21,7 +21,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
     end
 
     if params[:playlists_q].present?
-      playlists = playlists.where("name like '%#{params[:playlists_q]}%'")
+      playlists = playlists.where("name like ?", "%#{params[:playlists_q]}%")
     end
 
     @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:playlists_per])

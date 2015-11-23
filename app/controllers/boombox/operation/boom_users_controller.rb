@@ -9,7 +9,7 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
     boom_users = User.all
 
     if params[:users_q].present?
-      boom_users = boom_users.where("users.nickname like '%#{params[:users_q]}%' or users.mobile like '%#{params[:users_q]}%'")
+      boom_users = boom_users.where("users.nickname like \"%#{params[:users_q]}%\" or users.mobile like \"%#{params[:users_q]}%\"")
     end
 
     @users = boom_users.page(params[:users_page]).order("users.created_at desc").per(params[:users_per])
