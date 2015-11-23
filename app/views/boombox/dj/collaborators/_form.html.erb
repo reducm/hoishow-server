@@ -7,6 +7,7 @@
 </div>
 
 <%= simple_form_for([:boombox, :dj, collaborator ], html: { class: 'form-horizontal', id: 'collaborator-dropzone' }) do |f| %>
+  <%= f.hidden_field :boom_admin_id, value: @boom_admin.id %>
   <div class="row">
     <div class="col-md-5 col-md-offset-1 avatar-area">
       <legend>社交信息（公开）</legend>
@@ -27,7 +28,7 @@
     <div class="col-md-5 information-area">
       <legend>个人信息（保密）</legend>
       <div class="col-md-7 infomation-content">
-        <% if params[:action] == 'new' %>
+        <% if params[:action] == 'new' || params[:action] == 'create' %>
           <%= f.input :name, label: "真实姓名" %>
         <% else %>
           <%= f.input :name, label: "真实姓名", disabled: true %>
@@ -35,7 +36,7 @@
         <%= f.input :sex, collection:[["男", "male"], ["女", "female"]], as: :radio_buttons, label: "性别" %>
         <%= f.input :birth, as: :datetimepicker, label: "生日" %>
         <%= f.input :contact, label: "手机号" %>
-        <% if params[:action] == 'new' %>
+        <% if params[:action] == 'new' || params[:action] == 'create' %>
           <%= f.input :email, input_html: {value: @boom_admin.email} %>
         <% else %>
           <%= f.input :email, label: "邮箱", disabled: true %>
