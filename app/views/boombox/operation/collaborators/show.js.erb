@@ -22,7 +22,7 @@ $('.playlist_datetime').datetimepicker({
     scrollInput: false
     });
 
-$('#shows').html("<%= j render partial: 'boombox/operation/activities/table', locals: { activities: @activities } %>");
+$('#activities').html("<%= j render partial: 'boombox/operation/activities/table', locals: { activities: @activities } %>");
 
 $('.activity_datetime').datetimepicker({
     format: 'Y-m-d H:i',

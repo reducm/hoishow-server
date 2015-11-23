@@ -15,7 +15,7 @@
     <li role="presentation" class="active"><a href="#timeline" aria-controls="timeline" role="tab" data-toggle="tab">Timeline (<%= @boom_topics.total_count %>)</a></li>
     <li role="presentation"><a href="#tracks" aria-controls="tracks" role="tab" data-toggle="tab">Tracks (<%= @boom_tracks.total_count %>)</a></li>
     <li role="presentation"><a href="#playlists" aria-controls="playlists" role="tab" data-toggle="tab">Playlists (<%= @boom_playlists.total_count %>)</a></li>
-    <li role="presentation"><a href="#shows" aria-controls="shows" role="tab" data-toggle="tab">Shows(<%= @activities.total_count %>)</a></li>
+    <li role="presentation"><a href="#activities" aria-controls="activities" role="tab" data-toggle="tab">Activities(<%= @activities.total_count %>)</a></li>
     <li role="presentation"><a href="#fans" aria-controls="fans" role="tab" data-toggle="tab">Fans(<%= @users.total_count %>)</a></li>
   </ul>
 
@@ -37,7 +37,7 @@
         无playlists数据
       <% end %>
     </div>
-    <div role="tabpanel" class="tab-pane" id="shows">
+    <div role="tabpanel" class="tab-pane" id="activities">
       <% if @activities.any? %>
         <%= render partial: 'boombox/operation/activities/table', locals: {activities: @activities} %>
       <% else %>

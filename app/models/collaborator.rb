@@ -5,7 +5,7 @@ class Collaborator < ActiveRecord::Base
   has_many :followers, through: :user_follow_collaborators, source: :user
 
   has_many :collaborator_activity_relations
-  has_many :activities, through: :collaborator_activity_relations, source: :boom_activity
+  has_many :activities, -> { where mode: 1 }, through: :collaborator_activity_relations, source: :boom_activity
 
   has_many :boom_albums
   has_many :boom_topics
