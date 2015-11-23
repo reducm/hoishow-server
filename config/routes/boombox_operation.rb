@@ -37,7 +37,9 @@ module Routes
               end
             end
 
-            resources :tracks
+            resources :tracks do
+              post :convert_audio_notify, on: :collection
+            end
 
             resources :playlists do
               member do
