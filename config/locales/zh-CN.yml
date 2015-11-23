@@ -158,7 +158,7 @@ zh-CN:
         other: 有 %{count} 个错误发生导致「%{model}」无法被保存。
   dj_controller:
     sessions: "登录"
-    boom_admins: "申请加入"    
+    boom_admins: "申请加入"
     pages: "欢迎加入"
     home: "首页"
     collaborators: "个人资料"
@@ -176,6 +176,7 @@ zh-CN:
     playlists: "Playlist"
     radios: "电台"
     activities: "活动"
+    messages: "推送"
     boom_tags: "标签"
     boom_admins: "管理员"
     boom_feedbacks: "意见反馈"
@@ -375,3 +376,6 @@ zh-CN:
         image: 上传图片
         video_title: 视频标题
         video_url: 上传视频
+      boom_message/targets:
+        all_users: 全部用户
+        followers: 关注用户

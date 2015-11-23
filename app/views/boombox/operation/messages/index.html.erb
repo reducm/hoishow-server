@@ -1,0 +1,42 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <h1 class="pull-left">推送通知</h1>
+</div>
+<%= link_to "新建消息推送", new_boombox_operation_message_url, class: 'btn btn-primary' %>
+
+<div class="messages_list">
+  <table class="table table-hover messages">
+    <thead>
+      <tr>
+        <th>消息类别</th>
+        <th>推送用户</th>
+        <th>跳转对象</th>
+        <th>消息标题</th>
+        <th>消息内容</th>
+        <th>设定时间</th>
+        <th>推送时间</th>
+        <th>推送数量</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @messages.each do|message| %>
+        <tr>
+          <td><%= message.subject_type_cn %></td>
+          <td><%= message.targets_cn %></td>
+          <td><%= link_to message.subject_name, boombox_subject_redirect_url(message.subject_type, message.subject_id) %></td>
+          <td><%= message.title %></td>
+          <td><%= message.content %></td>
+          <td><%= message.start_time.try(:strfcn_time) %></td>
+          <td><%= message.push_time.try(:strfcn_time) %></td>
+          <td><%= message.total_count %></td>
+          <td>
+            <%= link_to '再次推送', push_again_boombox_operation_message_path(message) if message.pushed? %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= paginate @messages %>
+</div>

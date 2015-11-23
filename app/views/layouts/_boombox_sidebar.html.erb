@@ -4,14 +4,22 @@
   <!-- Navigation -->
   <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
     <div class="navbar-header">
-      <a class="navbar-brand" href=<%= boombox_operation_root_path%>><i>播霸DJ</i></a>
+      <a class="navbar-brand" href=<%= boombox_operation_root_path %>><i>播霸</i></a>
     </div>
     <!-- /.navbar-header -->
     <ul class="nav navbar-top-links navbar-right">
-      <li>
-        <%= link_to boombox_operation_signout_path, method: :delete do %>
-          <button >退出登录</button>
-        <% end %>
+      <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+              <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-user">
+              <li>
+                <%= link_to boombox_operation_signout_path, method: :delete do %>
+                  <i class="fa fa-sign-out fa-fw"></i> 登出
+                <% end %>
+              </li>
+          </ul>
+          <!-- /.dropdown-user -->
       </li>
     </ul>
     <!-- /.navbar-top-links -->
@@ -28,47 +36,52 @@
           </li>
           <li>
             <%= link_to boombox_operation_tracks_path do %>
-              <i class="fa fa-home fa-fw"></i> 音乐
+              <i class="fa fa-music fa-fw"></i> 音乐
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_playlists_path do %>
-              <i class="fa fa-home fa-fw"></i> Playlist
+              <i class="fa fa-music fa-fw"></i> Playlist
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_radios_path do %>
-              <i class="fa fa-home fa-fw"></i> 电台
+              <i class="fa fa-music fa-fw"></i> 电台
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_collaborators_path do %>
-              <i class="fa fa-home fa-fw"></i> 艺人
+              <i class="fa fa-star fa-fw"></i> 艺人
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_boom_tags_path do %>
-              <i class="fa fa-home fa-fw"></i> 标签
+              <i class="fa fa-tags fa-fw"></i> 标签
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_activities_path do %>
-              <i class="fa fa-home fa-fw"></i> 活动 
+              <i class="fa fa-file fa-fw"></i> 活动
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_boom_users_path do %>
-              <i class="fa fa-home fa-fw"></i> 用户
+              <i class="fa fa-users fa-fw"></i> 用户
+            <% end %>
+          </li>
+          <li>
+            <%= link_to boombox_operation_messages_path do %>
+              <i class="fa fa-file fa-fw"></i> 推送
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_boom_admins_path do %>
-              <i class="fa fa-home fa-fw"></i> 管理员
+              <i class="fa fa-file fa-fw"></i> 管理员
             <% end %>
           </li>
           <li>
             <%= link_to boombox_operation_boom_feedbacks_path do %>
-              <i class="fa fa-home fa-fw"></i> 意见反馈
+              <i class="fa fa-file fa-fw"></i> 意见反馈
             <% end %>
           </li>
         </ul>
