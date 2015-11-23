@@ -28,15 +28,6 @@ class BoomBanner < ActiveRecord::Base
     tran("subject_type")
   end
 
-  def subject_show_url
-    if subject_type == "Collaborator"
-      Rails.application.routes.url_helpers.send("boombox_operation_#{subject_type.downcase}_path", self.subject_id)
-    else
-      route_param = subject_type.gsub("Boom","").downcase
-      Rails.application.routes.url_helpers.send("boombox_operation_#{route_param}_path", subject_id)
-    end
-  end
-
   private
   def set_position
     self.position = BoomBanner.maximum("position").to_i + 1
