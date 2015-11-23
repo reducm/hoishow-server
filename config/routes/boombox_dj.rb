@@ -12,6 +12,7 @@ module Routes
             match "/signup" => "boom_admins#new", via: [:get]
             # 发送验证邮件
             get "/signup_send_email" => 'pages#after_create_boom_admin'
+            get "/signup_resend_email" => 'pages#resend_email'
             # 完善资料
             match "/signup_fill_personal_form" => "collaborators#new", via: [:get]
             # 审核

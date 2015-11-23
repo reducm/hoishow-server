@@ -12,14 +12,14 @@ class Boombox::Dj::ApplicationController < ApplicationController
 
   def check_login!
     unless current_admin
-      session[:request_page] = request.original_url
+      session[:dj_request_page] = request.original_url
       flash[:warning] = "Please login"
       redirect_to boombox_dj_signin_url
     end
   end
 
   def current_admin
-    @current_admin ||= BoomAdmin.where(id: session[:admin_id], admin_type: BoomAdmin.admin_types[:dj]).first if session[:admin_id]
+    @current_admin ||= BoomAdmin.where(id: session[:dj_admin_id], admin_type: BoomAdmin.admin_types[:dj]).first if session[:dj_admin_id]
   end
 
   # 登陆后得到该dj  

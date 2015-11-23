@@ -18,8 +18,9 @@ class Boombox::Operation::SessionsController < Boombox::Operation::ApplicationCo
         admin.update(last_sign_in_at: DateTime.now)
         session[:admin_id] = admin.id
 
-        url = session[:request_page] ? session[:request_page] : boombox_operation_root_url
-        redirect_to url
+        #url = session[:request_page] ? session[:request_page] : boombox_operation_root_url
+        #redirect_to url
+        redirect_to boombox_operation_root_url
       else
         flash[:alert] = '密码错误, 请重新输入'
         redirect_to boombox_operation_signin_url
