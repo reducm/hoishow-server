@@ -1,4 +1,4 @@
-class Boombox::V1::FeedbackController < Boombox::V1::ApplicationController
+class Boombox::V1::FeedbacksController < Boombox::V1::ApplicationController
   before_filter :get_user
 
   def create

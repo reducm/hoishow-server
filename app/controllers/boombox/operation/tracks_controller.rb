@@ -1,5 +1,6 @@
 # encoding: utf-8
 class Boombox::Operation::TracksController < Boombox::Operation::ApplicationController
+  include ConvertAudio::Logger
   before_filter :check_login!
   before_filter :get_track, except: [:search, :index, :new, :create]
 
@@ -60,7 +61,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
         if new_tag_ids.present?
           BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @track.tag_for_track(tag) }
         end
-        del_tag_ids = source_tag_ids - target_tag_ids 
+        del_tag_ids = source_tag_ids - target_tag_ids
         if del_tag_ids.present?
           @track.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
         end
@@ -89,6 +90,11 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
     redirect_to boombox_operation_tracks_url
   end
 
+  def convert_audio_notify
+    upyun_logger.info '============'
+    upyun_logger.info params
+    upyun_logger.info '============'
+  end
 
   private
   def get_track

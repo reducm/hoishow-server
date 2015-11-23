@@ -23,6 +23,8 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
 
   after_create :set_removed_and_is_top
+  after_create :convert_audio
+
   scope :valid, -> {where(removed: false).order('is_top, created_at desc')}
 
   paginates_per 10
@@ -100,5 +102,9 @@ class BoomTrack < ActiveRecord::Base
     else
       self.update(removed: 0)
     end
+  end
+
+  def convert_audio
+    ConvertAudioWorker.perform_async(file.path) if file_url
   end
 end

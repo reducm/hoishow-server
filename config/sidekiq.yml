@@ -3,6 +3,8 @@
 :logfile: ./log/sidekiq.log
 :queues:
   - default
+  - elasticsearch
+  - convert_audio
 staging:
   :concurrency: 25
 production:

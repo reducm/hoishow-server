@@ -1,6 +1,7 @@
 @user ||= nil
 
-json.(@collaborator, :id, :name, :email, :contact, :weibo, :wechat, :description, :followed_count)
+json.(@collaborator, :id, :email, :contact, :weibo, :wechat, :description, :followed_count, :identity)
+json.name @collaborator.nickname || @collaborator.name
 json.is_followed @collaborator.is_followed(@user.try(:id))
 json.cover @collaborator.cover_url || ''
 json.albums do

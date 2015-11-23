@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151119062332) do
+ActiveRecord::Schema.define(version: 20151120102402) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -77,14 +77,15 @@ ActiveRecord::Schema.define(version: 20151119062332) do
     t.string   "name",        limit: 255
     t.integer  "seats_count", limit: 4
     t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.string   "sort_by",     limit: 255
     t.text     "seats_info",  limit: 16777215
     t.text     "coordinates", limit: 65535
     t.string   "color",       limit: 255
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
+    t.boolean  "is_top",      limit: 1,        default: false
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -255,13 +256,15 @@ ActiveRecord::Schema.define(version: 20151119062332) do
     t.text     "content",           limit: 65535
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
+    t.integer  "targets",           limit: 4
+    t.datetime "start_time"
   end
 
   create_table "boom_playlists", force: :cascade do |t|
     t.string   "name",         limit: 255
     t.integer  "mode",         limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.integer  "creator_id",   limit: 4
     t.string   "creator_type", limit: 255
     t.string   "cover",        limit: 255
@@ -495,6 +498,16 @@ ActiveRecord::Schema.define(version: 20151119062332) do
     t.datetime "updated_at",                null: false
   end
 
+  create_table "message_tasks", force: :cascade do |t|
+    t.integer  "boom_message_id", limit: 4
+    t.string   "task_id",         limit: 255
+    t.string   "platform",        limit: 255
+    t.integer  "status",          limit: 4
+    t.integer  "total_count",     limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer  "send_type",         limit: 4
     t.string   "title",             limit: 255
@@ -652,13 +665,13 @@ ActiveRecord::Schema.define(version: 20151119062332) do
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
-    t.decimal  "price",                   precision: 6, scale: 2
-    t.datetime "created_at",                                                      null: false
-    t.datetime "updated_at",                                                      null: false
-    t.boolean  "is_sold_out", limit: 1,                           default: false
-    t.integer  "seats_count", limit: 4,                           default: 0
+    t.decimal  "price",                   precision: 10, scale: 2
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.boolean  "is_sold_out", limit: 1,                            default: false
+    t.integer  "seats_count", limit: 4,                            default: 0
     t.string   "channels",    limit: 255
-    t.integer  "left_seats",  limit: 4,                           default: 0
+    t.integer  "left_seats",  limit: 4,                            default: 0
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree

@@ -17,6 +17,7 @@ development: &DEFAULT
     upyun_bucket: ""
     upyun_bucket_domain: ""
     upyun_upload_url: ""
+    notify_url: ""
 
 test:
   <<: *DEFAULT

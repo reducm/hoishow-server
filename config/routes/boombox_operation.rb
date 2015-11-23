@@ -37,7 +37,9 @@ module Routes
               end
             end
 
-            resources :tracks
+            resources :tracks do
+              post :convert_audio_notify, on: :collection
+            end
 
             resources :playlists do
               member do
@@ -88,6 +90,9 @@ module Routes
               end
             end
 
+            resources :messages, only: [:index, :new, :create] do
+              post :push_again, on: :member
+            end
           end
         end
       end

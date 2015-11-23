@@ -19,6 +19,7 @@
 #= require boombox/operation/playlists
 #= require boombox/operation/radios
 #= require boombox/operation/activities
+#= require boombox/operation/messages
 #= require boombox/operation/boom_tags
 #= require boombox/operation/boom_admins
 #= require boombox/operation/boom_users
