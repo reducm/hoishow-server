@@ -24,6 +24,7 @@
 #= require boombox/operation/boom_admins
 #= require boombox/operation/boom_users
 #= require boombox/operation/boom_feedbacks
+#= require boombox/operation/boom_banners
 #
 #= require jquery-fileupload/basic
 #= require dropzone
@@ -68,7 +69,7 @@ $ ->
   )
 
   # 图片上传预览
-  window.readURL = (input, $obj=nil) ->
+  window.readURL = (input, $obj=null) ->
     if input.files and input.files[0]
       output_id = 'img-prv-' + $(input).attr('id')
 

@@ -84,6 +84,12 @@ module Routes
               end
             end
 
+            resources :boom_banners do
+              collection do
+                post :sort
+              end
+            end
+
             resources :messages, only: [:index, :new, :create] do
               post :push_again, on: :member
             end

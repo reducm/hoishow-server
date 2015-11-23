@@ -12,7 +12,7 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
     end
 
     if params[:q].present?
-      boom_tags = boom_tags.where("boom_tags.name like '%#{params[:q]}%'")
+      boom_tags = boom_tags.where("boom_tags.name like ?", "%#{params[:q]}%")
     end
 
     @boom_tags = boom_tags.order("created_at desc").page(params[:page]).per(params[:per])
