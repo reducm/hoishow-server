@@ -23,6 +23,7 @@
 #= require boombox/operation/boom_admins
 #= require boombox/operation/boom_users
 #= require boombox/operation/boom_feedbacks
+#= require boombox/operation/boom_banners
 #
 #= require jquery-fileupload/basic
 #= require dropzone

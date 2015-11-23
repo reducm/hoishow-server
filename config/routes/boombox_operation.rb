@@ -82,6 +82,12 @@ module Routes
               end
             end
 
+            resources :boom_banners do
+              collection do
+                post :sort
+              end
+            end
+
           end
         end
       end

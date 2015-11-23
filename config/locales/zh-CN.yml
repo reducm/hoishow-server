@@ -180,6 +180,7 @@ zh-CN:
     boom_admins: "管理员"
     boom_feedbacks: "意见反馈"
     boom_users: "用户"
+    boom_banners: "Banner"
   controller:
     sessions: "登录"
     home: "首页"
@@ -375,3 +376,7 @@ zh-CN:
         image: 上传图片
         video_title: 视频标题
         video_url: 上传视频
+      boom_banner/subject_type:
+        Collaborator: "艺人"
+        BoomPlaylist: "Playlist"
+        BoomActivity: "活动"

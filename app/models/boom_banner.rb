@@ -1,5 +1,6 @@
 class BoomBanner < ActiveRecord::Base
   default_scope {order(:position)}
+  include ModelAttrI18n
 
   validates :subject_id, presence: true
   validates :subject_type, presence: true
@@ -18,6 +19,22 @@ class BoomBanner < ActiveRecord::Base
       Rails.logger.fatal("subject wrong, banner_id: #{ id }, subject_type: #{subject_type}, subject_id: #{subject_id}")
       nil
      end
+  end
+
+  def subject_type_cn
+    # Collaborator: "艺人"
+    # BoomPlaylist: "Playlist"
+    # BoomActivity: "活动"
+    tran("subject_type")
+  end
+
+  def subject_show_url
+    if subject_type == "Collaborator"
+      Rails.application.routes.url_helpers.send("boombox_operation_#{subject_type.downcase}_path", self.subject_id)
+    else
+      route_param = subject_type.gsub("Boom","").downcase
+      Rails.application.routes.url_helpers.send("boombox_operation_#{route_param}_path", subject_id)
+    end
   end
 
   private
