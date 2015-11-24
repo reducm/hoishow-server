@@ -6,6 +6,7 @@ class Collaborator < ActiveRecord::Base
 
   has_many :collaborator_activity_relations
   has_many :activities, -> { where mode: 1 }, through: :collaborator_activity_relations, source: :boom_activity
+  has_many :shows, -> { where mode: 0 }, through: :collaborator_activity_relations, source: :boom_activity
 
   has_many :boom_albums
   has_many :boom_topics
