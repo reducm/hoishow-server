@@ -7,7 +7,6 @@ module Searchable
 
     after_commit lambda { ElasticsearchReindexWorker.perform_async(:index,  self.class, self.id) }, on: :create
     after_commit lambda { ElasticsearchReindexWorker.perform_async(:update, self.class, self.id) }, on: :update
-    after_commit lambda { ElasticsearchReindexWorker.perform_async(:delete, self.class, self.id) }, on: :destroy
 
     def self.search(query, options={})
       __elasticsearch__.search(

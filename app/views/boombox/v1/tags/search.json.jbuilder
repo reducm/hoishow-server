@@ -16,7 +16,7 @@ json.activities do
 end
 
 json.tracks do
-  json.array! @records[:tracks].first(3), partial: 'boombox/v1/tracks/track', as: :track
+  json.array! @records[:tracks].first(3), partial: 'boombox/v1/tracks/track', as: :track, user: @user
 end
 
 json.playlists do

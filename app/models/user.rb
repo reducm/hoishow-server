@@ -29,6 +29,9 @@ class User < ActiveRecord::Base
   has_many :user_track_relations
 
   has_many :boom_feedbacks
+
+  has_many :boom_user_message_relations
+  has_many :boom_messages, through: :boom_user_message_relations, source: :boom_message
   #----------------boombox
 
   has_many :user_follow_stars
@@ -301,6 +304,6 @@ class User < ActiveRecord::Base
 
   private
   def set_default_playlist
-    self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1)
+    self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1, mode: 0)
   end
 end

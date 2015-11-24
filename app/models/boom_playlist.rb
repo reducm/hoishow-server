@@ -67,6 +67,10 @@ class BoomPlaylist < ActiveRecord::Base
     end
   end
 
+  def self.default
+    where(is_default: 1).first
+  end
+
   def creator
     begin
       Object::const_get(creator_type).where(id: creator_id).first

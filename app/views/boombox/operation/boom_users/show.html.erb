@@ -2,7 +2,12 @@
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <h3 class="pull-left">用户详情</h3>
+    <h3 class="text-center">用户详情</h3>
+    <% if @user.is_block %>
+      <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(@user, is_block: 0), method: 'post', class: "btn btn-success pull-right" %>
+    <% else %>
+      <%= link_to "屏蔽此用户", block_user_boombox_operation_boom_user_path(@user, is_block: 1), method: 'post', class: "btn btn-danger pull-right" %>
+    <% end %>
   </div>
 </div>
 
@@ -33,7 +38,7 @@
       </div>
       <div class="text-center">
         <h4>生日</h4>
-        <p><%= @user.birthday.strfcn_date %></p>
+        <p><%= get_date( @user.birthday )%></p>
       </div>
       <div class="text-center">
         <h4>邮箱</h4>
@@ -74,7 +79,7 @@
                 <td class="text-center"><%= topic.created_by %></td>
                 <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
                 
-                <td class="text-center"><%= @user.like_boomtopic_at(topic).strfcn_time %></td>
+                <td class="text-center"><%= get_datetime( @user.like_boomtopic_at(topic) )%></td>
               </tr>
             <%end%>
           <%end%>

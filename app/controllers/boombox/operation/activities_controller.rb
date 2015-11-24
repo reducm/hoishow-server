@@ -5,26 +5,26 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
 
   def index
     params[:activities_page] ||= 1
-    params[:per] ||= 10
+    params[:activities_per] ||= 10
     activities = BoomActivity.all
 
-    if params[:start_time].present?
-      activities = activities.where("created_at > '#{params[:start_time]}'")
+    if params[:activities_start_time].present?
+      activities = activities.where("created_at > '#{params[:activities_start_time]}'")
     end
 
-    if params[:end_time].present?
-      activities = activities.where("created_at < '#{params[:end_time]}'")
+    if params[:activities_end_time].present?
+      activities = activities.where("created_at < '#{params[:activities_end_time]}'")
     end
 
-    if params[:is_hot].present?
-      activities = activities.where(is_hot: params[:is_hot])
+    if params[:activities_is_hot].present?
+      activities = activities.where(is_hot: params[:activities_is_hot])
     end
 
-    if params[:q].present?
-      activities = activities.where("name like '%#{params[:q]}%'")
+    if params[:activities_q].present?
+      activities = activities.where("name like ?", "%#{params[:activities_q]}%")
     end
 
-    @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:per])
+    @activities = activities.page(params[:activities_page]).order("created_at desc").per(params[:activities_per])
 
     respond_to do |format|
       format.html

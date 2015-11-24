@@ -43,9 +43,18 @@
                 <% end %>
             </td>
             <% end %>
-            <td><%= radio.creator.name if radio.creator %></td>
-            <td><%= radio.created_at.try(:strfcn_time) %></td>
-            <td><%= radio.updated_at.try(:strfcn_time) %></td>
+            <td>
+              <% creator = radio.creator %>
+              <% if creator %>
+                <% if radio.creator_type == BoomPlaylist::CREATOR_USER %>
+                  <%= creator.show_name  %>
+                <% else %>
+                  <%= creator.name  %>
+                <% end %>
+              <% end %>
+            </td>
+            <td><%= get_datetime( radio.created_at ) %></td>
+            <td><%= get_datetime( radio.updated_at ) %></td>
             <td><%= radio.is_top_cn %></td>
             <td>
               <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>

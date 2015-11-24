@@ -37,7 +37,7 @@
             <% end %>
           </td>
           <td><%= track.creator.name if track.creator %></td>
-          <td><%= track.created_at.try(:strfcn_time) %></td>
+          <td><%= get_datetime( track.created_at ) %></td>
           <td><%= track.is_top_cn %></td>
           <td>
             <%= link_to "编辑", edit_boombox_operation_track_path(track)%>

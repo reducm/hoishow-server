@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151119072137) do
+ActiveRecord::Schema.define(version: 20151123133921) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -338,6 +338,13 @@ ActiveRecord::Schema.define(version: 20151119072137) do
     t.string   "subject_type", limit: 255
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+  end
+
+  create_table "boom_user_message_relations", force: :cascade do |t|
+    t.integer  "user_id",         limit: 4
+    t.integer  "boom_message_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "boom_user_statuses", force: :cascade do |t|

@@ -218,6 +218,23 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     render json: { result: "success" }
   end
 
+  def like_track
+    @track = BoomTrack.find_by_id(params[:track_id])
+    @like_playlist = @user.boom_playlists.default
+    if @track && @like_playlist
+      if params[:type] == 'add' && !@track.is_liked?(@user)
+        @like_playlist.tracks << @track
+      elsif params[:type] == 'remove' && @track.is_liked?(@user)
+        @like_playlist.playlist_track_relations.where(boom_track_id: @track.id).first.destroy
+      else
+        return error_respond I18n.t("errors.messages.data_status_error")
+      end
+      render json: { result: "success" }
+    else
+      error_respond I18n.t("errors.messages.track_not_found")
+    end
+  end
+
   protected
   def find_or_create_code(mobile)
     code = Rails.cache.read(cache_key(mobile))

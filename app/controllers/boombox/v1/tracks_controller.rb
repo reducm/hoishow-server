@@ -1,4 +1,6 @@
 class Boombox::V1::TracksController < Boombox::V1::ApplicationController
+  before_action :get_user
+
   def index
     if params[:keyword]
       @tracks = BoomboxSearch.query_search(params[:keyword])[:tracks]

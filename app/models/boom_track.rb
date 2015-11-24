@@ -95,6 +95,10 @@ class BoomTrack < ActiveRecord::Base
     tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
   end
 
+  def is_liked?(user)
+    id.in? (user.boom_playlists.default.tracks.ids) rescue false
+  end
+
   private
   def set_removed_and_is_top
     unless is_top

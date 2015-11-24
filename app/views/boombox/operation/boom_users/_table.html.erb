@@ -1,9 +1,13 @@
 <%# encoding: utf-8 %>
-
-<%= form_tag(boombox_operation_boom_users_path, class: 'form-inline', id: "boom_user_form", method: 'get', remote: true) do %>
+<% if params[:controller] == "boombox/operation/collaborators" %>
+  <% form_path = boombox_operation_collaborator_path(@collaborator) %>
+<% else %>
+  <% form_path = boombox_operation_boom_users_path %>
+<% end %>
+<%= form_tag(form_path, class: 'form-inline', id: "boom_user_form", method: 'get', remote: true) do %>
   <h4 class="pull-left"><%= "用户总数：#{users.total_count}"%></h4>
   <div class="search">
-    <%= text_field_tag "q", params[:q],  class: 'form-control boom_users_filter', placeholder: "输入用户名或手机号搜索", size: 50 %>
+    <%= text_field_tag "users_q", params[:users_q],  class: 'form-control boom_users_filter', placeholder: "输入用户名或手机号搜索", size: 50 %>
   </div>
 
   <table class="table table-hover boom_users">
@@ -45,7 +49,7 @@
   </table>
 
   <div>每页显示数量
-    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control boom_users_filter" %>
+    <%= select_tag :users_per, options_for_select([5, 10, 15, 20], selected: params[:users_per] || 10), class: "form-control boom_users_filter" %>
   </div>
 
   <%= paginate users, param_name: "users_page", remote: true %>

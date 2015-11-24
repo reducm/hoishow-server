@@ -18,6 +18,6 @@ end
 
 if need_tracks
   json.tracks do
-    json.array! tracks, partial: 'boombox/v1/tracks/track', as: :track
+    json.array! tracks, partial: 'boombox/v1/tracks/track', as: :track, user: user
   end
 end
