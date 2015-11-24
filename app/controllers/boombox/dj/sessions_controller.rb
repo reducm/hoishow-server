@@ -17,7 +17,7 @@ class Boombox::Dj::SessionsController < Boombox::Dj::ApplicationController
       when !admin.email_confirmed
         flash[:alert] = '账号没通过邮箱验证，请检查你的邮箱'
         redirect_to boombox_dj_signin_url
-      when !Collaborator.where(boom_admin_id: admin.id).any?
+      when Collaborator.where(boom_admin_id: admin.id).blank?
         flash[:alert] = '请先完善资料'
         redirect_to boombox_dj_signup_fill_personal_form_url(boom_admin_id: admin.id)
       when admin.password_valid?(params[:dj_session][:dj_password])
