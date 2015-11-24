@@ -1,1 +1,1 @@
-json.partial! 'track', track: @track
+json.partial! 'track', track: @track, user: @user
