@@ -81,6 +81,15 @@ class Collaborator < ActiveRecord::Base
     followers.count
   end
 
+  def nickname_changeable?
+    if self.nickname_updated_at.present?
+      (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
+    else
+      self.nickname_updated_at = Time.now
+      true
+    end
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)

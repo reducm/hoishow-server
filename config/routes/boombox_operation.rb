@@ -13,7 +13,7 @@ module Routes
 
             resources :collaborators, except: [:new, :create, :destroy] do
               member do
-                post :set_top
+                post :toggle_is_top
                 post :verify
               end
             end
