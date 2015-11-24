@@ -7,7 +7,7 @@ class Boombox::Dj::BoomAlbumsController < Boombox::Dj::ApplicationController
     @boom_albums = current_collaborator.boom_albums
     @boom_albums = @boom_albums.order(is_cover: :desc, created_at: :desc).page(params[:page]) 
     # 上传
-    @collaborator = Collaborator.find(params[:collaborator_id])
+    @collaborator = current_collaborator 
     @boom_album = BoomAlbum.new
   end
 
