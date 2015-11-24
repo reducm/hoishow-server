@@ -199,6 +199,10 @@ class Show < ActiveRecord::Base
     end
   end
 
+  def event_show_time
+    events.verified.first.try(:show_time)
+  end
+
   private
   def valids_price
     if min_price.present? && max_price.present?
