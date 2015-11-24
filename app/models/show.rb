@@ -23,7 +23,6 @@ class Show < ActiveRecord::Base
   validates :stadium, presence: {message: "场馆不能为空"}
 
   scope :is_display, -> { where(is_display: true).order('shows.is_top DESC, shows.created_at DESC') }
-  scope :finished_shows, -> { where('show_time is not null and show_time < ?', Time.now)}
 
   before_create :set_city
 
@@ -64,6 +63,10 @@ class Show < ActiveRecord::Base
   mount_uploader :ticket_pic, ImageUploader
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
+
+  def self.finished_shows
+    Show.select{|show| show.events.any? && show.events.last.show_time < Time.now}
+  end
 
   # 该区域已出票，但订单未支付的票数
   def unpaid_tickets_count(area_id)
@@ -194,6 +197,10 @@ class Show < ActiveRecord::Base
     else
       "#{price_array.first} - #{price_array.last}"
     end
+  end
+
+  def event_show_time
+    events.verified.first.try(:show_time)
   end
 
   private
