@@ -6,7 +6,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
   def index
     params[:activities_page] ||= 1
     params[:activities_per] ||= 10
-    activities = BoomActivity.all
+    activities = BoomActivity.activity
 
     if params[:activities_start_time].present?
       activities = activities.where("created_at > '#{params[:activities_start_time]}'")
@@ -39,6 +39,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
 
   def create
     @activity = BoomActivity.new(activity_params)
+    @activity.mode = 1
     if @activity.save!
       #关联tag
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @activity.tag_for_activity(tag) }
@@ -95,7 +96,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     if @activity.is_top
       @activity.update(is_top: false)
     else
-      BoomActivity.update_all(is_top: false)
+      BoomActivity.activity.update_all(is_top: false)
       @activity.update(is_top: true)
     end
     redirect_to boombox_operation_activities_url

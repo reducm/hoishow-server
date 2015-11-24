@@ -8,7 +8,8 @@ class BoomTrack < ActiveRecord::Base
   has_many :playlists, through: :playlist_track_relations, source: :boom_playlist
 
   has_many :activity_track_relations
-  has_many :activities, through: :activity_track_relations, source: :boom_activity
+  #实际数据为boom_activity中的show
+  has_many :activities, ->{ where mode: 0 }, through: :activity_track_relations, source: :boom_activity
 
   has_many :tag_subject_relations, as: :subject
   has_many :boom_tags, through: :tag_subject_relations, as: :subject,

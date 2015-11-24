@@ -28,6 +28,10 @@ class BoomBanner < ActiveRecord::Base
     tran("subject_type")
   end
 
+  def subject_name
+    subject.name rescue nil
+  end
+
   private
   def set_position
     self.position = BoomBanner.maximum("position").to_i + 1

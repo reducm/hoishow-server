@@ -27,7 +27,7 @@
               <td><%= boom_tag.playlists.playlist.count %></td>
               <td><%= boom_tag.playlists.radio.count %></td>
               <td><%= boom_tag.collaborators.count %></td>
-              <td><%= boom_tag.activities.count %></td>
+              <td><%= boom_tag.activities.activity.count %></td>
               <td>
                 <%= link_to boom_tag.is_hot_cn, change_is_hot_boombox_operation_boom_tag_path(boom_tag), method: 'POST' %>
                 <%= link_to "删除", boombox_operation_boom_tag_path(boom_tag), method: "delete", data: {confirm: "确定删除吗？"} %>
