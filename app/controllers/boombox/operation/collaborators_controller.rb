@@ -83,7 +83,7 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     #activities
     params[:activities_page] ||= 1
     params[:activities_per] ||= 10
-    activities = @collaborator.activities
+    activities = @collaborator.activities.activity
 
     if params[:activities_start_time].present?
       activities = activities.where("boom_activities.created_at > '#{params[:activities_start_time]}'")

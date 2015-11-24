@@ -2,8 +2,7 @@ class BoomTag < ActiveRecord::Base
   has_many :tag_subject_relations, dependent: :destroy
   has_many :collaborators, through: :tag_subject_relations, source: :subject, source_type: Collaborator.name
   has_many :playlists, through: :tag_subject_relations, source: :subject, source_type: BoomPlaylist.name
-  has_many :activities, -> { where mode: 1 }, through: :tag_subject_relations, source: :subject, source_type: BoomActivity.name
-  has_many :shows, -> { where mode: 0 }, through: :tag_subject_relations, source: :subject, source_type: BoomActivity.name
+  has_many :activities, through: :tag_subject_relations, source: :subject, source_type: BoomActivity.name
   has_many :tracks, through: :tag_subject_relations, source: :subject, source_type: BoomTrack.name
 
   #取出合集得时候不要忘记过滤
