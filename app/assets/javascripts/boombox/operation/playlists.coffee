@@ -80,8 +80,7 @@ $ ->
 
 
   $('.playlist-cover-uploader').change ->
-    $("#playlist_cover_url").hide()
-    readURL this
+    readURL this, $("#playlist_cover_preview")
 
   #提交前将标签id数组组装成字符串，并传入hidden field
   $("#playlist-submit").on "click", (e) ->

@@ -13,20 +13,20 @@
   </div>
   <div id="track_form">
     <%= hidden_field_tag "track_tag_ids", track.boom_tags.pluck(:id) %>
-    <%= simple_form_for( track, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
+    <%= simple_form_for( track, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
       <div class="row">
-        <div class="col-xs-3 col-sm-4">
-          <div class="text-center" id="cover_preview">
-            <%= f.input :cover, label: "封面(建议大小:500x500, 支持格式:jpg jpeg gif png), 支持拖文件进框上传", input_html: {class: "track-cover-uploader dropzone", id: "track_cover"} %>
-            <% if params[:action] == 'edit' %>
-              <img id="track_cover_url" src=<%= track.cover_url %> />
-            <% end %>
+        <div class="col-sm-6">
+          <div class="text-center">
+            <%= f.input :cover, label: "上传封面", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
+            <div id="track_cover_preview">
+              <%= boombox_default_cover track.cover_url %>
+            </div>
           </div>
         </div>
 
-        <div class="col-xs-9 col-sm-6">
-          <div class="form-group">
-            <%= f.input :file, label: "支持格式:mp3, 拖文件进框上传", input_html: {class: "dropzone track-file-uploader"} %>
+        <div class="col-sm-6">
+          <div>
+            <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader col-sm-offset-3"}, label_html: {class: "col-sm-offset-3"} %>
             <% if track.file_url %>
               <audio src=<%= track.file_url %> id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
               <% track_src = track.file_url %>
@@ -34,7 +34,7 @@
               <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
             <% end %>
             <%= f.hidden_field :duration %>
-            <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题" %>
+            <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
             <%= f.input :artists, label: "艺人", placeholder: "请输入艺人名字" %>
             <%= f.input :is_top, label: "打勾推荐此音乐" %>
 
@@ -46,15 +46,15 @@
                 <span class="btn btn-default"><%= track_tag[0] + "" %></span><button data-tag-id="<%= track_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
               <% end %>
             </div>
-            <div class="form-group">
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), class:"form-control", id: "track_tag_list" %>
+            <div>
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "track_tag_list" %>
               <a class="btn btn-primary" id="track_add_tag">添加选中标签</a>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="form-group text-center">
+      <div class="text-center">
         <%= submit_tag "保存", class: "btn btn-primary", id: "track-submit", data: { disable_with: "loading" } %>
       </div>
     <% end %>
