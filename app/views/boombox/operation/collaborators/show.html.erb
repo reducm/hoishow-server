@@ -3,7 +3,7 @@
 </div>
 
 <div class="row boom_albums">
-  <h3><%= @collaborator.name %></h3>
+  <h3><%= @collaborator.display_name %></h3>
   <% if @collaborator.avatar_url %>
     <p><%= image_tag(@collaborator.avatar_url, size: "50x50") %></p>
   <%else %>
