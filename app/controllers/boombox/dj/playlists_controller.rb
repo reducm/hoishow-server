@@ -27,9 +27,7 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   end
 
   def create
-    @playlist = BoomPlaylist.new(playlist_params)
-    @playlist.creator_id = @current_admin.id
-    @playlist.creator_type = BoomTrack::CREATOR_ADMIN
+    @playlist = current_collaborator.boom_playlists.new(playlist_params)
     @playlist.mode = 0
     if @playlist.save!
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @playlist.tag_for_playlist(tag) }

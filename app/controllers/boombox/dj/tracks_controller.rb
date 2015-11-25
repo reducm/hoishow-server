@@ -27,9 +27,7 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   end
 
   def create
-    @track = BoomTrack.new(track_params)
-    @track.creator_id = @current_admin.id
-    @track.creator_type = BoomTrack::CREATOR_ADMIN
+    @track = current_collaborator.boom_tracks.new(track_params)
     if @track.save!
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @track.tag_for_track(tag) }
       flash[:notice] = '创建音乐成功'

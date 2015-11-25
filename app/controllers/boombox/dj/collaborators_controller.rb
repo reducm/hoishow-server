@@ -23,16 +23,16 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
 
   def update
     @collaborator = Collaborator.find(params[:id])
-    if @collaborator.nickname_changeable?(params[:collaborator][:nickname])
+    if @collaborator.nickname != params[:collaborator][:nickname] && !@collaborator.nickname_changeable?
+      flash[:alert] = '昵称一个月只能修改一次'
+      render action: 'edit'
+    else
       if @collaborator.update(update_params)
-        redirect_to boombox_dj_root_url, notice: '个人资料更新成功。'
+        redirect_to boombox_dj_root_url, notice: '更新成功'
       else
         flash[:alert] = @collaborator.errors.full_messages.to_sentence
         render action: 'edit'
       end
-    else
-      flash[:alert] = '昵称一个月只能改一次' 
-      render action: 'edit'
     end
   end
 
