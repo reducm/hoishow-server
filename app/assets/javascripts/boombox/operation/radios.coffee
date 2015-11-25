@@ -34,8 +34,7 @@ $ ->
 
 
   $('.radio-cover-uploader').change ->
-    $("#radio_cover_url").hide()
-    readURL this
+    readURL this, $("#radio_cover_preview")
 
   #提交前将标签id数组组装成字符串，并传入hidden field
   $("#radio-submit").on "click", (e) ->
