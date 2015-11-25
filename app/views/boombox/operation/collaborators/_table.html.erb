@@ -28,7 +28,7 @@
           <%else %>
             <td>无头像</td>
           <% end %>
-          <td><%= collaborator.name %></td>
+          <td><%= collaborator.display_name %></td>
           <% cache tags = collaborator.boom_tags.pluck(:name) do %>
             <td>
               <% if tags.present? %>

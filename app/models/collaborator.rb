@@ -81,6 +81,10 @@ class Collaborator < ActiveRecord::Base
     followers.count
   end
 
+  def display_name
+    nickname || name
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)
