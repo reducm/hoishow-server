@@ -127,7 +127,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('created_at desc').page(params[:page])
+    @playlists = @user.boom_playlists.order('is_default, created_at desc').page(params[:page])
   end
 
   def comment_list
@@ -229,7 +229,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       else
         return error_respond I18n.t("errors.messages.data_status_error")
       end
-      render json: { result: "success" }
+      render partial: "boombox/v1/tracks/track", locals:{ track: @track, user: @user }
     else
       error_respond I18n.t("errors.messages.track_not_found")
     end
