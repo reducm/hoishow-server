@@ -1,5 +1,6 @@
 user ||= nil
 need_tracks ||= false
+need_track_ids ||= false
 
 json.(playlist, :id, :name)
 json.cover playlist.cover_url || ''
@@ -20,4 +21,8 @@ if need_tracks
   json.tracks do
     json.array! tracks, partial: 'boombox/v1/tracks/track', as: :track, user: user
   end
+end
+
+if need_track_ids
+  json.track_ids playlist.tracks.ids
 end

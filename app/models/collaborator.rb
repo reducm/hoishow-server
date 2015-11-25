@@ -20,14 +20,16 @@ class Collaborator < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
   mount_uploader :avatar, ImageUploader
   after_create :set_removed_and_is_top
+  after_create :set_nickname_updated_at
+  after_save :set_nickname_updated_at_if_nickname_change
   scope :verified, -> { where(verified: true, removed: false).order('is_top') }
 
   validates :identity, presence: {message: "身份不能为空"}
-  validates :nickname, presence: {message: "昵称不能为空"}
+  validates :nickname, presence: {message: "昵称不能为空"}, uniqueness: {message: "昵称已被使用"}
   validates :name, presence: {message: "真实姓名不能为空"}
   validates :sex, presence: {message: "性别不能为空"}
   validates :birth, presence: {message: "生日不能为空"}
-  validates :email, presence: {message: "性别不能为空"}
+  validates :email, presence: {message: "邮箱不能为空"}
   # 艺人简介字数上限100字
   validates :description, length: { maximum: 200}
 
@@ -43,7 +45,7 @@ class Collaborator < ActiveRecord::Base
     female: 1
   }
 
-  mapping do
+  mapping dynamic: 'false' do
     indexes :name, analyzer: 'snowball'
     indexes :boom_tags, type: 'nested' do
       indexes :name, analyzer: 'snowball'
@@ -81,8 +83,32 @@ class Collaborator < ActiveRecord::Base
     followers.count
   end
 
+  # 检查nickname修改时间
+  def nickname_changeable?
+    if self.nickname_updated_at.blank?
+      self.nickname_updated_at = self.created_at
+      self.save(validate: false)
+    else
+      (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
+    end
+  end
+
+  def display_name
+    nickname || name
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)
+  end
+
+  def set_nickname_updated_at
+    nickname_updated_at = Time.now
+  end
+
+  def set_nickname_updated_at_if_nickname_change
+    if self.changed.include?("nickname")
+      set_nickname_updated_at
+    end
   end
 end

@@ -377,7 +377,7 @@ zh-CN:
         content: 内容
         image: 上传图片
         video_title: 视频标题
-        video_url: 上传视频
+        video_url: 第三方视频地址
       boom_banner/subject_type:
         Collaborator: "艺人"
         BoomPlaylist: "Playlist"

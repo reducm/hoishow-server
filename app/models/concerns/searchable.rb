@@ -14,9 +14,7 @@ module Searchable
           query: {
             multi_match: {
               query: query,
-              fuzziness: 'auto',
-              fields: '_all',
-              max_expansions: 10
+              fields: '_all'
             }
           }
         }

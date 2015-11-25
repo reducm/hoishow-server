@@ -4,6 +4,7 @@ class BoomComment < ActiveRecord::Base
 
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
+  CREATOR_ADMIN = 'BoomAdmin'
 
   has_many :boom_user_likes, as: :subject, dependent: :destroy
   #把likers改成users则不用加source: :user
@@ -21,6 +22,18 @@ class BoomComment < ActiveRecord::Base
     as_json(
       only: :content
     )
+  end
+
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.name
+    when CREATOR_ADMIN
+      creator.default_name
+    when CREATOR_USER
+      creator.nickname
+    end
+    rescue nil
   end
 
   def creator
