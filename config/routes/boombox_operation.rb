@@ -27,7 +27,7 @@ module Routes
 
             resources :boom_topics, only: [:index, :show, :destroy] do
               member do
-                post :set_top
+                post :toggle_is_top
               end
             end
 

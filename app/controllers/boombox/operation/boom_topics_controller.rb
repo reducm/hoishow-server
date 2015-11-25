@@ -5,11 +5,16 @@ class Boombox::Operation::BoomTopicsController < Boombox::Operation::Application
   def index
   end
 
-  # 置顶 
-  def set_top 
+  # 置顶／取消置顶
+  def toggle_is_top
     collaborator = @boom_topic.collaborator
-    @boom_topic.update_attributes(is_top: true)
-    redirect_to boombox_operation_collaborator_url(collaborator), notice: '置顶成功'
+    if @boom_topic.is_top?
+      @boom_topic.update_attributes(is_top: false)
+      redirect_to boombox_operation_collaborator_url(collaborator), notice: '取消置顶成功'
+    else
+      @boom_topic.update_attributes(is_top: true)
+      redirect_to boombox_operation_collaborator_url(collaborator), notice: '置顶成功'
+    end
   end
 
   def show

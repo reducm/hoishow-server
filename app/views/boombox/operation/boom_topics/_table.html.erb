@@ -18,16 +18,16 @@
     <% if topics.any? %>
       <% topics.each do |boom_topic| %>
         <tr>
-          <td style="width: 30%"><%= truncate(boom_topic.content, length: 150) %></td>
+          <td style="width: 600px"><%= truncate(boom_topic.content, length: 150) %></td>
           <td><%= boom_topic.likes_count %></td>
           <td><%= boom_topic.comments_count %></td>
           <td><%= get_datetime( boom_topic.created_at ) %></td>
           <td><%= get_datetime( boom_topic.last_reply_time ) %></td>
           <td>
             <% if boom_topic.is_top? %>
-              已置顶
+              <%= link_to "取消置顶", toggle_is_top_boombox_operation_boom_topic_path(boom_topic), method: :post %>
             <% else %>
-              <%= link_to "置顶", set_top_boombox_operation_boom_topic_path(boom_topic), method: :post %>
+              <%= link_to "置顶", toggle_is_top_boombox_operation_boom_topic_path(boom_topic), method: :post %>
             <% end %>
             <%= link_to "查看详情", boombox_operation_boom_topic_path(boom_topic)%>
           </td>
