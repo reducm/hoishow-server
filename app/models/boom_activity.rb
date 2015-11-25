@@ -28,7 +28,7 @@ class BoomActivity < ActiveRecord::Base
 
   paginates_per 10
 
-  mapping do
+  mapping dynamic: 'false' do
     indexes :name, analyzer: 'snowball'
     indexes :boom_tags, type: 'nested' do
       indexes :name, analyzer: 'snowball'

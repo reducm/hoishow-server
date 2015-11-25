@@ -43,7 +43,7 @@ class Collaborator < ActiveRecord::Base
     female: 1
   }
 
-  mapping do
+  mapping dynamic: 'false' do
     indexes :name, analyzer: 'snowball'
     indexes :boom_tags, type: 'nested' do
       indexes :name, analyzer: 'snowball'
