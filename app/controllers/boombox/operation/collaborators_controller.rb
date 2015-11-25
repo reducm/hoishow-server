@@ -124,7 +124,7 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def update
-    if @collaborator.nickname != params[:collaborator][:nickname] && @collaborator.nickname_changeable? == false
+    if @collaborator.nickname != params[:collaborator][:nickname] && @collaborator.nickname_changeable?
       flash[:alert] = '昵称一个月只能修改一次'
       render action: 'edit'
     else

@@ -23,7 +23,7 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
 
   def update
     @collaborator = Collaborator.find(params[:id])
-    if @collaborator.nickname != params[:collaborator][:nickname] && @collaborator.nickname_changeable? == false
+    if @collaborator.nickname != params[:collaborator][:nickname] && !@collaborator.nickname_changeable?
       flash[:alert] = '昵称一个月只能修改一次'
       render action: 'edit'
     else
