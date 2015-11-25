@@ -29,7 +29,7 @@ class BoomComment < ActiveRecord::Base
     when CREATOR_COLLABORATOR
       creator.name
     when CREATOR_ADMIN
-      creator.name
+      creator.default_name
     when CREATOR_USER
       creator.nickname
     end
