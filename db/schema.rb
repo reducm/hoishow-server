@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151123133921) do
+ActiveRecord::Schema.define(version: 20151125064359) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -303,10 +303,10 @@ ActiveRecord::Schema.define(version: 20151123133921) do
     t.string   "subject_type",    limit: 255
     t.integer  "subject_id",      limit: 4
     t.text     "content",         limit: 65535
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
     t.integer  "collaborator_id", limit: 4
-    t.boolean  "is_top",          limit: 1
+    t.boolean  "is_top",          limit: 1,     default: false
     t.string   "image",           limit: 255
     t.string   "video_title",     limit: 255
     t.string   "video_url",       limit: 255
@@ -404,13 +404,14 @@ ActiveRecord::Schema.define(version: 20151123133921) do
     t.datetime "created_at",                                              null: false
     t.datetime "updated_at",                                              null: false
     t.boolean  "verified",                  limit: 1,     default: false
-    t.boolean  "is_top",                    limit: 1
+    t.boolean  "is_top",                    limit: 1,     default: false
     t.string   "avatar",                    limit: 255
     t.integer  "identity",                  limit: 4
     t.string   "nickname",                  limit: 255
     t.integer  "sex",                       limit: 4
     t.datetime "birth"
     t.integer  "boom_admin_id",             limit: 4
+    t.datetime "nickname_updated_at",                                     null: false
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree

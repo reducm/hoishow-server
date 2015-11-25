@@ -18,8 +18,8 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
     @collaborators = collaborators.order(created_at: :desc).page(params[:page]).per(params[:per])
 
     respond_to do |format|
-     format.html
-     format.js
+      format.html
+      format.js
     end
   end
 
@@ -124,23 +124,28 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def update
-    if nickname_changeable?(@collaborator, params[:collaborator][:nickname])
+    if @collaborator.nickname != params[:collaborator][:nickname] && @collaborator.nickname_changeable? == false
+      flash[:alert] = '昵称一个月只能修改一次'
+      render action: 'edit'
+    else
       if @collaborator.update(collaborator_params)
-        redirect_to boombox_operation_collaborator_url(@collaborator), notice: '艺人更新成功。'
+        redirect_to boombox_operation_collaborator_url(@collaborator), notice: '更新成功'
       else
         flash[:alert] = @collaborator.errors.full_messages.to_sentence
         render action: 'edit'
       end
-    else
-      flash[:alert] = '昵称一个月只能改一次' 
-      render action: 'edit'
     end
   end
 
-  # 推荐 
-  def set_top 
-    @collaborator.update_attributes(is_top: true)
-    redirect_to boombox_operation_collaborators_url, notice: '推荐成功'
+  # 推荐／取消推荐
+  def toggle_is_top
+    if @collaborator.is_top?
+      @collaborator.update_attributes(is_top: false)
+      redirect_to boombox_operation_collaborators_url, notice: '取消推荐成功'
+    else
+      @collaborator.update_attributes(is_top: true)
+      redirect_to boombox_operation_collaborators_url, notice: '推荐成功'
+    end
   end
 
   # 通过审核

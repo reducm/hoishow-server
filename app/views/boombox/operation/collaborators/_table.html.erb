@@ -44,9 +44,9 @@
           <td>
             <%= link_to "查看详情", boombox_operation_collaborator_path(collaborator)%>
             <% if collaborator.is_top? %>
-              已推荐
+              <%= link_to "取消推荐", toggle_is_top_boombox_operation_collaborator_path(collaborator), method: :post %>
             <% else %>
-              <%= link_to "推荐", set_top_boombox_operation_collaborator_path(collaborator), method: :post %>
+              <%= link_to "推荐", toggle_is_top_boombox_operation_collaborator_path(collaborator), method: :post %>
             <% end %>
           </td>
         </tr>

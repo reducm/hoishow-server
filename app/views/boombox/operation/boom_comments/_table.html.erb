@@ -19,8 +19,8 @@
       <% if comments.any? %>
         <% comments.each do |comment| %>
           <tr>
-            <td><%= comment.creator.name %></td>
-            <td style="width: 30%"><%= truncate(comment.content, length: 150) %></td>
+            <td><%= comment.creator_name %></td>
+            <td style="width: 600px"><%= truncate(comment.content, length: 150) %></td>
             <td><%= get_datetime( comment.created_at ) %></td>
             <td>
               <% if comment.is_hidden? %>
