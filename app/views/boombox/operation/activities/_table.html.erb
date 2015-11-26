@@ -43,7 +43,7 @@
               <% end %>
             </td>
             <td>
-              <% collaborators = activity.collaborators.pluck(:name)%>
+              <% collaborators = activity.collaborators.pluck(:nickname)%>
               <% if collaborators.present? %>
                 <%= truncate(collaborators.join(", "), length: 50) %>
               <% end %>

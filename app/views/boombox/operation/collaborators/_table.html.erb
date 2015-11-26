@@ -43,6 +43,7 @@
           <td><%= collaborator.is_top_cn %></td>
           <td>
             <%= link_to "查看详情", boombox_operation_collaborator_path(collaborator)%>
+            <%= link_to '编辑', edit_boombox_operation_collaborator_path(collaborator) %>
             <% if collaborator.is_top? %>
               <%= link_to "取消推荐", toggle_is_top_boombox_operation_collaborator_path(collaborator), method: :post %>
             <% else %>

@@ -27,7 +27,7 @@
               <%= link_to subject.name, boombox_subject_redirect_url(banner.subject_type, banner.subject_id) %>
             <% end %>
           </td>
-          <td><%= image_tag(banner.poster_url, class: "preview-pic", size: "50x50") if banner.poster_url %></td>
+          <td><%= image_tag(banner.poster_url, class: "preview-pic", size: "80x45") if banner.poster_url %></td>
           <td><%= get_datetime( banner.updated_at ) %></td>
           <td>
             <span class="handle">[拉我排序] </span>
