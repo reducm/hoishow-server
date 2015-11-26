@@ -6,9 +6,7 @@ generate_options = (subjects = [])->
 
 $ ->
   $('#boom_banner_poster').change ->
-    if $('#boom_banner_poster_exist').length > 0
-      $('#boom_banner_poster_exist').hide()
-    readURL this
+    readURL this, $("#banner_cover_preview")
 
   if $('#boom_banner_form').length > 0
     data = $("#boom_banner_subject_data").data()

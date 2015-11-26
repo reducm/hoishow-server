@@ -1,35 +1,33 @@
 <%# encoding: utf-8 %>
 
 <div class="row">
-  <h1 class="col-md-offset-2">新建Banner</h1>
-  <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
+  <h1 class="text-center">新建Banner</h1>
+      <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
     <div class="row">
-      <div class="form-group">
-        <%= f.label :subject_type, '类型', class: 'col-md-2 control-label' %>
-        <div class="col-md-2">
-          <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+      <div class="col-sm-6">
+        <div class="text-center">
+          <%= f.input :poster, label:"海报 (建议大小:1280x720, 类型:jpg)", input_html: {class: "boom_banner_poster_uploader col-md-offset-4"}, label_html: {class: "col-md-offset-1"} %>
+          <div id="banner_cover_preview">
+            <%= boombox_default_cover banner.poster_url %>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <%= f.label :subject_id, '跳转对象', class: 'col-md-2 control-label' %>
-        <div class="col-md-2">
-          <%= f.select :subject_id, [[banner.subject_name, banner.subject_id]], {}, class: 'form-control' %>
+      <div class="col-sm-6 banner_info">
+        <div class="form-group">
+          <%= f.label :subject_type, '类型', class: 'col-md-2 control-label' %>
+          <div class="col-md-2">
+            <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <%= f.label :subject_id, '跳转对象', class: 'col-md-2 control-label' %>
+          <div class="col-md-2">
+            <%= f.select :subject_id, [[banner.subject_name, banner.subject_id]], {}, class: 'form-control' %>
+          </div>
         </div>
       </div>
     </div>
-    <legend></legend>
-    <div class="row">
-        <%= f.input :poster, label:"海报 (建议大小:1280x720, 类型:jpg)", input_html: {class: "boom_banner_poster_uploader col-md-offset-1"}, label_html: {class: "col-md-offset-1"} %>
-      <div id="boom_banner_poster_exist">
-        <% if banner.poster_url %>
-          <div class="col-md-offset-1">当前海报</div>
-          <%= image_tag(banner.poster_url, width: "340", class: "col-md-offset-1") %>
-        <% else %>
-          <label class="col-md-offset-1">没有海报</label>
-        <% end %>
-      </div>
-    </div>
-    <div class="row col-md-offset-1">
+    <div class="row text-center">
       <%= submit_tag "保存", class: "btn btn-primary", id: "boom_banner_submit", data: { disable_with: "loading" } %>
     </div>
   <% end %>
