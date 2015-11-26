@@ -33,8 +33,7 @@ $ ->
     tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
 
   $('.track-cover-uploader').change ->
-    $("#track_cover_url").hide()
-    readURL this
+    readURL this, $("#track_cover_preview")
 
   $('.track-file-uploader').change ->
     if this.files[0]

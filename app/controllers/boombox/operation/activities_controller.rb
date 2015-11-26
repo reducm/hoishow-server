@@ -39,7 +39,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
 
   def create
     @activity = BoomActivity.new(activity_params)
-    @activity.mode = 1
+    @activity.mode = "activity"
     if @activity.save!
       #关联tag
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @activity.tag_for_activity(tag) }
