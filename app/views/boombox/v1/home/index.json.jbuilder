@@ -4,6 +4,10 @@ json.banners do
   json.array! @banners do |banner|
     json.(banner, :id, :subject_type, :subject_id)
     json.poster banner.poster_url || ''
+    if banner.subject && banner.subject_type == 'BoomActivity' && banner.subject.activity?
+      json.title banner.subject_name
+      json.description description_boombox_v1_activity_url(banner.subject)
+    end
   end
 end
 
