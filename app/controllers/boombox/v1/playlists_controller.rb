@@ -21,6 +21,6 @@ class Boombox::V1::PlaylistsController < Boombox::V1::ApplicationController
               elsif @playlist.playlist?
                 @playlist.tracks.order('playlist_track_relations.created_at').page(params[:page])
               end
-    render partial: 'playlist', locals: {playlist: @playlist, tracks: @tracks, need_tracks: true}
+    render partial: 'playlist', locals: {playlist: @playlist, user: @user, tracks: @tracks, need_tracks: true}
   end
 end

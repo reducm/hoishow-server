@@ -15,10 +15,10 @@
             <div style="text-align: center;">
               <% if current_collaborator.avatar_url.present? %> 
                 <%= image_tag current_collaborator.avatar_url, size: '80x80' %>
-                <figcaption style="color: white;">
-                  <%= current_collaborator.name %>
-                </figcaption>
               <% end%>
+              <figcaption style="color: white;">
+                <%= current_collaborator.name %>
+              </figcaption>
             </div>
             <%= link_to boombox_dj_signout_path, method: :delete do %>
               <i>退出登录</i>
