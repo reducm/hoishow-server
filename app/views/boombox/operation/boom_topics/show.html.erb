@@ -1,3 +1,6 @@
+<%# encoding: utf-8 %>
+<% collaborator = @boom_topic.collaborator %>
+<legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(collaborator) %>/动态详情</legend>
 <div class="row">
   <h3 class="pull-left">动态详情</h3>
   <%= link_to '删除动态', boombox_operation_boom_topic_path, method: :delete, class: 'btn btn-danger', data: {confirm: '确定吗？'} %>
