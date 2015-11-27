@@ -5,6 +5,7 @@
   - default
   - elasticsearch
   - convert_audio
+  - umeng_msg
 staging:
   :concurrency: 25
 production:
