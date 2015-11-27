@@ -37,7 +37,13 @@
       <% playlists.each do|playlist| %>
         <tr>
           <td><%= playlist.id %></td>
-          <td><%= image_tag(playlist.cover_url, size: "90x60") if playlist.cover_url %></td>
+          <td>
+            <% if playlist.cover_url %>
+              <%= image_tag(playlist.cover_url, size: "90x60") %>
+            <% else %>
+              <%= image_tag('/boombox_default_cover.png', size: "90x60") %>
+            <% end %>
+          </td>
           <td><%= playlist.name %></td>
           <td><%= playlist.tracks.count %></td>
           <td>

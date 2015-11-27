@@ -27,7 +27,13 @@
               <%= link_to banner.subject_type == "Collaborator" ? subject.nickname : subject.name, boombox_subject_redirect_url(banner.subject_type, banner.subject_id) %>
             <% end %>
           </td>
-          <td><%= image_tag(banner.poster_url, class: "preview-pic", size: "80x45") if banner.poster_url %></td>
+          <td>
+            <% if banner.poster_url %>
+              <%= image_tag(banner.poster_url, class: "preview-pic", size: "80x45")%>
+            <% else %>
+              <%= image_tag('/boombox_default_cover.png', size: "80x45") %>
+            <% end %>
+          </td>
           <td><%= get_datetime( banner.updated_at ) %></td>
           <td>
             <span class="handle">[拉我排序] </span>

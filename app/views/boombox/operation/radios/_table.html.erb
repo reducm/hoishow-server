@@ -33,7 +33,13 @@
         <% radios.each do|radio| %>
           <tr>
             <td><%= radio.id %></td>
-            <td><%= image_tag(radio.cover_url, size: "50x50") if radio.cover_url %></td>
+            <td>
+              <% if radio.cover_url %>
+                <%= image_tag(radio.cover_url, size: "50x50") %>
+              <% else %>
+                <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
+              <% end %>
+            </td>
             <td><%= radio.name %></td>
             <td><%= radio.tracks.count %></td>
             <% cache tags = radio.boom_tags.pluck(:name) do %>
