@@ -54,7 +54,7 @@
       <% else %>
         <p>没有海报</p>
       <% end %>
-      <%= f.input :cover, label: "（请上传 720x480 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+      <%= f.input :cover, label: "（请上传 960x640 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
     </div>
     <%= hidden_field_tag "collaborator_tag_ids", collaborator.boom_tags.pluck(:id) %>
     <div class="col-md-5 tag-area">

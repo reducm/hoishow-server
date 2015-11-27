@@ -26,7 +26,9 @@
           <% if collaborator.avatar_url %>
             <td><%= image_tag(collaborator.avatar_url, size: "50x50") %></td>
           <%else %>
-            <td>无头像</td>
+            <td>
+              <%= image_tag('/boombox_default_avatar.png', size: "50x50") %>
+            </td>
           <% end %>
           <td><%= collaborator.display_name %></td>
           <% cache tags = collaborator.boom_tags.pluck(:name) do %>
