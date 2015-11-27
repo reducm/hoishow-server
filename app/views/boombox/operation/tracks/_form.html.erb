@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 <div class="nav">
-  <div class="text-center">
+  <div class="col-md-offset-5">
     <% if params[:action] == 'new' %>
       <% form_url = "/boombox/operation/tracks" %>
       <% form_method = "POST" %>
@@ -15,9 +15,9 @@
     <%= hidden_field_tag "track_tag_ids", track.boom_tags.pluck(:id) %>
     <%= simple_form_for( track, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-5">
           <div class="text-center">
-            <%= f.input :cover, label: "上传封面", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
+            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
             <div id="track_cover_preview">
               <%= boombox_default_avatar track.cover_url %>
             </div>
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div class="text-center">
+      <div class="col-md-offset-5">
         <%= submit_tag "保存", class: "btn btn-primary", id: "track-submit", data: { disable_with: "loading" } %>
       </div>
     <% end %>
