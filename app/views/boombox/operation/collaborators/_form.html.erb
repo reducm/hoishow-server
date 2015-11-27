@@ -47,14 +47,29 @@
   </div>
 
   <div class="row">
-    <div class="col-md-10 col-md-offset-1 poster-area">
+    <div class="col-md-5 col-md-offset-1 poster-area">
       <legend class="legend-without-border">海报</legend>
       <% if collaborator.cover_url %>
-        <%= image_tag(collaborator.cover_url, size: "160x90") %>
+        <%= image_tag(collaborator.cover_url, size: "240x160") %>
       <% else %>
         <p>没有海报</p>
       <% end %>
-      <%= f.input :cover, label: "（请上传 1280x720 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+      <%= f.input :cover, label: "（请上传 960x640 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+    </div>
+    <%= hidden_field_tag "collaborator_tag_ids", collaborator.boom_tags.pluck(:id) %>
+    <div class="col-md-5 tag-area">
+      <legend class="legend-without-border">标签</legend>
+      <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
+      <div>
+        <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "collaborator_tag_list" %>
+        <a class="btn btn-primary" id="collaborator_add_tag">添加选中标签</a>
+      </div>
+      <div id="collaborator_delete_tag">
+        <% tags = collaborator.boom_tags.pluck(:name, :id) %>
+        <% tags.each do |collaborator_tag| %>
+          <span class="btn btn-default"><%= collaborator_tag[0] + "" %></span><button data-tag-id="<%= collaborator_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
+        <% end %>
+      </div>
     </div>
   </div>
 

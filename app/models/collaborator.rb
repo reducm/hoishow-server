@@ -97,6 +97,10 @@ class Collaborator < ActiveRecord::Base
     nickname || name
   end
 
+  def tag_for_collaborator(tag)
+    tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)

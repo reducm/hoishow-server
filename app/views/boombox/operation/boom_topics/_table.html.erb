@@ -18,7 +18,7 @@
     <% if topics.any? %>
       <% topics.each do |boom_topic| %>
         <tr>
-          <td style="width: 600px"><%= truncate(boom_topic.content, length: 150) %></td>
+          <td style="width: 600px"><%= truncate(boom_topic.content, length: 80) %></td>
           <td><%= boom_topic.likes_count %></td>
           <td><%= boom_topic.comments_count %></td>
           <td><%= get_datetime( boom_topic.created_at ) %></td>
