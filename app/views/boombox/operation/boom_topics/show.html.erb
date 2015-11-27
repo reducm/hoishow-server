@@ -13,8 +13,14 @@
     <thead>
     <tbody>
       <tr>
-        <td><%= @boom_topic.content %></td>
-        <td>topic主图</td>
+        <td><%= truncate(@boom_topic.content, length: 80) %></td>
+        <td>
+          <% if @boom_topic.image_url%>
+            <%= image_tag(@boom_topic.image_url, size: "200x200") %>
+          <% else %>
+            没有图片
+          <% end %>
+        </td>
       </tr>
     </tbody>
   </table>
