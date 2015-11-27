@@ -42,6 +42,14 @@ class BoomActivity < ActiveRecord::Base
     )
   end
 
+  def collaborators_display_name
+    array_display_name = []
+    collaborators.each do |collaborator|
+      array_display_name << collaborator.display_name
+    end
+    array_display_name
+  end
+
   def location_name
     boom_location.name if boom_location
   end
