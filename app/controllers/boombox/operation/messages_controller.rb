@@ -10,7 +10,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   end
 
   def create
-    @message = BoomMessage.new(message_params)
+    @message = @current_admin.boom_messages.new(message_params)
     @message.subject_type = get_subject_type(params[:boom_message][:subject_type])
     if @message.save
       flash[:notice] = "消息创建成功"
@@ -33,9 +33,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
     case type
     when 'Playlist'
       'BoomPlaylist'
-    when 'Show'
-      'BoomActivity'
-    when 'Activity'
+    when 'Show', 'Activity'
       'BoomActivity'
     else
       type
