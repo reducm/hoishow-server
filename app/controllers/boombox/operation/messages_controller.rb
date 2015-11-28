@@ -22,6 +22,11 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   end
 
   def push_again
+    @message = BoomMessage.find params[:id]
+    @message.set_message_tasks
+
+    flash[:notice] = '重发消息成功'
+    redirect_to boombox_operation_messages_url
   end
 
   private
