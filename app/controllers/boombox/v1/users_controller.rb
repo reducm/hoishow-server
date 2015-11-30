@@ -249,6 +249,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     end
   end
 
+  def check_tracks_status
+    tracks = BoomTrack.where(id: params[:track_ids])
+
+    render json: tracks.map{|track| {id: track.id, is_liked: track.is_liked?(@user)}}
+  end
+
   protected
   def find_or_create_code(mobile)
     code = Rails.cache.read(cache_key(mobile))
