@@ -18,6 +18,14 @@ class BoomComment < ActiveRecord::Base
 
   paginates_per 10
 
+  def send_reply_push
+    BoomMessage.create(subject_type: BoomMessage::SUBJECT_COMMENT, subject_id: self.id, targets: 'specific', send_type: 'comment_replay', title: '您有新的回复', content: self.content)
+  end
+
+  def parent_target_id
+    BoomComment.find_by_id(parent_id).creator_id rescue nil
+  end
+
   def as_indexed_json(options={})
     as_json(
       only: :content

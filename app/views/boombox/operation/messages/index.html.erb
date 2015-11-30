@@ -16,6 +16,7 @@
         <th>消息内容</th>
         <th>设定时间</th>
         <th>推送时间</th>
+        <th>推送状态</th>
         <th>推送数量</th>
         <th>操作</th>
       </tr>
@@ -27,9 +28,10 @@
           <td><%= message.targets_cn %></td>
           <td><%= link_to message.subject_name, boombox_subject_redirect_url(message.subject_type, message.subject_id) %></td>
           <td><%= message.title %></td>
-          <td><%= message.content %></td>
+          <td><%= truncate message.content, length: 80 %></td>
           <td><%= get_datetime(message.start_time) %></td>
           <td><%= get_datetime(message.push_time) %></td>
+          <td><%= message.status_cn %></td>
           <td><%= message.total_count %></td>
           <td>
             <%= link_to '再次推送', push_again_boombox_operation_message_path(message), method: 'post' if message.pushed? %>

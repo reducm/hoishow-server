@@ -136,7 +136,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def message_list
-    @messages = @user.boom_messages.page(params[:page])
+    @messages = @user.boom_messages.manual.page(params[:page])
   end
 
   def follow_subject
@@ -154,6 +154,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       if params[:parent_id]
         options.merge!(parent_id: params[:parent_id])
         @comment = BoomComment.create(options)
+        @comment.send_reply_push
       else
         @comment = BoomComment.create(options)
       end
