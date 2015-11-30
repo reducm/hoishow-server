@@ -19,24 +19,38 @@ class UmengPushWorker
 
   def do_push(push_task_id)
     task = MessageTask.find(push_task_id)
+    message = task.boom_message
+
     push_params = {
       title: task.title,
       content: task.content,
       subject_type: task.subject_type,
       subject_id: task.subject_id,
-      start_time: (task.start_time.present? ? task.start_time.strftime("%Y-%m-%d %H:%M:%S") : ""),
       file_id: task.file_id
     }
 
+    if message.message_tasks.all? { |task| task.status.nil?  }
+      push_params = {
+        start_time: (task.start_time.present? ? task.start_time.strftime("%Y-%m-%d %H:%M:%S") : ""),
+      }.merge(push_params)
+    end
+
+    if message.subject_type == 'BoomActivity' && message.subject.activity?
+      push_params = {
+        description: "/api/boombox/v1/activities/#{message.subject_id}/description",
+        activity_name: message.subject_name
+      }.merge(push_params)
+    end
+
     if push_result = UmengMsg::Service.push(task.platform, push_params)
       task.update(task_id: push_result["task_id"])
-      if task.boom_message.status < 3
-        task.boom_message.update(status: 3)
+      if message.status.to_i < 3
+        message.update(status: 3)
       end
     else
       # 发送失败
       task.update(status: 3)
-      task.boom_message.update(status: 4)
+      message.update(status: 4)
     end
 
   end
@@ -46,9 +60,7 @@ class UmengPushWorker
     if check_result = UmengMsg::Service.check(task.platform, task.task_id)
       task.update(
         status: check_result["status"],
-        total_count: check_result["total_count"],
-        sent_count: check_result["sent_count"],
-        open_count: check_result["open_count"]
+        total_count: check_result["total_count"]
       )
     end
   end

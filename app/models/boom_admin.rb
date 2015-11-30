@@ -1,6 +1,8 @@
 #encoding: UTF-8
 class BoomAdmin < ActiveRecord::Base
   include ModelAttrI18n
+
+  has_many :boom_messages
   validates :admin_type, presence: true
   validates :name, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true, if: :dj?

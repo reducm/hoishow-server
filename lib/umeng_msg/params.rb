@@ -2,16 +2,19 @@
 module UmengMsg
   module Params
 
-    def self.push_params(platform, title: "", content: "", file_id: "", subject_type: "", subject_id: "", targets: "", start_time: "")
+    def self.push_params(platform, title: "", content: "", file_id: "", subject_type: "", subject_id: "", targets: "", start_time: "", description: "", activity_name: "")
       params = {
         appkey:          UmengMsg.appkey(platform),
         timestamp:       Time.now.to_i.to_s,
-        type:            'customizedcast',
+        type:            "customizedcast",
         alias_type:      "user_id",
         file_id:         file_id,
         production_mode: UmengMessageSetting["production_mode"],
         description:     title,
-        policy:          { start_time: start_time }
+        policy:          {
+                            start_time: start_time,
+                            out_biz_no: file_id
+                         }
       }
 
       # 平台参数
@@ -21,7 +24,8 @@ module UmengMsg
             aps:      { alert: content },
             subject_type: subject_type,
             subject_id: subject_id,
-            title:    title
+            title:    activity_name,
+            description: description
           }
         }.merge(params)
       else
@@ -36,7 +40,9 @@ module UmengMsg
             },
             extra: {
               subject_type:   subject_type,
-              subject_id:     subject_id
+              subject_id:     subject_id,
+              title:    activity_name,
+              description: description
             }
           }
         }.merge(params)

@@ -2,7 +2,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   before_filter :check_login!
 
   def index
-    @messages = BoomMessage.page(params[:page])
+    @messages = BoomMessage.manual.page(params[:page])
   end
 
   def new
@@ -22,6 +22,11 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   end
 
   def push_again
+    @message = BoomMessage.find params[:id]
+    @message.set_message_tasks
+
+    flash[:notice] = '重发消息成功'
+    redirect_to boombox_operation_messages_url
   end
 
   private
@@ -33,9 +38,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
     case type
     when 'Playlist'
       'BoomPlaylist'
-    when 'Show'
-      'BoomActivity'
-    when 'Activity'
+    when 'Show', 'Activity'
       'BoomActivity'
     else
       type
