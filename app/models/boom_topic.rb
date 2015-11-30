@@ -72,7 +72,7 @@ class BoomTopic < ActiveRecord::Base
     when CREATOR_ADMIN
       creator.default_name
     when CREATOR_USER
-      creator.nickname
+      creator.show_name
     end rescue nil
   end
 

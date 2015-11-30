@@ -99,6 +99,8 @@ zh-CN:
   errors:
     format: "%{attribute}%{message}"
     messages:
+      track_is_not_liked: 音乐未收藏
+      track_already_liked: 音乐已收藏
       data_status_error: 数据状态错误
       playlist_name_can_not_blank: 播放列表名称不能为空
       playlist_not_found: 找不到播放列表

@@ -12,10 +12,10 @@ class User < ActiveRecord::Base
   has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'
 
   #----------------boombox
-  has_many :user_follow_collaborators
+  has_many :user_follow_collaborators, dependent: :destroy
   has_many :follow_collaborators, through: :user_follow_collaborators, source: :collaborator
 
-  has_many :user_follow_playlists
+  has_many :user_follow_playlists, dependent: :destroy
   has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
 
   has_many :boom_user_likes, dependent: :destroy
@@ -26,11 +26,11 @@ class User < ActiveRecord::Base
 
   has_many :boom_comments, -> { where creator_type: BoomComment::CREATOR_USER }, foreign_key: "creator_id"
 
-  has_many :user_track_relations
+  has_many :user_track_relations, dependent: :destroy
 
   has_many :boom_feedbacks
 
-  has_many :boom_user_message_relations
+  has_many :boom_user_message_relations, dependent: :destroy
   has_many :boom_messages, through: :boom_user_message_relations, source: :boom_message
   #----------------boombox
 

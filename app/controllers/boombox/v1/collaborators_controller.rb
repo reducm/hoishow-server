@@ -15,13 +15,21 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def timeline
-    @topics = @collaborator.boom_topics.page(params[:page])
+    @topics = if params[:last]
+                @collaborator.boom_topics.where('id < ?', params[:last]).first(10)
+              else
+                @collaborator.boom_topics.first(10)
+              end
   end
 
   def comments
     @topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
     if @topic
-      @comments = @topic.boom_comments.page(params[:page])
+      @comments = if params[:last]
+                    @topic.comments.where('id < ?', params[:last]).first(10)
+                  else
+                    @topic.comments.first(10)
+                  end
     else
       error_respond('topic not found')
     end
