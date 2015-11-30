@@ -73,8 +73,7 @@ class BoomTopic < ActiveRecord::Base
       creator.default_name
     when CREATOR_USER
       creator.nickname
-    end
-    rescue nil
+    end rescue nil
   end
 
   private

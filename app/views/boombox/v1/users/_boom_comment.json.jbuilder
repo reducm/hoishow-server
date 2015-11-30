@@ -1,4 +1,6 @@
 json.id comment.id
+json.topic_id comment.boom_topic_id
+json.collaborator_id comment.boom_topic.collaborator_id
 json.content comment.content
 json.created_by comment.created_by
 json.created_at comment.created_at.to_ms rescue ''
