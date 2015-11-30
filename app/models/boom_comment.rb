@@ -69,7 +69,7 @@ class BoomComment < ActiveRecord::Base
   end
 
   def created_by
-    creator.name rescue nil
+    creator_name
   end
 
   def is_liked(user_id)
