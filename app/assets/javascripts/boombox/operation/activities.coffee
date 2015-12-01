@@ -20,7 +20,7 @@ init_editor = ()->
   image = $("<a href='#' class='qe-image'><span class='fa fa-picture-o'></span><input id='image_uploader' type='file' name='file' accept='image/*'/></a>")
   image.on 'click', ()->
     $('#image_uploader').fileupload
-      url: "/operation/shows/upload"
+      url: "/boombox/operation/activities/upload_image"
       dataType: "json"
       add: (e, data) ->
         types = /(\.|\/)(gif|jpe?g|png)$/i
@@ -32,8 +32,7 @@ init_editor = ()->
           alert("#{file.name}不是gif, jpeg, 或png图像文件")
       submit: (e, data) ->
         data.formData = {
-          file: $('#image_uploader').val(),
-          file_type: 'image'
+          file: $('#image_uploader').val()
         }
       done: (e, data) ->
         $img = "<p><img src='#{data.result.file_path}' /><br /></p>"
