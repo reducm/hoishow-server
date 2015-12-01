@@ -16,7 +16,7 @@ class AudioUploader < CarrierWave::Uploader::Base
   self.upyun_bucket_domain = FileUpyunSetting['upyun_bucket_domain']
 
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "uploads/#{model.class.to_s.underscore}/#{mounted_as}"
   end
 
   def md5
