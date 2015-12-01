@@ -132,11 +132,19 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def comment_list
     user_comment_ids = BoomComment.where(creator_type: BoomComment::CREATOR_USER, creator_id: @user.id).pluck(:id)
-    @comments = BoomComment.where("parent_id in (?)", user_comment_ids).page(params[:page])
+    @comments = if params[:last]
+                  BoomComment.where("parent_id in (?) and id < ?", user_comment_ids, params[:last]).first(10)
+                else
+                  BoomComment.where("parent_id in (?)", user_comment_ids).first(10)
+                end
   end
 
   def message_list
-    @messages = @user.boom_messages.manual.page(params[:page])
+    @messages = if params[:last]
+                  @user.boom_messages.manual.where("id < ?", params[:last]).first(10)
+                else
+                  @user.boom_messages.manual.first(10)
+                end
   end
 
   def follow_subject
@@ -223,9 +231,14 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     @track = BoomTrack.find_by_id(params[:track_id])
     @like_playlist = @user.boom_playlists.default
     if @track && @like_playlist
-      if params[:type] == 'add' && !@track.is_liked?(@user)
+      case
+      when params[:type] == 'add' && @track.is_liked?(@user)
+        error_respond I18n.t("errors.messages.track_already_liked")
+      when params[:type] == 'remove' && !@track.is_liked?(@user)
+        error_respond I18n.t("errors.messages.track_is_not_liked")
+      when params[:type] == 'add' && !@track.is_liked?(@user)
         @like_playlist.tracks << @track
-      elsif params[:type] == 'remove' && @track.is_liked?(@user)
+      when params[:type] == 'remove' && @track.is_liked?(@user)
         @like_playlist.playlist_track_relations.where(boom_track_id: @track.id).first.destroy
       else
         return error_respond I18n.t("errors.messages.data_status_error")
@@ -234,6 +247,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     else
       error_respond I18n.t("errors.messages.track_not_found")
     end
+  end
+
+  def check_tracks_status
+    tracks = BoomTrack.where(id: params[:track_ids].split(','))
+
+    render json: tracks.map{|track| {id: track.id, is_liked: track.is_liked?(@user)}}
   end
 
   protected

@@ -31,6 +31,7 @@ module Routes
                   post "add_or_remove_playlist"
                   post "listened"
                   post "like_track"
+                  post "check_tracks_status"
                 end
               end
               resources :collaborators, only: [:index, :show] do

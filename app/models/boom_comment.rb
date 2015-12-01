@@ -35,13 +35,12 @@ class BoomComment < ActiveRecord::Base
   def creator_name
     case creator_type
     when CREATOR_COLLABORATOR
-      creator.name
+      creator.display_name
     when CREATOR_ADMIN
       creator.default_name
     when CREATOR_USER
-      creator.nickname
-    end
-    rescue nil
+      creator.show_name
+    end rescue nil
   end
 
   def creator
@@ -60,8 +59,7 @@ class BoomComment < ActiveRecord::Base
       creator.cover_url
     when CREATOR_USER
       creator.avatar_url
-    end
-    rescue nil
+    end rescue nil
   end
 
   def likes_count
@@ -69,7 +67,7 @@ class BoomComment < ActiveRecord::Base
   end
 
   def created_by
-    creator.name rescue nil
+    creator_name
   end
 
   def is_liked(user_id)
