@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Boombox::Operation::ActivitiesController < Boombox::Operation::ApplicationController
   before_filter :check_login!
-  before_filter :get_activity, except: [:search, :index, :new, :create, :get_video_url]
+  before_filter :get_activity, except: [:search, :index, :new, :create, :upload_image]
 
   def index
     params[:activities_page] ||= 1
@@ -106,6 +106,11 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     @activity.update(activity_params)
 
     render json: {success: true, cover_path: @activity.cover_url}
+  end
+
+  def upload_image
+    image = SimditorImage.create(image: params[:file])
+    render json: {file_path: image.image_url}
   end
 
   private
