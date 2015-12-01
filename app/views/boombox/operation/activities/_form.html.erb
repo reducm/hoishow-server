@@ -1,4 +1,5 @@
 <%# encoding: utf-8 %>
+<legend><%= link_to "活动列表", boombox_operation_activities_path %>/<%= params[:action] == "new" ? "新建活动" : "编辑活动"%></legend>
 <div class="nav">
   <div class="text-center">
     <% if params[:action] == 'new' %>

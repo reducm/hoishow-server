@@ -1,4 +1,6 @@
 <%# encoding: utf-8 %>
+
+<legend><%= link_to "音乐列表", boombox_operation_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 <div class="nav">
   <div class="col-md-offset-5">
     <% if params[:action] == 'new' %>
