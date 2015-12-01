@@ -77,8 +77,8 @@ ActiveRecord::Schema.define(version: 20151127072438) do
     t.string   "name",        limit: 255
     t.integer  "seats_count", limit: 4
     t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.string   "sort_by",     limit: 255
     t.text     "seats_info",  limit: 16777215
     t.text     "coordinates", limit: 65535
@@ -673,13 +673,13 @@ ActiveRecord::Schema.define(version: 20151127072438) do
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
-    t.decimal  "price",                   precision: 10, scale: 2
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
-    t.boolean  "is_sold_out", limit: 1,                            default: false
-    t.integer  "seats_count", limit: 4,                            default: 0
+    t.decimal  "price",                   precision: 6, scale: 2
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+    t.boolean  "is_sold_out", limit: 1,                           default: false
+    t.integer  "seats_count", limit: 4,                           default: 0
     t.string   "channels",    limit: 255
-    t.integer  "left_seats",  limit: 4,                            default: 0
+    t.integer  "left_seats",  limit: 4,                           default: 0
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree

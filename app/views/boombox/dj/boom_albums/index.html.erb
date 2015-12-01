@@ -1,16 +1,21 @@
 <div class="row boom-albums-list">
   <h3>艺人相册</h3>
   <%= simple_form_for([:boombox, :dj, @boom_album], html: { class: 'dropzone upload-boom-album', id: 'image-dz-form', multipart: :true }) do |f| %> 
-    <%= f.hidden_field :collaborator_id, value: @collaborator.id %>
+    <%= f.hidden_field :collaborator_id, value: current_collaborator.id %>
   <% end %>
 
-  <div class="gallery col-md-8 col-md-offset-2">
+  <div class="gallery col-md-12">
   <% if @boom_albums.any? %>
     <% @boom_albums.each do |boom_album| %>
-      <% if boom_album.is_cover %>
-        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image-is-cover" data-toggle="modal"><img src=<%= boom_album.image %>  style="width: 160px; height: 160px"></img></a>
+      <% if boom_album.is_cover? %>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image-is-cover" data-toggle="modal">
+          <img src=<%= boom_album.image %> class="thumb"></img>
+          <figure>当前封面</figure>
+        </a>
       <% else %>
-        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image" data-toggle="modal"><img src=<%= boom_album.image %>  style="width: 160px; height: 160px"></img></a>
+        <a href="#imageModal<%= boom_album.id %>" role="button" class="btn btn-default image" data-toggle="modal">
+          <img src=<%= boom_album.image %> class="thumb"></img>
+        </a>
       <% end %>
     <% end %>
     <p><%= paginate @boom_albums %></p>
@@ -28,12 +33,12 @@
           <div class="modal-body">
             <img src=<%= boom_album.image %> style="width: 100%">
             <figcaption>
-              <% if !boom_album.is_cover %>
-                <%= link_to "设置封面", set_cover_boombox_dj_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :post %>
+              <% if boom_album.is_cover? %>
+                <%= link_to "取消封面", toggle_cover_boombox_dj_boom_album_path(boom_album), method: :post, class: 'btn btn-default' %>
               <% else %>
-                <%= link_to "取消封面", unset_cover_boombox_dj_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :post %>
-              <% end %> ｜ 
-              <%= link_to "删除", boombox_dj_boom_album_path(id: boom_album.id, collaborator_id: boom_album.collaborator.id), method: :delete, data: {confirm: '确定吗？'} %>
+                <%= link_to "设置封面", toggle_cover_boombox_dj_boom_album_path(boom_album), method: :post, class: 'btn btn-warning' %>
+              <% end %>
+              <%= link_to "删除", boombox_dj_boom_album_path(boom_album), method: :delete, data: {confirm: '确定吗？'}, class: 'btn btn-danger' %>
             </figcaption>
           </div>
         </div>
