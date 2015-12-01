@@ -250,7 +250,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def check_tracks_status
-    tracks = BoomTrack.where(id: params[:track_ids])
+    tracks = BoomTrack.where(id: params[:track_ids].split(','))
 
     render json: tracks.map{|track| {id: track.id, is_liked: track.is_liked?(@user)}}
   end

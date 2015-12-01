@@ -26,9 +26,9 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
     @topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
     if @topic
       @comments = if params[:last]
-                    @topic.comments.where('id < ?', params[:last]).first(10)
+                    @topic.boom_comments.where('id < ?', params[:last]).first(10)
                   else
-                    @topic.comments.first(10)
+                    @topic.boom_comments.first(10)
                   end
     else
       error_respond('topic not found')
