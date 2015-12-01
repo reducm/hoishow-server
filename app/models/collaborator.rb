@@ -20,8 +20,9 @@ class Collaborator < ActiveRecord::Base
   mount_uploader :cover, ImageUploader
   mount_uploader :avatar, ImageUploader
   after_create :set_removed_and_is_top
-  after_create :set_nickname_updated_at
-  after_save :set_nickname_updated_at_if_nickname_change
+  # 昵称更新时记下昵称更新时间
+  before_save :update_nickname_updated_at_if_nickname_change
+
   scope :verified, -> { where(verified: true, removed: false).order('is_top') }
 
   validates :identity, presence: {message: "身份不能为空"}
@@ -85,12 +86,7 @@ class Collaborator < ActiveRecord::Base
 
   # 检查nickname修改时间
   def nickname_changeable?
-    if self.nickname_updated_at.blank?
-      self.nickname_updated_at = self.created_at
-      self.save(validate: false)
-    else
-      (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
-    end
+    (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
   end
 
   def display_name
@@ -106,13 +102,12 @@ class Collaborator < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 
-  def set_nickname_updated_at
-    nickname_updated_at = Time.now
-  end
-
-  def set_nickname_updated_at_if_nickname_change
+  # 昵称更新时记下昵称更新时间
+  def update_nickname_updated_at_if_nickname_change
     if self.changed.include?("nickname")
-      set_nickname_updated_at
+      self.nickname_updated_at = Time.now
+    else
+      true
     end
   end
 end
