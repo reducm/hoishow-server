@@ -18,6 +18,14 @@ class BoomComment < ActiveRecord::Base
 
   paginates_per 10
 
+  def send_reply_push
+    BoomMessage.create(subject_type: BoomMessage::SUBJECT_COMMENT, subject_id: self.id, targets: 'specific', send_type: 'comment_replay', title: '您有新的回复', content: self.content)
+  end
+
+  def parent_target_id
+    BoomComment.find_by_id(parent_id).creator_id rescue nil
+  end
+
   def as_indexed_json(options={})
     as_json(
       only: :content
@@ -27,13 +35,12 @@ class BoomComment < ActiveRecord::Base
   def creator_name
     case creator_type
     when CREATOR_COLLABORATOR
-      creator.name
+      creator.display_name
     when CREATOR_ADMIN
       creator.default_name
     when CREATOR_USER
-      creator.nickname
-    end
-    rescue nil
+      creator.show_name
+    end rescue nil
   end
 
   def creator
@@ -52,8 +59,7 @@ class BoomComment < ActiveRecord::Base
       creator.cover_url
     when CREATOR_USER
       creator.avatar_url
-    end
-    rescue nil
+    end rescue nil
   end
 
   def likes_count
@@ -61,7 +67,7 @@ class BoomComment < ActiveRecord::Base
   end
 
   def created_by
-    creator.name rescue nil
+    creator_name
   end
 
   def is_liked(user_id)

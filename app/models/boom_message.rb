@@ -4,6 +4,7 @@ class BoomMessage < ActiveRecord::Base
   SUBJECT_COLLABORATOR = 'Collaborator'
   SUBJECT_ACTIVITY = 'BoomActivity'
   SUBJECT_PLAYLIST = 'BoomPlaylist'
+  SUBJECT_COMMENT = 'BoomComment'
 
   belongs_to :boom_admin
   has_many :message_tasks
@@ -19,12 +20,14 @@ class BoomMessage < ActiveRecord::Base
   validates :content, length: { maximum: 150 }
 
   enum send_type: {
-    manual: 0 #手动推送
+    manual: 0, #手动推送
+    comment_replay: 1 #评论回复
   }
 
   enum targets: {
     all_users: 0, #全部用户
-    followers: 1 #关注用户
+    followers: 1, #关注用户
+    specific: 2 #指定用户
   }
 
   paginates_per 10
@@ -81,6 +84,21 @@ class BoomMessage < ActiveRecord::Base
     start_time < Time.now
   end
 
+  def status_cn
+    case status
+    when 0
+      "初始状态"
+    when 1
+      "等待推送"
+    when 2
+      "推送任务已创建"
+    when 3
+      "推送成功"
+    when 4
+      "推送异常"
+    end
+  end
+
   def set_message_tasks
     %w(ios android).each do |platform|
       message_tasks.create(platform: platform)
@@ -93,6 +111,8 @@ class BoomMessage < ActiveRecord::Base
       User.ids
     when 'followers'
       subject.followers.ids
+    when 'specific'
+      subject.parent_target_id.to_a
     else
       nil
     end

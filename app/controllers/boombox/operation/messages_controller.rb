@@ -2,7 +2,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   before_filter :check_login!
 
   def index
-    @messages = BoomMessage.page(params[:page])
+    @messages = BoomMessage.manual.page(params[:page])
   end
 
   def new
@@ -10,7 +10,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   end
 
   def create
-    @message = @current_admin.boom_messages.new(message_params)
+    @message = BoomMessage.new(message_params)
     @message.subject_type = get_subject_type(params[:boom_message][:subject_type])
     if @message.save
       flash[:notice] = "消息创建成功"

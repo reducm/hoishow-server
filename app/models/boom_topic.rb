@@ -65,6 +65,17 @@ class BoomTopic < ActiveRecord::Base
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
   end
 
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.name
+    when CREATOR_ADMIN
+      creator.default_name
+    when CREATOR_USER
+      creator.show_name
+    end rescue nil
+  end
+
   private
   def set_is_top
     self.update(is_top: 0) unless self.is_top
