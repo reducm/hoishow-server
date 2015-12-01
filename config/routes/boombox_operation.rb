@@ -56,6 +56,8 @@ module Routes
                 post :change_is_top
                 patch :upload_cover
               end
+
+              post :upload_image, on: :collection
             end
 
             resources :boom_tags, only: [:index, :create, :destroy] do
