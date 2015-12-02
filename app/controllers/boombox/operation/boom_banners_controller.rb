@@ -24,7 +24,7 @@ class Boombox::Operation::BoomBannersController < Boombox::Operation::Applicatio
     @boom_banner = BoomBanner.new(boom_banner_params)
     @boom_banner.subject_type = get_subject_type(params[:boom_banner][:subject_type])
     if @boom_banner.save
-      flash[:notice] = "创建Banner成功" 
+      flash[:notice] = "Banner创建成功"
       redirect_to boombox_operation_boom_banners_url
     else
       flash[:alert] = @boom_banner.errors.full_messages.to_sentence
@@ -33,13 +33,14 @@ class Boombox::Operation::BoomBannersController < Boombox::Operation::Applicatio
   end
 
   def edit
-
   end
 
   def update
-    if @boom_banner.update(boom_banner_params)
-      redirect_to action: :index
-      flash[:notice] = "更新成功" 
+    @boom_banner.assign_attributes(boom_banner_params)
+    @boom_banner.subject_type = get_subject_type(params[:boom_banner][:subject_type])
+    if @boom_banner.save
+      redirect_to boombox_operation_boom_banners_url
+      flash[:notice] = "Banner更新成功"
     else
       flash[:alert] = @boom_banner.errors.full_messages.to_sentence
       render :edit
@@ -48,7 +49,7 @@ class Boombox::Operation::BoomBannersController < Boombox::Operation::Applicatio
 
   def destroy
     @boom_banner.destroy
-    redirect_to action: :index
+    redirect_to boombox_operation_boom_banners_url
   end
 
   private
