@@ -44,11 +44,19 @@ $ ->
 #1.提交前将标签id数组组装成字符串，并传入hidden field
 #2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
-    #1
-    tag_ids.join(",")
-    $("#boom_tag_ids").val(tag_ids)
-    #2
-    duration = $("#track-file-pre")[0].duration
-    if duration
-      $("#boom_track_duration").attr("value", duration)
-    $("form").submit()
+    e.preventDefault()
+    if $('.track-file-uploader').val() == ""
+      alert '请上传音乐'
+      return
+    else if $('#boom_track_name').val() == ""
+      alert '请填写标题'
+      return
+    else
+      #1
+      tag_ids.join(",")
+      $("#boom_tag_ids").val(tag_ids)
+      #2
+      duration = $("#track-file-pre")[0].duration
+      if duration
+        $("#boom_track_duration").attr("value", duration)
+      $("form").submit()
