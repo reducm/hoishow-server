@@ -1,7 +1,8 @@
 <%# encoding: utf-8 %>
 
+<legend><%= link_to "Banner列表", boombox_operation_boom_banners_path %>/<%= params[:action] == "new" ? "新建Banner" : "编辑Banner"%></legend>
 <div class="row">
-  <h1 class="text-center">新建Banner</h1>
+  <h1 class="text-center"><%= params[:action] == "new" ? "新建Banner" : "编辑Banner"%></h1>
       <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
     <div class="row">
       <div class="col-sm-6">

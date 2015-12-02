@@ -81,4 +81,13 @@ class BoomComment < ActiveRecord::Base
   def content
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
   end
+
+  def reply_content
+    if parent_id
+      parent = BoomComment.find_by_id(parent_id)
+      "回复@#{parent.try(:creator_name)}:content"
+    else
+      content
+    end
+  end
 end

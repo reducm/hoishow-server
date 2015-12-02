@@ -1,3 +1,5 @@
+<%# encoding: utf-8 %>
+<legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(@collaborator) %>/艺人相册</legend>
 <div class="row boom-albums-list">
   <h3>艺人相册</h3>
   <%= simple_form_for([:boombox, :operation, @boom_album], html: { class: 'dropzone upload-boom-album', id: 'image-dz-form', multipart: :true }) do |f| %> 
