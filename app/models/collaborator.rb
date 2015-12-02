@@ -19,14 +19,16 @@ class Collaborator < ActiveRecord::Base
 
   mount_uploader :cover, ImageUploader
   mount_uploader :avatar, ImageUploader
+
+  before_create :set_nickname_updated_at
   after_create :set_removed_and_is_top
-  # 昵称更新时记下昵称更新时间
-  before_save :update_nickname_updated_at_if_nickname_change
+  before_update :set_nickname_updated_at, if: :nickname_has_changed?
 
   scope :verified, -> { where(verified: true, removed: false).order('is_top') }
 
   validates :identity, presence: {message: "身份不能为空"}
   validates :nickname, presence: {message: "昵称不能为空"}, uniqueness: {message: "昵称已被使用"}
+  validate :nickname_changeable, on: :update, if: :nickname_has_changed?
   validates :name, presence: {message: "真实姓名不能为空"}
   validates :sex, presence: {message: "性别不能为空"}
   validates :birth, presence: {message: "生日不能为空"}
@@ -84,9 +86,12 @@ class Collaborator < ActiveRecord::Base
     followers.count
   end
 
-  # 检查nickname修改时间
-  def nickname_changeable?
-    (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
+  def nickname_changeable
+    errors.add(:nickname_updated_at, "昵称一个月只能改一次") unless (Time.now - self.nickname_updated_at) / 60 / 60 / 24 > 30
+  end
+
+  def nickname_has_changed?
+    nickname_changed?
   end
 
   def display_name
@@ -102,12 +107,7 @@ class Collaborator < ActiveRecord::Base
     self.update(removed: 0, is_top: 0)
   end
 
-  # 昵称更新时记下昵称更新时间
-  def update_nickname_updated_at_if_nickname_change
-    if self.changed.include?("nickname")
-      self.nickname_updated_at = Time.now
-    else
-      true
-    end
+  def set_nickname_updated_at
+    self.nickname_updated_at = Time.now
   end
 end
