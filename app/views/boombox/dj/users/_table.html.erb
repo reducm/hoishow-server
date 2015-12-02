@@ -15,7 +15,7 @@
       <% if likers.any? %>
         <% likers.each do |liker| %>
           <tr>
-            <td><%= liker.nickname || liker.mobile %></td>
+            <td><%= liker.show_name %></td>
             <td><%= liker.like_boomtopic_at(@boom_topic).strfcn_time %></td>
           </tr>
         <% end %>
