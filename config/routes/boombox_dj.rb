@@ -32,8 +32,7 @@ module Routes
 
             resources :boom_albums, only: [:index, :create, :destroy] do
               member do
-                post :set_cover
-                post :unset_cover
+                post :toggle_cover
               end
             end
 
