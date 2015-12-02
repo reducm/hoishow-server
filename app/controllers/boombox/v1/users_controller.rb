@@ -141,7 +141,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def message_list
     @messages = if params[:last]
-                  @user.boom_messages.manual.where("id < ?", params[:last]).first(10)
+                  @user.boom_messages.manual.where("boom_messages.id < ?", params[:last]).first(10)
                 else
                   @user.boom_messages.manual.first(10)
                 end
