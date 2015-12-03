@@ -16,6 +16,6 @@ class ElasticsearchReindexWorker
       when /delete/
         Client.delete index: klass.constantize.index_name, type: klass.constantize.document_type, id: record_id
       else raise ArgumentError, "Unknown operation '#{operation}'"
-    end
+    end rescue klass.constantize.import
   end
 end
