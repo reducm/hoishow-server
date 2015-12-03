@@ -10,7 +10,7 @@ json.tracks_count playlist.tracks_count
 
 if playlist.creator_type == BoomPlaylist::CREATOR_COLLABORATOR && playlist.creator
   json.collaborator do
-    json.name playlist.creator.name
+    json.name playlist.creator.display_name
     json.avatar playlist.creator.cover_url || ''
   end
 else
