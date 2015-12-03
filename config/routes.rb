@@ -184,6 +184,7 @@ Rails.application.routes.draw do
         delete :del_event
         post :upload_map
         get :get_coordinates
+        patch :toggle_area_is_top
       end
     end
     resources :orders do
