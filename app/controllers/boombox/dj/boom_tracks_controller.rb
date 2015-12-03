@@ -1,5 +1,5 @@
 # encoding: utf-8
-class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
+class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
   before_filter :check_login!
   before_filter :get_track, except: [:search, :index, :new, :create]
 
@@ -23,15 +23,19 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   end
 
   def new
-    @track = BoomTrack.new
+    @track = current_collaborator.boom_tracks.new
   end
 
   def create
     @track = current_collaborator.boom_tracks.new(track_params)
-    if @track.save!
+    if @track.save
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @track.tag_for_track(tag) }
       flash[:notice] = '创建音乐成功'
-      redirect_to boombox_dj_tracks_url(collaborator_id: current_collaborator.id)
+      redirect_to boombox_dj_boom_tracks_url
+    else
+      flash[:alert] = @track.errors.full_messages 
+      @track = current_collaborator.boom_tracks.new
+      render :new
     end
   end
 
@@ -53,7 +57,7 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
         end
       end
       flash[:notice] = '编辑音乐成功'
-      redirect_to boombox_dj_tracks_url(collaborator_id: current_collaborator.id)
+      redirect_to boombox_dj_boom_tracks_url
     end
   end
 
@@ -62,7 +66,7 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
 
   def destroy
     @track.destroy!
-    redirect_to boombox_dj_tracks_url(collaborator_id: current_collaborator.id)
+    redirect_to boombox_dj_boom_tracks_url
   end
 
   private
