@@ -11,7 +11,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120102402) do
+ActiveRecord::Schema.define(version: 20151130032132) do
+
+  create_table "activity_statuses", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "code",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "activity_statuses", ["boom_id"], name: "index_activity_statuses_on_boom_id", using: :btree
+
+  create_table "activity_track_relations", force: :cascade do |t|
+    t.integer  "boom_activity_id", limit: 4
+    t.integer  "boom_track_id",    limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "activity_verifieds", force: :cascade do |t|
+    t.string   "boom_id",            limit: 255
+    t.string   "url",                limit: 255
+    t.string   "cover",              limit: 255
+    t.string   "name",               limit: 255
+    t.string   "publisher",          limit: 255
+    t.string   "file",               limit: 255
+    t.integer  "tag_visible_number", limit: 4
+    t.text     "description",        limit: 65535
+    t.boolean  "verified",           limit: 1
+    t.boolean  "removed",            limit: 1
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "activity_verifieds", ["boom_id"], name: "index_activity_verifieds_on_boom_id", using: :btree
+  add_index "activity_verifieds", ["name"], name: "index_activity_verifieds_on_name", using: :btree
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",              limit: 255
@@ -32,6 +69,8 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.string   "secretcode", limit: 255
+    t.string   "boom_id",    limit: 255
+    t.boolean  "verified",   limit: 1
   end
 
   create_table "areas", force: :cascade do |t|
@@ -41,10 +80,10 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.string   "sort_by",     limit: 255
+    t.text     "seats_info",  limit: 16777215
     t.text     "coordinates", limit: 65535
     t.string   "color",       limit: 255
     t.integer  "event_id",    limit: 4
-    t.text     "seats_info",  limit: 16777215
     t.integer  "left_seats",  limit: 4
     t.boolean  "is_top",      limit: 1,        default: false
   end
@@ -65,6 +104,261 @@ ActiveRecord::Schema.define(version: 20151120102402) do
 
   add_index "banners", ["admin_id"], name: "index_banners_on_admin_id", using: :btree
 
+  create_table "boom_activities", force: :cascade do |t|
+    t.string   "boom_id",            limit: 255
+    t.string   "boom_recommend_id",  limit: 255
+    t.string   "boom_page_id",       limit: 255
+    t.string   "boom_status_id",     limit: 255
+    t.string   "url_share",          limit: 255
+    t.string   "url",                limit: 255
+    t.string   "cover",              limit: 255
+    t.string   "owner",              limit: 255
+    t.string   "name",               limit: 255
+    t.string   "publisher",          limit: 255
+    t.string   "file",               limit: 255
+    t.integer  "tag_visible_number", limit: 4
+    t.text     "description",        limit: 65535
+    t.boolean  "removed",            limit: 1
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.string   "showtime",           limit: 255
+    t.integer  "boom_location_id",   limit: 4
+    t.integer  "mode",               limit: 4
+    t.integer  "boom_admin_id",      limit: 4
+    t.integer  "status",             limit: 4
+    t.boolean  "is_display",         limit: 1
+    t.boolean  "is_top",             limit: 1
+    t.boolean  "is_hot",             limit: 1
+  end
+
+  add_index "boom_activities", ["boom_id"], name: "index_boom_activities_on_boom_id", using: :btree
+  add_index "boom_activities", ["name"], name: "index_boom_activities_on_name", using: :btree
+
+  create_table "boom_admins", force: :cascade do |t|
+    t.string   "email",              limit: 255
+    t.string   "name",               limit: 255
+    t.string   "encrypted_password", limit: 255
+    t.string   "salt",               limit: 255
+    t.datetime "last_sign_in_at"
+    t.integer  "admin_type",         limit: 4
+    t.boolean  "is_block",           limit: 1,   default: false
+    t.string   "api_token",          limit: 255
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.boolean  "email_confirmed",    limit: 1,   default: false
+    t.string   "confirm_token",      limit: 255
+  end
+
+  create_table "boom_albums", force: :cascade do |t|
+    t.integer  "collaborator_id", limit: 4
+    t.string   "image",           limit: 255
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "is_cover",        limit: 1,   default: false
+  end
+
+  add_index "boom_albums", ["collaborator_id"], name: "index_boom_albums_on_collaborator_id", using: :btree
+
+  create_table "boom_articles", force: :cascade do |t|
+    t.string   "boom_id",          limit: 255
+    t.string   "boom_location_id", limit: 255
+    t.string   "title",            limit: 255
+    t.string   "subtitle",         limit: 255
+    t.string   "url_alias",        limit: 255
+    t.string   "url_short",        limit: 255
+    t.string   "url_origin",       limit: 255
+    t.string   "cover",            limit: 255
+    t.string   "summary",          limit: 255
+    t.text     "content_html",     limit: 65535
+    t.text     "content_json",     limit: 65535
+    t.boolean  "verified",         limit: 1
+    t.boolean  "removed",          limit: 1
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "boom_articles", ["boom_id"], name: "index_boom_articles_on_boom_id", using: :btree
+
+  create_table "boom_banners", force: :cascade do |t|
+    t.string   "poster",       limit: 255
+    t.string   "subject_type", limit: 255
+    t.integer  "subject_id",   limit: 4
+    t.integer  "position",     limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "boom_cities", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_page_id", limit: 255
+    t.string   "name",         limit: 255
+    t.string   "name_english", limit: 255
+    t.string   "name_chinese", limit: 255
+    t.string   "cover",        limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "boom_cities", ["boom_id"], name: "index_boom_cities_on_boom_id", using: :btree
+
+  create_table "boom_comments", force: :cascade do |t|
+    t.integer  "boom_topic_id", limit: 4
+    t.integer  "parent_id",     limit: 4
+    t.integer  "creator_id",    limit: 4
+    t.string   "creator_type",  limit: 255
+    t.string   "avatar",        limit: 255
+    t.text     "content",       limit: 65535
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "is_hidden",     limit: 1,     default: false
+  end
+
+  create_table "boom_feedbacks", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.string   "contact",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "user_id",    limit: 4
+    t.boolean  "status",     limit: 1
+  end
+
+  create_table "boom_locations", force: :cascade do |t|
+    t.string   "boom_id",                    limit: 255
+    t.string   "boom_city_id",               limit: 255
+    t.string   "boom_activity_id",           limit: 255
+    t.string   "boom_city_activity_page_id", limit: 255
+    t.string   "boom_city_page_id",          limit: 255
+    t.string   "name",                       limit: 255
+    t.string   "name_english",               limit: 255
+    t.string   "name_chinese",               limit: 255
+    t.string   "phone",                      limit: 255
+    t.string   "weibo",                      limit: 255
+    t.string   "wechat",                     limit: 255
+    t.decimal  "longitude",                              precision: 10, scale: 6
+    t.decimal  "latitude",                               precision: 10, scale: 6
+    t.string   "address",                    limit: 255
+    t.string   "image",                      limit: 255
+    t.boolean  "removed",                    limit: 1
+    t.datetime "created_at",                                                      null: false
+    t.datetime "updated_at",                                                      null: false
+  end
+
+  add_index "boom_locations", ["boom_id"], name: "index_boom_locations_on_boom_id", using: :btree
+
+  create_table "boom_messages", force: :cascade do |t|
+    t.integer  "subject_id",   limit: 4
+    t.integer  "send_type",    limit: 4
+    t.string   "subject_type", limit: 255
+    t.string   "title",        limit: 255
+    t.text     "content",      limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "targets",      limit: 4
+    t.datetime "start_time"
+    t.integer  "status",       limit: 4
+  end
+
+  create_table "boom_playlists", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.integer  "mode",         limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "creator_id",   limit: 4
+    t.string   "creator_type", limit: 255
+    t.string   "cover",        limit: 255
+    t.boolean  "removed",      limit: 1
+    t.boolean  "is_top",       limit: 1
+    t.boolean  "is_default",   limit: 1,   default: false
+  end
+
+  create_table "boom_recommends", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_type_id", limit: 255
+    t.string   "boom_page_id", limit: 255
+    t.string   "title",        limit: 255
+    t.string   "subtitle",     limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "boom_recommends", ["boom_id"], name: "index_boom_recommends_on_boom_id", using: :btree
+
+  create_table "boom_tags", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "name",         limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.boolean  "is_hot",       limit: 1
+    t.string   "lower_string", limit: 255
+  end
+
+  add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
+
+  create_table "boom_topics", force: :cascade do |t|
+    t.string   "created_by",      limit: 255
+    t.string   "avatar",          limit: 255
+    t.string   "subject_type",    limit: 255
+    t.integer  "subject_id",      limit: 4
+    t.text     "content",         limit: 65535
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.integer  "collaborator_id", limit: 4
+    t.boolean  "is_top",          limit: 1,     default: false
+    t.string   "image",           limit: 255
+    t.string   "video_title",     limit: 255
+    t.string   "video_url",       limit: 255
+  end
+
+  create_table "boom_tracks", force: :cascade do |t|
+    t.string   "boom_id",          limit: 255
+    t.string   "boom_activity_id", limit: 255
+    t.string   "name",             limit: 255
+    t.string   "publisher",        limit: 255
+    t.string   "file",             limit: 255
+    t.decimal  "duration",                     precision: 12, scale: 6
+    t.boolean  "removed",          limit: 1
+    t.datetime "created_at",                                            null: false
+    t.datetime "updated_at",                                            null: false
+    t.integer  "boom_playlist_id", limit: 4
+    t.integer  "creator_id",       limit: 4
+    t.string   "creator_type",     limit: 255
+    t.string   "artists",          limit: 255
+    t.string   "cover",            limit: 255
+    t.boolean  "is_top",           limit: 1
+  end
+
+  add_index "boom_tracks", ["boom_id"], name: "index_boom_tracks_on_boom_id", using: :btree
+
+  create_table "boom_user_likes", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4
+    t.integer  "subject_id",   limit: 4
+    t.string   "subject_type", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "boom_user_message_relations", force: :cascade do |t|
+    t.integer  "user_id",         limit: 4
+    t.integer  "boom_message_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "boom_user_statuses", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "code",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "boom_user_statuses", ["boom_id"], name: "index_boom_user_statuses_on_boom_id", using: :btree
+
   create_table "cities", force: :cascade do |t|
     t.string   "pinyin",     limit: 255
     t.string   "name",       limit: 255
@@ -73,6 +367,54 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "updated_at",             null: false
     t.boolean  "is_hot",     limit: 1
   end
+
+  create_table "collaborator_activity_relations", force: :cascade do |t|
+    t.integer  "collaborator_id",  limit: 4
+    t.integer  "boom_activity_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "collaborator_activity_relations", ["boom_activity_id"], name: "index_collaborator_activity_relations_on_boom_activity_id", using: :btree
+  add_index "collaborator_activity_relations", ["collaborator_id"], name: "index_collaborator_activity_relations_on_collaborator_id", using: :btree
+
+  create_table "collaborator_types", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "code",       limit: 255
+    t.string   "name",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "collaborator_types", ["boom_id"], name: "index_collaborator_types_on_boom_id", using: :btree
+
+  create_table "collaborators", force: :cascade do |t|
+    t.string   "boom_id",                   limit: 255
+    t.string   "boom_collaborator_type_id", limit: 255
+    t.string   "name",                      limit: 255
+    t.string   "email",                     limit: 255
+    t.string   "contact",                   limit: 255
+    t.string   "weibo",                     limit: 255
+    t.string   "cover",                     limit: 255
+    t.string   "wechat",                    limit: 255
+    t.text     "description",               limit: 65535
+    t.boolean  "removed",                   limit: 1
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
+    t.boolean  "verified",                  limit: 1,     default: false
+    t.boolean  "is_top",                    limit: 1,     default: false
+    t.string   "avatar",                    limit: 255
+    t.integer  "identity",                  limit: 4
+    t.string   "nickname",                  limit: 255
+    t.integer  "sex",                       limit: 4
+    t.datetime "birth"
+    t.integer  "boom_admin_id",             limit: 4
+    t.datetime "nickname_updated_at",                                     null: false
+  end
+
+  add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
     t.text     "content",      limit: 65535
@@ -163,6 +505,17 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "updated_at",                null: false
   end
 
+  create_table "message_tasks", force: :cascade do |t|
+    t.integer  "boom_message_id", limit: 4
+    t.string   "task_id",         limit: 255
+    t.string   "platform",        limit: 255
+    t.integer  "status",          limit: 4
+    t.integer  "total_count",     limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "file_id",         limit: 255
+  end
+
   create_table "messages", force: :cascade do |t|
     t.integer  "send_type",         limit: 4
     t.string   "title",             limit: 255
@@ -214,6 +567,55 @@ ActiveRecord::Schema.define(version: 20151120102402) do
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
   add_index "orders", ["user_id"], name: "index_orders_on_user_id", using: :btree
 
+  create_table "page_cities", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_city_id", limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "page_cities", ["boom_id"], name: "index_page_cities_on_boom_id", using: :btree
+
+  create_table "page_city_activities", force: :cascade do |t|
+    t.string   "boom_id",          limit: 255
+    t.string   "boom_activity_id", limit: 255
+    t.boolean  "removed",          limit: 1
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "page_city_activities", ["boom_id"], name: "index_page_city_activities_on_boom_id", using: :btree
+
+  create_table "page_locations", force: :cascade do |t|
+    t.string   "boom_id",           limit: 255
+    t.string   "boom_music_top_id", limit: 255
+    t.string   "boom_location_id",  limit: 255
+    t.boolean  "removed",           limit: 1
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "page_locations", ["boom_id"], name: "index_page_locations_on_boom_id", using: :btree
+
+  create_table "page_tag_hots", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "page_tag_hots", ["boom_id"], name: "index_page_tag_hots_on_boom_id", using: :btree
+
+  create_table "page_tag_sorts", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "page_tag_sorts", ["boom_id"], name: "index_page_tag_sorts_on_boom_id", using: :btree
+
   create_table "pages", force: :cascade do |t|
     t.string   "title",       limit: 255
     t.text     "description", limit: 65535
@@ -238,6 +640,35 @@ ActiveRecord::Schema.define(version: 20151120102402) do
   end
 
   add_index "payments", ["order_id"], name: "index_payments_on_order_id", using: :btree
+
+  create_table "playlist_track_relations", force: :cascade do |t|
+    t.integer  "boom_track_id",    limit: 4
+    t.integer  "boom_playlist_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "recommend_pages", force: :cascade do |t|
+    t.string   "boom_id",        limit: 255
+    t.integer  "visible_number", limit: 4
+    t.boolean  "removed",        limit: 1
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "recommend_pages", ["boom_id"], name: "index_recommend_pages_on_boom_id", using: :btree
+
+  create_table "recommend_types", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "code",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "recommend_types", ["boom_id"], name: "index_recommend_types_on_boom_id", using: :btree
 
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
@@ -287,6 +718,30 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "updated_at",             null: false
   end
 
+  create_table "social_network_types", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "name",       limit: 255
+    t.string   "code",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "social_network_types", ["boom_id"], name: "index_social_network_types_on_boom_id", using: :btree
+
+  create_table "social_networks", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_type_id", limit: 255
+    t.string   "boom_user_id", limit: 255
+    t.string   "contact",      limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "social_networks", ["boom_id"], name: "index_social_networks_on_boom_id", using: :btree
+
   create_table "stadiums", force: :cascade do |t|
     t.string   "name",        limit: 255
     t.string   "address",     limit: 255
@@ -334,6 +789,49 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "updated_at",                             null: false
   end
 
+  create_table "tag_hots", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_page_id", limit: 255
+    t.string   "name",         limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "tag_hots", ["boom_id"], name: "index_tag_hots_on_boom_id", using: :btree
+
+  create_table "tag_relationships", force: :cascade do |t|
+    t.string   "boom_id",          limit: 255
+    t.string   "boom_tag_id",      limit: 255
+    t.string   "boom_tag_sort_id", limit: 255
+    t.string   "boom_activity_id", limit: 255
+    t.string   "boom_page_id",     limit: 255
+    t.boolean  "removed",          limit: 1
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "tag_relationships", ["boom_id"], name: "index_tag_relationships_on_boom_id", using: :btree
+
+  create_table "tag_sorts", force: :cascade do |t|
+    t.string   "boom_id",      limit: 255
+    t.string   "boom_page_id", limit: 255
+    t.string   "name",         limit: 255
+    t.boolean  "removed",      limit: 1
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "tag_sorts", ["boom_id"], name: "index_tag_sorts_on_boom_id", using: :btree
+
+  create_table "tag_subject_relations", force: :cascade do |t|
+    t.integer  "boom_tag_id",  limit: 4
+    t.integer  "subject_id",   limit: 4
+    t.string   "subject_type", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.integer  "area_id",         limit: 4
     t.integer  "show_id",         limit: 4
@@ -370,6 +868,16 @@ ActiveRecord::Schema.define(version: 20151120102402) do
     t.datetime "updated_at",                                 null: false
   end
 
+  create_table "user_follow_collaborators", force: :cascade do |t|
+    t.integer  "user_id",         limit: 4
+    t.integer  "collaborator_id", limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "user_follow_collaborators", ["collaborator_id"], name: "index_user_follow_collaborators_on_collaborator_id", using: :btree
+  add_index "user_follow_collaborators", ["user_id"], name: "index_user_follow_collaborators_on_user_id", using: :btree
+
   create_table "user_follow_concerts", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "concert_id", limit: 4
@@ -379,6 +887,16 @@ ActiveRecord::Schema.define(version: 20151120102402) do
 
   add_index "user_follow_concerts", ["concert_id"], name: "index_user_follow_concerts_on_concert_id", using: :btree
   add_index "user_follow_concerts", ["user_id"], name: "index_user_follow_concerts_on_user_id", using: :btree
+
+  create_table "user_follow_playlists", force: :cascade do |t|
+    t.integer  "user_id",          limit: 4
+    t.integer  "boom_playlist_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "user_follow_playlists", ["boom_playlist_id"], name: "index_user_follow_playlists_on_boom_playlist_id", using: :btree
+  add_index "user_follow_playlists", ["user_id"], name: "index_user_follow_playlists_on_user_id", using: :btree
 
   create_table "user_follow_shows", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
@@ -418,6 +936,53 @@ ActiveRecord::Schema.define(version: 20151120102402) do
   add_index "user_message_relations", ["message_id"], name: "index_user_message_relations_on_message_id", using: :btree
   add_index "user_message_relations", ["user_id"], name: "index_user_message_relations_on_user_id", using: :btree
 
+  create_table "user_track_relations", force: :cascade do |t|
+    t.integer  "user_id",       limit: 4
+    t.integer  "boom_track_id", limit: 4
+    t.integer  "play_count",    limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  add_index "user_track_relations", ["boom_track_id"], name: "index_user_track_relations_on_boom_track_id", using: :btree
+  add_index "user_track_relations", ["user_id"], name: "index_user_track_relations_on_user_id", using: :btree
+
+  create_table "user_verified_info_types", force: :cascade do |t|
+    t.string   "boom_id",    limit: 255
+    t.string   "code",       limit: 255
+    t.string   "name",       limit: 255
+    t.integer  "value",      limit: 4
+    t.boolean  "removed",    limit: 1
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "user_verified_info_types", ["boom_id"], name: "index_user_verified_info_types_on_boom_id", using: :btree
+
+  create_table "user_verified_infos", force: :cascade do |t|
+    t.string   "boom_id",              limit: 255
+    t.string   "boom_city_id",         limit: 255
+    t.string   "boom_type_id",         limit: 255
+    t.string   "name",                 limit: 255
+    t.string   "name_english",         limit: 255
+    t.string   "name_chinese",         limit: 255
+    t.string   "phone",                limit: 255
+    t.string   "address",              limit: 255
+    t.string   "contact_name",         limit: 255
+    t.string   "contact_phone_number", limit: 255
+    t.string   "contact_address",      limit: 255
+    t.text     "description",          limit: 65535
+    t.decimal  "latitude",                           precision: 10, scale: 6
+    t.decimal  "longitude",                          precision: 10, scale: 6
+    t.string   "cover",                limit: 255
+    t.string   "avatar",               limit: 255
+    t.boolean  "removed",              limit: 1
+    t.datetime "created_at",                                                  null: false
+    t.datetime "updated_at",                                                  null: false
+  end
+
+  add_index "user_verified_infos", ["boom_id"], name: "index_user_verified_infos_on_boom_id", using: :btree
+
   create_table "user_vote_concerts", force: :cascade do |t|
     t.integer  "user_id",    limit: 4
     t.integer  "concert_id", limit: 4
@@ -427,23 +992,28 @@ ActiveRecord::Schema.define(version: 20151120102402) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "mobile",             limit: 255
-    t.string   "email",              limit: 255
-    t.string   "encrypted_password", limit: 255
+    t.string   "mobile",                limit: 255
+    t.string   "email",                 limit: 255
+    t.string   "encrypted_password",    limit: 255
     t.datetime "last_sign_in_at"
-    t.string   "avatar",             limit: 255
-    t.string   "nickname",           limit: 255
-    t.integer  "sex",                limit: 4
+    t.string   "avatar",                limit: 255
+    t.string   "nickname",              limit: 255
+    t.integer  "sex",                   limit: 4
     t.datetime "birthday"
-    t.string   "salt",               limit: 255
-    t.boolean  "has_set_password",   limit: 1
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
-    t.string   "api_token",          limit: 255
-    t.integer  "api_expires_in",     limit: 4
-    t.boolean  "is_block",           limit: 1,   default: false
-    t.integer  "bike_user_id",       limit: 4
-    t.integer  "channel",            limit: 4
+    t.string   "salt",                  limit: 255
+    t.boolean  "has_set_password",      limit: 1
+    t.datetime "created_at",                                          null: false
+    t.datetime "updated_at",                                          null: false
+    t.string   "api_token",             limit: 255
+    t.integer  "api_expires_in",        limit: 4
+    t.boolean  "is_block",              limit: 1,     default: false
+    t.integer  "bike_user_id",          limit: 4
+    t.integer  "channel",               limit: 4
+    t.string   "boom_id",               limit: 255
+    t.string   "boom_status_id",        limit: 255
+    t.string   "boom_verified_info_id", limit: 255
+    t.boolean  "removed",               limit: 1
+    t.text     "description",           limit: 65535
   end
 
   add_index "users", ["bike_user_id"], name: "index_users_on_bike_user_id", using: :btree

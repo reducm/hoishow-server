@@ -1,0 +1,43 @@
+<%# encoding: utf-8 %>
+
+<legend><%= link_to "Banner列表", boombox_operation_boom_banners_path %>/<%= params[:action] == "new" ? "新建Banner" : "编辑Banner"%></legend>
+<div class="row">
+  <h1 class="text-center"><%= params[:action] == "new" ? "新建Banner" : "编辑Banner"%></h1>
+      <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="text-center">
+          <%= f.input :poster, label:"海报 (建议大小:1280x720, 类型:jpg)", input_html: {class: "boom_banner_poster_uploader col-md-offset-4"}, label_html: {class: "col-md-offset-1"} %>
+          <div id="banner_cover_preview">
+            <%= boombox_default_cover banner.poster_url %>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 banner_info">
+        <div class="form-group">
+          <%= f.label :subject_type, '类型', class: 'col-md-2 control-label' %>
+          <div class="col-md-2">
+            <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+          </div>
+        </div>
+        <div class="form-group">
+          <%= f.label :subject_id, '跳转对象', class: 'col-md-2 control-label' %>
+          <div class="col-md-2">
+            <%= f.select :subject_id, [[banner.subject_name, banner.subject_id]], {}, class: 'form-control' %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <%= submit_tag "保存", class: "btn btn-primary", id: "boom_banner_submit", data: { disable_with: "loading" } %>
+    </div>
+  <% end %>
+</div>
+
+<%= content_tag :div, id: "boom_banner_subject_data", data: {
+  collaborator: ( Collaborator.verified.select(:name, :id).map{|c| { name: c.name, id: c.id }} ),
+  activity: ( BoomActivity.activity.is_display.select(:name, :id).map{|activity| { name: activity.name, id: activity.id }} ),
+  show: ( BoomActivity.show.is_display.select(:name, :id).map{|show| { name: show.name, id: show.id }} ),
+  playlist: ( BoomPlaylist.playlist.open.select(:name, :id).map{|playlist| { name: playlist.name, id: playlist.id }} )
+} do %>
+<% end %>

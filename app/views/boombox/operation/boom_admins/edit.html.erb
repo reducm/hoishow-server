@@ -1,0 +1,34 @@
+<%# encoding: utf-8 %>
+
+<div class="nav">
+  <h2 class="text-center">修改密码</h2>
+  <div class="form-horizontal">
+    <%= form_tag boombox_operation_boom_admin_path, method: :put do %>
+    <div class="form-group">
+      <%= label_tag(:name, "用户名称", class: "col-sm-2 control-label")%>
+      <div class="col-sm-10">
+        <%= label_tag(:name, @boom_admin.name, class: "form-control-static")%>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag(:name, "密码", class: "col-sm-2 control-label")%>
+      <div class="col-sm-5">
+        <%= password_field_tag(:boom_admin_edit_pw1, "", placeholder: "Password", class: "form-control")%>
+      </div>
+    </div>
+    <div class="form-group">
+      <%= label_tag(:name, "确认密码", class: "col-sm-2 control-label")%>
+      <div class="col-sm-5">
+        <%= password_field_tag(:boom_admin_edit_pw2, "", placeholder: "Password", class: "form-control")%>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <%= submit_tag("确认", id: "boom_admin_edit_submit", class: "btn btn-default")%>
+      </div>
+    </div>
+  <% end %>
+    </div>
+  <strong id="boom_admin_edit_error_msg" class="col-sm-offset-2 col-sm-10 form-control-static"></strong>
+</div>
+

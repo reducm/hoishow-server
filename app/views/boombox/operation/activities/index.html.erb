@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='activities'>
+  <div class="text-center">
+    <h1>活动</h1>
+    <%= link_to "新建活动", new_boombox_operation_activity_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="mt20" id="activities_list">
+    <%= render partial: "table", locals: {activities: @activities} %>
+  </div>
+</div>

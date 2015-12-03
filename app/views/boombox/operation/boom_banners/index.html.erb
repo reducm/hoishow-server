@@ -1,0 +1,48 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='boom_banners'>
+  <div class="text-center">
+    <h1>Banner</h1>
+    <%= link_to "新建Banner", new_boombox_operation_boom_banner_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="mt20" id="boom_banners_list">
+    <table class="table table-striped banners" id="boom_banners_table">
+      <thead>
+        <tr>
+          <th>位置</th>
+          <th>主体类型</th>
+          <th>主体</th>
+          <th>海报</th>
+          <th>创建日期</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody class="dragable_items" id="boom_banners_tbody" data-update-url="<%= sort_boombox_operation_boom_banners_path %>">
+        <%= content_tag_for :tr, @boom_banners, remote: true do |banner| %>
+          <td><%= banner.position %></td>
+          <td><%= banner.subject_type_cn %></td>
+          <td>
+            <% subject = banner.subject %>
+            <% if subject %>
+              <%= link_to banner.subject_type == "Collaborator" ? subject.nickname : subject.name, boombox_subject_redirect_url(banner.subject_type, banner.subject_id) %>
+            <% end %>
+          </td>
+          <td>
+            <% if banner.poster_url %>
+              <%= image_tag(banner.poster_url, class: "preview-pic", size: "80x45")%>
+            <% else %>
+              <%= image_tag('/boombox_default_cover.png', size: "80x45") %>
+            <% end %>
+          </td>
+          <td><%= get_datetime( banner.updated_at ) %></td>
+          <td>
+            <span class="handle">[拉我排序] </span>
+            <%= link_to "编辑", edit_boombox_operation_boom_banner_path(banner) %> /
+            <%= link_to "删除", boombox_operation_boom_banner_path(banner), method: "delete", data: {confirm: "确定删除吗？"} %>
+          </td>
+        <% end %>
+      </tbody>
+    </table>
+    <%= paginate @boom_banners%>
+  </div>
+</div>

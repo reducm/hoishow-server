@@ -1,0 +1,5 @@
+{"_id":{"$oid":"52d58640e1382326c39aaf40"},"code":"pending","date_creation":{"$date":"2014-01-14T18:47:28.462Z"},"name":"暂停","removed":false,"value":0}
+{"_id":{"$oid":"52d58640e1382326c39aaf41"},"code":"not verified","date_creation":{"$date":"2014-01-14T18:47:28.469Z"},"name":"未审核","removed":false,"value":1}
+{"_id":{"$oid":"52d58640e1382326c39aaf42"},"code":"verifying","date_creation":{"$date":"2014-01-14T18:47:28.472Z"},"name":"审核中","removed":false,"value":2}
+{"_id":{"$oid":"52d58640e1382326c39aaf43"},"code":"verified","date_creation":{"$date":"2014-01-14T18:47:28.475Z"},"name":"通过审核","removed":false,"value":3}
+{"_id":{"$oid":"52d58640e1382326c39aaf44"},"code":"rejected","date_creation":{"$date":"2014-01-14T18:47:28.479Z"},"name":"未能通过审核","removed":false,"value":4}

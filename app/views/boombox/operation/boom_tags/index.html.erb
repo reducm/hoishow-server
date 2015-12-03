@@ -1,0 +1,19 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='boom_tags'>
+  <div class="text-center">
+    <h1>标签列表</h1>
+  </div>
+
+  <div>
+    <%= form_tag("/boombox/operation/boom_tags", class: 'form-inline') do %>
+      <%= text_field_tag "tag_name", nil,  class: 'form-control', placeholder: "输入标签名称", size:50%>
+      <%= submit_tag "创建标签", class: 'btn btn-default' %>
+    <% end %>
+  </div>
+
+
+  <div id="boom_tags_list">
+    <%= render partial: 'table' %>
+  </div>
+  
+</div>

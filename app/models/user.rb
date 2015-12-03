@@ -11,6 +11,29 @@ class User < ActiveRecord::Base
   has_many :comments, -> { where creator_type: Comment::CREATOR_USER }, :foreign_key => 'creator_id'
   has_many :topics, -> { where creator_type: Topic::CREATOR_USER }, :foreign_key => 'creator_id'
 
+  #----------------boombox
+  has_many :user_follow_collaborators, dependent: :destroy
+  has_many :follow_collaborators, through: :user_follow_collaborators, source: :collaborator
+
+  has_many :user_follow_playlists, dependent: :destroy
+  has_many :follow_playlists, through: :user_follow_playlists, source: :boom_playlist
+
+  has_many :boom_user_likes, dependent: :destroy
+  has_many :boom_like_comments, through: :boom_user_likes, source: :subject, source_type: BoomComment.name
+  has_many :boom_like_topics, through: :boom_user_likes, source: :subject, source_type: BoomTopic.name
+
+  has_many :boom_playlists, -> { where creator_type: BoomPlaylist::CREATOR_USER }, foreign_key: 'creator_id'
+
+  has_many :boom_comments, -> { where creator_type: BoomComment::CREATOR_USER }, foreign_key: "creator_id"
+
+  has_many :user_track_relations, dependent: :destroy
+
+  has_many :boom_feedbacks
+
+  has_many :boom_user_message_relations, dependent: :destroy
+  has_many :boom_messages, through: :boom_user_message_relations, source: :boom_message
+  #----------------boombox
+
   has_many :user_follow_stars
   has_many :follow_stars, through: :user_follow_stars, source: :star
 
@@ -29,9 +52,9 @@ class User < ActiveRecord::Base
   has_many :user_message_relations
   has_many :messages, through: :user_message_relations, source: :message
 
-  validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
+  #validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
   validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
-
+  after_create :set_default_playlist
   mount_uploader :avatar, ImageUploader
 
   paginates_per 10
@@ -49,6 +72,10 @@ class User < ActiveRecord::Base
   }
 
   scope :today_registered_users, ->{ where("created_at > ?", Time.now.at_beginning_of_day) }
+  # hoishow用户
+  scope :from_hoishow, ->{ where("boom_id IS NULL") }
+  # 播霸用户
+  scope :from_boombox, ->{ where("boom_id IS NOT NULL") }
 
   def sex_cn
     # male: '男'
@@ -103,6 +130,73 @@ class User < ActiveRecord::Base
       destroy_concert.destroy!
     end
   end
+
+  #----------------------boombox
+  def follow_collaborator(collaborator)
+    user_follow_collaborators.where(collaborator_id: collaborator.id).first_or_create!
+  end
+
+  def unfollow_collaborator(collaborator)
+    if destroy_collaborator = user_follow_collaborators.where(collaborator_id: collaborator.id).first
+      destroy_collaborator.destroy!
+    end
+  end
+
+  def follow_boomplaylist(playlist)
+    user_follow_playlists.where(boom_playlist_id: playlist.id).first_or_create!
+  end
+
+  def unfollow_boomplaylist(playlist)
+    if destroy_playlist = user_follow_playlists.where(boom_playlist_id: playlist.id).first
+      destroy_playlist.destroy!
+    end
+  end
+
+  def like_boomtopic(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first_or_create!
+  end
+
+  # 点赞时间
+  def like_boomtopic_at(topic)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first.created_at
+  end
+
+  def unlike_boomtopic(topic)
+    if destroy_topic = boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_TOPIC, subject_id: topic.id).first
+      destroy_topic.destroy!
+    end
+  end
+
+  def like_boomcomment(comment)
+    boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT, subject_id: comment.id).first_or_create!
+  end
+
+  def unlike_boomcomment(comment)
+    if destroy_comment = boom_user_likes.where(subject_type: BoomUserLike::SUBJECT_COMMENT, subject_id: comment.id).first
+      destroy_comment.destroy!
+    end
+  end
+
+  def recommend_tags
+    Rails.cache.fetch("user:#{id}:recommend_tags", expires_in: 1.day) do
+      track_ids = user_track_relations.order('play_count desc').limit(3).pluck(:boom_track_id).uniq
+      tag_ids = TagSubjectRelation.where(subject_type: TagSubjectRelation::SUBJECT_TRACK, subject_id: track_ids).pluck(:boom_tag_id).uniq
+      BoomTag.where(id: tag_ids)
+    end
+  end
+
+  def recommend_tracks
+    Rails.cache.fetch("user:#{id}:recommend_tracks", expires_in: 1.day) do
+      recommend_tags.map{|tag| tag.tracks}.flatten.shuffle.first(20)
+    end
+  end
+
+  def recommend_playlists
+    Rails.cache.fetch("user:#{id}:recommend_playlists", expires_in: 1.day) do
+      recommend_tags.map{|tag| tag.playlists.playlist}.flatten.shuffle.first(10)
+    end
+  end
+  #----------------------boombox
 
   def create_comment(topic, parent_id = nil, content)
     comment = comments.create(topic_id: topic.id, parent_id: parent_id, content: Base64.encode64(content))
@@ -189,5 +283,27 @@ class User < ActiveRecord::Base
 
       return_user
     end
+  end
+
+  def set_password(password)
+    self.salt = SecureRandom.base64(24)
+    pbkdf2 = OpenSSL::PKCS5::pbkdf2_hmac_sha1(password, self.salt, 1000, 24)
+    self.encrypted_password = ["sha1", Base64.encode64(pbkdf2)].join(':')
+    self.save!
+  end
+
+  def password_valid?(password)
+    params = self.encrypted_password.split(':')
+    return false if params.length != 2
+
+    pbkdf2 = Base64.decode64(params[1])
+    testHash = OpenSSL::PKCS5::pbkdf2_hmac_sha1(password, self.salt, 1000, pbkdf2.length)
+
+    return pbkdf2 == testHash
+  end
+
+  private
+  def set_default_playlist
+    self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1, mode: 0)
   end
 end

@@ -1,0 +1,28 @@
+<%# encoding: utf-8 %>
+<legend><%= link_to "Playlist列表", boombox_operation_playlists_path %>/管理音乐</legend>
+<%= hidden_field_tag "playlist_id", @playlist.id %>
+<div role="tabpanel">
+  <ul class="nav nav-pills" role="tablist" id="playlist_manage_tab">
+    <li role="presentation" class="active" id="playlist_track_list"><a href="#playlist_tracks" aria-controls="playlist_tracks" role="tab" data-toggle="tab">音乐列表</a></li>
+    <li role="presentation"><a href="#search_tracks" aria-controls="search_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="playlist_tracks">
+      <%= render partial: "/boombox/operation/tracks/list_table", locals: {tracks: @playlist_tracks, list_type: "playlist_tracks"} %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="search_tracks">
+      <div class="search">
+        <%= form_tag(manage_tracks_boombox_operation_playlist_path, class: 'form-inline', method: 'get') do %>
+          <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入音乐名字的关键字进行搜索", size: 50 %>
+          <%= submit_tag "搜索", class: 'btn btn-default', id: "search_track_btn" %>
+        <% end %>
+      </div>
+      <div id="playlist_search_track_table">
+        <%= render partial: "/boombox/operation/tracks/list_table", locals: {tracks: @tracks, list_type: "search_tracks"} %>
+      </div>
+    </div>
+  </div>
+
+</div>

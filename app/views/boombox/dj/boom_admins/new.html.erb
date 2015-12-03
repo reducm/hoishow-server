@@ -1,0 +1,38 @@
+<%# encoding: utf-8 %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="login-panel panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">申请加入</h3>
+        </div>
+        <div class="panel-body">
+          <%= form_for(:boom_admin, :url => boombox_dj_boom_admins_path, :method => 'post') do |f| %>
+            <fieldset>
+              <div class="form-group">
+                <%= f.text_field :email, class: "form-control", placeholder: "Email" %>
+              </div>
+              <div class="form-group">
+                <%= f.text_field :name, class: "form-control", placeholder: "Name" %>
+              </div>
+              <div class="form-group">
+                <%= f.password_field :password, class: "form-control", placeholder: "Password" %>
+              </div>
+              <%= f.submit "下一步", class: 'btn btn-lg btn-success btn-block' %>
+            </fieldset>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron col-md-4 col-md-offset-4" style="padding: 48px;">
+  <h2>加入播霸后，你可以</h2>
+  <p>- 拥有个人频道</p>
+  <p>- 发布音乐</p>
+  <p>- 发布 playlist</p>
+  <p>- 发布个人 timeline 动态</p>
+  <p>- 发布个人 show</p>
+</div>

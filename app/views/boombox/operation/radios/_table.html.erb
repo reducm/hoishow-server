@@ -1,0 +1,80 @@
+<%# encoding: utf-8 %>
+
+<%= form_tag(boombox_operation_radios_path, id: "radios_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "电台总数：#{radios.total_count}"%></h4>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "start_time", params[:start_time],  class: 'form-control radios_filter radio_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "end_time", params[:end_time],  class: 'form-control radios_filter radio_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= select_tag :is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:is_top] || ""), class:"form-control radios_filter" %>
+    <%= text_field_tag "q", params[:q],  class: 'form-control radios_filter', placeholder: "输入关键词进行搜索", size:30%>
+  </div>
+
+  <table class="table table-hover radios">
+    <thead>
+      <tr>
+        <th class='text-center'>ID</th>
+        <th class='text-center'>封面</th>
+        <th class='text-center'>标题</th>
+        <th class='text-center'>音乐数量</th>
+        <th class='text-center'>标签</th>
+        <th class='text-center'>创建者</th>
+        <th class='text-center'>创建时间</th>
+        <th class='text-center'>修改时间</th>
+        <th class='text-center'>推荐状态</th>
+        <th class='text-center'>操作</th>
+      </tr>
+    </thead>
+    <tbody class='text-center'>
+      <% if radios.any? %>
+        <% radios.each do|radio| %>
+          <tr>
+            <td><%= radio.id %></td>
+            <td>
+              <% if radio.cover_url %>
+                <%= image_tag(radio.cover_url, size: "50x50") %>
+              <% else %>
+                <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
+              <% end %>
+            </td>
+            <td><%= radio.name %></td>
+            <td><%= radio.tracks.count %></td>
+            <% cache tags = radio.boom_tags.pluck(:name) do %>
+            <td>
+                <% if tags.present? %>
+                  <%= truncate(tags.join(", "), length: 50) %>
+                <% end %>
+            </td>
+            <% end %>
+            <td>
+              <% creator = radio.creator %>
+              <% if creator %>
+                <% if radio.creator_type == BoomPlaylist::CREATOR_USER %>
+                  <%= creator.show_name  %>
+                <% else %>
+                  <%= creator.name  %>
+                <% end %>
+              <% end %>
+            </td>
+            <td><%= get_datetime( radio.created_at ) %></td>
+            <td><%= get_datetime( radio.updated_at ) %></td>
+            <td><%= radio.is_top_cn %></td>
+            <td>
+              <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
+              <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
+            </td>
+          </tr>
+        <%end%>
+      <%end%>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :per, options_for_select([5, 10, 15, 20], selected: params[:per] || 10), class: "form-control radios_filter" %>
+  </div>
+
+  <%= paginate radios, remote: true %>
+<% end %>

@@ -1,0 +1,26 @@
+<%# encoding: utf-8 %>
+<% if params[:controller] == "boombox/operation/collaborators" %>
+  <% form_path = boombox_operation_collaborator_path(@collaborator) %>
+<% else %>
+  <% form_path = boombox_operation_tracks_path %>
+<% end %>
+<%= form_tag(form_path, id: "tracks_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "音乐总数：#{tracks.total_count}"%></h4>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "tracks_start_time", params[:tracks_start_time],  class: 'form-control tracks_filter track_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "tracks_end_time", params[:tracks_end_time],  class: 'form-control tracks_filter track_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= select_tag :tracks_is_top, options_for_select([["全部",""], ["推荐","1"]], selected: params[:tracks_is_top] || ""), class:"form-control tracks_filter" %>
+    <%= text_field_tag "tracks_q", params[:tracks_q],  class: 'form-control tracks_filter', placeholder: "输入关键词进行搜索", size:30 %>
+  </div>
+
+  <%= render partial: "/boombox/operation/tracks/list_table", locals: {tracks: tracks, list_type: ""} %>
+
+  <div>每页显示数量
+    <%= select_tag :tracks_per, options_for_select([5, 10, 15, 20], selected: params[:tracks_per] || 10), class: "form-control tracks_filter" %>
+  </div>
+
+<% end %>

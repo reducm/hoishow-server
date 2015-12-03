@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='playlists'>
+  <div class="text-center">
+    <h1>Playlist</h1>
+    <%= link_to "新建Playlist", new_boombox_operation_playlist_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="mt20" id="playlists_list">
+    <%= render partial: "table", locals: {playlists: @playlists} %>
+  </div>
+</div>

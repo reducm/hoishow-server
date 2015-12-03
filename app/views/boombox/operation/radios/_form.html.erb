@@ -1,0 +1,54 @@
+<%# encoding: utf-8 %>
+<legend><%= link_to "电台列表", boombox_operation_radios_path %>/<%= params[:action] == "new" ? "新建电台" : "编辑电台"%></legend>
+<div class="nav">
+  <div class="col-md-offset-5">
+    <% if params[:action] == 'new' %>
+      <% form_url = "/boombox/operation/radios" %>
+      <% form_method = "POST" %>
+      <h1>新建电台</h1>
+    <% elsif params[:action] == 'edit' %>
+      <% form_url = "/boombox/operation/radios/#{radio.id}" %>
+      <% form_method = "PATCH" %>
+      <h1>编辑电台</h1>
+    <% end %>
+  </div>
+  <div id="radio_form">
+    <%= hidden_field_tag "radio_tag_ids", radio.boom_tags.pluck(:id) %>
+    <%= simple_form_for( radio, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="text-center">
+            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "radio-cover-uploader col-sm-offset-4"} %>
+            <div id="radio_cover_preview">
+              <%= boombox_default_avatar radio.cover_url %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="radio_info">
+            <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
+            <%= f.input :is_top, label: "打勾推荐此电台" %>
+
+            <%= label_tag "tags", "标签" %>
+            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
+            <div id="radio_delete_tag">
+              <% tags = radio.boom_tags.pluck(:name, :id) %>
+              <% tags.each do |radio_tag| %>
+                <span class="btn btn-default"><%= radio_tag[0] + "" %></span><button data-tag-id="<%= radio_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
+              <% end %>
+            </div>
+            <div>
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "radio_tag_list" %>
+              <a class="btn btn-primary" id="radio_add_tag">添加选中标签</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-offset-5">
+        <%= submit_tag "保存", class: "btn btn-primary", id: "radio-submit", data: { disable_with: "loading" } %>
+      </div>
+    <% end %>
+  </div>
+</div>
