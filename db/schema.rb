@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.string   "color",       limit: 255
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
+    t.boolean  "is_top",      limit: 1,        default: false
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -672,7 +673,7 @@ ActiveRecord::Schema.define(version: 20151130032132) do
   create_table "show_area_relations", force: :cascade do |t|
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
-    t.decimal  "price",                   precision: 6, scale: 2
+    t.decimal  "price",                   precision: 10, scale: 2
     t.datetime "created_at",                                                      null: false
     t.datetime "updated_at",                                                      null: false
     t.boolean  "is_sold_out", limit: 1,                           default: false

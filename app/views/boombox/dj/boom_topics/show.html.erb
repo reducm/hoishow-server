@@ -7,7 +7,7 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th class="col-md-6">内容</th>
+        <th class="col-md-9">内容</th>
         <th>创建时间<%= @boom_topic.created_at.strfcn_time %></th>
       <tr>
     <thead>
@@ -16,7 +16,10 @@
         <td><%= @boom_topic.content %></td>
         <td>
           <% if @boom_topic.image_url.present? %>
-            <%= image_tag(@boom_topic.image_url) %>
+            <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
+              <img src=<%= @boom_topic.image_url %> class="thumb"></img>
+              <figcaption>点击查看大图</figcaption>
+            </a>
           <% end %>
         </td>
       </tr>
@@ -37,3 +40,14 @@
     <%= render partial: 'boombox/dj/users/table', locals: {likers: @likers} %>
   </div>
 </div>
+
+<% if @boom_topic.image_url.present? %>
+  <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img src=<%= @boom_topic.image_url %> style="width: 100%">
+        </div>
+      </div>
+    </div>
+<% end %>

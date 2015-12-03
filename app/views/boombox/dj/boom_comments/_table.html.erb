@@ -22,7 +22,7 @@
       <% if comments.any? %>
         <% comments.each do |comment| %>
           <tr>
-            <td><%= comment.creator.name %></td>
+            <td><%= comment.creator_name %></td>
             <td style="width: 30%"><%= truncate(comment.content, length: 150) %></td>
             <td><%= comment.created_at.strfcn_time %></td>
             <td>
