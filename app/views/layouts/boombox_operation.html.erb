@@ -1,0 +1,43 @@
+<%# encoding: utf-8 %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>播霸后台-<%= t( "boombox_controller.#{ params[:controller].split('/')[2] }")%> </title>
+  <%= stylesheet_link_tag    'boombox_operation', media: 'all' %>
+  <%= javascript_include_tag 'boombox_operation' %>
+  <%= favicon_link_tag '/boombox_admin_avatar.png', :type => 'image/png' %>
+  <%= csrf_meta_tags %>
+</head>
+<body id='boombox_<%= "#{params[:controller].split('/')[2]}_#{params[:action]}" %>'>
+
+<script type="text/javascript">
+  $(function(){
+    var notice = "<%= flash[:notice] %>";
+    var alert = "<%=  flash[:alert] %>";
+    var warning = "<%= flash[:warning] %>";
+    <% if flash[:notice] %>
+      $.notify(notice, {
+        globalPosition:"top center",
+        className: 'success',} );
+    <% end %>
+    <% if flash[:alert] %>
+      $.notify(alert, {
+        globalPosition:"top center",
+        className: 'error'  } );
+    <% end %>
+    <% if flash[:warning] %>
+      $.notify(warning, {
+        globalPosition:"top center",
+        className: 'warning'  } );
+    <% end %>
+    })
+</script>
+
+  <% if current_admin && request.path_info.exclude?( '/signin'  ) %>
+    <%= render partial: "layouts/boombox_sidebar" %>
+  <% else %>
+    <%= yield %>
+  <% end %>
+</body>
+</html>

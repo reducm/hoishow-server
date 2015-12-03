@@ -3,9 +3,7 @@ development: &DEFAULT
   android_app_master_secret: ''
   ios_appkey: ''
   ios_app_master_secret: ''
-  umeng_send_url: "http://msg.umeng.com/api/send"
-  umeng_upload_url: "http://msg.umeng.com/upload"
-  umeng_status_url: "http://msg.umeng.com/api/status"
+  production_mode: ''
 
 test:
   <<: *DEFAULT

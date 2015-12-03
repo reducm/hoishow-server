@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='radios'>
+  <div class="text-center">
+    <h1>电台</h1>
+    <%= link_to "新建电台", new_boombox_operation_radio_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="mt20" id="radios_list">
+    <%= render partial: "table", locals: {radios: @radios} %>
+  </div>
+</div>

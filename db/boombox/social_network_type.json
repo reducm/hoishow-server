@@ -1,0 +1,3 @@
+{"_id":{"$oid":"53212f7ee13823330b61146d"},"code":"weixin","date_creation":{"$date":"2014-03-13T04:09:34.247Z"},"name":"微信","removed":false,"value":0}
+{"_id":{"$oid":"53212f7ee13823330b61146e"},"code":"weibo","date_creation":{"$date":"2014-03-13T04:09:34.287Z"},"name":"微博","removed":false,"value":1}
+{"_id":{"$oid":"53212f7ee13823330b61146f"},"code":"douban","date_creation":{"$date":"2014-03-13T04:09:34.290Z"},"name":"豆瓣","removed":false,"value":2}

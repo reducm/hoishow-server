@@ -1,0 +1,50 @@
+$blue_darker: #22272B
+$blue_dark: #282D30
+$green: #1FBBA6
+$green_dark: #009679
+
+a
+  color: #5DAEE3
+
+#wrapper
+  background-color: #434c51
+  color: #444
+  .nav h1,h2
+    font-size: 22px
+  .navbar-right
+    margin-right: 0
+  .nav-pills > li.active > a
+    background: #FFCD5C
+  .btn-primary
+    background: $green
+    border-color: $green
+    &:hover
+      background: $green_dark
+      border-color: $green_dark
+  .navbar
+    background: #F4F4F4
+    border-bottom: none
+    .navbar-header
+      width: 210px
+      background: #434c51
+      a
+        margin-left: 30px
+        color: #EFF3F4
+        i
+          font-size: 1.5em
+          color: white 
+    .sidebar
+      background: $blue_dark
+      margin-top: 50px
+      li
+        border-bottom: none
+        a
+          color: white
+          padding: 15px 15px 15px 50px
+          border-right: 5px solid #434C51
+          background: #434C51
+          &:hover
+            background: $blue_darker
+            border-right-color: $blue_darker
+          i
+            margin-right: 15px

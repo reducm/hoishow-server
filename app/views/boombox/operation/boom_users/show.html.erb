@@ -1,0 +1,91 @@
+<%# encoding: utf-8 %>
+
+<legend><%= link_to "用户列表", boombox_operation_boom_users_path %>/用户详情</legend>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="col-md-offset-4">用户详情</h3>
+    <% if @user.is_block %>
+      <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(@user, is_block: 0), method: 'post', class: "btn btn-success pull-right" %>
+    <% else %>
+      <%= link_to "屏蔽此用户", block_user_boombox_operation_boom_user_path(@user, is_block: 1), method: 'post', class: "btn btn-danger pull-right" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3 col-md-offset-1 avatar-area" id="user_avatar_area">
+    <div class="col-md-7 avatar-content">
+      <div id="user_show_avatar">
+        <%= boombox_default_cover @user.avatar_url %>
+      </div>
+    </div>
+    <div class="col-md-7 col-md-offset-3" id="block_user_avatar_btn">
+      <%= link_to "屏蔽头像", remove_avatar_boombox_operation_boom_user_path(@user), method: 'post', class: "btn btn-danger" %>
+    </div>
+  </div>
+  <div class="col-md-5 information-area">
+    <div class="col-md-10 col-md-offset-1 infomation-content text-center">
+      <div class="boom_user_info row col-md-20">
+        <label class="col-md-5">昵称</label>
+        <span class="col-md-5"><%= @user.nickname%></span>
+      </div>
+      <div class="boom_user_info row col-md-20">
+        <label class="col-md-5">性别</label>
+        <span class="col-md-5"><%= @user.sex_cn %></span>
+      </div>
+      <div class="boom_user_info row col-md-20">
+        <label class="col-md-5">生日</label>
+        <span class="col-md-5"><%= get_date( @user.birthday ) %></span>
+      </div>
+      <div class="boom_user_info row col-md-20">
+        <label class="col-md-5">邮箱</label>
+        <span class="col-md-5"><%= @user.email %></span>
+      </div>
+      <div class="boom_user_info row col-md-20">
+        <label class="col-md-5">手机号码</label>
+        <span class="col-md-5"><%= @user.mobile %></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div role="tabpanel">
+  <ul class="nav nav-pills" role="tablist" id="">
+    <li role="presentation" class="active" id=""><a href="#boom_user_comments_list" aria-controls="boom_user_comments_list" role="tab" data-toggle="tab">评论</a></li>
+    <li role="presentation"><a href="#boom_user_like_topics" aria-controls="boom_user_like_topics" role="tab" data-toggle="tab">点赞</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="boom_user_comments_list">
+      <%= render partial: "user_comments_table" %>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="boom_user_like_topics">
+  <h4 class="pull-left"><%= "点赞总数：#{@like_topics.total_count}"%></h4>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class='text-center'>动态发表人</th>
+            <th class='text-center'>点赞的动态</th>
+            <th class='text-center'>点赞时间</th>
+          </tr>
+        </thead>
+        <tbody class='text-center'>
+          <% if @like_topics.any? %>
+            <% @like_topics.each do |topic| %>
+              <tr>
+                <td class="text-center"><%= topic.created_by %></td>
+                <td class="text-center" style="width: 30%"><%= link_to truncate(topic.content, length: 50), boombox_operation_boom_topic_path(topic) %></td>
+                
+                <td class="text-center"><%= get_datetime( @user.like_boomtopic_at(topic) )%></td>
+              </tr>
+            <%end%>
+          <%end%>
+        </tbody>
+      </table>
+
+      <%= paginate @like_topics, param_name: "like_topics_page" %>
+    </div>
+  </div>
+</div>
+
+

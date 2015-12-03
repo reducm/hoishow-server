@@ -17,4 +17,12 @@ module ApiAuthHelper
     sign = Digest::MD5.hexdigest(signing_string).upcase
     options.merge!(sign: sign)
   end
+
+  def encrypted_params_in_boombox(api_auth, options = {})
+    options.merge!(key: api_auth.key)
+    options.merge!(timestamp: Time.now.to_i)
+    signing_string = options.sort.to_h.map{|key, value| "#{key.to_s}=#{value}"}.join("&") << api_auth.secretcode
+    sign = Digest::MD5.hexdigest(signing_string).upcase
+    options.merge!(sign: sign)
+  end
 end

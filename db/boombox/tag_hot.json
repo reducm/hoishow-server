@@ -1,0 +1,14 @@
+{"_id":{"$oid":"5306f6b0e13823169856c597"},"date_creation":{"$date":"2014-02-21T06:48:16.733Z"},"name":"复古","removed":false}
+{"_id":{"$oid":"5306f6b4e13823169856c598"},"date_creation":{"$date":"2014-02-21T06:48:20.852Z"},"name":"电子","removed":false}
+{"_id":{"$oid":"5306f6c6e13823169856c599"},"date_creation":{"$date":"2014-02-21T06:48:38.683Z"},"name":"金曲集锦","removed":false}
+{"_id":{"$oid":"5306f6cae13823169856c59a"},"date_creation":{"$date":"2014-02-21T06:48:42.312Z"},"name":"致敬","removed":false}
+{"_id":{"$oid":"5306f6d4e13823169856c59b"},"date_creation":{"$date":"2014-02-21T06:48:52.423Z"},"name":"独立","removed":false}
+{"_id":{"$oid":"5306f6d8e13823169856c59c"},"date_creation":{"$date":"2014-02-21T06:48:56.122Z"},"name":"民谣","removed":false}
+{"_id":{"$oid":"5306f6f8e13823169856c59e"},"date_creation":{"$date":"2014-02-21T06:49:28.071Z"},"name":"正能量","removed":false}
+{"_id":{"$oid":"5306f749e13823169856c5a4"},"date_creation":{"$date":"2014-02-21T06:50:49.965Z"},"name":"跳舞","removed":false}
+{"_id":{"$oid":"53077758e13823169856c633"},"date_creation":{"$date":"2014-02-21T15:57:12.442Z"},"name":"Rock","removed":false}
+{"_id":{"$oid":"5307776de13823169856c634"},"date_creation":{"$date":"2014-02-21T15:57:33.055Z"},"name":"House","removed":false}
+{"_id":{"$oid":"530826bae13823169856c641"},"date_creation":{"$date":"2014-02-22T04:25:30.988Z"},"name":"神曲","removed":false}
+{"_id":{"$oid":"5309d80ee13823169856d105"},"date_creation":{"$date":"2014-02-23T11:14:22.198Z"},"name":"Gay","removed":false}
+{"_id":{"$oid":"5315a062e138237364d4a150"},"date_creation":{"$date":"2014-03-04T09:44:02.044Z"},"name":"法国文化月","removed":false}
+{"_id":{"$oid":"5333b651e1382323aa6b358c"},"date_creation":{"$date":"2014-03-27T05:25:37.885Z"},"name":"Geek","removed":false}

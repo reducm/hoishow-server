@@ -1,0 +1,41 @@
+<%# encoding: utf-8 %>
+
+<legend><%= link_to "管理员列表", boombox_operation_boom_admins_path %>/新建系统用户</legend>
+<div class="nav">
+  <h2 class="text-center">新增系统用户</h2>
+  <div class="form-horizontal">
+    <%= form_tag boombox_operation_boom_admins_path, method: :post do %>
+      <div class="form-group">
+        <div class="col-sm-2 control-label">
+          <%= label_tag :boom_admin_new_username, "名称" %>
+        </div>
+        <div class="col-sm-5" >
+          <%= text_field_tag :boom_admin_new_username, nil, class: 'form-control'%>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-2 control-label">
+          <%= label_tag :boom_admin_new_password, "密码" %>
+        </div>
+        <div class="col-sm-5">
+          <%= password_field_tag :boom_admin_new_password ,nil, class: 'form-control' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-2 control-label">
+          <%= label_tag :admin_type, "类型"%>
+        </div>
+        <div class="col-sm-2">
+          <%= select_tag :admin_type, options_for_select([ ["Admin", 0], ["Operation", 1], ["dj", 2] ], "Admin") , class: 'form-control' %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10" >
+          <%= submit_tag "创建", id: "boom_admin_new_submit", class: "btn btn-primary", data: { disable_with: "loading"  } %>
+          <%= link_to "返回", boombox_operation_boom_admins_path, class: 'btn btn-default' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <strong id="boom_admin_new_error_msg" class="col-sm-offset-2 col-sm-10 form-control-static"></strong>
+</div>

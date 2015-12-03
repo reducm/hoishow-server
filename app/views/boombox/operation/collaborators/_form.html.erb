@@ -1,0 +1,88 @@
+<%# encoding: utf-8 %>
+
+<legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(collaborator) %>/艺人资料</legend>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="pull-left header-primary">艺人资料</h3>
+    <% if collaborator.reload.verified? %>
+      <h4><span class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span><span class="label label-success pull-right">已审核</span></h4>
+    <% else %>
+      <%= link_to '通过审核', verify_boombox_operation_collaborator_path(collaborator), class: 'btn btn-primary pull-right', method: :post %>
+    <% end %>
+  </div>
+</div>
+
+<%= simple_form_for([:boombox, :operation, collaborator ], html: { class: 'form-horizontal', id: 'collaborator-dropzone' }) do |f| %>
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1 avatar-area">
+      <legend>社交信息（公开）</legend>
+      <% if collaborator.avatar_url %>
+        <%= image_tag(collaborator.avatar_url, size: "50x50") %>
+      <% else %>
+        <p>没有头像</p>
+      <% end %>
+      <%= f.input :avatar, label: "（请上传 300x300 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+      <div class="col-md-7 avatar-content">
+        <%= f.input :identity, collection:[["DJ", "dj"], ["制作人", "producer"], ["派对搞手", "party_planer"]], label: "身份" %>
+        <%= f.input :nickname, label: "昵称（一个月内只能修改一次）" %>
+        <%= f.input :weibo, label: "微信" %>
+        <%= f.input :wechat, label: "微博" %>
+      </div>
+    </div>
+
+    <div class="col-md-5 information-area">
+      <legend>个人信息（保密）</legend>
+      <div class="col-md-7 infomation-content">
+        <fieldset disabled>
+          <div class="form-group">
+            <label for="disabledTextInput">真实姓名</label>
+            <input type="text" id="disabledTextInput" class="form-control" placeholder="<%= collaborator.name %>">
+          </div>
+        </fieldset>
+        <%= f.input :sex, collection:[["男", "male"], ["女", "female"]], as: :radio_buttons, label: "性别" %>
+        <%= f.input :birth, as: :datetimepicker, label: "生日" %>
+        <%= f.input :contact, label: "手机号" %>
+        <%= f.input :email, label: "邮箱" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1 poster-area">
+      <legend class="legend-without-border">海报</legend>
+      <% if collaborator.cover_url %>
+        <%= image_tag(collaborator.cover_url, size: "240x160") %>
+      <% else %>
+        <p>没有海报</p>
+      <% end %>
+      <%= f.input :cover, label: "（请上传 960x640 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+    </div>
+    <%= hidden_field_tag "collaborator_tag_ids", collaborator.boom_tags.pluck(:id) %>
+    <div class="col-md-5 tag-area">
+      <legend class="legend-without-border">标签</legend>
+      <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
+      <div>
+        <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "collaborator_tag_list" %>
+        <a class="btn btn-primary" id="collaborator_add_tag">添加选中标签</a>
+      </div>
+      <div id="collaborator_delete_tag">
+        <% tags = collaborator.boom_tags.pluck(:name, :id) %>
+        <% tags.each do |collaborator_tag| %>
+          <span class="btn btn-default"><%= collaborator_tag[0] + "" %></span><button data-tag-id="<%= collaborator_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1 introduction-area">
+      <%= f.input :description, as: :text, label: '个人简介' %>        
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <%= submit_tag "保存", class: "btn btn-primary pull-right", data: { disable_with: "loading" } %>
+    </div>
+  </div>
+<% end %>

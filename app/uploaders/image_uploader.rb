@@ -4,7 +4,7 @@ IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar 120x160 224x292 300x423 320 
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  if Rails.env.production? || Rails.env.staging?
+  if Rails.env.production? || Rails.env.boombox?
     storage :upyun
   else
     storage :file
@@ -37,11 +37,24 @@ class ImageUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png bmp)
   end
 
+  def md5
+    chunk = model.send(mounted_as)
+    @md5 ||= Digest::MD5.hexdigest(chunk.read.to_s)
+  end
+
+  # by 华哥
+  # Override the filename of the uploaded files:
   def filename
-    if super.present?
-      @name ||="#{Digest::MD5.hexdigest(Time.now.to_i.to_s + original_filename)}.#{file.extension.downcase}" if original_filename
+    if original_filename
+      # current_path 是 Carrierwave 上传过程临时创建的一个文件，有时间标记
+      # 例如: /Users/jason/work/ruby-china/public/uploads/tmp/20131105-1057-46664-5614/_____2013-11-05___10.37.50.png
+      @name ||= Digest::MD5.hexdigest(current_path)
+      "#{@name}.#{file.extension}"
     end
   end
+  #def filename
+    #@name ||= "#{md5}#{File.extname(super)}" if super
+  #end
 
   private
   def image_version_name

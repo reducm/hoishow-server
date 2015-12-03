@@ -1,0 +1,34 @@
+<%= form_tag(boombox_operation_boom_topic_path(@boom_topic), class: 'form-inline', id: 'likers_form', method: 'get', remote: true) do %>
+  <div class="row">
+    <%= label_tag 'likers_count', '点赞数：' + @likers.total_count.to_s %> 
+  </div>
+
+  <div class="row">
+    <table class="table table-hover likers_list">
+      <thead>
+        <tr>
+          <th>用户名</th>
+          <th>点赞时间</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% if likers.any? %>
+        <% likers.each do |liker| %>
+          <tr>
+            <td><%= liker.nickname || liker.mobile %></td>
+            <td><%= get_datetime( liker.like_boomtopic_at(@boom_topic) ) %></td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr><td>无数据</td></tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <div style="text-align: left">每页显示数量
+      <%= select_tag :likers_per, options_for_select([5, 10, 15, 20], selected: params[:likers_per] || 10), class: 'form-control likers_filter' %>
+    </div>
+
+   <%= paginate likers, param_name: 'likers_page', remote: true %>
+  </div>
+<% end %>

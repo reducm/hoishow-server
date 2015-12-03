@@ -1,0 +1,15 @@
+$('#boom_feedbacks_list').html("<%= j render partial: 'table' %>");
+
+$('.boom_feedback_datetime').datetimepicker({
+  format: 'Y-m-d H:i',
+  startDate: new Date(),
+  defaultDate: new Date(),
+  lang: 'zh',
+  step: 15,
+  scrollInput: false
+})
+
+$(".boom_feedback_float").on("click", function() {
+  $("#boom_fb_content").text($(this).text())
+  $("#boom_feedback_pop_wrap").modal('show')
+});

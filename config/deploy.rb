@@ -4,6 +4,7 @@ set :stages, ["staging", "production"]
 set :default_stage, "staging"
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 set :whenever_roles, ->{ [:db, :app] }
+set :sidekiq_config, -> { File.join(current_path, 'config', 'sidekiq.yml') }
 set :passenger_restart_with_touch, true
 
 set :sidekiq_monit_default_hooks, false
