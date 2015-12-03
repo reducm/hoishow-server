@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   Routes::BoomboxOperationRoutes.draw(self)
   Routes::BoomboxDjRoutes.draw(self)
 
-  root to: 'pages#index'
+  root to: 'boombox/dj/home#index' #首页自动跳转至DJ后台
 
   # app帮助
   get "/helps" => 'pages#show_help'
