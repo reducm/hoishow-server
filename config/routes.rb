@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   Routes::BoomboxOperationRoutes.draw(self)
   Routes::BoomboxDjRoutes.draw(self)
 
-  root to: 'pages#index'
+  root to: 'boombox/dj/home#index' #首页自动跳转至DJ后台
 
   # app帮助
   get "/helps" => 'pages#show_help'
@@ -184,6 +184,7 @@ Rails.application.routes.draw do
         delete :del_event
         post :upload_map
         get :get_coordinates
+        patch :toggle_area_is_top
       end
     end
     resources :orders do

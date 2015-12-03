@@ -12,20 +12,5 @@ class CreateTagRelationships < ActiveRecord::Migration
     end
 
     add_index :tag_relationships, :boom_id
-
-    File.open(File.join(Rails.root, 'db', 'boombox', 'tag_relationship.json'), 'r') do |file|
-      TagRelationship.transaction do
-        file.each do |line|
-          t_json = JSON.parse line
-          TagRelationship.create(
-            boom_id: t_json['_id']['$oid'],
-            boom_tag_id: t_json['tag_item']['$oid'],
-            boom_tag_sort_id: t_json['tag_sort']['$oid'],
-            removed: t_json['removed'],
-            created_at: t_json['date_creation']['$date'].to_time
-          )
-        end
-      end
-    end if Rails.env.production? || Rails.env.staging?
   end
 end

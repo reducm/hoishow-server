@@ -11,21 +11,5 @@ class CreateBoomUserStatuses < ActiveRecord::Migration
     end
 
     add_index :boom_user_statuses, :boom_id
-
-    File.open(File.join(Rails.root, 'db', 'boombox', 'user_status.json'), 'r') do |file|
-      BoomUserStatus.transaction do
-        file.each do |line|
-          u_json = JSON.parse line
-          BoomUserStatus.create(
-            boom_id: u_json['_id']['$oid'],
-            name: u_json['name'],
-            code: u_json['code'],
-            value: u_json['value'],
-            removed: u_json['removed'],
-            created_at: u_json['date_creation']['$date'].to_time
-          )
-        end
-      end
-    end if Rails.env.production? || Rails.env.staging?
   end
 end
