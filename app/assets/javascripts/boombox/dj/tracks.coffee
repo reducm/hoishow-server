@@ -60,3 +60,7 @@ $ ->
       if duration
         $("#boom_track_duration").attr("value", duration)
       $("form").submit()
+
+  #上传图片后隐藏track_cover_preview
+  $('input#boom_track_cover').on 'change', ->
+    $('div#track_cover_preview').hide()

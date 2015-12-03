@@ -13,12 +13,12 @@
         <ul class="nav" id="side-menu">
           <li>
             <div style="text-align: center;">
-              <% if current_collaborator.avatar_url.present? %> 
-                <%= image_tag current_collaborator.avatar_url, size: '80x80' %>
-              <% end%>
-              <figcaption style="color: white;">
-                <%= current_collaborator.name %>
-              </figcaption>
+              <p>
+                <div id="sb_avatar">
+                  <%= boombox_default_avatar current_collaborator.avatar_url %>
+                  <figcaption style="color: white;"><%= current_collaborator.nickname %></figcaption>
+                </div>
+              </p>
             </div>
             <%= link_to boombox_dj_signout_path, method: :delete do %>
               <i>退出登录</i>

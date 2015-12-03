@@ -7,6 +7,8 @@
 @import "operation/jquery.datetimepicker"
 
 @import "boombox/dj/boombox_sidebar"
+@import "boombox/dj/home"
+@import "boombox/dj/pages"
 @import "boombox/dj/boom_albums"
 @import "boombox/dj/collaborators"
 @import "boombox/dj/boom_topics"
@@ -33,7 +35,7 @@
 
 .search
   float: right
-  margin-top: 20px
+  margin: 20px
 
 .dragable_items
   .handle
@@ -44,3 +46,15 @@
 .btn-next-to-header
   margin-top: 15px
   margin-left: 10px
+
+.table
+  tbody
+    tr
+      td
+        vertical-align: middle
+
+#sb_avatar
+  img
+    width: 160px 
+    height: 160px 
+    object-fit: contain

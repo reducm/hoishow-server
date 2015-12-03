@@ -23,7 +23,7 @@
           <td><%= image_tag(track.cover_url, size: "50x50") if track.cover_url %></td>
           <td>
             <% if track.file_url %>
-              <audio src=<%= track.file_url %> controls="controls">你的浏览器不支持audio标签</audio>
+              <audio src=<%= track.file_url %> preload="metadata" controls="controls">你的浏览器不支持audio标签</audio>
             <% end %>
           </td>
           <td><%= track.name %></td>
@@ -35,11 +35,11 @@
               <%= tags.join(",") %>
             <% end %>
           </td>
-          <td><%= track.creator.name if track.creator %></td>
+          <td><%= track.creator.nickname if track.creator %></td>
           <td><%= track.created_at.try(:strfcn_time) %></td>
           <td>
-            <%= link_to "编辑", edit_boombox_dj_boom_track_path(track)%>
-            <%= link_to "删除", boombox_dj_boom_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
+            <%= link_to "编辑", edit_boombox_dj_boom_track_path(track), class: 'btn btn-default' %>
+            <%= link_to "删除", boombox_dj_boom_track_path(track), method: "delete", data: {confirm: "确定删除吗？"}, class: 'btn btn-danger' %>
           </td>
         </tr>
       <%end%>
