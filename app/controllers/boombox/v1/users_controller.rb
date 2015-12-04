@@ -14,10 +14,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def verified_mobile
     mobile = params[:mobile]
     user = User.where(mobile: mobile).first
-    if user.blank?
-      render json: { is_member: false, mobile: mobile }
-    else
+    if user
       render json: { is_member: true, mobile: mobile }
+    else
+      render json: { is_member: false, mobile: mobile }
     end
   end
 
@@ -92,6 +92,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def update_user
     return error_respond(I18n.t("errors.messages.email_format_wrong")) if params[:email].present? && !verify_email?(params[:email])
+    return error_respond(I18n.t("errors.messages.nickname_duplicate")) if params[:nickname].present? && User.where(nickname: params[:nickname]).any?
 
     if @user.update(user_params)
       render partial: "user", locals:{ user: @user }
@@ -213,7 +214,11 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       end
     elsif params[:type] == 'remove'
       playlist = BoomPlaylist.find_by_id(params[:playlist_id])
-      if playlist && playlist.destroy!
+
+      if playlist
+        return error_respond I18n.t("errors.messages.cannot_remove_default_playlist") if playlist.is_default
+
+        playlist.destroy!
         render json: { result: "success" }
       else
         error_respond I18n.t("errors.messages.playlist_not_found")

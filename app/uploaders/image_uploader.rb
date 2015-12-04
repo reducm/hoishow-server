@@ -4,7 +4,7 @@ IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar 120x160 224x292 300x423 320 
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  if Rails.env.production? || Rails.env.boombox?
+  if Rails.env.production? || Rails.env.boombox? || Rails.env.staging?
     storage :upyun
   else
     storage :file
