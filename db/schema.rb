@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130032132) do
+ActiveRecord::Schema.define(version: 20151204033028) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -77,8 +77,8 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.string   "name",        limit: 255
     t.integer  "seats_count", limit: 4
     t.integer  "stadium_id",  limit: 4
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.string   "sort_by",     limit: 255
     t.text     "seats_info",  limit: 16777215
     t.text     "coordinates", limit: 65535
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.boolean  "removed",      limit: 1
     t.boolean  "is_top",       limit: 1
     t.boolean  "is_default",   limit: 1,   default: false
+    t.boolean  "is_display",   limit: 1,   default: false
   end
 
   create_table "boom_recommends", force: :cascade do |t|
@@ -674,12 +675,12 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.integer  "show_id",     limit: 4
     t.integer  "area_id",     limit: 4
     t.decimal  "price",                   precision: 10, scale: 2
-    t.datetime "created_at",                                                      null: false
-    t.datetime "updated_at",                                                      null: false
-    t.boolean  "is_sold_out", limit: 1,                           default: false
-    t.integer  "seats_count", limit: 4,                           default: 0
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.boolean  "is_sold_out", limit: 1,                            default: false
+    t.integer  "seats_count", limit: 4,                            default: 0
     t.string   "channels",    limit: 255
-    t.integer  "left_seats",  limit: 4,                           default: 0
+    t.integer  "left_seats",  limit: 4,                            default: 0
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree

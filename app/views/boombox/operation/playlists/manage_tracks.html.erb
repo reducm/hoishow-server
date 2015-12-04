@@ -1,5 +1,8 @@
 <%# encoding: utf-8 %>
-<legend><%= link_to "Playlist列表", boombox_operation_playlists_path %>/管理音乐</legend>
+<legend>
+  <%= link_to "Playlist列表", boombox_operation_playlists_path %>/管理音乐
+  <%= link_to "发布playlist", publish_boombox_operation_playlist_path(@playlist), method: :post, class: 'btn btn-primary' unless @playlist.is_display %>
+</legend>
 <%= hidden_field_tag "playlist_id", @playlist.id %>
 <div role="tabpanel">
   <ul class="nav nav-pills" role="tablist" id="playlist_manage_tab">
@@ -24,5 +27,4 @@
       </div>
     </div>
   </div>
-
 </div>
