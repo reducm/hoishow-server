@@ -33,7 +33,7 @@ class BoomPlaylist < ActiveRecord::Base
   scope :valid_playlists, -> { where("removed = false and mode = 0 and creator_type != ?", CREATOR_USER) }
   scope :valid_radios, -> { where("removed = false and mode = 1") }
   #for api
-  scope :open, -> { where('creator_type != ? and removed = false', CREATOR_USER).order('is_top, RAND()')}
+  scope :open, -> { where('creator_type != ? and removed = false and is_display = true', CREATOR_USER).order('is_top, RAND()')}
 
   paginates_per 10
 
@@ -90,6 +90,14 @@ class BoomPlaylist < ActiveRecord::Base
       "推荐中"
     else
       "没有推荐"
+    end
+  end
+
+  def is_display_cn
+    if is_display
+      "已发布"
+    else
+      "未发布"
     end
   end
 
