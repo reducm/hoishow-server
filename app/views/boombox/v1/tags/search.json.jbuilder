@@ -2,7 +2,8 @@
 
 json.collaborators do
   json.array! @records[:collaborators].first(4) do |colla|
-    json.(colla, :id, :name, :followed_count)
+    json.(colla, :id, :followed_count)
+    json.name colla.display_name
     json.cover colla.cover_url || ''
   end
 end
@@ -12,6 +13,7 @@ json.activities do
     json.(activity, :id, :name, :showtime, :mode)
     json.location_name activity.location_name
     json.poster activity.cover_url || ''
+    json.description description_boombox_v1_activity_url(activity)
   end
 end
 

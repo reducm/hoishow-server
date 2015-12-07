@@ -99,6 +99,7 @@ zh-CN:
   errors:
     format: "%{attribute}%{message}"
     messages:
+      mobile_duplicate: 手机号已注册
       cannot_remove_default_playlist: 不能删除默认的playlist
       nickname_duplicate: 该昵称已被使用
       track_is_not_liked: 音乐未收藏
