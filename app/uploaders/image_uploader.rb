@@ -1,10 +1,10 @@
 # encoding: utf-8
 #MAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(320 640 800)
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar 120x160 224x292 300x423 320 640 800)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800)
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
-  if Rails.env.production? || Rails.env.boombox?
+  if Rails.env.production? || Rails.env.boombox? || Rails.env.staging?
     storage :upyun
   else
     storage :file
@@ -26,7 +26,7 @@ class ImageUploader < CarrierWave::Uploader::Base
     @url ||= super({})
     version_name = version_name.to_s
     return @url if version_name.blank?
-    unless version_name.in?(image_version_name)
+    unless version_name.in?(IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES)
       # 故意在调用了一个没有定义的“缩略图版本名称”的时候抛出异常，以便开发的时候能及时看到调错了
       raise "ImageUploader version_name:#{version_name} not allow."
     end
@@ -45,19 +45,14 @@ class ImageUploader < CarrierWave::Uploader::Base
   # by 华哥
   # Override the filename of the uploaded files:
   def filename
-    if original_filename
+    if super.present?
       # current_path 是 Carrierwave 上传过程临时创建的一个文件，有时间标记
       # 例如: /Users/jason/work/ruby-china/public/uploads/tmp/20131105-1057-46664-5614/_____2013-11-05___10.37.50.png
       @name ||= Digest::MD5.hexdigest(current_path)
-      "#{@name}.#{file.extension}"
+      "#{@name}.#{File.extname(super)}"
     end
   end
   #def filename
     #@name ||= "#{md5}#{File.extname(super)}" if super
   #end
-
-  private
-  def image_version_name
-    %(avatar 120x160 224x292 300x423 320 640 800)
-  end
 end

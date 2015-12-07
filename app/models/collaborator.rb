@@ -102,6 +102,10 @@ class Collaborator < ActiveRecord::Base
     tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
   end
 
+  def track_count
+    boom_tracks.count
+  end
+
   private
   def set_removed_and_is_top
     self.update(removed: 0, is_top: 0)

@@ -40,7 +40,11 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def tracks
-    @tracks = @collaborator.boom_tracks.page(params[:page])
+    @tracks = if params[:is_all]
+                @collaborator.boom_tracks
+              else
+                @collaborator.boom_tracks.page(params[:page])
+              end
   end
 
   def shows
