@@ -89,6 +89,8 @@ class BoomTrack < ActiveRecord::Base
         s = "0" + s.to_s
       end
       "#{m}:#{s}"
+    else
+      "0:00"
     end
   end
 
@@ -98,6 +100,15 @@ class BoomTrack < ActiveRecord::Base
 
   def is_liked?(user)
     id.in? (user.boom_playlists.default.tracks.ids) rescue false
+  end
+
+  # 以mb为单位
+  def file_size
+    if file.present?
+      (file.size / 1024 / 1024.to_f).round(2)
+    else
+      0
+    end
   end
 
   private

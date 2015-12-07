@@ -63,7 +63,7 @@ $ ->
       output_id = 'img-prv-' + $(input).attr('id')
 
       unless $('img#' + output_id)[0]
-        $(input).after('<img id=' + output_id + ' src="#"></img>')
+        $(input).parent().children().first().before('<img id=' + output_id + ' src="#"></img>')
 
       output = $('img#' + output_id)
       reader = new FileReader

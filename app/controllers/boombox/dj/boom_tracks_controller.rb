@@ -61,7 +61,11 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
   end
 
   def destroy
-    @track.destroy!
+    if @track.destroy!
+      flash[:notice] = '删除音乐成功'
+    else
+      flash[:alert] = @track.errors.full_messages
+    end
     redirect_to boombox_dj_boom_tracks_url
   end
 
