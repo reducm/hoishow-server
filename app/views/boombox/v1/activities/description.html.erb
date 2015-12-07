@@ -1,12 +1,21 @@
 <%# encoding: utf-8 %>
 
+<%= image_tag(@activity.cover_url) if @activity.cover_url %>
 <div class="description_content">
-  <%= image_tag(@activity.cover_url) if @activity.cover_url %>
   <%= raw(@activity.description.html_safe) if @activity.description %>
 </div>
 
 <style media="screen">
+  #description {
+    background-color: #12082f;
+    color: #fff;
+  }
   .description_content{
     overflow: auto;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
   }
+
+  img{ width: 100%;}
 </style>
