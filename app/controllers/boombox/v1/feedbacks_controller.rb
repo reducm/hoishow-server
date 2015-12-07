@@ -9,7 +9,7 @@ class Boombox::V1::FeedbacksController < Boombox::V1::ApplicationController
     if @feedback.save
       render json: {msg: 'ok'}
     else
-      render error_respond('反馈失败')
+      error_respond('反馈失败')
     end
   end
 
