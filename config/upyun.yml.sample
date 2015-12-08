@@ -18,6 +18,19 @@ development: &DEFAULT
     upyun_bucket_domain: ""
     upyun_upload_url: ""
     notify_url: ""
+  boombox-img:
+    upyun_username: ""
+    upyun_password: ""
+    upyun_bucket: ""
+    upyun_bucket_domain: ""
+    upyun_upload_url: ""
+  boombox-file:
+    upyun_username: ""
+    upyun_password: ""
+    upyun_bucket: ""
+    upyun_bucket_domain: ""
+    upyun_upload_url: ""
+    notify_url: ""
 
 test:
   <<: *DEFAULT

@@ -1,6 +1,6 @@
 # encoding: utf-8
 IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800)
-class ImageUploader < CarrierWave::Uploader::Base
+class BoomImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
   if Rails.env.production? || Rails.env.boombox? || Rails.env.staging?
@@ -9,7 +9,7 @@ class ImageUploader < CarrierWave::Uploader::Base
     storage :file
   end
 
-  ImgUpyunSetting = UpyunSetting["hoishow-img"]
+  ImgUpyunSetting = Rails.env.production? ? UpyunSetting['boombox-img'] : UpyunSetting['hoishow-img']
 
   self.upyun_username = ImgUpyunSetting["upyun_username"]
   self.upyun_password = ImgUpyunSetting["upyun_password"]
@@ -36,11 +36,6 @@ class ImageUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png bmp)
   end
 
-  def md5
-    chunk = model.send(mounted_as)
-    @md5 ||= Digest::MD5.hexdigest(chunk.read.to_s)
-  end
-
   # by 华哥
   # Override the filename of the uploaded files:
   def filename
@@ -51,7 +46,4 @@ class ImageUploader < CarrierWave::Uploader::Base
       "#{@name}.#{File.extname(super)}"
     end
   end
-  #def filename
-    #@name ||= "#{md5}#{File.extname(super)}" if super
-  #end
 end

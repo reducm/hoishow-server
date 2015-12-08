@@ -17,8 +17,8 @@ class Collaborator < ActiveRecord::Base
             after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
             after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
 
-  mount_uploader :cover, ImageUploader
-  mount_uploader :avatar, ImageUploader
+  mount_uploader :cover, BoomImageUploader
+  mount_uploader :avatar, BoomImageUploader
 
   before_create :set_nickname_updated_at
   after_create :set_removed_and_is_top

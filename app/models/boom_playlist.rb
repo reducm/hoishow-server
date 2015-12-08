@@ -27,7 +27,7 @@ class BoomPlaylist < ActiveRecord::Base
 
   after_create :set_removed_and_is_top
 
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   #取出合集得时候不要忘记过滤
   scope :valid_playlists, -> { where("removed = false and mode = 0 and creator_type != ?", CREATOR_USER) }
