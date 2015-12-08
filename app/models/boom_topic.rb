@@ -12,7 +12,7 @@ class BoomTopic < ActiveRecord::Base
 
   validates :content, presence: true
 
-  mount_uploader :image, ImageUploader
+  mount_uploader :image, BoomImageUploader
   after_create :set_is_top
 
   paginates_per 10

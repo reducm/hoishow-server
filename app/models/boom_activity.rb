@@ -24,7 +24,7 @@ class BoomActivity < ActiveRecord::Base
 
   scope :is_display, ->{where(is_display: true, removed: false).order('is_top, is_hot, created_at desc')}
 
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   paginates_per 10
 

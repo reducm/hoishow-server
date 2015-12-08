@@ -21,7 +21,7 @@ class BoomTrack < ActiveRecord::Base
   validates :creator_type, presence: true
 
   mount_uploader :file, AudioUploader
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   after_create :set_removed_and_is_top
   after_create :convert_audio
