@@ -24,23 +24,21 @@
       </tr>
     </thead>
     <tbody class='text-center'>
-      <% if @boom_feedbacks.any? %>
-        <% @boom_feedbacks.each do|feedback| %>
-          <tr>
-            <td><%= feedback.user.mobile %></td>
-            <td class="boom_feedback_float"><%= feedback.content %></td>
-            <td><%= feedback.contact %></td>
-            <td><%= get_datetime( feedback.created_at ) %></td>
-            <td>
-              <% if feedback.status %>
-                已处理
-              <% else %>
-                <%= link_to "确认处理", update_status_boombox_operation_boom_feedback_path(feedback, status: 1), method: 'post' %>
-              <% end %>
-            </td>
-          </tr>
-        <%end%>
-      <%end%>
+      <% @boom_feedbacks.each do|feedback| %>
+        <tr>
+          <td><%= feedback.user.try(:show_name) %></td>
+          <td class="boom_feedback_float"><%= feedback.content %></td>
+          <td><%= feedback.contact %></td>
+          <td><%= get_datetime( feedback.created_at ) %></td>
+          <td>
+            <% if feedback.status %>
+              已处理
+            <% else %>
+              <%= link_to "确认处理", update_status_boombox_operation_boom_feedback_path(feedback, status: 1), method: 'post' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 

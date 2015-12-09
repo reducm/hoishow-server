@@ -28,7 +28,7 @@
         <td><%= show.status_cn%></td>
         <td><%= show.ticket_type_cn %></td>
         <td><%= show.stadium.try(:name) %></td>
-        <td><%= show.show_time.try(:strfcn_time) %></td>
+        <td><%= get_datetime(show.event_show_time) %></td>
         <td><%= tickets.sold_tickets.count %> / <%= show.total_seats_count %></td>
         <td>
           <%= link_to "查看详情", operation_show_path(show)%>

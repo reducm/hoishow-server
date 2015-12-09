@@ -19,30 +19,5 @@ class CreateBoomArticles < ActiveRecord::Migration
     end
 
     add_index :boom_articles, :boom_id
-
-    File.open(File.join(Rails.root, 'db', 'boombox', 'article.json'), 'r') do |file|
-      BoomArticle.transaction do
-        file.each do |line|
-          a_json = JSON.parse line
-          location_id = a_json['location'].blank? ? '' : a_json['location'][0]['$oid']
-          BoomArticle.create(
-            boom_id: a_json['_id']['$oid'],
-            boom_location_id: location_id,
-            title: a_json['title'],
-            subtitle: a_json['subtitle'],
-            url_alias: a_json['url_alias'],
-            url_short: a_json['url_short'],
-            url_origin: a_json['url_origin'],
-            cover: a_json['cover'],
-            summary: a_json['summary'],
-            content_html: a_json['content_html'],
-            content_json: a_json['content_json'],
-            verified: a_json['verified'],
-            removed: a_json['removed'],
-            created_at: a_json['date_creation']['$date'].to_time
-          )
-        end
-      end
-    end if Rails.env.production? || Rails.env.staging?
   end
 end

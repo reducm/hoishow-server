@@ -10,19 +10,5 @@ class CreateTagHots < ActiveRecord::Migration
     end
 
     add_index :tag_hots, :boom_id
-
-    File.open(File.join(Rails.root, 'db', 'boombox', 'tag_hot.json'), 'r') do |file|
-      TagHot.transaction do
-        file.each do |line|
-          t_json = JSON.parse line
-          TagHot.create(
-            boom_id: t_json['_id']['$oid'],
-            name: t_json['name'],
-            removed: t_json['removed'],
-            created_at: t_json['date_creation']['$date'].to_time
-          )
-        end
-      end
-    end if Rails.env.production? || Rails.env.staging?
   end
 end

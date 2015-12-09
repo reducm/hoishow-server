@@ -12,8 +12,8 @@
     <% @events.each do |event| %>
       <div role="tabpanel" class="tab-pane" id="<%= event.id %>">
         <div class="toolbar">
-          <%= link_to '修改场次', '##', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
-          <%= link_to '增加区域', '##', class: 'btn btn-default add_area', data: {id: event.id} %>
+          <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
+          <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default add_area', data: {id: event.id} %>
           <span class="upload_stadium_map" data-id="<%= event.id %>">
             <span class="btn btn-default">上传场馆地图</span>
             <input type="file" name="stadium_map">
@@ -22,6 +22,9 @@
             <span class="btn btn-default">更新场馆图坐标</span>
             <input type="file" name="coordinate_map">
           </span>
+          <% unless event.coordinate_map_url %>
+            <span class="warning">请上传坐标图</span>
+          <% end %>
         </div>
         <div class='stadium_map_preview' data-id="<%= event.id %>">
           <% if event.stadium_map_url %>
@@ -45,6 +48,7 @@
                 <th>票价</th>
               <% end %>
               <th>座位数(座位数不能少于已售出数量)</th>
+              <th>库存</th>
               <th>当前区域售出票数</th>
               <th>操作</th>
             </tr>

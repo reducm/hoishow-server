@@ -4,7 +4,7 @@ class NotifyTicketCheckedWorker
 
   def perform(order_id)
     url = "#{BikeSetting['notify_url']}?open_trade_no=#{order_id}"
-
+    Rails.logger.debug "url: #{url}"
     RestClient::Request.execute(
         :method => :get,
         :url => url,

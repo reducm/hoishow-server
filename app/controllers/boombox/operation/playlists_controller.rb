@@ -60,7 +60,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
         if new_tag_ids.present?
           BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @playlist.tag_for_playlist(tag) }
         end
-        del_tag_ids = source_tag_ids - target_tag_ids 
+        del_tag_ids = source_tag_ids - target_tag_ids
         if del_tag_ids.present?
           @playlist.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
         end
@@ -110,7 +110,17 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
       render json: { success: true }
     end
   end
-  
+
+  def publish
+    if @playlist.update(is_display: 1)
+      flash[:notice] = 'playlist发布成功'
+    else
+      flash[:error] = 'playlist发布失败'
+    end
+
+    redirect_to manage_tracks_boombox_operation_playlist_url(@playlist)
+  end
+
   private
   def get_playlist
     @playlist = BoomPlaylist.find(params[:id])

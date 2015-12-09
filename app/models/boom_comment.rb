@@ -54,12 +54,7 @@ class BoomComment < ActiveRecord::Base
   end
 
   def creator_avatar
-    case creator_type
-    when CREATOR_COLLABORATOR
-      creator.cover_url
-    when CREATOR_USER
-      creator.avatar_url
-    end rescue nil
+    creator.avatar_url rescue nil
   end
 
   def likes_count
@@ -80,5 +75,14 @@ class BoomComment < ActiveRecord::Base
 
   def content
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
+  end
+
+  def reply_content
+    if parent_id
+      parent = BoomComment.find_by_id(parent_id)
+      "回复@#{parent.try(:creator_name)}:#{content}"
+    else
+      content
+    end
   end
 end

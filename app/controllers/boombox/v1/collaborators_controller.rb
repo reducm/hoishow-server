@@ -16,7 +16,7 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
 
   def timeline
     @topics = if params[:last]
-                @collaborator.boom_topics.where('id < ?', params[:last]).first(10)
+                @collaborator.boom_topics.where('boom_topics.id < ?', params[:last]).first(10)
               else
                 @collaborator.boom_topics.first(10)
               end
@@ -26,7 +26,7 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
     @topic = @collaborator.boom_topics.where(id: params[:topic_id]).first
     if @topic
       @comments = if params[:last]
-                    @topic.boom_comments.where('id < ?', params[:last]).first(10)
+                    @topic.boom_comments.where('boom_comments.id < ?', params[:last]).first(10)
                   else
                     @topic.boom_comments.first(10)
                   end
@@ -40,7 +40,11 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def tracks
-    @tracks = @collaborator.boom_tracks.page(params[:page])
+    @tracks = if params[:is_all]
+                @collaborator.boom_tracks
+              else
+                @collaborator.boom_tracks.page(params[:page])
+              end
   end
 
   def shows

@@ -290,9 +290,9 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def get_coordinates
     event = @show.events.find_by_id params[:event_id]
-    coordinates = draw_image(event.coordinate_map_url)
+    Rails.cache.write("#{event.id}_all_areas_coodinates",draw_image(event.coordinate_map_url))
     render json: {
-      coords: coordinates,
+      coords: Rails.cache.read("#{event.id}_all_areas_coodinates"),
       color_ids: event.areas.pluck(:color, :id),
       area_id_name: event.areas.pluck(:id, :name).to_h,
       area_coordinates: event.areas.pluck(:coordinates).compact
@@ -306,6 +306,16 @@ class Operation::ShowsController < Operation::ApplicationController
     else
       render json: {error: true}
     end
+  end
+
+  def toggle_area_is_top
+    area = @show.areas.find_by_id params[:area_id]
+    if area.is_top
+      area.update(is_top: false)
+    else
+      area.update(is_top: true)
+    end
+    render json: {success: true}
   end
 
   protected

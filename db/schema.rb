@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151130032132) do
+ActiveRecord::Schema.define(version: 20151209031348) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.string   "color",       limit: 255
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
+    t.boolean  "is_top",      limit: 1,        default: false
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -214,10 +215,10 @@ ActiveRecord::Schema.define(version: 20151130032132) do
   end
 
   create_table "boom_feedbacks", force: :cascade do |t|
-    t.string   "content",    limit: 255
+    t.text     "content",    limit: 65535
     t.string   "contact",    limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
     t.integer  "user_id",    limit: 4
     t.boolean  "status",     limit: 1
   end
@@ -269,6 +270,7 @@ ActiveRecord::Schema.define(version: 20151130032132) do
     t.boolean  "removed",      limit: 1
     t.boolean  "is_top",       limit: 1
     t.boolean  "is_default",   limit: 1,   default: false
+    t.boolean  "is_display",   limit: 1,   default: false
   end
 
   create_table "boom_recommends", force: :cascade do |t|

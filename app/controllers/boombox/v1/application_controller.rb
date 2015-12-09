@@ -79,6 +79,6 @@ class Boombox::V1::ApplicationController < ApplicationController
   def log_error(e)
     # transaction log to show
     logger.error(e)
-    render json: {errors: '服务器挂了'}, status: 500
+    render json: {errors: '服务器开小差'}, status: 500
   end
 end

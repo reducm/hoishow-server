@@ -47,11 +47,11 @@ load_page = ()->
     heightRatio = screen_height / canvas.height
 
     minScale = Math.min(widthRatio, heightRatio)
-    
+
     $('#container').height( window.innerHeight)
 
     $("body").css("overflow", "hidden")
-    
+
     myScroll = new IScroll '#container', {
       zoom: true
       scrollX: true
@@ -62,32 +62,28 @@ load_page = ()->
     }
     myScroll.zoom(minScale)
 
-    areas_data = $("#show_area_data").data("areas-data")
+    areas_data = $("#show_area_data").data("invalid-areas")
+    setTimeout(() ->
+      for area_data in areas_data
+        area_coordinate = area_data.split(",")
+        draw_area_with_coords(area_coordinate, context)
+        $("#stadium_pic_map").append("<area shape=\"poly\" coords=\"#{area_coordinate}\" href =\"#\" left_seats=\"0\" />")
 
-    for area_data in areas_data
-      area_coordinate = area_data[0]
-      fill_style = "rgba(255, 255, 255, 0.5)"
-      if area_data[2] == 0
-        fill_style = "rgba(0, 0, 0, 0.5)"
-      area_coordinate = area_coordinate.split(",")
-      draw_area_with_coords(area_coordinate, context, fill_style)
-
-  $("#stadium_pic_map area").each((index, element)->
-      $(element).on "click", (e)->
-        show_id = $("#show_area_data").data("show-id")
-        area_id = $(element).attr("area_id")
-        area_name = $(element).attr("area_name")
-        left_seats = $(element).attr("left_seats")
-        if left_seats == "0"
-          $("#areas_map_pop_wrap").modal('show')
-          return false
-        else
-          location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
-
-  )
+      $("#stadium_pic_map area").each((index, element)->
+          $(element).on "click", (e)->
+            show_id = $("#show_area_data").data("show-id")
+            area_id = $(element).attr("area_id")
+            area_name = $(element).attr("area_name")
+            left_seats = $(element).attr("left_seats")
+            if left_seats == "0"
+              $("#areas_map_pop_wrap").modal('show')
+              return false
+            else
+              location.href = "/seats_map?show_id=#{show_id}&area_id=#{area_id}&area_name=#{area_name}"
+      )
+    , 1000)
 
 window.onload = () ->
-  $('#areas_map_loading').hide()
   $('#container').show()
   load_page()
   return
