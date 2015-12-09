@@ -26,7 +26,7 @@ class BoomTrack < ActiveRecord::Base
   after_create :set_removed_and_is_top
   after_create :convert_audio
 
-  scope :valid, -> {where(removed: false).order('is_top, created_at desc')}
+  scope :valid, -> {where(removed: false).order('is_top desc, created_at desc')}
 
   paginates_per 10
 

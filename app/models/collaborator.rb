@@ -20,11 +20,10 @@ class Collaborator < ActiveRecord::Base
   mount_uploader :cover, BoomImageUploader
   mount_uploader :avatar, BoomImageUploader
 
-  before_create :set_nickname_updated_at
-  after_create :set_removed_and_is_top
+  before_create :set_nickname_updated_at, :set_removed_and_is_top
   before_update :set_nickname_updated_at, if: :nickname_has_changed?
 
-  scope :verified, -> { where(verified: true, removed: false).order('is_top') }
+  scope :verified, -> { where(verified: true, removed: false).order('is_top desc') }
 
   validates :identity, presence: {message: "身份不能为空"}
   validates :nickname, presence: {message: "昵称不能为空"}, uniqueness: {message: "昵称已被使用"}
@@ -108,7 +107,8 @@ class Collaborator < ActiveRecord::Base
 
   private
   def set_removed_and_is_top
-    self.update(removed: 0, is_top: 0)
+    self.removed = 0
+    self.is_top = 0
   end
 
   def set_nickname_updated_at

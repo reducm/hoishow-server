@@ -132,7 +132,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('is_default, created_at desc').page(params[:page])
+    @playlists = @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
   end
 
   def comment_list
@@ -242,9 +242,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if @track && @like_playlist
       case
       when params[:type] == 'add' && @track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_already_liked")
+        return error_respond I18n.t("errors.messages.track_already_liked")
       when params[:type] == 'remove' && !@track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_is_not_liked")
+        return error_respond I18n.t("errors.messages.track_is_not_liked")
       when params[:type] == 'add' && !@track.is_liked?(@user)
         @like_playlist.tracks << @track
       when params[:type] == 'remove' && @track.is_liked?(@user)

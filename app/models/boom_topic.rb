@@ -34,7 +34,7 @@ class BoomTopic < ActiveRecord::Base
   end
 
   def creator_avatar
-    collaborator.cover_url
+    collaborator.avatar_url
   end
 
   def likes_count

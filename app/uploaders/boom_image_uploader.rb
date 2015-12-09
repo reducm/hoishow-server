@@ -1,5 +1,5 @@
 # encoding: utf-8
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800)
+BOOM_IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800)
 class BoomImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -25,7 +25,7 @@ class BoomImageUploader < CarrierWave::Uploader::Base
     @url ||= super({})
     version_name = version_name.to_s
     return @url if version_name.blank?
-    unless version_name.in?(IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES)
+    unless version_name.in?(BOOM_IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES)
       # 故意在调用了一个没有定义的“缩略图版本名称”的时候抛出异常，以便开发的时候能及时看到调错了
       raise "ImageUploader version_name:#{version_name} not allow."
     end
