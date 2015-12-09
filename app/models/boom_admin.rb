@@ -38,6 +38,7 @@ class BoomAdmin < ActiveRecord::Base
   def default_name
     "播霸官方"
   end
+  alias_method :show_name, :default_name
 
   def set_password(password)
     self.createHash(password)

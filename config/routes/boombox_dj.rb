@@ -32,8 +32,7 @@ module Routes
 
             resources :boom_albums, only: [:index, :create, :destroy] do
               member do
-                post :set_cover
-                post :unset_cover
+                post :toggle_cover
               end
             end
 
@@ -41,7 +40,7 @@ module Routes
 
             resources :boom_comments, only: [:index, :new, :create] 
 
-            resources :tracks do
+            resources :boom_tracks do
               collection do
                 get :search
               end
@@ -49,7 +48,8 @@ module Routes
 
             resources :playlists do
               member do
-                post :change_is_top
+                post :add_track
+                post :remove_track
                 get :manage_tracks
               end
               collection do

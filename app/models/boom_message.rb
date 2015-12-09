@@ -16,7 +16,6 @@ class BoomMessage < ActiveRecord::Base
   validates :subject_id, presence: true
   validates :send_type, presence: true
   validates :title, presence: true
-  validates :start_time, presence: true
   validates :content, length: { maximum: 150 }
 
   enum send_type: {
@@ -112,7 +111,7 @@ class BoomMessage < ActiveRecord::Base
     when 'followers'
       subject.followers.ids
     when 'specific'
-      subject.parent_target_id.to_a
+      [subject.parent_target_id]
     else
       nil
     end

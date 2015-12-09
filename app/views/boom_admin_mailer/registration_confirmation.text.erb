@@ -2,7 +2,11 @@ Hi <%= @dj.name %>，
 
 感谢注册播霸！请点击下面的链接确认注册。
 
-<%= confirm_email_boombox_dj_boom_admin_url(@dj, host: "boombox.dan-che.com") %>
+<% if Rails.env.production? %>
+  <%= confirm_email_boombox_dj_boom_admin_url(@dj, host: "music.dan-che.com") %>
+<% else %>
+  <%= confirm_email_boombox_dj_boom_admin_url(@dj, host: "boombox.dan-che.com") %>
+<% end %>
 
 （如点击后无法打开，请复制链接到浏览器访问）
 

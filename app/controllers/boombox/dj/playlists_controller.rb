@@ -9,16 +9,12 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   end
 
   def search
-    if params[:select_options] == "1"
-      is_hot = true
-    end
+    playlists = current_collaborator.boom_playlists.valid_playlists
     if params[:q].present?
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      playlists = playlists.where("name like ?", "%#{params[:q]}%")
     end
+    playlists = playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time])
+    @playlists = playlists.order("created_at desc").page(params[:page])
     render :index
   end
 
@@ -32,7 +28,7 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
     if @playlist.save!
       BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @playlist.tag_for_playlist(tag) }
       flash[:notice] = '创建Playlist成功'
-      redirect_to boombox_dj_playlists_url(collaborator_id: current_collaborator.id)
+      redirect_to boombox_dj_playlists_url
     end
   end
 
@@ -53,7 +49,7 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
         end
       end
       flash[:notice] = '编辑Playlist成功'
-      redirect_to boombox_dj_playlists_url(collaborator_id: current_collaborator.id)
+      redirect_to boombox_dj_playlists_url
     end
   end
 
@@ -62,23 +58,29 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
   def destroy
     @playlist.destroy!
-    redirect_to boombox_dj_playlists_url(collaborator_id: current_collaborator.id)
-  end
-
-  def change_is_top
-    if @playlist.is_top
-      @playlist.update(is_top: false)
-      flash[:notice] = "取消推荐成功"
-    else
-      @playlist.update(is_top: true)
-      flash[:notice] = "更新推荐成功"
-    end
-    redirect_to boombox_dj_playlists_url(collaborator_id: current_collaborator.id)
+    redirect_to boombox_dj_playlists_url
   end
 
   def manage_tracks
-    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page]).order("created_at desc")
-    @tracks = BoomTrack.valid.page(params[:tracks_page]).order("created_at desc")
+    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page])
+    tracks = current_collaborator.boom_tracks.valid
+    if params[:q].present?
+      tracks = tracks.where("name like '%#{params[:q]}%'")
+    end
+    @tracks = tracks.page(params[:tracks_page])
+  end
+
+  def add_track
+    @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    render json: { success: true }
+  end
+
+  def remove_track
+    relation = @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+    if relation
+      relation.destroy!
+      render json: { success: true }
+    end
   end
 
   private

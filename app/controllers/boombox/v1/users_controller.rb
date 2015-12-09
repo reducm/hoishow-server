@@ -14,16 +14,18 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def verified_mobile
     mobile = params[:mobile]
     user = User.where(mobile: mobile).first
-    if user.blank?
-      render json: { is_member: false, mobile: mobile }
-    else
+    if user
       render json: { is_member: true, mobile: mobile }
+    else
+      render json: { is_member: false, mobile: mobile }
     end
   end
 
   #验证码正确则创建用户
   def sign_up
     if params[:code] && params[:mobile] && params[:password]
+      return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
+
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
         @user = User.create(mobile: params[:mobile])
@@ -92,6 +94,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def update_user
     return error_respond(I18n.t("errors.messages.email_format_wrong")) if params[:email].present? && !verify_email?(params[:email])
+    return error_respond(I18n.t("errors.messages.nickname_duplicate")) if params[:nickname].present? && User.where(nickname: params[:nickname]).any?
 
     if @user.update(user_params)
       render partial: "user", locals:{ user: @user }
@@ -102,6 +105,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def reset_mobile
     if params[:code] && params[:mobile]
+      return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
+
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
         @user.update(mobile: params[:mobile])
@@ -127,7 +132,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('is_default, created_at desc').page(params[:page])
+    @playlists = @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
   end
 
   def comment_list
@@ -141,7 +146,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def message_list
     @messages = if params[:last]
-                  @user.boom_messages.manual.where("id < ?", params[:last]).first(10)
+                  @user.boom_messages.manual.where("boom_messages.id < ?", params[:last]).first(10)
                 else
                   @user.boom_messages.manual.first(10)
                 end
@@ -213,7 +218,11 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
       end
     elsif params[:type] == 'remove'
       playlist = BoomPlaylist.find_by_id(params[:playlist_id])
-      if playlist && playlist.destroy!
+
+      if playlist
+        return error_respond I18n.t("errors.messages.cannot_remove_default_playlist") if playlist.is_default
+
+        playlist.destroy!
         render json: { result: "success" }
       else
         error_respond I18n.t("errors.messages.playlist_not_found")
@@ -233,9 +242,9 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if @track && @like_playlist
       case
       when params[:type] == 'add' && @track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_already_liked")
+        return error_respond I18n.t("errors.messages.track_already_liked")
       when params[:type] == 'remove' && !@track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_is_not_liked")
+        return error_respond I18n.t("errors.messages.track_is_not_liked")
       when params[:type] == 'add' && !@track.is_liked?(@user)
         @like_playlist.tracks << @track
       when params[:type] == 'remove' && @track.is_liked?(@user)

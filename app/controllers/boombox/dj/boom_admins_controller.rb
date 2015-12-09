@@ -31,22 +31,23 @@ class Boombox::Dj::BoomAdminsController < Boombox::Dj::ApplicationController
   def confirm_email
     dj = BoomAdmin.where(id: params[:id]).first
 
-    # 验证码只用一次
-    unless dj.present? && dj.confirm_token.present?
-      dj.delete
-      flash[:alert] = "验证失败，请重新申请"
-      redirect_to boombox_dj_signup_url
-      return
-    end
-
-    boom_admin = BoomAdmin.where(confirm_token: dj.confirm_token).first
-    if boom_admin
-      boom_admin.email_activate
-      flash[:notice] = "欢迎使用播霸！请完善您的个人资料"
-      redirect_to boombox_dj_signup_fill_personal_form_url(boom_admin_id: boom_admin.id) 
+    if dj.present?
+      if dj.email_confirmed?
+        if Collaborator.where(boom_admin_id: dj.id).any?
+          flash[:notice] = "欢迎使用播霸！请前往登录"
+          redirect_to boombox_dj_root_url
+        else
+          flash[:notice] = "欢迎使用播霸！请完善您的个人资料"
+          redirect_to boombox_dj_signup_fill_personal_form_url(boom_admin_id: dj.id)
+        end
+      else
+        dj.email_activate
+        flash[:notice] = "欢迎使用播霸！请完善您的个人资料"
+        redirect_to boombox_dj_signup_fill_personal_form_url(boom_admin_id: dj.id)
+      end
     else
-      flash[:alert] = "Sorry. boom_admin does not exist"
-      redirect_to boombox_dj_root_url
+      flash[:alert] = "用户不存在，请先注册"
+      redirect_to boombox_dj_signup_url
     end
   end
 

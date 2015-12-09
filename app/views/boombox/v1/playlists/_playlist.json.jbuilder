@@ -8,10 +8,12 @@ json.is_followed playlist.is_followed(user.try(:id))
 json.is_default playlist.is_default
 json.tracks_count playlist.tracks_count
 
-if playlist.creator_type == BoomPlaylist::CREATOR_COLLABORATOR && playlist.creator
+co = playlist.creator
+if playlist.creator_type == BoomPlaylist::CREATOR_COLLABORATOR && co
   json.collaborator do
-    json.name playlist.creator.name
-    json.avatar playlist.creator.cover_url || ''
+    json.id co.id
+    json.name co.display_name
+    json.avatar co.avatar_url || ''
   end
 else
   json.collaborator nil

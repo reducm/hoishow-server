@@ -46,6 +46,7 @@ module Routes
                 post :add_track
                 post :remove_track
                 get :manage_tracks
+                post :publish
               end
             end
 

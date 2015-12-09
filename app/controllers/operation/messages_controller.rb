@@ -43,7 +43,7 @@ class Operation::MessagesController < Operation::ApplicationController
 
   def get_users(message)
     case message.creator_type
-    when "Star" || "Concert"
+    when "Star", "Concert"
       message.creator.followers
     when "Show"
       message.creator.show_followers

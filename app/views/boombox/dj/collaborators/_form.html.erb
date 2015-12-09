@@ -51,12 +51,15 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1 poster-area">
       <legend class="legend-without-border">海报</legend>
-      <% if collaborator.cover_url %>
-        <%= image_tag(collaborator.cover_url, size: "160x90") %>
+      <% if collaborator.cover_url.present? %>
+        <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
+          <img src=<%= collaborator.cover_url %> class="thumb"></img>
+          <figcaption>点击查看大图</figcaption>
+        </a>
       <% else %>
         <p>没有海报</p>
       <% end %>
-      <%= f.input :cover, label: "（请上传 1280x720 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+      <%= f.input :cover, label: "（请上传 720x480 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
     </div>
   </div>
 
@@ -69,6 +72,18 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <%= submit_tag "保存", class: "btn btn-primary pull-right" %>
+    </div>
+  </div>
+<% end %>
+
+<% if collaborator.cover_url.present? %>
+  <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img src=<%= collaborator.cover_url %> style="width: 100%">
+        </div>
+      </div>
     </div>
   </div>
 <% end %>
