@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'open-uri'
 
 module FetchBeatportData
-  module FetchData
+  module Service
     extend BeatportLogger
     extend self
 
@@ -53,12 +53,13 @@ module FetchBeatportData
             next
           end
 
-          release_tracks_doc.css(".buk-track-meta-parent").map do |p|
-            track_id = p.css(".buk-track-title a").first["href"].split("/").last
+          release_tracks_doc.css(".buk-track-meta-parent").map do |track|
+            track_id = track.css(".buk-track-title a").first["href"].split("/").last
             track_url = "https://geo-samples.beatport.com/lofi/#{track_id}.LOFI.mp3"
-            track_name = p.css(".buk-track-title span").map(&:content).join(" ")
-            track_artists = p.css(".buk-track-artists a").map(&:content).join(",")
-            track_tag = p.css(".buk-track-genre a").first.content
+            track_name = track.css(".buk-track-title span").map(&:content).join(" ")
+            track_artists = track.css(".buk-track-artists a").map(&:content).join(",")
+            track_tag = track.css(".buk-track-genre a").first.content
+            beatport_logger.info "处理Track: #{track_name}, 时间:#{Time.now}"
             tracks_data.push({cover_url: cover_url, file_url: track_url, name: track_name, artists: track_artists, tag: track_tag})
             # end of track
           end
@@ -74,7 +75,7 @@ module FetchBeatportData
           tag_playlist_hash["releases_link"] = releases_link
           save_to_file(tag_playlist_hash)
         end
-        
+
         playlists_data = []
         tag_playlist_hash = {}
         beatport_logger.info "处理完成Tag: #{tag}, 时间:#{Time.now}"
@@ -88,79 +89,77 @@ module FetchBeatportData
     end
 
     def save_to_file(data)
+      file = File.open("tmp/beatport_data.json","a")
       begin
-        File.open("public/beatport_data.json","a") do |f|
-          f << data.to_json << "\n"
-        end
+        file << data.to_json << "\n"
       ensure
-        f.close unless f.closed?
+        file.close unless file.closed?
       end
     end
 
     def save_to_database
       creator_id = BoomAdmin.first.id
+      file = File.open("tmp/beatport_data.json", "r")
       begin
-        File.open("public/beatport_data.json", "r") do |file|
-          file.each do |line|
-            bp_data = JSON.parse line
-            temp_data = bp_data.first
+        file.each do |line|
+          bp_data = JSON.parse line
+          temp_data = bp_data.first
 
-            #创建tag
-            tag_name = temp_data[0]
-            beatport_logger.info "开始创建标签: #{tag_name}, 时间: #{Time.now}"
-            boom_tag = create_tag(tag_name)
-            if boom_tag
-              beatport_logger.info "创建标签: #{tag_name}完成, 时间: #{Time.now}"
-            else
-              beatport_logger.info "创建标签: #{tag_name}失败, 时间: #{Time.now}"
-            end
+          #创建tag
+          tag_name = temp_data[0]
+          beatport_logger.info "开始创建标签: #{tag_name}, 时间: #{Time.now}"
+          boom_tag = create_tag(tag_name)
+          if boom_tag
+            beatport_logger.info "创建标签: #{tag_name}完成, 时间: #{Time.now}"
+          else
+            beatport_logger.info "创建标签: #{tag_name}失败, 时间: #{Time.now}"
+          end
 
-            #创建playlist
-            playlists_array = temp_data[1]
-            playlists_array.each do |pl|
-              pl_name = pl["name"]
-              pl_cover_url = pl["cover"]
-              pl_tracks_array = pl["tracks"]
-              beatport_logger.info "开始创建Playlist: #{pl_name}, 时间: #{Time.now}"
-              boom_playlist = create_playlist(pl_name, creator_id)
-              if boom_playlist
-                beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
-                update_playlist_cover_url(boom_playlist, pl_cover_url)
-                #关联tag和playlist
-                boom_playlist.tag_for_playlist(boom_tag)
+          #创建playlist
+          playlists_array = temp_data[1]
+          playlists_array.each do |pl|
+            pl_name = pl["name"]
+            pl_cover_url = pl["cover"]
+            pl_tracks_array = pl["tracks"]
+            beatport_logger.info "开始创建Playlist: #{pl_name}, 时间: #{Time.now}"
+            boom_playlist = create_playlist(pl_name, creator_id)
+            if boom_playlist
+              beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
+              update_playlist_cover_url(boom_playlist, pl_cover_url)
+              #关联tag和playlist
+              boom_playlist.tag_for_playlist(boom_tag)
 
-                #创建track
-                pl_tracks_array.each do |track_hash|
-                  track_cover_url = track_hash["cover_url"]
-                  track_file_url = track_hash["file_url"]
-                  track_name = track_hash["name"]
-                  track_artists = track_hash["artists"]
-                  track_tag = track_hash["tag"]
-                  beatport_logger.info "开始创建Track: #{track_name}, 时间: #{Time.now}"
-                  boom_track = create_track(track_name, creator_id, track_artists)
-                  if boom_track
-                    beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
-                    update_track_cover_url(boom_track, track_cover_url)
-                    update_track_file_url(boom_track, track_file_url)
+              #创建track
+              pl_tracks_array.each do |track_hash|
+                track_cover_url = track_hash["cover_url"]
+                track_file_url = track_hash["file_url"]
+                track_name = track_hash["name"]
+                track_artists = track_hash["artists"]
+                track_tag = track_hash["tag"]
+                beatport_logger.info "开始创建Track: #{track_name}, 时间: #{Time.now}"
+                boom_track = create_track(track_name, creator_id, track_artists)
+                if boom_track
+                  beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
+                  update_track_cover_url(boom_track, track_cover_url)
+                  update_track_file_url(boom_track, track_file_url)
 
-                    #关联tag和track
-                    if track_tag == tag_name
-                      boom_track.tag_for_track(boom_tag)
-                    else
-                      new_tag = create_tag(track_name)
-                      boom_track.tag_for_track(new_tag)
-                    end
-
-                    #关联playlist和track
-                    boom_playlist.playlist_track_relations.where(boom_track_id: boom_track.id).first_or_create!
+                  #关联tag和track
+                  if track_tag == tag_name
+                    boom_track.tag_for_track(boom_tag)
                   else
-                    beatport_logger.info "创建Track: #{track_name}失败, 时间: #{Time.now}"
+                    new_tag = create_tag(track_name)
+                    boom_track.tag_for_track(new_tag)
                   end
 
+                  #关联playlist和track
+                  boom_playlist.playlist_track_relations.where(boom_track_id: boom_track.id).first_or_create!
+                else
+                  beatport_logger.info "创建Track: #{track_name}失败, 时间: #{Time.now}"
                 end
-              else
-                beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"
+
               end
+            else
+              beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"
             end
           end
         end
@@ -235,7 +234,7 @@ module FetchBeatportData
     def request_url(url)
       10.times do
         begin
-          temp = Nokogiri::HTML(open(url, open_timeout: 10))
+          temp = Nokogiri::HTML(open(url))
           if temp
             return temp
           else
@@ -249,13 +248,13 @@ module FetchBeatportData
       beatport_logger.info "获取#{url}内容失败"
       nil
     end
-    
+
     #本地测试专用
     def clean_data
       BoomTag.destroy_all
       BoomPlaylist.destroy_all
       BoomTrack.destroy_all
     end
-    
+
   end
 end

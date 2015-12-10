@@ -240,17 +240,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     @track = BoomTrack.find_by_id(params[:track_id])
     @like_playlist = @user.boom_playlists.default
     if @track && @like_playlist
-      case
-      when params[:type] == 'add' && @track.is_liked?(@user)
-        return error_respond I18n.t("errors.messages.track_already_liked")
-      when params[:type] == 'remove' && !@track.is_liked?(@user)
-        return error_respond I18n.t("errors.messages.track_is_not_liked")
-      when params[:type] == 'add' && !@track.is_liked?(@user)
+      if params[:type] == 'add' && !@track.is_liked?(@user)
         @like_playlist.tracks << @track
-      when params[:type] == 'remove' && @track.is_liked?(@user)
+      elsif params[:type] == 'remove' && @track.is_liked?(@user)
         @like_playlist.playlist_track_relations.where(boom_track_id: @track.id).first.destroy
-      else
-        return error_respond I18n.t("errors.messages.data_status_error")
       end
       render partial: "boombox/v1/tracks/track", locals:{ track: @track, user: @user }
     else
