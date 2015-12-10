@@ -54,8 +54,9 @@ class BoomPlaylist < ActiveRecord::Base
   def self.recommend(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:playlists:recommend", expires_in: 1.day) do
-        if user.recommend_playlists.any?
-          user.recommend_playlists
+        playlists = user.recommend_playlists
+        if playlists.size >= 3
+          playlists
         else
           playlist.open.to_a
         end

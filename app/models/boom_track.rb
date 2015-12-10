@@ -13,8 +13,8 @@ class BoomTrack < ActiveRecord::Base
 
   has_many :tag_subject_relations, as: :subject
   has_many :boom_tags, through: :tag_subject_relations, as: :subject,
-            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
-            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
+            after_add: [:track_add_radio, lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [:track_remove_radio, lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   validates :name, presence: true
   validates :creator_id, presence: true
@@ -48,8 +48,9 @@ class BoomTrack < ActiveRecord::Base
   def self.recommend(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:tracks:recommend", expires_in: 1.day) do
-        if user.recommend_tracks.any?
-          user.recommend_tracks
+        tracks = user.recommend_tracks
+        if tracks.size >= 20
+          tracks
         else
           order('is_top, RAND()').limit(20).to_a
         end
@@ -96,6 +97,19 @@ class BoomTrack < ActiveRecord::Base
 
   def tag_for_track(tag)
     tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
+  end
+
+  def track_add_radio(tag)
+    radio = BoomPlaylist.where(name: tag.name).first
+    radio.playlist_track_relations.where(boom_track_id: self.id).first_or_create! if radio
+  end
+
+  def track_remove_radio(tag)
+    radio = BoomPlaylist.where(name: tag.name).first
+    if radio
+      relation = radio.playlist_track_relations.where(boom_track_id: self.id).first
+      relation.destroy! if relation
+    end
   end
 
   def is_liked?(user)
