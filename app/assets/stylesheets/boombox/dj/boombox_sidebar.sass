@@ -1,50 +1,100 @@
 $blue_darker: #22272B
-$blue_dark: #282D30
-$green: #1FBBA6
-$green_dark: #009679
+$blue_dark: #2D3037
+$green: #1DBDBD
+$green_dark: #209BA3
 
 a
-  color: #5DAEE3
+  color: $green
+  &:hover
+    color: $green_dark
+    text-decoration: none
 
 #wrapper
-  background-color: #434c51
+  background-color: #282B33
   color: #444
-  .nav h1,h2
-    font-size: 22px
+  h1,h2
+    font-size: 20px
   .navbar-right
     margin-right: 0
   .nav-pills > li.active > a
     background: #FFCD5C
-  .btn-primary
-    background: $green
-    border-color: $green
-    &:hover
-      background: $green_dark
-      border-color: $green_dark
   .navbar
     background: #F4F4F4
     border-bottom: none
     .navbar-header
       width: 210px
-      background: #434c51
+      background: #1DBDBD
       a
-        margin-left: 30px
-        color: #EFF3F4
+        padding-left: 80px
+        color: #237066
+        background: url(/boombox_logo.png) no-repeat 50px
+        background-size: 20%
         i
           font-size: 1.5em
-          color: white 
+          color: white
     .sidebar
-      background: $blue_dark
+      background: #22242B
       margin-top: 50px
+      .side-menu-photo
+        padding: 8px 0
       li
         border-bottom: none
         a
-          color: white
+          color: #999DA8
           padding: 15px 15px 15px 50px
-          border-right: 5px solid #434C51
-          background: #434C51
+          border-right: 5px solid #282B33
+          background: #282B33
           &:hover
-            background: $blue_darker
-            border-right-color: $blue_darker
+            background: #363B46
+            border-right-color: #1DBDBD
+            color: white
           i
             margin-right: 15px
+
+body[data-page="sessions-new"],
+body[data-page="boom_admins-new"],
+body[data-page="boom_admins-create"]
+  background-color: #555C6D
+  .login-panel
+    border: none
+    padding: 30px 0
+    .panel-heading
+      background: none
+      border: none
+    .form-group
+      position: relative
+      border-bottom: 1px solid #e0e2e2
+      input
+        border: none
+        &:focus
+          box-shadow: none
+      i
+        position: absolute
+        right: 10px
+        bottom: 6px
+        color: #e0e2e2
+
+.boomb-adminsnew
+  .container
+    margin-top: 10%
+    .login-panel
+      border-radius: 4px 0 0 4px
+  .jumbotron
+    margin-top: 10%
+    padding: 30px
+    border-radius: 0 4px 4px 0
+    height: 323px
+    h2
+      font-size: 22px
+      margin-bottom: 19px
+    p
+      font-size: 18px
+  .login-panel
+    margin-top: 0
+
+body[data-page="pages-after_create_boom_admin"]
+.jumbotron
+  h2
+    font-size: 22px
+  p
+    font-size: 18px

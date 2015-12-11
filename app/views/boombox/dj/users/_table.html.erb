@@ -1,9 +1,9 @@
 <%= form_tag(boombox_dj_boom_topic_path(@boom_topic), class: 'form-inline', id: 'likers_form', method: 'get', remote: true) do %>
-  <div class="row">
+  <div class="topics-toggle-content">
     <%= label_tag 'likers_count', '点赞数：' + @likers.total_count.to_s %> 
   </div>
 
-  <div class="row">
+  <div>
     <table class="table table-hover likers_list">
       <thead>
         <tr>

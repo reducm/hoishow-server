@@ -1,31 +1,31 @@
 <%# encoding: utf-8 %>
-<legend><%= link_to "Playlist列表", boombox_dj_playlists_path %>/<%= params[:action] == "new" ? "新建Playlist" : "编辑Playlist"%></legend>
+<legend class="boom-top-topic"><%= link_to "Playlist列表", boombox_dj_playlists_path %>/<%= params[:action] == "new" ? "新建Playlist" : "编辑Playlist"%></legend>
 <div class="nav">
-  <div class="col-md-offset-4">
+  <div class="text-center">
     <% if params[:action] == 'new' %>
       <% form_url = "/boombox/dj/playlists" %>
       <% form_method = "POST" %>
-      <h1>新建Playlist</h1>
+      <h3>新建Playlist</h3>
     <% elsif params[:action] == 'edit' %>
       <% form_url = "/boombox/dj/playlists/#{playlist.id}" %>
       <% form_method = "PATCH" %>
-      <h1>编辑Playlist</h1>
+      <h3>编辑Playlist</h3>
     <% end %>
   </div>
-  <div id="playlist_form">
+  <div id="playlist_form" class="col-md-10 col-md-offset-1">
     <%= hidden_field_tag "playlist_tag_ids", playlist.boom_tags.pluck(:id) %>
     <%= simple_form_for( playlist, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
       <div class="row">
-        <div class="col-sm-5">
+        <div class="col-md-7 col-lg-6">
           <div class="text-center">
-            <%= f.input :cover, label: "上传封面(建议大小:960x640)", input_html: {class: "playlist-cover-uploader col-sm-offset-4"} %>
             <div id="playlist_cover_preview">
               <%= boombox_default_cover playlist.cover_url %>
             </div>
+            <%= f.input :cover, label: "上传封面(建议大小:960x640)", input_html: {class: "playlist-cover-uploader col-sm-offset-4"} %>
           </div>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-md-4 col-md-offset-1 col-lg-5">
           <div class="playlist_info">
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
 
@@ -45,7 +45,7 @@
         </div>
       </div>
 
-      <div class="col-md-offset-5">
+      <div class="text-center">
         <%= submit_tag "保存", class: "btn btn-primary", id: "playlist-submit", data: { disable_with: "loading" } %>
       </div>
     <% end %>

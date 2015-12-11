@@ -1,12 +1,9 @@
 <%# encoding: utf-8 %>
 <%= hidden_field_tag "playlist_id", @playlist.id %>
 
-<div class="row">
-  <h3 class="pull-left header-primary">Playlist: <%= @playlist.name %></h3>
-</div>
-
+<h3 class="header-primary">Playlist: <%= @playlist.name %></h3>
 <div role="tabpanel">
-  <ul class="nav nav-pills" role="tablist" id="playlist_manage_tab">
+  <ul class="nav nav-tabs" role="tablist" id="playlist_manage_tab">
     <li role="presentation" class="active" id="playlist_track_list"><a href="#playlist_tracks" aria-controls="playlist_tracks" role="tab" data-toggle="tab">音乐列表</a></li>
     <li role="presentation"><a href="#search_tracks" aria-controls="search_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
   </ul>
