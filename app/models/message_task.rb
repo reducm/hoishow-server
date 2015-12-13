@@ -28,7 +28,7 @@ class MessageTask < ActiveRecord::Base
 
   private
   def async_push
-    UmengPushWorker.perform_async(self.id, "upload")
-    UmengPushWorker.perform_in(5.minutes, self.id, "check")
+    UmengPushWorker.perform_in(2.minutes, self.id, "upload")
+    UmengPushWorker.perform_in(8.minutes, self.id, "check")
   end
 end

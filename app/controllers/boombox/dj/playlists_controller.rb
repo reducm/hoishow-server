@@ -9,16 +9,12 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   end
 
   def search
-    if params[:select_options] == "1"
-      is_hot = true
-    end
+    playlists = current_collaborator.boom_playlists.valid_playlists
     if params[:q].present?
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).where("name like ?", "%#{params[:q]}%").page(params[:page]).order("created_at desc")
-    elsif is_hot
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ? and is_top = ?", params[:start_time], params[:end_time], is_hot).page(params[:page]).order("created_at desc")
-    else
-      @playlists = BoomPlaylist.valid_playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time]).page(params[:page]).order("created_at desc")
+      playlists = playlists.where("name like ?", "%#{params[:q]}%")
     end
+    playlists = playlists.where("created_at > ? and created_at < ?", params[:start_time], params[:end_time])
+    @playlists = playlists.order("created_at desc").page(params[:page])
     render :index
   end
 
@@ -66,8 +62,12 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   end
 
   def manage_tracks
-    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page]).order("created_at desc")
-    @tracks = current_collaborator.boom_tracks.valid.page(params[:tracks_page]).order("created_at desc")
+    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page])
+    tracks = current_collaborator.boom_tracks.valid
+    if params[:q].present?
+      tracks = tracks.where("name like '%#{params[:q]}%'")
+    end
+    @tracks = tracks.page(params[:tracks_page])
   end
 
   def add_track

@@ -4,11 +4,11 @@
     <%= submit_tag "搜索", class: 'btn btn-default' %>
   </div>
 
-  <div class="row">
+  <div class="topics-toggle-content">
     <%= label_tag 'comments_count', '评论数：' + @comments.total_count.to_s %> 
   </div>
 
-  <div class="row">
+  <div>
     <table class="table table-hover comments_list">
       <thead>
         <tr>

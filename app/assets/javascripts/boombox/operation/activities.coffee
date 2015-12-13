@@ -11,11 +11,16 @@ init_editor = ()->
 
   video = $("<a href='#' class='qe-video'><span class='fa fa-video-camera'></span></a>")
   video.on 'click', ()->
-    url = prompt('请输入第三方视频链接地址')
-    vid = url.split('id_')[1].split('.')[0]
-    $video = $("<p class='video'><iframe src='http://player.youku.com/embed/#{vid}' frameborder=0 allowfullscreen></iframe><br /></p>")
-    insert_obj($video)
-    editor.change()
+    $('#videoModal').modal('show')
+    $('.add_video').on 'click', (e)->
+      e.preventDefault()
+      url = $('#inputUrl').val()
+      title = $('#inputTitle').val()
+      vid = url.split('id_')[1].split('.')[0]
+      $video = $("<p class='video' data-title='#{title}' data-url='#{url}'><iframe src='http://player.youku.com/embed/#{vid}' frameborder=0 allowfullscreen></iframe><br /></p>")
+      insert_obj($video)
+      editor.change()
+      $('#videoModal').modal('hide')
 
   image = $("<a href='#' class='qe-image'><span class='fa fa-picture-o'></span><input id='image_uploader' type='file' name='file' accept='image/*'/></a>")
   image.on 'click', ()->
@@ -119,8 +124,9 @@ $ ->
 
   #提交前将标签和艺人id数组组装成字符串，并传入hidden field
   $("#activity-submit").on "click", (e) ->
+    e.preventDefault()
     tag_ids.join(",")
     collaborator_ids.join(",")
     $("#boom_tag_ids").val(tag_ids)
     $("#boom_collaborator_ids").val(collaborator_ids)
-    $("form").submit()
+    $(this).parents('form').submit()

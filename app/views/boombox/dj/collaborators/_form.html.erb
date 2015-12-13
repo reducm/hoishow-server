@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <h3 class="pull-left header-primary">个人资料</h3>
+    <h1 class="pull-left header-primary">个人资料</h1>
   </div>
 </div>
 
@@ -49,6 +49,12 @@
   </div>
 
   <div class="row">
+    <div class="col-md-10 col-md-offset-1 introduction-area">
+      <%= f.input :description, as: :text, label: '个人简介' %>
+    </div>
+  </div>
+
+  <div class="row">
     <div class="col-md-10 col-md-offset-1 poster-area">
       <legend class="legend-without-border">海报</legend>
       <% if collaborator.cover_url.present? %>
@@ -64,14 +70,8 @@
   </div>
 
   <div class="row">
-    <div class="col-md-10 col-md-offset-1 introduction-area">
-      <%= f.input :description, as: :text, label: '个人简介' %>        
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-10 col-md-offset-1">
-      <%= submit_tag "保存", class: "btn btn-primary pull-right" %>
+    <div class="text-center">
+      <%= submit_tag "保存", class: "btn btn-primary" %>
     </div>
   </div>
 <% end %>

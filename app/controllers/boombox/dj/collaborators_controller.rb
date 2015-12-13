@@ -2,14 +2,14 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
   before_filter :check_login!, except: [:new, :create]
 
   def new
-    @collaborator = Collaborator.new 
+    @collaborator = Collaborator.new
     @boom_admin = BoomAdmin.find(params[:boom_admin_id])
   end
 
   def create
     @boom_admin = BoomAdmin.find(params[:collaborator][:boom_admin_id])
-    @collaborator = Collaborator.new(create_params) 
-
+    @collaborator = Collaborator.new(create_params)
+    Rails.logger.debug @collaborator.inspect
     if @collaborator.save
       redirect_to boombox_dj_signup_finished_url(collaborator_id: @collaborator.id), notice: '个人资料保存成功'
     else

@@ -27,13 +27,13 @@ class BoomPlaylist < ActiveRecord::Base
 
   after_create :set_removed_and_is_top
 
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   #取出合集得时候不要忘记过滤
   scope :valid_playlists, -> { where("removed = false and mode = 0 and creator_type != ?", CREATOR_USER) }
   scope :valid_radios, -> { where("removed = false and mode = 1") }
   #for api
-  scope :open, -> { where('creator_type != ? and removed = false and is_display = true', CREATOR_USER).order('is_top, RAND()')}
+  scope :open, -> { where('creator_type != ? and removed = false and is_display = true', CREATOR_USER).order('is_top desc, RAND()')}
 
   paginates_per 10
 
@@ -54,8 +54,9 @@ class BoomPlaylist < ActiveRecord::Base
   def self.recommend(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:playlists:recommend", expires_in: 1.day) do
-        if user.recommend_playlists.any?
-          user.recommend_playlists
+        playlists = user.recommend_playlists
+        if playlists.size >= 3
+          playlists
         else
           playlist.open.to_a
         end

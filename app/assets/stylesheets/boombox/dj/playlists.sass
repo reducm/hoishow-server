@@ -1,8 +1,6 @@
-#playlist_form
-  background-color: #ffffff
-  margin-left: 30px
-  margin-right: 20px
-
+.playlists_list
+  .playlists
+    background: white
 #cover_preview
   img
     width: 333px
@@ -10,3 +8,50 @@
 
 #playlist_cover
   margin-left: 50px
+
+#playlist_form
+  margin-top: 30px
+  .row
+    background: white
+    border: 1px solid #e0e2e2
+    margin-bottom: 30px
+    padding: 50px 20px
+    #playlist_cover_preview,.boom_playlist_cover
+      img
+        width: 360px
+        height: 240px
+        border: 2px solid #e0e2e2
+        border-radius: 5px
+    .boom_playlist_cover
+      label
+        font-size: 14px
+        line-height: 40px
+  .form-control
+    width: 70%
+  .playlist_info
+    margin-top: 10px
+    & > div
+      margin-bottom: 20px
+      .btn-danger
+        margin-left: 10px
+
+table.playlists
+  tr td
+    line-height: 50px
+
+body[data-page="playlists-manage_tracks"]
+  #playlist_manage_tab
+    li a
+      color: #444
+      &:hover
+        background: #f0ad4e
+        border-color: #f0ad4e
+        color: white
+    li.active a,
+    li.active a:hover,
+    li.active a:focus
+      background: #FFCD5C
+      border-color: #FFCD5C
+      color: white
+  .tab-content
+    margin-top: 30px

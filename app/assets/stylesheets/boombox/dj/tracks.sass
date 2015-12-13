@@ -1,7 +1,43 @@
+.page_header
+  text-align: center
+
 #track_form
-  background-color: #ffffff
-  margin-left: 30px
-  margin-right: 20px
+  padding: 16px
+
+  .track_edit_area
+    background-color: #ffffff
+    .row
+      background-color: #fff
+      border: 1px solid #e0e2e2
+    .track_cover_area
+      margin: 30px 0
+      label[for="cover"]
+        margin-left: 30px
+        margin-right: 30px
+        font-size: 18px
+      .track_cover_areawrap
+        margin-left: 20%
+
+    h3
+      margin: 0 30px
+      padding-top: 20px
+      border-top: 1px solid #e0e2e2
+    .track_file_area
+      margin: 10px 30px 30px 20%
+      p
+        margin-bottom: 20px
+      & > div > div
+        margin-bottom: 20px
+      #track_delete_tag .btn-danger
+        margin-left: 10px
+
+  div.delete_area
+    text-align: center
+    a
+      margin: 30px
+
+  input#track-submit
+    margin: 30px
 
 #cover_preview
   img
@@ -10,3 +46,58 @@
 
 #track_cover
   margin-left: 50px
+
+table.tracks
+  background: white
+  tr td
+    line-height: 50px
+    audio
+      vertical-align: middle
+  tr th
+    border-bottom-color: #E0E2E2
+
+#track_cover_preview
+  img
+    width: 200px
+    height: 200px
+    object-fit: contain
+
+.boom_track_cover
+  label
+    margin: 15px 0
+#img-prv-boom_track_cover
+  width: 200px
+  height: 200px
+  object-fit: contain
+  display: block
+
+.track_files
+  span
+    margin: 4px
+    color: #fcf8e3
+
+.track_playing
+  color: darkblue
+  span
+    color: darkblue
+
+#track_player
+  width: 100%
+  text-align: center
+
+.td_playing
+  border: solid
+  border-color: #F4F4F4
+  border-width: 1px
+  border-top-color: black
+  border-bottom-color: black
+
+.track_cover_thumb
+  img
+    width: 50px
+    height: 50px
+    object-fit: contain
+
+.tracks_search_form .search
+  margin-right: 0
+

@@ -13,20 +13,20 @@ class BoomTrack < ActiveRecord::Base
 
   has_many :tag_subject_relations, as: :subject
   has_many :boom_tags, through: :tag_subject_relations, as: :subject,
-            after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
-            after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
+            after_add: [:track_add_radio, lambda { |a,c| a.__elasticsearch__.index_document } ],
+            after_remove: [:track_remove_radio, lambda { |a,c| a.__elasticsearch__.index_document } ]
 
   validates :name, presence: true
   validates :creator_id, presence: true
   validates :creator_type, presence: true
 
   mount_uploader :file, AudioUploader
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   after_create :set_removed_and_is_top
   after_create :convert_audio
 
-  scope :valid, -> {where(removed: false).order('is_top, created_at desc')}
+  scope :valid, -> {where(removed: false).order('is_top desc, created_at desc')}
 
   paginates_per 10
 
@@ -48,8 +48,9 @@ class BoomTrack < ActiveRecord::Base
   def self.recommend(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:tracks:recommend", expires_in: 1.day) do
-        if user.recommend_tracks.any?
-          user.recommend_tracks
+        tracks = user.recommend_tracks
+        if tracks.size >= 20
+          tracks
         else
           order('is_top, RAND()').limit(20).to_a
         end
@@ -89,6 +90,8 @@ class BoomTrack < ActiveRecord::Base
         s = "0" + s.to_s
       end
       "#{m}:#{s}"
+    else
+      "0:00"
     end
   end
 
@@ -96,8 +99,30 @@ class BoomTrack < ActiveRecord::Base
     tag_subject_relations.where(boom_tag_id: tag.id).first_or_create!
   end
 
+  def track_add_radio(tag)
+    radio = BoomPlaylist.where(name: tag.name).first
+    radio.playlist_track_relations.where(boom_track_id: self.id).first_or_create! if radio
+  end
+
+  def track_remove_radio(tag)
+    radio = BoomPlaylist.where(name: tag.name).first
+    if radio
+      relation = radio.playlist_track_relations.where(boom_track_id: self.id).first
+      relation.destroy! if relation
+    end
+  end
+
   def is_liked?(user)
     id.in? (user.boom_playlists.default.tracks.ids) rescue false
+  end
+
+  # 以mb为单位
+  def file_size
+    if file.present?
+      (file.size / 1024 / 1024.to_f).round(2)
+    else
+      0
+    end
   end
 
   private

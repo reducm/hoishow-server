@@ -6,7 +6,7 @@ class BoomBanner < ActiveRecord::Base
   validates :subject_type, presence: true
   validates :position, uniqueness: true
 
-  mount_uploader :poster, ImageUploader
+  mount_uploader :poster, BoomImageUploader
 
   before_create :set_position
 

@@ -13,7 +13,7 @@ if playlist.creator_type == BoomPlaylist::CREATOR_COLLABORATOR && co
   json.collaborator do
     json.id co.id
     json.name co.display_name
-    json.avatar co.cover_url || ''
+    json.avatar co.avatar_url || ''
   end
 else
   json.collaborator nil

@@ -24,6 +24,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   #验证码正确则创建用户
   def sign_up
     if params[:code] && params[:mobile] && params[:password]
+      return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
+
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
         @user = User.create(mobile: params[:mobile])
@@ -103,6 +105,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def reset_mobile
     if params[:code] && params[:mobile]
+      return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
+
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
         @user.update(mobile: params[:mobile])
@@ -128,7 +132,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('is_default, created_at desc').page(params[:page])
+    @playlists = @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
   end
 
   def comment_list
@@ -236,17 +240,10 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     @track = BoomTrack.find_by_id(params[:track_id])
     @like_playlist = @user.boom_playlists.default
     if @track && @like_playlist
-      case
-      when params[:type] == 'add' && @track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_already_liked")
-      when params[:type] == 'remove' && !@track.is_liked?(@user)
-        error_respond I18n.t("errors.messages.track_is_not_liked")
-      when params[:type] == 'add' && !@track.is_liked?(@user)
+      if params[:type] == 'add' && !@track.is_liked?(@user)
         @like_playlist.tracks << @track
-      when params[:type] == 'remove' && @track.is_liked?(@user)
+      elsif params[:type] == 'remove' && @track.is_liked?(@user)
         @like_playlist.playlist_track_relations.where(boom_track_id: @track.id).first.destroy
-      else
-        return error_respond I18n.t("errors.messages.data_status_error")
       end
       render partial: "boombox/v1/tracks/track", locals:{ track: @track, user: @user }
     else
