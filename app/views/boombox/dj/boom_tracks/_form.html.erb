@@ -26,7 +26,7 @@
           <%= label_tag "cover", "封面" %>
           <div class="track_cover_areawrap">
             <div id="track_cover_preview">
-              <%= boombox_default_avatar track.cover_url %>
+              <%= boombox_default_avatar track.current_cover_url %>
             </div>
             <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader"} %>
           </div>
