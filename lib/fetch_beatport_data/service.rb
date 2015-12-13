@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'nokogiri'
 require 'open-uri'
+require 'timeout'
 
 module FetchBeatportData
   module Service
@@ -125,9 +126,8 @@ module FetchBeatportData
                 track_artists = track_hash["artists"]
                 track_tag = track_hash["tag"]
                 track_url_id = track_file_url.split("/").last.split(".").first
-                beatport_logger.info track_tag
                 beatport_logger.info "开始创建Track: #{track_name}, 时间: #{Time.now}"
-                boom_track = create_track(track_name, creator_id, track_artists, track_url_id)
+                boom_track = create_track(track_name, creator_id, track_artists, track_url_id, track_cover_url)
                 if boom_track
                   beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
                   # update_track_file_url(boom_track, track_file_url)
@@ -165,19 +165,19 @@ module FetchBeatportData
       BoomPlaylist.where(name: name).first_or_create!(creator_id: creator_id, creator_type:"BoomAdmin", mode: 0)
     end
 
-    def create_track(name, creator_id, artists, track_url_id)
+    def create_track(name, creator_id, artists, track_url_id, track_cover_url)
       BoomTrack.where(name: name).first_or_create(duration: 120,  creator_id: creator_id, creator_type:"BoomAdmin", artists: artists, boom_id: track_url_id, fetch_cover_url: track_cover_url)
     end
 
     def update_playlist_cover_url(playlist, url)
       5.times do
         begin
-          playlist.remote_cover_url = url
-          if playlist.save!
+          Timeout.timeout(10) do
+            playlist.update(remote_cover_url: url)
             beatport_logger.info "更新Playlist: #{playlist.name}的cover_url成功"
             return
           end
-        rescue Exception => e
+        rescue Timeout::Error
           beatport_logger.info "转传Playlist: #{playlist.name}出错, 即将重试, id为#{playlist.id}"
           next
         end
