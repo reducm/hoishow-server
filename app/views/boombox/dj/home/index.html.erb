@@ -14,9 +14,9 @@
     <table class="table table-hover" style="text-align: center;">
       <tbody>
         <tr>
-          <td class="col-md-4">粉丝<span class="label label-warning"><%= current_collaborator.followed_count %></span></td>
-          <td class="col-md-4">个人音乐<span class="label label-warning"><%= current_collaborator.boom_tracks.count %></span></td>
-          <td class="col-md-4">个人Playlist<span class="label label-warning"><%= current_collaborator.boom_playlists.count %></span></td>
+          <td class="col-md-4"><span class="label label-warning boomdj-fans"><%= current_collaborator.followed_count %></span>粉丝</td>
+          <td class="col-md-4"><span class="label label-warning boomdj-music"><%= current_collaborator.boom_tracks.count %></span>个人音乐</td>
+          <td class="col-md-4"><span class="label label-warning boomdj-playlist"><%= current_collaborator.boom_playlists.count %></span>个人Playlist</td>
         </tr>
       </tbody>
     </table>
