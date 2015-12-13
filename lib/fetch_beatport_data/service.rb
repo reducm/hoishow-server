@@ -119,7 +119,7 @@ module FetchBeatportData
 
               #创建track
               pl_tracks_array.each do |track_hash|
-                track_cover_url = track_hash["cover_url"]
+                track_cover_url = boom_playlist.cover_url
                 track_file_url = track_hash["file_url"]
                 track_name = track_hash["name"]
                 track_artists = track_hash["artists"]
@@ -130,7 +130,6 @@ module FetchBeatportData
                 boom_track = create_track(track_name, creator_id, track_artists, track_url_id)
                 if boom_track
                   beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
-                  update_track_cover_url(boom_track, track_cover_url)
                   # update_track_file_url(boom_track, track_file_url)
 
                   #关联tag和track
@@ -167,7 +166,7 @@ module FetchBeatportData
     end
 
     def create_track(name, creator_id, artists, track_url_id)
-      BoomTrack.where(name: name).first_or_create(duration: 120,  creator_id: creator_id, creator_type:"BoomAdmin", artists: artists, boom_id: track_url_id)
+      BoomTrack.where(name: name).first_or_create(duration: 120,  creator_id: creator_id, creator_type:"BoomAdmin", artists: artists, boom_id: track_url_id, fetch_cover_url: track_cover_url)
     end
 
     def update_playlist_cover_url(playlist, url)
@@ -184,23 +183,6 @@ module FetchBeatportData
         end
       end
       beatport_logger.info "更新Playlist: #{playlist.name}的cover_url失败"
-      nil
-    end
-
-    def update_track_cover_url(track, cover_url)
-      5.times do
-        begin
-          track.remote_cover_url = cover_url
-          if track.save!
-            beatport_logger.info "更新Track: #{track.name}的cover_url成功"
-            return
-          end
-        rescue Exception => e
-          beatport_logger.info "转传Track: #{track.name}的cover_url时出错, 即将重试, id为#{track.id}"
-          next
-        end
-      end
-      beatport_logger.info "更新Track: #{track.name}的cover_url失败"
       nil
     end
 

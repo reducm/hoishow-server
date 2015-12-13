@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151209031348) do
+ActiveRecord::Schema.define(version: 20151213041752) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -329,6 +329,8 @@ ActiveRecord::Schema.define(version: 20151209031348) do
     t.string   "artists",          limit: 255
     t.string   "cover",            limit: 255
     t.boolean  "is_top",           limit: 1
+    t.string   "fetch_cover_url",  limit: 255
+    t.string   "fetch_file_url",   limit: 255
   end
 
   add_index "boom_tracks", ["boom_id"], name: "index_boom_tracks_on_boom_id", using: :btree
