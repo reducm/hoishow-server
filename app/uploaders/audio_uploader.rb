@@ -8,7 +8,7 @@ class AudioUploader < CarrierWave::Uploader::Base
     storage :file
   end
 
-  FileUpyunSetting = UpyunSetting['hoishow-file']
+  FileUpyunSetting = Rails.env.production? ? UpyunSetting['boombox-file'] : UpyunSetting['hoishow-file']
 
   self.upyun_username = FileUpyunSetting['upyun_username']
   self.upyun_password = FileUpyunSetting['upyun_password']

@@ -1,5 +1,5 @@
 <div class="row boom-albums-list">
-  <h3>艺人相册</h3>
+  <h1>艺人相册</h1>
   <%= simple_form_for([:boombox, :dj, @boom_album], html: { class: 'dropzone upload-boom-album', id: 'image-dz-form', multipart: :true }) do |f| %> 
     <%= f.hidden_field :collaborator_id, value: current_collaborator.id %>
   <% end %>

@@ -3,7 +3,7 @@ require 'rest_client'
 module ConvertAudio
   module Service
     extend ConvertAudio::Logger
-    FILE_SETTING = UpyunSetting['hoishow-file']
+    FILE_SETTING = Rails.env.production? ? UpyunSetting['boombox-file'] : UpyunSetting['hoishow-file']
     API_URLS = {pretreatment: 'http://p0.api.upyun.com/pretreatment', status: 'http://p0.api.upyun.com/status'}
     OPERATOR_NAME = FILE_SETTING['upyun_username']
     OPERATOR_PASSWORD = FILE_SETTING['upyun_password']

@@ -1,22 +1,24 @@
 <%# encoding: utf-8 %>
 
-<div class="row" style="text-align: center;">
-  <% if @collaborator.avatar_url.present? %>
-    <p><%= image_tag(@collaborator.avatar_url, size: "160x160") %></p>
-  <% else %>
-    <p>无头像</p>
-  <% end %>
-  <p><%= @collaborator.name %></p>
-</div>
+<div class="dj_home">
+  <div class="row" style="text-align: center;">
+    <p>
+      <div id="home_avatar">
+        <%= boombox_default_avatar current_collaborator.avatar_url %>
+      </div>
+    </p>
+    <p><%= current_collaborator.nickname %></p>
+  </div>
 
-<div class="row">
-  <table class="table table-hover" style="text-align: center;">
-    <tbody>
-      <tr>
-        <td>粉丝<%= @collaborator.followed_count %></td>
-        <td>个人音乐<%= @collaborator.boom_tracks.count %></td>
-        <td>个人Playlist<%= @collaborator.boom_playlists.count %></td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="row">
+    <table class="table table-hover" style="text-align: center;">
+      <tbody>
+        <tr>
+          <td class="col-md-4"><span class="label label-warning boomdj-fans"><%= current_collaborator.followed_count %></span>粉丝</td>
+          <td class="col-md-4"><span class="label label-warning boomdj-music"><%= current_collaborator.boom_tracks.count %></span>个人音乐</td>
+          <td class="col-md-4"><span class="label label-warning boomdj-playlist"><%= current_collaborator.boom_playlists.count %></span>个人Playlist</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

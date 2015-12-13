@@ -12,7 +12,7 @@ class BoomTopic < ActiveRecord::Base
 
   validates :content, presence: true
 
-  mount_uploader :image, ImageUploader
+  mount_uploader :image, BoomImageUploader
   after_create :set_is_top
 
   paginates_per 10
@@ -34,7 +34,7 @@ class BoomTopic < ActiveRecord::Base
   end
 
   def creator_avatar
-    collaborator.cover_url
+    collaborator.avatar_url
   end
 
   def likes_count
@@ -65,15 +65,8 @@ class BoomTopic < ActiveRecord::Base
     Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
   end
 
-  def creator_name
-    case creator_type
-    when CREATOR_COLLABORATOR
-      creator.name
-    when CREATOR_ADMIN
-      creator.default_name
-    when CREATOR_USER
-      creator.show_name
-    end rescue nil
+  def created_by
+    collaborator.display_name rescue nil
   end
 
   private

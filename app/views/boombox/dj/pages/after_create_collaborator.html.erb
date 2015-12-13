@@ -1,8 +1,10 @@
 <div class="jumbotron col-md-4 col-md-offset-4" style="padding: 48px; text-align: center">
-  <% if @collaborator.avatar_url.present? %>
-    <%= image_tag(@collaborator.avatar_url, size: '300x300') %>
-  <% end %>
-  <p><%= @collaborator.name %></p>
+  <p>
+    <div id="avatar_preview">
+      <%= boombox_default_avatar @collaborator.avatar_url %>
+    </div>
+  </p>
+  <p><%= @collaborator.nickname %></p>
   <h2>审核中</h1>
   <p>您提交的资料已经进入审核流程，我们将在 3 个工作日内完成审核，请耐心等待。</p>
 </div>

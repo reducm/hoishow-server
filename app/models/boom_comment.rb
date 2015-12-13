@@ -54,12 +54,7 @@ class BoomComment < ActiveRecord::Base
   end
 
   def creator_avatar
-    case creator_type
-    when CREATOR_COLLABORATOR
-      creator.cover_url
-    when CREATOR_USER
-      creator.avatar_url
-    end rescue nil
+    creator.avatar_url rescue nil
   end
 
   def likes_count

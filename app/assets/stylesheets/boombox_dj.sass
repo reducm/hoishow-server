@@ -7,6 +7,8 @@
 @import "operation/jquery.datetimepicker"
 
 @import "boombox/dj/boombox_sidebar"
+@import "boombox/dj/home"
+@import "boombox/dj/pages"
 @import "boombox/dj/boom_albums"
 @import "boombox/dj/collaborators"
 @import "boombox/dj/boom_topics"
@@ -28,12 +30,21 @@
 
 @import "jquery.qeditor"
 
+.flr
+  float: right
+.mb20
+  margin-bottom: 20px
+.mb40
+  margin-bottom: 40px
+
 #page-wrapper
   background-color: #F4F4F4
+  h3
+    font-size: 18px
 
 .search
   float: right
-  margin-top: 20px
+  margin: 20px 0 20px 20px
 
 .dragable_items
   .handle
@@ -44,3 +55,40 @@
 .btn-next-to-header
   margin-top: 15px
   margin-left: 10px
+
+.table
+  tbody
+    tr
+      &:hover
+        background: none
+      td
+        vertical-align: middle
+
+#sb_avatar
+  img
+    width: 56px
+    height: 56px
+    border-radius: 50%
+    object-fit: contain
+
+.boom-top-topic
+  font-size: 18px
+  padding-bottom: 10px
+
+.form-control
+  border-color: #e0e2e2
+  box-shadow: none
+
+.btn-warning
+  background-color: #FFCD5C
+  border-color: #FFCD5C
+  &:hover, &:focus, &.focus, &:active, &.active
+    background-color: #f0ad4e
+    border-color: #f0ad4e
+
+.btn-primary
+  background: $green
+  border-color: $green
+  &:hover, &:focus, &.focus, &:active, &.active
+    background: $green_dark
+    border-color: $green_dark

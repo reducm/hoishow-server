@@ -88,3 +88,7 @@ $ ->
     tag_ids.join(",")
     $("#boom_tag_ids").val(tag_ids)
     $("form").submit()
+
+  #上传图片后隐藏playlist_cover_preview
+  $('input#boom_playlist_cover').on 'change', ->
+    $('div#playlist_cover_preview').hide()

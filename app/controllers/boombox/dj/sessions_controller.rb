@@ -15,8 +15,9 @@ class Boombox::Dj::SessionsController < Boombox::Dj::ApplicationController
         flash[:alert] = '账号没权限进入DJ后台，请联系管理员'
         redirect_to boombox_dj_signin_url
       when !admin.email_confirmed
-        flash[:alert] = '账号没通过邮箱验证，请检查你的邮箱'
-        redirect_to boombox_dj_signin_url
+        flash[:notice] = "我们重新给您发送了验证邮件，请登录您的邮箱按照提示操作"
+        BoomAdminMailer.registration_confirmation(admin).deliver_now
+        redirect_to boombox_dj_signup_send_email_url(boom_admin_id: admin.id)
       when Collaborator.where(boom_admin_id: admin.id).blank?
         flash[:alert] = '请先完善资料'
         redirect_to boombox_dj_signup_fill_personal_form_url(boom_admin_id: admin.id)

@@ -22,9 +22,9 @@ class BoomActivity < ActiveRecord::Base
 
   after_create :set_activity_param
 
-  scope :is_display, ->{where(is_display: true, removed: false).order('is_top, is_hot, created_at desc')}
+  scope :is_display, ->{where(is_display: true, removed: false).order('is_top desc, is_hot desc, created_at desc')}
 
-  mount_uploader :cover, ImageUploader
+  mount_uploader :cover, BoomImageUploader
 
   paginates_per 10
 

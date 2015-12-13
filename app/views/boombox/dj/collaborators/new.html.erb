@@ -1,3 +1,89 @@
 <%# encoding: utf-8 %>
 
-<%= render partial: 'form', locals: { collaborator: @collaborator } %>
+<div class="col-md-8 col-md-offset-2">
+  <div class="row">
+    <h3 class="header-primary">完善资料</h3>
+  </div>
+
+  <%= simple_form_for([:boombox, :dj, @collaborator ], html: { class: 'form-horizontal', id: '@collaborator-dropzone' }) do |f| %>
+
+    <% if params[:action] == 'new' || params[:action] == 'create' %>
+      <%= f.hidden_field :boom_admin_id, value: @boom_admin.id %>
+    <% end %>
+    <div class="row">
+      <div class="col-md-5 col-md-offset-1 avatar-area">
+        <legend>社交信息（公开）</legend>
+        <% if @collaborator.avatar_url.present? %>
+          <%= image_tag(@collaborator.avatar_url, size: "160x160") %>
+        <% else %>
+          <p>没有头像</p>
+        <% end %>
+        <%= f.input :avatar, label: "（请上传 300x300 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+        <div class="col-md-7 avatar-content">
+          <%= f.input :identity, collection:[["DJ", "dj"], ["制作人", "producer"], ["派对搞手", "party_planer"]], label: "身份" %>
+          <%= f.input :nickname, label: "昵称（一个月内只能修改一次）" %>
+          <%= f.input :weibo, label: "微信" %>
+          <%= f.input :wechat, label: "微博" %>
+        </div>
+      </div>
+
+      <div class="col-md-5 information-area">
+        <legend>个人信息（保密）</legend>
+        <div class="col-md-7 infomation-content">
+          <% if params[:action] == 'new' || params[:action] == 'create' %>
+            <%= f.input :name, label: "真实姓名" %>
+          <% else %>
+            <%= f.input :name, label: "真实姓名", disabled: true %>
+          <% end %>
+          <%= f.input :sex, collection:[["男", "male"], ["女", "female"]], as: :radio_buttons, label: "性别" %>
+          <%= f.input :birth, as: :datetimepicker, label: "生日" %>
+          <%= f.input :contact, label: "手机号" %>
+          <% if params[:action] == 'new' || params[:action] == 'create' %>
+            <%= f.input :email, input_html: {value: @boom_admin.email} %>
+          <% else %>
+            <%= f.input :email, label: "邮箱", disabled: true %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 poster-area">
+        <legend class="legend-without-border">海报</legend>
+        <% if @collaborator.cover_url.present? %>
+          <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
+            <img src=<%= @collaborator.cover_url %> class="thumb"></img>
+            <figcaption>点击查看大图</figcaption>
+          </a>
+        <% else %>
+          <p>没有海报</p>
+        <% end %>
+        <%= f.input :cover, label: "（请上传 720x480 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 introduction-area">
+        <%= f.input :description, as: :text, label: '个人简介' %>
+      </div>
+    </div>
+
+    <div class="row submit-area">
+      <div class="col-md-10 col-md-offset-1">
+        <%= submit_tag "提交审核", class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <% if @collaborator.cover_url.present? %>
+    <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img src=<%= @collaborator.cover_url %> style="width: 100%">
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
