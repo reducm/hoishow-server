@@ -7,8 +7,13 @@ $ ->
 
   # 文本框标签化
   $(document).ready ->
-    $('#boom_track_artists').tagit
-      allowSpaces: true
+    if $('div#artist_names').length > 0
+      $('#boom_track_artists').tagit
+        allowSpaces: true
+        availableTags: $('div#artist_names').data('data')
+    else
+      $('#boom_track_artists').tagit
+        allowSpaces: true
 
   # 标签
   if $('div#tags_already_added').length > 0
