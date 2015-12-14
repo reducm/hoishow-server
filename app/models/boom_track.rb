@@ -11,7 +11,7 @@ class BoomTrack < ActiveRecord::Base
   #实际数据为boom_activity中的show
   has_many :activities, ->{ where mode: 0 }, through: :activity_track_relations, source: :boom_activity
 
-  has_many :tag_subject_relations, as: :subject
+  has_many :tag_subject_relations, as: :subject, dependent: :destroy
   has_many :boom_tags, through: :tag_subject_relations, as: :subject,
             after_add: [:track_add_radio, lambda { |a,c| a.__elasticsearch__.index_document } ],
             after_remove: [:track_remove_radio, lambda { |a,c| a.__elasticsearch__.index_document } ]
@@ -122,6 +122,26 @@ class BoomTrack < ActiveRecord::Base
       (file.size / 1024 / 1024.to_f).round(2)
     else
       0
+    end
+  end
+
+  def create_or_update_tag_relations(tag_ids = [])
+    tag_ids = tag_ids.split(",")
+    BoomTag.where(id: tag_ids).each do |tag|
+      tag.tag_subject_relations.where(subject_id: self.id, subject_type: 'BoomTrack').first_or_create!
+    end
+    self.tag_subject_relations.where.not(boom_tag_id: tag_ids).delete_all
+  end
+
+  def create_tag_using_artists(artists_string = [])
+    artists = artists_string.split(",")
+    a_tags = []
+    artists.each do |artist|
+      name = artist.gsub(/\s/, "").downcase
+      a_tags << BoomTag.where(name: name, lower_string: name).first_or_create!
+    end
+    a_tags.each do |tag|
+      tag.tag_subject_relations.where(subject_id: self.id, subject_type: 'BoomTrack').first_or_create!
     end
   end
 

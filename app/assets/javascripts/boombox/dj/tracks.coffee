@@ -1,35 +1,24 @@
 $ ->
-  #如果当前track有标签的话就把标签id保存起来
-  track_tag_ids_val = $("#track_tag_ids").val()
-  if track_tag_ids_val
-    tag_ids = track_tag_ids_val.split(" ")
+  ####### 编辑页
+  # 上传图片后隐藏默认占位图
+  $('input#boom_track_cover').on 'change', ->
+    $('div#track_cover_preview').hide()
+    readURL this
+
+  # 文本框标签化
+  $(document).ready ->
+    $('#boom_track_artists').tagit
+      allowSpaces: true
+
+  # 标签
+  if $('div#tags_already_added').length > 0
+    $('select#tags').val($('div#tags_already_added').data('data')).select2
+      tags: true
   else
-    tag_ids = []
+    $('select#tags').select2
+      tags: true
 
-  #tag-filter
-  $("#track_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
-
-  #添加tag
-  $("#track_add_tag").on "click", (e) ->
-    e.preventDefault()
-    tag_name = $("#track_tag_list option:selected").text()
-    tag_id = $("#track_tag_list option:selected").val()
-    if tag_id in tag_ids
-      alert("该标签已选，请不要重复添加")
-    else
-      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#track_delete_tag")
-      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#track_delete_tag")
-      tag_ids.push(tag_id)
-
-  #删除tag
-  $("#track_delete_tag").on "click", ".remove_tag", (e) ->
-    e.preventDefault()
-    tag_id = $(this).data("tag-id")
-    $(this).prev().remove()
-    $(this).remove()
-    tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
-
-
+  # 上传音乐后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
       reader = new FileReader
@@ -55,8 +44,8 @@ $ ->
       secs = if secs > 9 then secs else "0" + secs
       $('#track_duration').text("时长：" + mins + ":" + secs)
 
-#1.提交前将标签id数组组装成字符串，并传入hidden field
-#2.获取音乐的duration
+  # 1.提交前将标签传入hidden field
+  # 2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
     e.preventDefault()
     if $('#current_file').attr('data-url') == ""
@@ -67,21 +56,14 @@ $ ->
       return
     else
       #1
-      tag_ids.join(",")
-      $("#boom_tag_ids").val(tag_ids)
+      $("#boom_tag_ids").val($('select#tags').val())
       #2
       duration = $("#track-file-pre")[0].duration
       if duration
         $("#boom_track_duration").attr("value", duration)
       $("form").submit()
 
-  ## 编辑页
-  # 上传图片后隐藏track_cover_preview
-  $('input#boom_track_cover').on 'change', ->
-    $('div#track_cover_preview').hide()
-    readURL this
-
-  ## 列表页
+  ####### 列表页
   # 音乐播放
   $('.track_files').removeClass('track_playing')
   $('table.tracks tr td').removeClass('td_playing')
