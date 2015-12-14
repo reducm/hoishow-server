@@ -110,6 +110,15 @@ class BoomPlaylist < ActiveRecord::Base
     tracks.count
   end
 
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.display_name
+    when CREATOR_ADMIN
+      creator.default_name
+    end rescue nil
+  end
+
   private
   def set_removed_and_is_top
     if is_top

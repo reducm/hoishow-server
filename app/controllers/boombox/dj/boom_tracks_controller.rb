@@ -21,6 +21,7 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
   def new
     @tags = BoomTag.all
     @track = current_collaborator.boom_tracks.new
+    get_all_artists
   end
 
   def create
@@ -57,6 +58,7 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
   def edit
     @tags = BoomTag.all
     get_tags_already_added
+    get_all_artists
   end
 
   def destroy
@@ -69,6 +71,16 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
   end
 
   private
+
+  def get_all_artists
+    artist_names = []
+    BoomTrack.all.each do |track|
+      if track.artists.present?
+        artist_names << track.artists.split(',')
+      end
+    end
+    @artist_names = artist_names.flatten.uniq
+  end
 
   def get_tags_already_added
     if @track.boom_tags.any?
