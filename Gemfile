@@ -28,6 +28,8 @@ gem 'simple_form'
 #gem 'jquery-datatables-rails', '~> 3.3.0'
 gem "jquery-fileupload-rails"
 gem "dropzonejs-rails"
+gem 'tag-it-rails'
+# 手工引入select2相关文件
 #####END assets ######
 
 #gem 'devise'
