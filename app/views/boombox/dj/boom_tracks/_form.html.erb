@@ -44,9 +44,8 @@
 
           <div>
             <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader"} %>
-            <% if track.file_url %>
-              <audio src=<%= track.file_url %> id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
-              <% track_src = track.file_url %>
+            <% if track.current_file_url %>
+              <audio src="<%= track.current_file_url %>" id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
             <% else %>
               <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
             <% end %>
@@ -86,6 +85,6 @@
 </div>
 
 <%= content_tag :div, id: "current_file", data: {
-  url: track.file_url.present? ? track.file_url : ""
+  url: track.current_file_url.present? ? track.current_file_url : ""
 } do %>
 <% end %>

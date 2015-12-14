@@ -21,8 +21,8 @@
           <td><%= track.id %></td>
           <td><%= image_tag(track.current_cover_url, size: "50x50") if track.current_cover_url %></td>
           <td>
-            <% if track.file_url %>
-              <audio src=<%= track.file_url %> preload="metadata" controls="controls">你的浏览器不支持audio标签</audio>
+            <% if track.current_file_url %>
+              <audio src="<%= track.current_file_url %>" preload="metadata" controls="controls">你的浏览器不支持audio标签</audio>
             <% end %>
           </td>
           <td><%= track.name %></td>
