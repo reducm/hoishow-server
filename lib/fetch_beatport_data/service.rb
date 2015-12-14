@@ -87,6 +87,8 @@ module FetchBeatportData
     end
 
     def save_to_database
+      start_time = Time.now
+      beatport_logger.info "开始倒入数据, 时间: #{start_time}"
       creator_id = BoomAdmin.first.id
       file = File.open("tmp/beatport_data.json", "r")
       begin
@@ -113,8 +115,7 @@ module FetchBeatportData
             beatport_logger.info "开始创建Playlist: #{pl_name}, 时间: #{Time.now}"
             boom_playlist = create_playlist(pl_name, creator_id)
             if boom_playlist
-              beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
-              update_playlist_cover_url(boom_playlist, pl_cover_url)
+              update_playlist_cover_url(boom_playlist, pl_cover_url) unless boom_playlist.cover_url
               #关联tag和playlist
               boom_playlist.tag_for_playlist(boom_tag)
 
@@ -147,11 +148,14 @@ module FetchBeatportData
                 end
 
               end
+              beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
             else
               beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"
             end
           end
         end
+        end_time = Time.now - start_time
+        beatport_logger.info "导入数据完成, 时间: #{Time.now}, 耗时: #{Time.at(end_time).utc.strftime("%H:%M:%S")}"
       ensure
         file.close unless file.closed?
       end
