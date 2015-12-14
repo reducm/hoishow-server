@@ -28,7 +28,7 @@
               <%= tags.join(",") %>
             <% end %>
           </td>
-          <td><%= playlist.creator.name if playlist.creator %></td>
+          <td><%= playlist.creator_name if playlist.creator %></td>
           <td><%= playlist.created_at.try(:strfcn_time) %></td>
           <td><%= playlist.updated_at.try(:strfcn_time) %></td>
           <td>
