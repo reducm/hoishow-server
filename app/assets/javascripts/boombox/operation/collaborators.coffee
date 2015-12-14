@@ -36,7 +36,7 @@ $ ->
     tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
 
   # 昵称有修改时
-  $('input[type="submit"]').on 'click', (e) ->
+  $('#collaborator_edit_btn').on 'click', (e) ->
     e.preventDefault()
     #提交前将标签id数组组装成字符串，并传入hidden field
     tag_ids.join(",")
@@ -44,6 +44,6 @@ $ ->
     #昵称相关
     if $('#collaborator_nickname').val() != original_nickname
       if confirm('昵称一个月内只能修改一次，确定修改吗？')
-        $(this).parents('form').submit()
+        $("#collaborator-dropzone").submit()
     else
-      $(this).parents('form').submit()
+      $("#collaborator-dropzone").submit()
