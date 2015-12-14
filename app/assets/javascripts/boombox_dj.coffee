@@ -1,5 +1,6 @@
 #= require jquery
 #= require jquery-ui
+#= require tag-it
 #= require jquery_ujs
 #= require bootstrap-sprockets
 #= require operation/sb-admin-2
@@ -19,6 +20,7 @@
 #= require dropzone
 #= require datatables.min
 #= require moment.min
+#= require select2.full.min
 #
 #= require simditor/module
 #= require simditor/hotkeys
