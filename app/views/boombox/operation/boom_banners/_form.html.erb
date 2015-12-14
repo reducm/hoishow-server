@@ -17,7 +17,11 @@
         <div class="form-group">
           <%= f.label :subject_type, '类型', class: 'col-md-2 control-label' %>
           <div class="col-md-2">
-            <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+            <% if params[:action] == "new" %>
+              <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+            <% elsif params[:action] == "edit" %>
+              <%= f.select :subject_type, subject_type_option(banner.subject_type), {},  class: 'form-control' %>
+            <% end %>
           </div>
         </div>
         <div class="form-group">
