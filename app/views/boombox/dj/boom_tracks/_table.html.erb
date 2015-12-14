@@ -21,10 +21,10 @@
       <% tracks.each do|track| %>
         <tr>
           <td><%= track.id %></td>
-          <td class="track_cover_thumb"><%= boombox_default_cover(track.cover_url) %></td>
+          <td class="track_cover_thumb"><%= boombox_default_cover(track.current_cover_url) %></td>
           <td>
-            <% if track.file_url %>
-              <a href="#" data-src="<%= track.file_url %>" id="track_file<%= track.id %>" class="track_files">
+            <% if track.current_file_url %>
+              <a href="#" data-src="<%= track.current_file_url %>" id="track_file<%= track.id %>" class="track_files">
                 <span class="glyphicon glyphicon-music" aria-hidden="true"></span><%= track.name %>
               </a>
             <% end %>

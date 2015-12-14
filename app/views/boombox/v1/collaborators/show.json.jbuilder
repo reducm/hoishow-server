@@ -7,5 +7,6 @@ json.cover @collaborator.cover_url || ''
 json.albums do
   json.array! @collaborator.boom_albums do |album|
     json.image album.image_url || ''
+    json.is_cover album.is_cover
   end
 end

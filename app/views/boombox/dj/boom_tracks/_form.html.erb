@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<legend><%= link_to "音乐列表", boombox_dj_boom_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
+<legend class="boom-top-topic"><%= link_to "音乐列表", boombox_dj_boom_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 
 <div class="row page_header">
   <% if params[:action] == 'new' %>
@@ -18,17 +18,18 @@
   <%= simple_form_for( track, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
     <div class="track_edit_area">
       <div class="row">
-        <div class="col-sm-5 track_cover_area ">
+        <div class="track_cover_area ">
           <%= label_tag "cover", "封面" %>
-          <div class="text-center">
+          <div class="track_cover_areawrap">
             <div id="track_cover_preview">
-              <%= boombox_default_avatar track.cover_url %>
+              <%= boombox_default_avatar track.current_cover_url %>
             </div>
-            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
+            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader"} %>
           </div>
         </div>
 
-        <div class="col-sm-6 track_file_area">
+        <h3>音乐</h3>
+        <div class="track_file_area">
           <% if params[:action] == 'new' %>
             <p id="track_filename">文件：未上传</p>
           <% else %>
@@ -81,7 +82,7 @@
 </div>
 
 <%= content_tag :div, id: "current_file", data: {
-  url: track.file_url.present? ? track.file_url : ""
+  url: track.current_file_url.present? ? track.current_file_url : ""
 } do %>
 <% end %>
 

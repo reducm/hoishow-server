@@ -145,6 +145,14 @@ class BoomTrack < ActiveRecord::Base
     end
   end
 
+  def current_cover_url
+    cover_url || fetch_cover_url
+  end
+
+  def current_file_url
+    file_url || fetch_file_url
+  end
+
   private
   def set_removed_and_is_top
     unless is_top

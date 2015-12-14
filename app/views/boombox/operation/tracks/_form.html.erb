@@ -21,7 +21,7 @@
           <div class="text-center">
             <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
             <div id="track_cover_preview">
-              <%= boombox_default_avatar track.cover_url %>
+              <%= boombox_default_avatar track.current_cover_url %>
             </div>
           </div>
         </div>
@@ -29,9 +29,8 @@
         <div class="col-sm-6">
           <div>
             <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader col-sm-offset-3"}, label_html: {class: "col-sm-offset-3"} %>
-            <% if track.file_url %>
-              <audio src=<%= track.file_url %> id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
-              <% track_src = track.file_url %>
+            <% if track.current_file_url %>
+              <audio src="<%= track.current_file_url %>" id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
             <% else %>
               <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
             <% end %>
