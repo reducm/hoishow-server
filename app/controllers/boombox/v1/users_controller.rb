@@ -277,12 +277,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     # production 发短信
     if Rails.env.production?
       if ChinaSMS.to(mobile, "手机验证码为#{code}【播霸】")[:success]
-        render json: { result: "success" }
+        render json: { result: "success", code: code }
       else
         return error_respond I18n.t("errors.messages.sms_failed")
       end
     else
-      render json: { result: "success" }
+      render json: { result: "success", code: '123456' }
     end
   end
 
