@@ -5,11 +5,13 @@ $ ->
   if sessionStorage.getItem('show_search_tab') == "t"
     $("#playlist_manage_tab a[href='#search_tracks']").tab("show")
 
+  #按了搜索按钮
   $("#search_track_btn").on "click", (e) ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 't')
     $("form").submit()
 
+  #search_tracks换页
   $("#playlist_search_track_table .pagination a").on "click", () ->
     sessionStorage.setItem('show_search_tab', 't')
     
