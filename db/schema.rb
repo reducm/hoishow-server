@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151213041752) do
+ActiveRecord::Schema.define(version: 20151215070428) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -298,6 +298,13 @@ ActiveRecord::Schema.define(version: 20151213041752) do
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
 
+  create_table "boom_topic_attachments", force: :cascade do |t|
+    t.integer  "boom_topic_id", limit: 4
+    t.string   "image",         limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
   create_table "boom_topics", force: :cascade do |t|
     t.string   "created_by",      limit: 255
     t.string   "avatar",          limit: 255
@@ -404,8 +411,8 @@ ActiveRecord::Schema.define(version: 20151213041752) do
     t.string   "wechat",                    limit: 255
     t.text     "description",               limit: 65535
     t.boolean  "removed",                   limit: 1
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.datetime "created_at",                                              null: false
+    t.datetime "updated_at",                                              null: false
     t.boolean  "verified",                  limit: 1,     default: false
     t.boolean  "is_top",                    limit: 1,     default: false
     t.string   "avatar",                    limit: 255
@@ -414,7 +421,7 @@ ActiveRecord::Schema.define(version: 20151213041752) do
     t.integer  "sex",                       limit: 4
     t.datetime "birth"
     t.integer  "boom_admin_id",             limit: 4
-    t.datetime "nickname_updated_at",                     default: '2015-12-01 04:01:46', null: false
+    t.datetime "nickname_updated_at",                                     null: false
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree

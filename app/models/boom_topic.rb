@@ -7,12 +7,10 @@ class BoomTopic < ActiveRecord::Base
   has_many :boom_user_likes, as: :subject, dependent: :destroy
   #把likers改成users则不用加source: :user
   has_many :likers, through: :boom_user_likes, as: :subject, source: :user
-
+  has_many :attachments, class_name: 'BoomTopicAttachment', dependent: :destroy
   has_many :boom_comments, dependent: :destroy
 
   validates :content, presence: true
-
-  mount_uploader :image, BoomImageUploader
   after_create :set_is_top
 
   paginates_per 10
