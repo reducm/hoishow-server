@@ -11,18 +11,11 @@ module FetchBeatportData
     def fetch_data
       url = "https://pro.beatport.com/"
       home_doc = request_url(url)
-      if home_doc.blank?
-        return
-      end
+      return if home_doc.blank?
 
-      url = "https://pro.beatport.com"
       tag_hash = {}
       #爬tags
       home_doc.css("body ul.genre-drop-list-col-one li a").each do |e|
-        tag_hash[e.content] = e["href"]
-      end
-
-      home_doc.css("body ul.genre-drop-list-col-two li a").each do |e|
         tag_hash[e.content] = e["href"]
       end
 
@@ -35,11 +28,8 @@ module FetchBeatportData
         beatport_logger.info "--------------处理标签#{tag}, 时间:#{Time.now}--------------"
         #爬release，控制每页的数量,暂定为25,约5000首
         releases_link = url + tag_hash[tag] + "/releases?per-page=25"
-
         releases_doc = request_url(releases_link)
-        if releases_doc.blank?
-          next
-        end
+        next if releases_doc.blank?
 
         releases_doc.css("li.bucket-item.horz-release").each do |release|
           cover_url = release.css("img.horz-release-artwork").first["data-src"]
@@ -50,9 +40,7 @@ module FetchBeatportData
           tracks_link = url + playlist_infos["href"]
 
           release_tracks_doc = request_url(tracks_link)
-          if release_tracks_doc.blank?
-            next
-          end
+          next if release_tracks_doc.blank?
 
           release_tracks_doc.css(".buk-track-meta-parent").map do |track|
             track_id = track.css(".buk-track-title a").first["href"].split("/").last
@@ -142,8 +130,7 @@ module FetchBeatportData
                   boom_track = create_track(track_name, creator_id, track_artists, track_mp3_url_id)
                   if boom_track
                     beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
-#                    update_remote_url(boom_track, track_cover_url, "cover")
-#                    update_remote_url(boom_track, track_file_url, "file")
+                    #                    update_remote_url(boom_track, track_file_url, "file")
 
                     #关联tag和track
                     if track_tag == tag_name
@@ -162,7 +149,6 @@ module FetchBeatportData
                   else
                     beatport_logger.info "创建Track: #{track_name}失败, 时间: #{Time.now}"
                   end
-
                 end
               else
                 beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"

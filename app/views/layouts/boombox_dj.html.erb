@@ -6,10 +6,10 @@
   <title>DJ后台-<%= t( "dj_controller.#{ params[:controller].split('/')[2] }")%> </title>
   <%= stylesheet_link_tag    'boombox_dj', media: 'all' %>
   <%= javascript_include_tag 'boombox_dj' %>
-  <%= favicon_link_tag '/admin_avatar.png', :type => 'image/png' %>
+  <%= favicon_link_tag '/boombox_admin_avatar.png', :type => 'image/png' %>
   <%= csrf_meta_tags %>
 </head>
-<body>
+<body data-page="<%= controller_name + '-' + action_name %>" >
 
 <script type="text/javascript">
   $(function(){

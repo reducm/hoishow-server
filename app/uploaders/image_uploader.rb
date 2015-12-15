@@ -1,5 +1,5 @@
 # encoding: utf-8
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800 poster cover radio playlist)
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -48,7 +48,7 @@ class ImageUploader < CarrierWave::Uploader::Base
       # current_path 是 Carrierwave 上传过程临时创建的一个文件，有时间标记
       # 例如: /Users/jason/work/ruby-china/public/uploads/tmp/20131105-1057-46664-5614/_____2013-11-05___10.37.50.png
       @name ||= Digest::MD5.hexdigest(current_path)
-      "#{@name}.#{File.extname(super)}"
+      "#{@name}#{File.extname(super)}"
     end
   end
   #def filename

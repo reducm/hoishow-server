@@ -66,7 +66,7 @@ class BoomTopic < ActiveRecord::Base
   end
 
   def created_by
-    collaborator.name rescue nil
+    collaborator.display_name rescue nil
   end
 
   private

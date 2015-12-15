@@ -117,6 +117,14 @@ class BoomMessage < ActiveRecord::Base
     end
   end
 
+  def content=(value)
+    write_attribute(:content, Base64.encode64(value))
+  end
+
+  def content
+    Base64.decode64(read_attribute(:content)).force_encoding("utf-8")
+  end
+
   private
 
   def set_user_message_relations

@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<legend><%= link_to "音乐列表", boombox_dj_boom_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
+<legend class="boom-top-topic"><%= link_to "音乐列表", boombox_dj_boom_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 
 <div class="row page_header">
   <% if params[:action] == 'new' %>
@@ -15,24 +15,21 @@
 </div>
 
 <div class="col-md-8 col-md-offset-2" id="track_form">
-  <%= hidden_field_tag "track_tag_ids", track.boom_tags.pluck(:id) %>
-
   <%= simple_form_for( track, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
-    <%= f.hidden_field :artists, value: current_collaborator.nickname %>
-
     <div class="track_edit_area">
       <div class="row">
-        <div class="col-sm-5 track_cover_area ">
+        <div class="track_cover_area ">
           <%= label_tag "cover", "封面" %>
-          <div class="text-center">
+          <div class="track_cover_areawrap">
             <div id="track_cover_preview">
-              <%= boombox_default_avatar track.cover_url %>
+              <%= boombox_default_avatar track.current_cover_url %>
             </div>
-            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader col-sm-offset-4"} %>
+            <%= f.input :cover, label: "上传封面(建议大小:300x300)", input_html: {class: "track-cover-uploader"} %>
           </div>
         </div>
 
-        <div class="col-sm-6 track_file_area">
+        <h3>音乐</h3>
+        <div class="track_file_area">
           <% if params[:action] == 'new' %>
             <p id="track_filename">文件：未上传</p>
           <% else %>
@@ -40,33 +37,33 @@
           <% end %>
           <p id="track_size">大小：<%= track.file_size %> MB</p>
           <p id="track_duration">时长：<%= track.duration_to_time %></p>
-
-          <div>
-            <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader"} %>
+          <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader"} %>
+          <p>
             <% if track.file_url %>
               <audio src=<%= track.file_url %> id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
-              <% track_src = track.file_url %>
             <% else %>
               <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
             <% end %>
-            <%= f.hidden_field :duration %>
-            <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
-
-            <%= label_tag "tags", "标签" %>
-            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
-            <div id="track_delete_tag">
-              <% tags = track.boom_tags.pluck(:name, :id) %>
-              <% tags.each do |track_tag| %>
-                <span class="btn btn-default"><%= track_tag[0] + "" %></span><button data-tag-id="<%= track_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
-              <% end %>
-            </div>
-            <div>
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "track_tag_list" %>
-              <a class="btn btn-primary" id="track_add_tag">添加选中标签</a>
-            </div>
-          </div>
+          </p>
+          <%= f.hidden_field :duration %>
+          <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
+          <%= f.input :artists, label: "艺术家" %>
+          <%= label_tag "标签" %>
+          <p>
+            <% if @tags.any? %>
+              <select id="tags" multiple="multiple" style="width: 300px; display: none;" class="populate" tabindex="-1">
+                <% @tags.each do |bt| %>
+                  <option value="<%= bt.id %>"><%= bt.name %></option>
+                <% end %>
+              </select>
+            <% else %>
+              没有标签
+            <% end %>
+          </p>
+          <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
         </div>
       </div>
+
       <% if params[:action] == 'edit' %>
         <div class="row">
           <div class="col-sm-5 delete_area">
@@ -85,6 +82,17 @@
 </div>
 
 <%= content_tag :div, id: "current_file", data: {
-  url: track.file_url.present? ? track.file_url : ""
+  url: track.current_file_url.present? ? track.current_file_url : ""
 } do %>
+<% end %>
+
+<% if params[:action] == 'edit' %>
+  <%= content_tag :div, id: "tags_already_added", data: {
+    data: @tags_already_added_ids
+  } do %>
+  <% end %>
+  <%= content_tag :div, id: "artist_names", data: {
+    data: @artist_names
+  } do %>
+  <% end %>
 <% end %>

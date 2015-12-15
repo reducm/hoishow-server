@@ -21,15 +21,15 @@
         <tr>
           <td><%= track.id %></td>
           <td>
-            <% if track.cover_url %>
-              <%= image_tag(track.cover_url, size: "50x50") %>
+            <% if track.current_cover_url %>
+              <%= image_tag(track.current_cover_url, size: "50x50") %>
             <% else %>
               <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
             <% end %>
           </td>
           <td>
-            <% if track.file_url %>
-              <audio src=<%= track.file_url %> controls="controls">你的浏览器不支持audio标签</audio>
+            <% if track.current_file_url %>
+              <audio src="<%= track.current_file_url %>" controls="controls">你的浏览器不支持audio标签</audio>
             <% end %>
           </td>
           <td><%= track.name %></td>
@@ -66,5 +66,3 @@
 <% else %>
   <%= paginate tracks, param_name: "tracks_page", remote: true %>
 <% end %>
-
-
