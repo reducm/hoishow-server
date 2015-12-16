@@ -3,15 +3,15 @@ $ ->
     $('#playlists_form').submit()
 
   if sessionStorage.getItem('show_search_tab') == "t"
-    $("#playlist_manage_tab a[href='#search_tracks']").tab("show")
+    $("#playlist_manage_tab a[href='#playlist_search_tracks']").tab("show")
 
   #按了搜索按钮
-  $("#search_track_btn").on "click", (e) ->
+  $("#playlist_search_track_btn").on "click", (e) ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 't')
     $("#search_playlist_tracks_form").submit()
 
-  #search_tracks换页
+  #playlist_search_tracks换页
   $("#playlist_search_track_table .pagination a").on "click", (e) ->
     sessionStorage.setItem('show_search_tab', 't')
     
@@ -23,7 +23,7 @@ $ ->
     location.href = "/boombox/operation/playlists/#{playlist_id}/manage_tracks"
 
   #添加音乐 
-  $("#search_tracks").on "click", ".add_track_to_playlist", (e) ->
+  $("#playlist_search_tracks").on "click", ".add_track_to_playlist", (e) ->
     e.preventDefault()
     track_id = $(this).data("track-id")
     playlist_id = $("#playlist_id").val()
