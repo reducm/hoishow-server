@@ -61,7 +61,7 @@ $ ->
   $("#radio_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#radio_add_tag").on "click", (e) ->
+  $("#radio_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#radio_tag_list option:selected").text()
     tag_id = $("#radio_tag_list option:selected").val()

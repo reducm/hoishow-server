@@ -16,7 +16,7 @@ $ ->
   $("#collaborator_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#collaborator_add_tag").on "click", (e) ->
+  $("#collaborator_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#collaborator_tag_list option:selected").text()
     tag_id = $("#collaborator_tag_list option:selected").val()
