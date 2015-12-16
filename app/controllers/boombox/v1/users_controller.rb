@@ -163,8 +163,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def create_comment
     if params[:topic_id] && params[:content]
-      options = { creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id] }
-      if params[:parent_id]
+      options = {creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id]}
+      if params[:parent_id].present?
         options.merge!(parent_id: params[:parent_id])
         @comment = BoomComment.create(options)
         @comment.send_reply_push

@@ -3,7 +3,10 @@ class MessageTask < ActiveRecord::Base
   belongs_to :boom_message
 
   delegate :title, :content, :subject_type, :subject_id, :start_time, to: :boom_message
-  after_commit :async_push, :on => :create
+  after_commit :async_push, on: :create
+
+  scope :ios, -> {where(platform: 'ios')}
+  scope :android, -> {where(platform: 'android')}
 
   def targets
     boom_message.get_target_users.join("\n")

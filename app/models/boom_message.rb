@@ -7,6 +7,8 @@ class BoomMessage < ActiveRecord::Base
   SUBJECT_COMMENT = 'BoomComment'
 
   belongs_to :boom_admin
+  belongs_to :subject, polymorphic: true
+
   has_many :message_tasks
 
   has_many :boom_user_message_relations
@@ -67,7 +69,15 @@ class BoomMessage < ActiveRecord::Base
   end
 
   def total_count
-    message_tasks.sum(:total_count)
+    ios_push_count.to_i + android_push_count.to_i
+  end
+
+  def ios_push_count
+    message_tasks.ios.last.total_count rescue 0
+  end
+
+  def android_push_count
+    message_tasks.android.last.total_count rescue 0
   end
 
   def push_time
