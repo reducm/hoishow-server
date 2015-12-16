@@ -26,7 +26,13 @@
         <tr>
           <td><%= message.subject_type_cn %></td>
           <td><%= message.targets_cn %></td>
-          <td><%= link_to message.subject_name, boombox_subject_redirect_url(message.subject_type, message.subject_id) %></td>
+          <td>
+            <% if message.subject %>
+              <%= link_to message.subject_name, boombox_subject_redirect_url(message.subject_type, message.subject_id) %>
+            <% else %>
+              跳转对象不存在
+            <% end %>
+          </td>
           <td><%= message.title %></td>
           <td><%= truncate message.content, length: 80 %></td>
           <td><%= get_datetime(message.start_time) %></td>

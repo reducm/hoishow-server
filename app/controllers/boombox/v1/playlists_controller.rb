@@ -9,7 +9,7 @@ class Boombox::V1::PlaylistsController < Boombox::V1::ApplicationController
     if params[:keyword]
       @playlists = BoomboxSearch.query_search(params[:keyword])[:playlists]
     else
-      @playlists = BoomPlaylist.recommend(@user)
+      @playlists = BoomPlaylist.recommend_playlists(@user)
     end
     @playlists = Kaminari.paginate_array(@playlists).page(params[:page]).per(10)
   end

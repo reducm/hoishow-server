@@ -50,7 +50,14 @@ module Routes
               end
             end
 
-            resources :radios
+            resources :radios do
+              member do
+                post :add_track
+                post :remove_track
+                get :manage_tracks
+                post :publish
+              end
+            end
 
             resources :activities do
               member do

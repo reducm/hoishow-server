@@ -25,6 +25,7 @@
         <th class='text-center'>创建时间</th>
         <th class='text-center'>修改时间</th>
         <th class='text-center'>推荐状态</th>
+        <th class='text-center'>发布状态</th>
         <th class='text-center'>操作</th>
       </tr>
     </thead>
@@ -62,8 +63,10 @@
             <td><%= get_datetime( radio.created_at ) %></td>
             <td><%= get_datetime( radio.updated_at ) %></td>
             <td><%= radio.is_top_cn %></td>
+            <td><%= radio.is_display_cn %></td>
             <td>
               <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
+              <%= link_to "管理音乐", manage_tracks_boombox_operation_radio_path(radio)%>
               <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
             </td>
           </tr>
