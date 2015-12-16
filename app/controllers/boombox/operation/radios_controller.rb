@@ -89,6 +89,44 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
     redirect_to boombox_operation_radios_url
   end
 
+  def manage_tracks
+    radio_tracks = @radio.tracks.where(removed: false)
+    radio_track_ids = radio_tracks.pluck(:id)
+    @radio_tracks = radio_tracks.page(params[:playlist_tracks_page]).order('is_top desc, created_at desc')
+    total_tracks = BoomTrack.valid
+    if radio_track_ids.present?
+      total_tracks = total_tracks.where("id not in (?)", radio_track_ids)
+    end
+    @tracks =
+      if params[:q].present?
+        total_tracks.where("name like '%#{params[:q]}%'").page(params[:search_tracks_page])
+      else
+        total_tracks.page(params[:search_tracks_page])
+      end
+  end
+
+  def add_track
+    @radio.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    render json: { success: true }
+  end
+
+  def remove_track
+    relation = @radio.playlist_track_relations.where(boom_track_id: params[:track_id]).first
+    if relation
+      relation.destroy!
+      render json: { success: true }
+    end
+  end
+
+  def publish
+    if @radio.update(is_display: 1)
+      flash[:notice] = '电台发布成功'
+    else
+      flash[:error] = '电台发布失败'
+    end
+
+    redirect_to manage_tracks_boombox_operation_radio_url(@radio)
+  end
 
   private
   def get_radio
