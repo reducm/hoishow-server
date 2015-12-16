@@ -17,7 +17,7 @@
 
     <div role="tabpanel" class="tab-pane" id="search_tracks">
       <div class="search">
-        <%= form_tag(manage_tracks_boombox_operation_playlist_path, class: 'form-inline', method: 'get') do %>
+        <%= form_tag(manage_tracks_boombox_operation_playlist_path, class: 'form-inline', id: "search_playlist_tracks_form", method: 'get') do %>
           <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入音乐名字的关键字进行搜索", size: 50 %>
           <%= submit_tag "搜索", class: 'btn btn-default', id: "search_track_btn" %>
         <% end %>

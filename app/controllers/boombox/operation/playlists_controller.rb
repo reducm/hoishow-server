@@ -92,13 +92,16 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   def manage_tracks
     pl_tracks = @playlist.tracks.where(removed: false)
     playlist_track_ids = pl_tracks.pluck(:id)
-    @playlist_tracks = pl_tracks.page(params[:tracks_page]).order('is_top desc, created_at desc')
-    total_tracks = BoomTrack.where("id not in (?)", playlist_track_ids).valid
+    @playlist_tracks = pl_tracks.page(params[:playlist_tracks_page]).order('is_top desc, created_at desc')
+    total_tracks = BoomTrack.valid
+    if playlist_track_ids.present?
+      total_tracks = total_tracks.where("id not in (?)", playlist_track_ids)
+    end
     @tracks =
       if params[:q].present?
-        total_tracks.where("name like '%#{params[:q]}%'").page(params[:tracks_page])
+        total_tracks.where("name like '%#{params[:q]}%'").page(params[:search_tracks_page])
       else
-        total_tracks.page(params[:tracks_page])
+        total_tracks.page(params[:search_tracks_page])
       end
   end
 
