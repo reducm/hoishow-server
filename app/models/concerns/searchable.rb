@@ -16,7 +16,8 @@ module Searchable
               query: query,
               fields: '_all'
             }
-          }
+          },
+          size: 100 #搜索结果上限100条, 如果有需求扩大必须用es的分页，要不然加载太慢
         }
       )
     end
