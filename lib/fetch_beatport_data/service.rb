@@ -25,7 +25,7 @@ module FetchBeatportData
       tracks_data = []
 
       tags_array.each do |tag|
-        beatport_logger.info "处理标签#{tag}, 时间:#{Time.now}"
+        beatport_logger.info "--------------处理标签#{tag}, 时间:#{Time.now}--------------"
         #爬release，控制每页的数量,暂定为25,约5000首
         releases_link = url + tag_hash[tag] + "/releases?per-page=25"
         releases_doc = request_url(releases_link)
@@ -48,7 +48,6 @@ module FetchBeatportData
             track_name = track.css(".buk-track-title span").map(&:content).join(" ")
             track_artists = track.css(".buk-track-artists a").map(&:content).join(",")
             track_tag = track.css(".buk-track-genre a").first.content
-            beatport_logger.info "处理Track: #{track_name}, 时间:#{Time.now}"
             tracks_data.push({cover_url: cover_url, file_url: track_url, name: track_name, artists: track_artists, tag: track_tag})
             # end of track
           end
@@ -67,14 +66,12 @@ module FetchBeatportData
 
         playlists_data = []
         tag_playlist_hash = {}
-        beatport_logger.info "处理完成Tag: #{tag}, 时间:#{Time.now}"
+        beatport_logger.info "--------------处理完成Tag: #{tag}, 时间:#{Time.now}--------------"
         #end of tag
       end
 
       #保存到数据库
-      beatport_logger.info "开始录入数据, 时间: #{Time.now}"
-      save_to_database
-      beatport_logger.info "录入数据完成, 时间: #{Time.now}"
+      #save_to_database
     end
 
     def save_to_file(data)
@@ -88,7 +85,7 @@ module FetchBeatportData
 
     def save_to_database
       start_time = Time.now
-      beatport_logger.info "开始倒入数据, 时间: #{start_time}"
+      beatport_logger.info "开始录入数据, 时间: #{start_time}"
       creator_id = BoomAdmin.first.id
       file = File.open("tmp/beatport_data.json", "r")
       begin
@@ -102,63 +99,68 @@ module FetchBeatportData
           boom_tag = create_tag(tag_name)
           if boom_tag
             beatport_logger.info "创建标签: #{tag_name}完成, 时间: #{Time.now}"
+
+            #创建playlist
+            playlists_array = temp_data[1]
+            playlists_array.each do |pl|
+              pl_name = pl["name"]
+              pl_cover_url = pl["cover"]
+              pl_tracks_array = pl["tracks"]
+              beatport_logger.info "开始创建Playlist: #{pl_name}, 时间: #{Time.now}"
+              boom_playlist = create_playlist(pl_name, creator_id)
+              if boom_playlist
+                beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
+                #更新playlist的封面
+                update_playlist_cover_url(boom_playlist, pl_cover_url) unless boom_playlist.cover_url
+
+                #关联tag和playlist
+                boom_playlist.tag_for_playlist(boom_tag)
+
+                #创建track
+                pl_tracks_array.each do |track_hash|
+                  track_cover_url = boom_playlist.cover_url
+                  track_file_url = track_hash["file_url"]
+                  track_name = track_hash["name"]
+                  track_artists = track_hash["artists"]
+                  track_tag = track_hash["tag"]
+                  track_url_id = track_file_url.split("/").last.split(".").first
+                  beatport_logger.info "开始创建Track: #{track_name}, 时间: #{Time.now}"
+                  boom_track = create_track(track_name, creator_id, track_artists, track_url_id, track_cover_url)
+                  if boom_track
+                    beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
+                    #                    update_remote_url(boom_track, track_file_url, "file")
+
+                    #关联tag和track
+                    if track_tag == tag_name
+                      boom_track.tag_for_track(boom_tag)
+                    else
+                      new_tag = create_tag(track_tag)
+                      if new_tag
+                        boom_track.tag_for_track(new_tag)
+                      else
+                        beatport_logger.info "创建新标签: #{track_tag}失败, 时间: #{Time.now}"
+                      end
+                    end
+
+                    #关联playlist和track
+                    boom_playlist.playlist_track_relations.where(boom_track_id: boom_track.id).first_or_create!
+                  else
+                    beatport_logger.info "创建Track: #{track_name}失败, 时间: #{Time.now}"
+                  end
+                end
+              else
+                beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"
+              end
+            end
           else
             beatport_logger.info "创建标签: #{tag_name}失败, 时间: #{Time.now}"
           end
-
-          #创建playlist
-          playlists_array = temp_data[1]
-          playlists_array.each do |pl|
-            pl_name = pl["name"]
-            pl_cover_url = pl["cover"]
-            pl_tracks_array = pl["tracks"]
-            beatport_logger.info "开始创建Playlist: #{pl_name}, 时间: #{Time.now}"
-            boom_playlist = create_playlist(pl_name, creator_id)
-            if boom_playlist
-              update_playlist_cover_url(boom_playlist, pl_cover_url) unless boom_playlist.cover_url
-              #关联tag和playlist
-              boom_playlist.tag_for_playlist(boom_tag)
-
-              #创建track
-              pl_tracks_array.each do |track_hash|
-                track_cover_url = boom_playlist.cover_url
-                track_file_url = track_hash["file_url"]
-                track_name = track_hash["name"]
-                track_artists = track_hash["artists"]
-                track_tag = track_hash["tag"]
-                track_url_id = track_file_url.split("/").last.split(".").first
-                beatport_logger.info "开始创建Track: #{track_name}, 时间: #{Time.now}"
-                boom_track = create_track(track_name, creator_id, track_artists, track_url_id, track_cover_url)
-                if boom_track
-                  beatport_logger.info "创建Track: #{track_name}完成, 时间: #{Time.now}"
-                  # update_track_file_url(boom_track, track_file_url)
-
-                  #关联tag和track
-                  if track_tag == tag_name
-                    boom_track.tag_for_track(boom_tag)
-                  else
-                    new_tag = create_tag(track_tag)
-                    boom_track.tag_for_track(new_tag)
-                  end
-
-                  #关联playlist和track
-                  boom_playlist.playlist_track_relations.where(boom_track_id: boom_track.id).first_or_create!
-                else
-                  beatport_logger.info "创建Track: #{track_name}失败, 时间: #{Time.now}"
-                end
-
-              end
-              beatport_logger.info "创建Playlist: #{pl_name}完成, 时间: #{Time.now}"
-            else
-              beatport_logger.info "创建Playlist: #{pl_name}失败, 时间: #{Time.now}"
-            end
-          end
         end
-        end_time = Time.now - start_time
-        beatport_logger.info "导入数据完成, 时间: #{Time.now}, 耗时: #{Time.at(end_time).utc.strftime("%H:%M:%S")}"
       ensure
         file.close unless file.closed?
       end
+      end_time = ( Time.now - start_time ).to_i
+      beatport_logger.info "录入数据完成, 时间: #{Time.now}, 历时#{ end_time }秒"
     end
 
     def create_tag(tag)
@@ -166,54 +168,59 @@ module FetchBeatportData
     end
 
     def create_playlist(name, creator_id)
-      BoomPlaylist.where(name: name).first_or_create!(creator_id: creator_id, creator_type:"BoomAdmin", mode: 0)
+      BoomPlaylist.where(name: name, mode: 0).first_or_create(creator_id: creator_id, creator_type:"BoomAdmin")
     end
 
     def create_track(name, creator_id, artists, track_url_id, track_cover_url)
       BoomTrack.where(name: name).first_or_create(duration: 120,  creator_id: creator_id, creator_type:"BoomAdmin", artists: artists, boom_id: track_url_id, fetch_cover_url: track_cover_url)
     end
 
-    def update_playlist_cover_url(playlist, url)
+    def update_remote_url(subject, url, type)
+      subject_class = subject.class.to_s
       5.times do
         begin
-          Timeout.timeout(10) do
-            playlist.update(remote_cover_url: url)
-            beatport_logger.info "更新Playlist: #{playlist.name}的cover_url成功"
+          temp = nil
+          if type == "cover"
+            temp =
+              Timeout::timeout(15) do
+                subject.remote_cover_url = url 
+                subject.save!
+              end
+          elsif type == "file"
+            temp = 
+              Timeout::timeout(200) do
+                subject.remote_file_url = url  
+                subject.save!
+              end
+          else
+            beatport_logger.info "type参数不能识别, 对象为#{subject_class}, ID为#{subject.id}"
             return
           end
-        rescue Timeout::Error
-          beatport_logger.info "转传Playlist: #{playlist.name}出错, 即将重试, id为#{playlist.id}"
-          next
-        end
-      end
-      beatport_logger.info "更新Playlist: #{playlist.name}的cover_url失败"
-      nil
-    end
 
-    def update_track_file_url(track, file_url)
-      5.times do
-        begin
-          track.remote_file_url = file_url
-          if track.save!
-            beatport_logger.info "更新Track: #{track.name}的file_url成功"
+          if temp
+            beatport_logger.info "更新#{subject_class}: #{subject.name}的#{type}_url成功"
             return
+          else
+            beatport_logger.info "转传#{subject_class}: #{subject.name}的#{type}_url出错, 即将重试, id为#{subject.id}"
+            next
           end
         rescue Exception => e
-          beatport_logger.info "转传Track: #{track.name}的file_url时出错, 即将重试, id为#{track.id}"
+          beatport_logger.info "转传#{subject_class}: #{subject.name}的#{type}_url出错, 即将重试, id为#{subject.id}"
           next
         end
       end
-      beatport_logger.info "更新Track: #{track.name}的file_url失败"
+      beatport_logger.info "更新#{subject_class}: #{subject.name}的#{type}_url失败, id为#{subject.id}"
       nil
     end
 
     def request_url(url)
       10.times do
         begin
-          temp = Nokogiri::HTML(open(url))
+          temp = Timeout::timeout(10){ Nokogiri::HTML(open(url)) } rescue nil
           if temp
             return temp
           else
+            beatport_logger.info "获取不到#{url}内容, 即将重试"
             next
           end
         rescue Exception => e
@@ -231,5 +238,80 @@ module FetchBeatportData
       BoomPlaylist.destroy_all
       BoomTrack.destroy_all
     end
+
+    def get_tracks_count
+      tracks_count = []
+      begin
+        file = File.open("tmp/beatport_data.json", "r")
+        file.each do |line|
+          l = JSON.parse line
+          temp = l.first
+          playlists_array = temp[1]
+          playlists_array.each do |playlist_hash|
+            tracks_array = playlist_hash["tracks"]
+            tracks_array.each do |track_hash|
+              tracks_count.push(get_track_id(track_hash["file_url"]))
+            end
+          end
+        end
+      ensure
+        file.close unless file.closed?
+      end
+      p "一共#{tracks_count.count}首，用mp3的id去重后为 #{tracks_count.uniq.count}首"
+    end
+
+    def get_playlists_count
+      playlists_count = 0
+      pl_tracks_link_array = []
+      pl_name_array = []
+      begin
+        file = File.open("tmp/beatport_data.json", "r")
+        file.each do |line|
+          l = JSON.parse line
+          temp = l.first
+          playlists_array = temp[1]
+          playlists_count += playlists_array.count
+          playlists_array.each do |pl|
+            pl_tracks_link_array.push(pl["tracks_link"])
+            pl_name_array.push(pl["name"])
+          end
+        end
+      ensure
+        file.close unless file.closed?
+      end
+      p "一共#{playlists_count}个,用tracks_link去重后为#{pl_tracks_link_array.uniq.count}/#{pl_tracks_link_array.count}个,用name去重后为#{pl_name_array.uniq.count}/#{pl_name_array.count}个"
+    end
+
+    def get_track_id(url)
+      url.split("/").last.split(".").first
+    end
+
+    def get_track_mp3_url
+      begin
+        file = File.open("tmp/beatport_data.json", "r")
+        mp3_url_file = File.open("tmp/mp3_urls.json", "a")
+        urls_array = []
+        file.each do |line|
+          l = JSON.parse line
+          temp = l.first
+          playlists_array = temp[1]
+          playlists_array.each do |playlist_hash|
+            tracks_array = playlist_hash["tracks"]
+            tracks_array.each do |track_hash|
+              urls_array.push(track_hash["file_url"])
+            end
+          end
+        end
+        uniq_urls = urls_array.uniq
+        uniq_urls.each do |uniq_url|
+          uniq_url[4] = ""
+          mp3_url_file << uniq_url << "\n"
+        end
+      ensure
+        file.close unless file.closed?
+        mp3_url_file.close unless mp3_url_file.closed?
+      end
+    end
+
   end
 end
