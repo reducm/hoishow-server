@@ -48,9 +48,9 @@
           <td>
             <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
             <% if list_type == "playlist_tracks" %>
-              <a data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
+              <a data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
             <% elsif list_type == "search_tracks" %>
-              <a data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" type="button" class="btn btn-success add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</a>
+              <a data-track-id="<%= track.id %>" type="button" class="btn btn-success add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</a>
             <% else %>
               <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>
@@ -62,7 +62,11 @@
 </table>
 
 <% if params[:action] == "manage_tracks" %>
-  <%= paginate tracks, param_name: "tracks_page" %>
+  <% if list_type == "playlist_tracks" %>
+    <%= paginate tracks, param_name: "playlist_tracks_page" %>
+  <% elsif list_type == "search_tracks" %>
+    <%= paginate tracks, param_name: "search_tracks_page" %>
+  <% end %>
 <% else %>
   <%= paginate tracks, param_name: "tracks_page", remote: true %>
 <% end %>
