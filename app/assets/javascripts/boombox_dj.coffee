@@ -22,6 +22,11 @@
 #= require moment.min
 #= require select2.full.min
 #
+#= require froala_editor.min
+#= require plugins/char_counter.min
+#= require plugins/emoticons.min
+#= require languages/zh_cn
+#
 #= require simditor/module
 #= require simditor/hotkeys
 #= require simditor/uploader

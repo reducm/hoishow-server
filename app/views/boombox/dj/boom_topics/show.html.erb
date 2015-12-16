@@ -13,7 +13,7 @@
     <thead>
     <tbody>
       <tr>
-        <td><%= @boom_topic.content %></td>
+        <td><%= @boom_topic.content.html_safe %></td>
         <td>
           <% if @boom_topic.image_url.present? %>
             <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">

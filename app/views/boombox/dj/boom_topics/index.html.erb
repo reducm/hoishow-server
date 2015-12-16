@@ -3,7 +3,10 @@
     <div class="modal-content">
       <%= simple_form_for([:boombox, :dj, @boom_topic ], html: { class: 'form-horizontal', id: 'topicForm' }) do |f| %>
       <div class="modal-body" style="padding: 30px;">
-        <%= f.input :content %>
+        <div class="form-group">
+          <textarea id="boom_topic_content_editor"></textarea>
+        </div>
+        <%= f.hidden_field :content %>
         <%= f.input :image %>
         <%= f.input :video_title %>
         <%= f.input :video_url %>

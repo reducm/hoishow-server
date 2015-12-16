@@ -21,7 +21,7 @@
         <tr>
           <td class="container">
             <div>
-              <%= truncate(boom_topic.content, length: 120) %>
+              <%= truncate(boom_topic.content.html_safe, length: 70) %>
               <% if boom_topic.is_top? %>
                 <span class="label label-primary">置顶</span> 
               <% end %>

@@ -29,6 +29,7 @@ gem 'simple_form'
 gem "jquery-fileupload-rails"
 gem "dropzonejs-rails"
 gem 'tag-it-rails'
+gem "wysiwyg-rails"
 # 手工引入select2相关文件
 #####END assets ######
 
