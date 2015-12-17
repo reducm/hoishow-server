@@ -51,7 +51,7 @@ class BoomPlaylist < ActiveRecord::Base
     )
   end
 
-  def self.recommend_playlist(user=nil)
+  def self.recommend_playlists(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:playlists:recommend", expires_in: 1.day) do
         playlists = user.recommend_playlists
@@ -68,7 +68,7 @@ class BoomPlaylist < ActiveRecord::Base
     end
   end
 
-  def self.recommend_radio(user=nil)
+  def self.recommend_radios(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:radios:recommend", expires_in: 1.day) do
         playlists = user.recommend_radios

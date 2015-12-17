@@ -48,7 +48,7 @@ class Collaborator < ActiveRecord::Base
   }
 
   mapping dynamic: 'false' do
-    indexes :name, analyzer: 'snowball'
+    indexes :display_name, analyzer: 'snowball'
     indexes :boom_tags, type: 'nested' do
       indexes :name, analyzer: 'snowball'
     end
@@ -56,7 +56,7 @@ class Collaborator < ActiveRecord::Base
 
   def as_indexed_json(options={})
     as_json(
-      only: :name,
+      methods: [:display_name], only: [:display_name],
       include: { boom_tags: {only: :name} }
     )
   end
