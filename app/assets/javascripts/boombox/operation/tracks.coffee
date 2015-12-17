@@ -13,7 +13,7 @@ $ ->
   $("#track_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#track_add_tag").on "click", (e) ->
+  $("#track_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#track_tag_list option:selected").text()
     tag_id = $("#track_tag_list option:selected").val()

@@ -45,8 +45,7 @@
               <% end %>
             </div>
             <div class="form-group">
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), class:"form-control", id: "activity_tag_list" %>
-              <a class="btn btn-primary" id="activity_add_tag">添加选中标签</a>
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), include_blank: "请选择标签", class:"form-control", id: "activity_tag_list" %>
             </div>
 
             <%= label_tag "collaborators", "艺人" %>
@@ -58,8 +57,7 @@
               <% end %>
             </div>
             <div class="form-group">
-              <%= select_tag "select_collaborators", options_for_select(Collaborator.verified.collect{|collaborator| [collaborator.name, collaborator.id]}), class:"form-control", id: "activity_collaborator_list" %>
-              <a class="btn btn-primary" id="activity_add_collaborator">添加选中艺人</a>
+              <%= select_tag "select_collaborators", options_for_select(Collaborator.verified.collect{|collaborator| [collaborator.name, collaborator.id]}), include_blank: "请选择艺人", class:"form-control", id: "activity_collaborator_list" %>
             </div>
           </div>
         </div>

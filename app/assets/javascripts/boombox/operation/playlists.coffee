@@ -61,7 +61,7 @@ $ ->
   $("#playlist_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#playlist_add_tag").on "click", (e) ->
+  $("#playlist_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#playlist_tag_list option:selected").text()
     tag_id = $("#playlist_tag_list option:selected").val()

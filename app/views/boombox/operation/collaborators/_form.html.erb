@@ -62,8 +62,7 @@
       <legend class="legend-without-border">标签</legend>
       <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
       <div>
-        <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "collaborator_tag_list" %>
-        <a class="btn btn-primary" id="collaborator_add_tag">添加选中标签</a>
+        <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), include_blank: "请选择标签", id: "collaborator_tag_list" %>
       </div>
       <div id="collaborator_delete_tag">
         <% tags = collaborator.boom_tags.pluck(:name, :id) %>
