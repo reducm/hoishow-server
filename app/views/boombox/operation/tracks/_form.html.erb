@@ -48,8 +48,7 @@
               <% end %>
             </div>
             <div>
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), id: "track_tag_list" %>
-              <a class="btn btn-primary" id="track_add_tag">添加选中标签</a>
+              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), include_blank: "请选择标签", id: "track_tag_list" %>
             </div>
           </div>
         </div>

@@ -71,7 +71,7 @@ $ ->
   $("#activity_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#activity_add_tag").on "click", (e) ->
+  $("#activity_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#activity_tag_list option:selected").text()
     tag_id = $("#activity_tag_list option:selected").val()
@@ -93,7 +93,7 @@ $ ->
   #collaborator相关，结构与tag一样
   $("#activity_collaborator_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
-  $("#activity_add_collaborator").on "click", (e) ->
+  $("#activity_collaborator_list").on "change", (e) ->
     e.preventDefault()
     collaborator_name = $("#activity_collaborator_list option:selected").text()
     collaborator_id = $("#activity_collaborator_list option:selected").val()

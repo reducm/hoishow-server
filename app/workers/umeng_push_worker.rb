@@ -60,7 +60,7 @@ class UmengPushWorker
     if check_result = UmengMsg::Service.check(task.platform, task.task_id)
       task.update(
         status: check_result["status"],
-        total_count: check_result["total_count"]
+        total_count: check_result["sent_count"]
       )
     end
   end
