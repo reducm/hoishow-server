@@ -26,3 +26,19 @@ $ ->
     toolbarButtonsMD: ['emoticons']
     toolbarButtonsSM: ['emoticons']
     toolbarButtonsXS: ['emoticons']
+
+  # 上传图片
+  attachment_ids = []
+  Dropzone.options.attachmentDzForm =
+    acceptedFiles: ".jpg, .jpeg, .gif, .png"
+    dictDefaultMessage: "选择图片或直接拖进来"
+    dictFileTooBig: "文件太大，请重新选择"
+    init: ->
+      @on 'success', (file, responseText) ->
+        console.log responseText
+        attachment_ids.push(responseText)
+        console.log attachment_ids
+        $("#attachment_ids").attr("value", attachment_ids)
+        console.log $("#attachment_ids").attr("value")
+        file.previewTemplate.appendChild document.createTextNode "上传完毕"
+    maxFilesize: 10
