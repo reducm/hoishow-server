@@ -16,7 +16,7 @@
 #= require boombox/dj/tracks
 #= require boombox/dj/playlists
 #
-#= require jquery-fileupload/basic
+#= require jquery-fileupload
 #= require dropzone
 #= require datatables.min
 #= require moment.min

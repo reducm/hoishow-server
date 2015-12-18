@@ -25,7 +25,7 @@
               <% if boom_topic.is_top? %>
                 <span class="label label-primary">置顶</span> 
               <% end %>
-              <% if boom_topic.image_url.present? %>
+              <% if boom_topic.attachments.any? %>
                 <span class="label label-success">图片</span> 
               <% end %>
               <% if boom_topic.video_url.present? %>

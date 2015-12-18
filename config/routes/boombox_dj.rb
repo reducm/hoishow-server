@@ -36,7 +36,11 @@ module Routes
               end
             end
 
-            resources :boom_topics, except: [:update, :new]
+            resources :boom_topics, except: [:update, :new] do
+              collection do
+                post :create_attachment
+              end
+            end
 
             resources :boom_comments, only: [:index, :new, :create] 
 

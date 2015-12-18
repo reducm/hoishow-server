@@ -46,11 +46,26 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
   end
 
   def create
-    if @boom_topic = current_collaborator.boom_topics.create(boom_topic_params)
-      redirect_to boombox_dj_boom_topics_url, notice: '新建成功'
-    else
-      flash[:alert] = @boom_topic.errors.full_messages.to_sentence
-      render action: 'index'
+    if params[:boom_topic].present?
+      if @boom_topic = current_collaborator.boom_topics.create(boom_topic_params)
+        if params[:attachment_ids].present?
+          BoomTopicAttachment.where(id: params[:attachment_ids].split(',')).update_all(boom_topic_id: @boom_topic.id)
+        end
+        redirect_to boombox_dj_boom_topics_url, notice: '新建成功'
+      else
+        flash[:alert] = @boom_topic.errors.full_messages.to_sentence
+        render action: 'index'
+      end
+    end
+  end
+
+  def create_attachment
+    if params[:file].present?
+      @file = BoomTopicAttachment.create(image: params[:file])
+    end
+
+    respond_to do |format|
+      format.json { render json: @file.id }
     end
   end
 
@@ -67,6 +82,6 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
   private
   
   def boom_topic_params
-    params.require(:boom_topic).permit(BoomTopic.column_names.delete_if {|obj| obj.in? ["created_at", "updated_at", "is_top"]}.map &:to_sym)
+    params.require(:boom_topic).permit(:content, :video_title, :video_url, attachments: [:image])
   end
 end
