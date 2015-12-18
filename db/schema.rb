@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151215070428) do
+ActiveRecord::Schema.define(version: 20151218024804) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 20151215070428) do
     t.integer  "targets",      limit: 4
     t.datetime "start_time"
     t.integer  "status",       limit: 4
+    t.datetime "expire_time"
   end
 
   create_table "boom_playlists", force: :cascade do |t|

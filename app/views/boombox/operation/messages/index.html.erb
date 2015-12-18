@@ -15,6 +15,7 @@
         <th>消息标题</th>
         <th>消息内容</th>
         <th>设定时间</th>
+        <th>过期时间</th>
         <th>推送时间</th>
         <th>推送状态</th>
         <th>推送数量</th>
@@ -36,6 +37,7 @@
           <td><%= message.title %></td>
           <td><%= truncate message.content, length: 80 %></td>
           <td><%= get_datetime(message.start_time) %></td>
+          <td><%= get_datetime(message.expire_time) %></td>
           <td><%= get_datetime(message.push_time) %></td>
           <td><%= message.status_cn %></td>
           <td><%= message.total_count %></td>

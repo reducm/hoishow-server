@@ -32,6 +32,7 @@ class UmengPushWorker
     if message.message_tasks.all? { |task| task.status.nil?  }
       push_params = {
         start_time: (task.start_time.present? ? task.start_time.strftime("%Y-%m-%d %H:%M:%S") : ""),
+        expire_time: (task.expire_time.present? ? task.expire_time.strftime("%Y-%m-%d %H:%M:%S") : ""),
       }.merge(push_params)
     end
 

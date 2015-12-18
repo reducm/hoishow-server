@@ -8,6 +8,7 @@ $ ->
   if $('#boombox_messages_new').length > 0
     $('.boom_message_targets').hide()
     $('#boom_message_start_time').datetimepicker()
+    $('#boom_message_expire_time').datetimepicker()
     data = $("#message_subject_data").data()
 
     $("#boom_message_subject_type").on "change", (e)->
