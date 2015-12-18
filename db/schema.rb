@@ -422,7 +422,7 @@ ActiveRecord::Schema.define(version: 20151218024804) do
     t.integer  "sex",                       limit: 4
     t.datetime "birth"
     t.integer  "boom_admin_id",             limit: 4
-    t.datetime "nickname_updated_at",                     default: '2015-12-01 04:01:46', null: false
+    t.datetime "nickname_updated_at",                                                      null: false
   end
 
   add_index "collaborators", ["boom_id"], name: "index_collaborators_on_boom_id", using: :btree
