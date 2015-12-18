@@ -3,10 +3,4 @@ class BoomTopicAttachment < ActiveRecord::Base
   belongs_to :boom_topic
 
   mount_uploader :image, BoomImageUploader
-
-  def to_fileupload
-    {
-      id: self.id
-    }
-  end
 end
