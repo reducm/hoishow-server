@@ -2,7 +2,7 @@ class MessageTask < ActiveRecord::Base
   default_scope {order('created_at')}
   belongs_to :boom_message
 
-  delegate :title, :content, :subject_type, :subject_id, :start_time, to: :boom_message
+  delegate :title, :content, :subject_type, :subject_id, :start_time, :expire_time, to: :boom_message
   after_commit :async_push, on: :create
 
   scope :ios, -> {where(platform: 'ios')}

@@ -39,6 +39,12 @@
         <%= f.text_field :start_time, class: 'form-control' %>
       </div>
     </div>
+    <div class="form-group">
+      <%= f.label :start_time, '过期时间', class: 'col-md-2 control-label' %>
+      <div class="col-md-2">
+        <%= f.text_field :expire_time, class: 'form-control', placeholder: '默认3天后过期' %>
+      </div>
+    </div>
     <%= f.hidden_field :send_type, value: "manual" %>
     <div class="form-group">
       <div class="col-md-offset-2 col-md-5">
