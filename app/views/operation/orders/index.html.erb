@@ -35,6 +35,7 @@
             <th>门票状态</th>
             <th>门票类型</th>
             <th>快递单号</th>
+            <th>备注</th>
             <th class="text-center">操作</th>
           </tr>
         </thead>
@@ -48,6 +49,7 @@
               <td><%= order.status_cn %></td>
               <td><%= order.show.try(:ticket_type_cn) %></td>
               <td id="td_express_id_<%= order.id %>"><%= order.express_id %></td>
+              <td width="400px"><%= order.remark %></td>
               <td class="text-center">
                 <%= link_to '确认出票', set_order_to_success_operation_order_path(order), method: 'post', class: 'btn btn-default' if order.paid? && order.r_ticket? %>
                 <button class="btn btn-default change_express_data" data-order-id="<%= order.id %>">修改单号</button>
