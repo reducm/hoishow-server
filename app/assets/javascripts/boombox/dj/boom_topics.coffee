@@ -27,6 +27,9 @@ $ ->
     toolbarButtonsSM: ['emoticons']
     toolbarButtonsXS: ['emoticons']
 
+  if $('.fr-box').length > 0
+    $('.fr-box a').remove()
+
   # 上传图片
   attachment_ids = []
   Dropzone.options.attachmentDzForm =

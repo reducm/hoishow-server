@@ -1,6 +1,6 @@
 #= require jquery
 #= require jquery-ui
-#= require tag-it
+#= require tag-it.min
 #= require jquery_ujs
 #= require bootstrap-sprockets
 #= require operation/sb-admin-2
