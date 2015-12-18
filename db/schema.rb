@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151213041752) do
+ActiveRecord::Schema.define(version: 20151218024804) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -257,6 +257,7 @@ ActiveRecord::Schema.define(version: 20151213041752) do
     t.integer  "targets",      limit: 4
     t.datetime "start_time"
     t.integer  "status",       limit: 4
+    t.datetime "expire_time"
   end
 
   create_table "boom_playlists", force: :cascade do |t|
@@ -297,6 +298,13 @@ ActiveRecord::Schema.define(version: 20151213041752) do
   end
 
   add_index "boom_tags", ["boom_id"], name: "index_boom_tags_on_boom_id", using: :btree
+
+  create_table "boom_topic_attachments", force: :cascade do |t|
+    t.integer  "boom_topic_id", limit: 4
+    t.string   "image",         limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
 
   create_table "boom_topics", force: :cascade do |t|
     t.string   "created_by",      limit: 255

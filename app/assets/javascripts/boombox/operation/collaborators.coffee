@@ -16,7 +16,7 @@ $ ->
   $("#collaborator_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#collaborator_add_tag").on "click", (e) ->
+  $("#collaborator_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#collaborator_tag_list option:selected").text()
     tag_id = $("#collaborator_tag_list option:selected").val()
@@ -36,7 +36,7 @@ $ ->
     tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
 
   # 昵称有修改时
-  $('input[type="submit"]').on 'click', (e) ->
+  $('#collaborator_edit_btn').on 'click', (e) ->
     e.preventDefault()
     #提交前将标签id数组组装成字符串，并传入hidden field
     tag_ids.join(",")
@@ -44,6 +44,6 @@ $ ->
     #昵称相关
     if $('#collaborator_nickname').val() != original_nickname
       if confirm('昵称一个月内只能修改一次，确定修改吗？')
-        $(this).parents('form').submit()
+        $("#collaborator-dropzone").submit()
     else
-      $(this).parents('form').submit()
+      $("#collaborator-dropzone").submit()

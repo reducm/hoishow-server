@@ -196,6 +196,12 @@ class User < ActiveRecord::Base
       recommend_tags.map{|tag| tag.playlists.playlist}.flatten.uniq.shuffle.first(10)
     end
   end
+
+  def recommend_radios
+    Rails.cache.fetch("user:#{id}:recommend_playlists", expires_in: 1.day) do
+      recommend_tags.map{|tag| tag.playlists.radio}.flatten.uniq.shuffle.first(10)
+    end
+  end
   #----------------------boombox
 
   def create_comment(topic, parent_id = nil, content)

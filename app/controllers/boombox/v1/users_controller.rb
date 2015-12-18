@@ -163,8 +163,8 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def create_comment
     if params[:topic_id] && params[:content]
-      options = { creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id] }
-      if params[:parent_id]
+      options = {creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id]}
+      if params[:parent_id].present?
         options.merge!(parent_id: params[:parent_id])
         @comment = BoomComment.create(options)
         @comment.send_reply_push
@@ -277,12 +277,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     # production 发短信
     if Rails.env.production?
       if ChinaSMS.to(mobile, "手机验证码为#{code}【播霸】")[:success]
-        render json: { result: "success" }
+        render json: { result: "success", code: code }
       else
         return error_respond I18n.t("errors.messages.sms_failed")
       end
     else
-      render json: { result: "success" }
+      render json: { result: "success", code: '123456' }
     end
   end
 
