@@ -2,16 +2,25 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <%= simple_form_for([:boombox, :dj, @boom_topic ], html: { class: 'form-horizontal', id: 'topicForm' }) do |f| %>
-      <div class="modal-body" style="padding: 30px;">
-        <%= f.input :content %>
-        <%= f.input :image %>
-        <%= f.input :video_title %>
-        <%= f.input :video_url %>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
-        <%= submit_tag '发布', class: 'btn btn-primary' %>
-      </div>
+        <div class="modal-body" style="padding: 30px;">
+          <div class="form-group">
+            <textarea id="boom_topic_content_editor"></textarea>
+          </div>
+          <%= f.hidden_field :content %>
+          <%= hidden_field_tag 'attachment_ids', value: '' %>
+          <%= f.input :video_title %>
+          <%= f.input :video_url %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+          <%= submit_tag '发布', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+
+      <%= simple_form_for([:boombox, :dj, @boom_topic], 
+                          url: create_attachment_boombox_dj_boom_topics_path, 
+                          method: 'post', 
+                          html: { class: 'dropzone', id: 'attachment-dz-form', multipart: :true }) do |f| %> 
       <% end %>
     </div>
   </div>

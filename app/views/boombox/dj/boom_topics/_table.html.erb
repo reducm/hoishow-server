@@ -21,11 +21,11 @@
         <tr>
           <td class="container">
             <div>
-              <%= truncate(boom_topic.content, length: 120) %>
+              <%= truncate(boom_topic.content.html_safe, length: 70) %>
               <% if boom_topic.is_top? %>
                 <span class="label label-primary">置顶</span> 
               <% end %>
-              <% if boom_topic.image_url.present? %>
+              <% if boom_topic.attachments.any? %>
                 <span class="label label-success">图片</span> 
               <% end %>
               <% if boom_topic.video_url.present? %>
@@ -42,8 +42,6 @@
           </td>
         </tr>
       <% end %>
-    <% else %>
-      <tr><td>无数据</td></tr>
     <% end %>
     </tbody>
   </table>

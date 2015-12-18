@@ -13,13 +13,15 @@
     <thead>
     <tbody>
       <tr>
-        <td><%= @boom_topic.content %></td>
+        <td><%= @boom_topic.content.html_safe %></td>
         <td>
-          <% if @boom_topic.image_url.present? %>
-            <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
-              <img src=<%= @boom_topic.image_url %> class="thumb"></img>
-              <figcaption>点击查看大图</figcaption>
-            </a>
+          <% if @boom_topic.attachments.any? %>
+            <% @boom_topic.attachments.each do |attach| %>
+              <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
+                <img src=<%= attach.image_url %> class="thumb"></img>
+                <figcaption>点击查看大图</figcaption>
+              </a>
+            <% end %>
           <% end %>
         </td>
       </tr>
@@ -41,13 +43,16 @@
   </div>
 </div>
 
-<% if @boom_topic.image_url.present? %>
-  <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body">
-          <img src=<%= @boom_topic.image_url %> style="width: 100%">
+<% if @boom_topic.attachments.any? %>
+  <% @boom_topic.attachments.each do |attach| %>
+    <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img src=<%= attach.image_url %> style="width: 100%">
+          </div>
         </div>
       </div>
     </div>
+  <% end %>
 <% end %>

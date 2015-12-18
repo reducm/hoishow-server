@@ -4,7 +4,11 @@ json.subject_id topic.subject_id || 0
 json.subject_type topic.subject_type || ''
 json.created_at topic.created_at.to_ms || ''
 json.avatar topic.creator_avatar || ''
-json.image topic.image_url || ''
+json.images do
+  json.array! topic.attachments do |attachment|
+    json.image attachment.image_url || ''
+  end
+end
 json.video do
   json.title topic.video_title || ''
   json.url topic.video_url || ''

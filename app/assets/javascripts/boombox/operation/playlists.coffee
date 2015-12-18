@@ -3,14 +3,16 @@ $ ->
     $('#playlists_form').submit()
 
   if sessionStorage.getItem('show_search_tab') == "t"
-    $("#playlist_manage_tab a[href='#search_tracks']").tab("show")
+    $("#playlist_manage_tab a[href='#playlist_search_tracks']").tab("show")
 
-  $("#search_track_btn").on "click", (e) ->
+  #按了搜索按钮
+  $("#playlist_search_track_btn").on "click", (e) ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 't')
-    $("form").submit()
+    $("#search_playlist_tracks_form").submit()
 
-  $("#playlist_search_track_table .pagination a").on "click", () ->
+  #playlist_search_tracks换页
+  $("#playlist_search_track_table .pagination a").on "click", (e) ->
     sessionStorage.setItem('show_search_tab', 't')
     
   #刷新playlist_track_list
@@ -21,10 +23,10 @@ $ ->
     location.href = "/boombox/operation/playlists/#{playlist_id}/manage_tracks"
 
   #添加音乐 
-  $("#search_tracks").on "click", ".add_track_to_playlist", (e) ->
+  $("#playlist_search_tracks").on "click", ".add_track_to_playlist", (e) ->
     e.preventDefault()
     track_id = $(this).data("track-id")
-    playlist_id = $(this).data("playlist-id")
+    playlist_id = $("#playlist_id").val()
     pop_btn = $(this)
     if track_id && playlist_id
       $.post("/boombox/operation/playlists/#{playlist_id}/add_track", { track_id: track_id}, (data)->
@@ -40,7 +42,7 @@ $ ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 'f')
     track_id = $(this).data("track-id")
-    playlist_id = $(this).data("playlist-id")
+    playlist_id = $("#playlist_id").val()
     if track_id && playlist_id
       $.post("/boombox/operation/playlists/#{playlist_id}/remove_track", { track_id: track_id}, (data)->
         if data.success
@@ -59,7 +61,7 @@ $ ->
   $("#playlist_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
 
   #添加tag
-  $("#playlist_add_tag").on "click", (e) ->
+  $("#playlist_tag_list").on "change", (e) ->
     e.preventDefault()
     tag_name = $("#playlist_tag_list option:selected").text()
     tag_id = $("#playlist_tag_list option:selected").val()

@@ -30,8 +30,8 @@ class BoomPlaylist < ActiveRecord::Base
   mount_uploader :cover, BoomImageUploader
 
   #取出合集得时候不要忘记过滤
-  scope :valid_playlists, -> { where("removed = false and mode = 0") }
-  scope :valid_radios, -> { where("removed = false and mode = 1") }
+  scope :valid_playlists, -> { where("removed = false and mode = 0 and creator_type != ?", CREATOR_USER).order('created_at desc')}
+  scope :valid_radios, -> { where("removed = false and mode = 1").order('created_at desc')}
   #for api
   scope :open, -> { where('creator_type != ? and removed = false and is_display = true', CREATOR_USER).order('is_top desc, RAND()')}
 
@@ -51,7 +51,7 @@ class BoomPlaylist < ActiveRecord::Base
     )
   end
 
-  def self.recommend(user=nil)
+  def self.recommend_playlists(user=nil)
     if user
       Rails.cache.fetch("user:#{user.id}:playlists:recommend", expires_in: 1.day) do
         playlists = user.recommend_playlists
@@ -64,6 +64,23 @@ class BoomPlaylist < ActiveRecord::Base
     else
       Rails.cache.fetch("playlists:recommend", expires_in: 1.day) do
         playlist.open.to_a
+      end
+    end
+  end
+
+  def self.recommend_radios(user=nil)
+    if user
+      Rails.cache.fetch("user:#{user.id}:radios:recommend", expires_in: 1.day) do
+        playlists = user.recommend_radios
+        if playlists.size >= 6
+          playlists
+        else
+          radio.open.to_a
+        end
+      end
+    else
+      Rails.cache.fetch("radios:recommend", expires_in: 1.day) do
+        radio.open.to_a
       end
     end
   end
@@ -108,6 +125,15 @@ class BoomPlaylist < ActiveRecord::Base
 
   def tracks_count
     tracks.count
+  end
+
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.display_name
+    when CREATOR_ADMIN
+      creator.default_name
+    end rescue nil
   end
 
   private
