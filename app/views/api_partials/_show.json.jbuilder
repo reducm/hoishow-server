@@ -1,4 +1,5 @@
-json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :is_top, :ticket_type, :mode, :seat_type)
+json.(show, :id, :name, :concert_id, :city_id, :stadium_id, :status, :is_top, :ticket_type, :seat_type)
+json.mode show.source
 json.concert_name show.concert.name
 json.city_name show.city.name rescue ''
 json.stadium_name show.stadium.name rescue ''
