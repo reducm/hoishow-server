@@ -2,23 +2,22 @@ $ ->
   $(document).on 'change', '.topics_filter', ->
     $('#topics_form').submit()
 
-  # 提交时，检测内容是否超出 140 字
+  # 提交时，检测内容是否为空、去掉html标签、解密加密过的html内容
   $('#topicForm input[type="submit"]').on 'click', (e) ->
     e.preventDefault()
     if !/\S/.test($('#boom_topic_content_editor').val())
       alert '动态内容为空'
       return
-    else if $('#boom_topic_content_editor').val().length > 140
-      alert '抱歉！每条动态的字数上限为 140 字'
-      return
     else
       content = $("#boom_topic_content_editor").val()
       striped_content = content.replace(/<(?:.|\n)*?>/gm, '')
-      $("#boom_topic_content").attr("value", striped_content)
+      decoded_content = $('<textarea />').html(striped_content).text()
+      $("#boom_topic_content").attr("value", decoded_content)
       $("#topicForm").submit()
 
   # 编辑器
   $('#boom_topic_content_editor').froalaEditor
+    charCounterMax: 140
     language: 'zh_cn'
     multiLine: false
     pastePlain: true

@@ -18,9 +18,9 @@
       <div class="row">
         <div class="col-sm-5">
           <div class="text-center">
-            <%= f.input :cover, label: "上传封面(建议大小:960x640)", input_html: {class: "playlist-cover-uploader col-sm-offset-4"} %>
+            <%= f.input :cover, label: "上传封面(建议大小:500x500)", input_html: {class: "playlist-cover-uploader col-sm-offset-4"} %>
             <div id="playlist_cover_preview">
-              <%= boombox_default_cover playlist.cover_url %>
+              <%= boombox_default_avatar playlist.cover_url %>
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@ $ ->
     $('div#track_cover_preview').hide()
     readURL this
 
-  # 文本框标签化
+  # 艺术家标签化
   $(document).ready ->
     if $('div#artist_names').length > 0
       $('#boom_track_artists').tagit
@@ -17,11 +17,10 @@ $ ->
 
   # 标签
   if $('div#tags_already_added').length > 0
-    $('select#tags').val($('div#tags_already_added').data('data')).select2
-      tags: true
+    data = $('div#tags_already_added').data('data')
+    $('select#tags').val(data).select2()
   else
-    $('select#tags').select2
-      tags: true
+    $('select#tags').select2()
 
   # 上传音乐后显示文件信息
   $('.track-file-uploader').change ->
