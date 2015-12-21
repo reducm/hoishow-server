@@ -51,7 +51,7 @@
           <%= label_tag "标签" %>
           <p>
             <% if @tags.any? %>
-              <select id="tags" multiple="multiple" style="width: 300px; display: none;" class="populate" tabindex="-1">
+              <select id="tags" multiple="multiple" class="form-control">
                 <% @tags.each do |bt| %>
                   <option value="<%= bt.id %>"><%= bt.name %></option>
                 <% end %>

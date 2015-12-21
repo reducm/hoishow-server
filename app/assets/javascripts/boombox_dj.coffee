@@ -8,6 +8,7 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
+#= require select2.full.min
 #
 #= require boombox/dj/boom_albums
 #= require boombox/dj/boom_topics
@@ -20,7 +21,6 @@
 #= require dropzone
 #= require datatables.min
 #= require moment.min
-#= require select2.full.min
 #
 #= require froala_editor.min
 #= require plugins/char_counter.min
