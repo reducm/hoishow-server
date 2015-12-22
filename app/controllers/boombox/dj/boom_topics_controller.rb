@@ -69,6 +69,20 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
     end
   end
 
+  def destroy_attachment
+    if params[:id].present?
+      BoomTopicAttachment.find(params[:id]).delete
+      # 这里执行成功与否，前端都会把上传图片在页面删除
+      # 服务端可能要定期清一下没有topic的attachments
+    end
+
+    respond_to do |format|
+      format.json {
+        render nothing: true
+      }
+    end
+  end
+
   def destroy 
     @boom_topic = BoomTopic.find(params[:id])
     if @boom_topic.destroy

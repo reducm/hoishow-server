@@ -3,31 +3,22 @@
   <%= link_to '删除动态', boombox_dj_boom_topic_path, method: :delete, class: 'btn btn-danger', data: {confirm: '确定吗？'} %>
 </div>
 
-<div class="timeline-content">
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th class="col-md-9">内容</th>
-        <th class="text-right">创建时间<%= @boom_topic.created_at.strfcn_time %></th>
-      <tr>
-    <thead>
-    <tbody>
-      <tr>
-        <td><%= @boom_topic.content.html_safe %></td>
-        <td>
-          <% if @boom_topic.attachments.any? %>
-            <% @boom_topic.attachments.each do |attach| %>
-              <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
-                <img src=<%= attach.image_url %> class="thumb"></img>
-                <figcaption>点击查看大图</figcaption>
-              </a>
-            <% end %>
-          <% end %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+  <div class="row ">
+    <div class="col-md-6">
+      <p><i><%= @boom_topic.created_at.strfcn_time %></i></p>
+      <p><%= @boom_topic.content.html_safe %></p>
+    </div>
+
+    <div class="col-md-6" id="topic_thumbs">
+      <% if @boom_topic.attachments.any? %>
+        <% @boom_topic.attachments.each do |attach| %>
+          <a href="#imageModal<%= attach.id %>" role="button" class="btn btn-default image" data-toggle="modal">
+            <img src=<%= attach.photo_version %> class="thumb"></img>
+          </a>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 
 <ul class="nav nav-tabs timeline-tabs">
   <li role="presentation" class="active"><a href="#comments" aria-controls="timeline" role="tab" data-toggle="tab" class="timeline-comment">评论</a></li>
@@ -45,11 +36,11 @@
 
 <% if @boom_topic.attachments.any? %>
   <% @boom_topic.attachments.each do |attach| %>
-    <div class="modal fade image-original" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
+    <div class="modal fade image-original" id="imageModal<%= attach.id %>" tabindex="-1" role="dialog" aria-labelledby="topicModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
-            <img src=<%= attach.image_url %> style="width: 100%">
+            <img src=<%= attach.photo_version %> style="width: 100%" />
           </div>
         </div>
       </div>

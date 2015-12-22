@@ -34,10 +34,31 @@ $ ->
   Dropzone.options.attachmentDzForm =
     acceptedFiles: ".jpg, .jpeg, .gif, .png"
     dictDefaultMessage: "选择图片或直接拖进来"
-    dictFileTooBig: "文件太大，请重新选择"
+    dictFileTooBig: "单张图片最大10MB"
+    dictInvalidFileType: "不支持该文件类型"
+    dictMaxFilesExceeded: "最多上传9张图片"
+    dictRemoveFile: "删除图片"
+    maxFiles: 9
+    maxFilesize: 10
+    parallelUploads: 1
     init: ->
       @on 'success', (file, responseText) ->
         attachment_ids.push(responseText)
         $("#attachment_ids").attr("value", attachment_ids)
         file.previewTemplate.appendChild document.createTextNode "上传完毕"
-    maxFilesize: 10
+        file.previewElement.lastElementChild.setAttribute('id', responseText)
+    addRemoveLinks: true
+    removedfile: (file) ->
+      id = file.previewElement.lastElementChild["id"]
+      $.ajax
+        type: 'POST',
+        url: 'boom_topics/destroy_attachment.json',
+        data: "id="+ id,
+        dataType: 'json'
+      file.previewElement?.parentNode.removeChild file.previewElement if file.previewElement
+      @_updateMaxFilesReachedClass()
+
+  ## 详情页
+  width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
+  $('.thumb').css('width', width)
+  $('.thumb').css('height', width)
