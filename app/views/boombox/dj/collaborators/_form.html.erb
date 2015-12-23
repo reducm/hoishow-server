@@ -21,7 +21,7 @@
       <% end %>
       <%= f.input :avatar, label: "（请上传 300x300 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
       <div class="col-md-7 avatar-content">
-        <%= f.input :identity, collection:[["DJ", "dj"], ["制作人", "producer"], ["派对搞手", "party_planer"]], label: "身份" %>
+        <%= f.input :identity, collection:[["DJ", "dj"], ["制作人", "producer"], ["派对搞手", "party_planer"]], label: "身份", disabled: true %>
         <%= f.input :nickname, label: "昵称（一个月内只能修改一次）" %>
         <%= f.input :weibo, label: "微信" %>
         <%= f.input :wechat, label: "微博" %>

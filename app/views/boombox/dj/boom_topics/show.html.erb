@@ -9,7 +9,7 @@
       <p><%= @boom_topic.content.html_safe %></p>
     </div>
 
-    <div class="col-md-6" id="topic_thumbs">
+    <div class="col-md-4 col-md-offset-2" id="topic_thumbs">
       <% if @boom_topic.attachments.any? %>
         <% @boom_topic.attachments.each do |attach| %>
           <a href="#imageModal<%= attach.id %>" role="button" class="btn btn-default image" data-toggle="modal">

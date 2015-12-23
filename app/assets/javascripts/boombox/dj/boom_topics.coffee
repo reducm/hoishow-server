@@ -1,7 +1,9 @@
 $ ->
+  ## 列表刷新
   $(document).on 'change', '.topics_filter', ->
     $('#topics_form').submit()
 
+  ## 发布
   # 提交时，检测内容是否为空、去掉html标签、解密加密过的html内容
   $('#topicForm input[type="submit"]').on 'click', (e) ->
     e.preventDefault()
@@ -72,6 +74,11 @@ $ ->
       #@_updateMaxFilesReachedClass()
 
   ## 详情页
-  width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
-  $('.thumb').css('width', width)
-  $('.thumb').css('height', width)
+  thumb_count = $('.thumb').length
+  if thumb_count > 0
+    if thumb_count > 1
+      width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
+    else
+      width = ($('#topic_thumbs').width() - 16 ) - 24
+    $('.thumb').css('width', width)
+    $('.thumb').css('height', width)

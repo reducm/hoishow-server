@@ -35,10 +35,10 @@ class Boombox::Dj::CollaboratorsController < Boombox::Dj::ApplicationController
 
   private
   def create_params
-    params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at"]}.map &:to_sym)
+    params.require(:collaborator).except!(:boom_id, :created_at, :updated_at).permit!
   end
 
   def update_params
-    params.require(:collaborator).permit(Collaborator.column_names.delete_if {|obj| obj.in? ["boom_id", "created_at", "updated_at", "name", "email"]}.map &:to_sym)
+    params.require(:collaborator).except!(:boom_id, :created_at, :updated_at, :name, :email, :identity).permit!
   end
 end
