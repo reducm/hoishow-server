@@ -47,16 +47,29 @@ $ ->
         $("#attachment_ids").attr("value", attachment_ids)
         file.previewTemplate.appendChild document.createTextNode "上传完毕"
         file.previewElement.lastElementChild.setAttribute('id', responseText)
+        #console.log("@getAcceptedFiles().length: " + @getAcceptedFiles().length)
     addRemoveLinks: true
     removedfile: (file) ->
       id = file.previewElement.lastElementChild["id"]
+      removedfile = file
       $.ajax
         type: 'POST',
         url: 'boom_topics/destroy_attachment.json',
         data: "id="+ id,
         dataType: 'json'
-      file.previewElement?.parentNode.removeChild file.previewElement if file.previewElement
-      @_updateMaxFilesReachedClass()
+        success: (data, textStatus, xhr) ->
+          removedfile.previewElement?.parentNode.removeChild removedfile.previewElement if removedfile.previewElement
+          $.notify(xhr.responseJSON.message,
+            position: "top center",
+            className: 'success'
+          )
+        error: (xhr, textStatus, errorThrown) ->
+          $.notify(xhr.responseJSON.message,
+            position: "top center",
+            className: 'error'
+          )
+      #console.log("@getAcceptedFiles().length: " + @getAcceptedFiles().length)
+      #@_updateMaxFilesReachedClass()
 
   ## 详情页
   width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
