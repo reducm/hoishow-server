@@ -74,11 +74,24 @@ $ ->
       #@_updateMaxFilesReachedClass()
 
   ## 详情页
+  window_height = window.innerHeight
+  window_width = window.innerWidth
   thumb_count = $('.thumb').length
-  if thumb_count > 0
-    if thumb_count > 1
-      width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
-    else
-      width = ($('#topic_thumbs').width() - 16 ) - 24
-    $('.thumb').css('width', width)
-    $('.thumb').css('height', width)
+
+  set_thumbs_size = ->
+    if thumb_count > 0
+      if thumb_count > 1
+        width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
+      else
+        width = ($('#topic_thumbs').width() - 16 ) - 24
+      $('.thumb').css('width', width)
+      $('.thumb').css('height', width)
+
+  set_thumbs_size()
+
+  window.onresize = ->
+    if window.innerHeight != window_height or window.innerWidth != window_width
+      console.log 'JAVASCRIPT BLOWIN UP YER LOGS, LOGS'
+
+  $(window).on 'resize', ->
+    set_thumbs_size()
