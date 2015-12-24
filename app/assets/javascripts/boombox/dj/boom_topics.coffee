@@ -44,11 +44,20 @@ $ ->
     maxFilesize: 10
     parallelUploads: 1
     init: ->
+      $('#upload_message').hide()
+      @on 'sending', () ->
+        $('#topicForm input[type="submit"]').addClass('disabled')
+        $('#upload_message').fadeIn()
+
       @on 'success', (file, responseText) ->
         attachment_ids.push(responseText)
         $("#attachment_ids").attr("value", attachment_ids)
         file.previewTemplate.appendChild document.createTextNode "上传完毕"
         file.previewElement.lastElementChild.setAttribute('id', responseText)
+
+      @on 'queuecomplete', (file, responseText) ->
+        $('#upload_message').fadeOut()
+        $('#topicForm input[type="submit"]').removeClass('disabled')
     addRemoveLinks: true
     removedfile: (file) ->
       id = file.previewElement.lastElementChild["id"]
@@ -81,8 +90,8 @@ $ ->
         width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
       else
         width = ($('#topic_thumbs').width() - 16 ) - 24
-      $('.thumb').css('width', width)
-      $('.thumb').css('height', width)
+      $('#topic_thumbs .thumb').css('width', width)
+      $('#topic_thumbs .thumb').css('height', width)
 
   $(window).on 'load resize', ->
     set_thumbs_size()
