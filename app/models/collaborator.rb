@@ -23,7 +23,7 @@ class Collaborator < ActiveRecord::Base
   before_create :set_nickname_updated_at, :set_removed_and_is_top
   before_update :set_nickname_updated_at, if: :nickname_has_changed?
 
-  scope :verified, -> { where(verified: true, removed: false).order('is_top desc') }
+  scope :verified, -> { where(verified: true, removed: false).order('is_top desc, created_at desc') }
 
   validates :identity, presence: {message: "身份不能为空"}
   validates :nickname, presence: {message: "昵称不能为空"}, uniqueness: {message: "昵称已被使用"}
