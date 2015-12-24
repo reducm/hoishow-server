@@ -69,6 +69,22 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
     end
   end
 
+  def destroy_attachment
+    if params[:id].present? && BoomTopicAttachment.find(params[:id]).delete
+      respond_to do |format|
+        format.json {
+          render json: { message: '删除成功！', status: 200 }
+        }
+      end
+    else
+      respond_to do |format|
+        format.json {
+          render json: { message: '删除失败！', status: 403 }
+        }
+      end
+    end
+  end
+
   def destroy 
     @boom_topic = BoomTopic.find(params[:id])
     if @boom_topic.destroy
