@@ -33,12 +33,18 @@ class BoomActivity < ActiveRecord::Base
     indexes :boom_tags, type: 'nested' do
       indexes :name, analyzer: 'snowball'
     end
+    indexes :collaborators, type: 'nested' do
+      indexes :name, analyzer: 'snowball'
+    end
   end
 
   def as_indexed_json(options={})
     as_json(
       only: :name,
-      include: { boom_tags: {only: :name} }
+      include: {
+                 boom_tags: {only: :name},
+                 collaborators: {only: :name}
+               }
     )
   end
 
