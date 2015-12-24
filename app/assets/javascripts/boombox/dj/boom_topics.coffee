@@ -49,7 +49,6 @@ $ ->
         $("#attachment_ids").attr("value", attachment_ids)
         file.previewTemplate.appendChild document.createTextNode "上传完毕"
         file.previewElement.lastElementChild.setAttribute('id', responseText)
-        #console.log("@getAcceptedFiles().length: " + @getAcceptedFiles().length)
     addRemoveLinks: true
     removedfile: (file) ->
       id = file.previewElement.lastElementChild["id"]
@@ -70,8 +69,6 @@ $ ->
             position: "top center",
             className: 'error'
           )
-      #console.log("@getAcceptedFiles().length: " + @getAcceptedFiles().length)
-      #@_updateMaxFilesReachedClass()
 
   ## 详情页
   window_height = window.innerHeight
@@ -87,11 +84,5 @@ $ ->
       $('.thumb').css('width', width)
       $('.thumb').css('height', width)
 
-  set_thumbs_size()
-
-  window.onresize = ->
-    if window.innerHeight != window_height or window.innerWidth != window_width
-      console.log 'JAVASCRIPT BLOWIN UP YER LOGS, LOGS'
-
-  $(window).on 'resize', ->
+  $(window).on 'load resize', ->
     set_thumbs_size()
