@@ -38,7 +38,10 @@ class BoomActivity < ActiveRecord::Base
   def as_indexed_json(options={})
     as_json(
       only: :name,
-      include: { boom_tags: {only: :name} }
+      include: {
+                 boom_tags: {only: :name},
+                 collaborators: {only: :name}
+               }
     )
   end
 
