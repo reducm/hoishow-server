@@ -33,7 +33,7 @@ class BoomMessage < ActiveRecord::Base
 
   paginates_per 10
 
-  after_create :set_user_message_relations, :set_message_tasks
+  after_create :set_start_time, :set_user_message_relations, :set_message_tasks
 
   def subject
     begin
@@ -136,6 +136,9 @@ class BoomMessage < ActiveRecord::Base
   end
 
   private
+  def set_start_time
+    update(start_time: Time.now + 1.minute) if start_time.blank?
+  end
 
   def set_user_message_relations
     targets = get_target_users
