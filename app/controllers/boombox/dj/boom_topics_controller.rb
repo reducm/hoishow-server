@@ -70,7 +70,7 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
   end
 
   def destroy_attachment
-    if params[:id].present? && BoomTopicAttachment.find(params[:id]).delete
+    if !attachment_exists? || attachment_delete_success?
       respond_to do |format|
         format.json {
           render json: { message: '删除成功！', status: 200 }
@@ -99,5 +99,17 @@ class Boombox::Dj::BoomTopicsController < Boombox::Dj::ApplicationController
   
   def boom_topic_params
     params.require(:boom_topic).permit(:content, :video_title, :video_url, attachments: [:image])
+  end
+
+  def attachment_exists?
+    BoomTopicAttachment.where(id: params[:id]).any?
+  end
+
+  def attachment_delete_success?
+    if params[:id].present? && BoomTopicAttachment.find(params[:id]).delete
+      true
+    else
+      false
+    end
   end
 end

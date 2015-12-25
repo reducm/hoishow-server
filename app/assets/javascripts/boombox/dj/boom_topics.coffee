@@ -35,7 +35,7 @@ $ ->
   attachment_ids = []
   Dropzone.options.attachmentDzForm =
     acceptedFiles: ".jpg, .jpeg, .gif, .png"
-    dictDefaultMessage: "选择图片或直接拖进来"
+    dictDefaultMessage: "选择图片或直接拖进来（最多上传9张图片）"
     dictFileTooBig: "单张图片最大10MB"
     dictInvalidFileType: "不支持该文件类型"
     dictMaxFilesExceeded: "最多上传9张图片"
@@ -44,11 +44,27 @@ $ ->
     maxFilesize: 10
     parallelUploads: 1
     init: ->
+      $('#upload_message').hide()
+      $('#max_files_message').hide()
+      @on 'addedfile', () ->
+        if @options.maxFiles? and @getAcceptedFiles().length >= @options.maxFiles
+          $.notify('最多上传9张图片',
+            position: "top center",
+            className: 'error'
+          )
+      @on 'sending', () ->
+        $('#topicForm input[type="submit"]').addClass('disabled')
+        $('#upload_message').fadeIn()
+
       @on 'success', (file, responseText) ->
         attachment_ids.push(responseText)
         $("#attachment_ids").attr("value", attachment_ids)
         file.previewTemplate.appendChild document.createTextNode "上传完毕"
         file.previewElement.lastElementChild.setAttribute('id', responseText)
+
+      @on 'queuecomplete', (file, responseText) ->
+        $('#upload_message').fadeOut()
+        $('#topicForm input[type="submit"]').removeClass('disabled')
     addRemoveLinks: true
     removedfile: (file) ->
       id = file.previewElement.lastElementChild["id"]
@@ -59,13 +75,19 @@ $ ->
         data: "id="+ id,
         dataType: 'json'
         success: (data, textStatus, xhr) ->
-          removedfile.previewElement?.parentNode.removeChild removedfile.previewElement if removedfile.previewElement
-          $.notify(xhr.responseJSON.message,
-            position: "top center",
-            className: 'success'
-          )
+          if xhr.responseJSON.status == 200
+            removedfile.previewElement?.parentNode.removeChild removedfile.previewElement if removedfile.previewElement
+            $.notify(xhr.responseJSON.message,
+              position: "top center",
+              className: 'success'
+            )
+          else
+            $.notify(xhr.responseJSON.message,
+              position: "top center",
+              className: 'error'
+            )
         error: (xhr, textStatus, errorThrown) ->
-          $.notify(xhr.responseJSON.message,
+          $.notify("操作失败，请重试",
             position: "top center",
             className: 'error'
           )
@@ -81,8 +103,8 @@ $ ->
         width = ($('#topic_thumbs').width() - 16 ) / 3 - 24
       else
         width = ($('#topic_thumbs').width() - 16 ) - 24
-      $('.thumb').css('width', width)
-      $('.thumb').css('height', width)
+      $('#topic_thumbs .thumb').css('width', width)
+      $('#topic_thumbs .thumb').css('height', width)
 
   $(window).on 'load resize', ->
     set_thumbs_size()
