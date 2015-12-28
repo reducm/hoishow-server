@@ -31,10 +31,8 @@ $ ->
     if track_id && playlist_id
       $.post("/boombox/operation/playlists/#{playlist_id}/add_track", { track_id: track_id}, (data)->
         if data.success
-          pop_btn.popover("show")
-          setTimeout(()->
-            pop_btn.popover("hide")
-          ,1000)
+          pop_btn.text("已添加")
+          pop_btn.addClass("btn-success")
       )
 
   #移除音乐 

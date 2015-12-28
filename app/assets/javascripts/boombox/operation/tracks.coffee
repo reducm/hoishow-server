@@ -2,6 +2,21 @@ $ ->
   $(document).on 'change', '.tracks_filter', ->
     $('#tracks_form').submit()
 
+  #播放音频
+  $(".audio_name").on "click", (e) ->
+    e.preventDefault()
+    a = $(this).find("audio")
+    if a.length == 1
+      audio = a[0]
+      if audio.paused
+        $(this).removeClass("glyphicon-play")
+        $(this).addClass("glyphicon-pause")
+        audio.play()
+      else
+        $(this).removeClass("glyphicon-pause")
+        $(this).addClass("glyphicon-play")
+        audio.pause()
+
   #如果当前track有标签的话就把标签id保存起来
   track_tag_ids_val = $("#track_tag_ids").val()
   if track_tag_ids_val
