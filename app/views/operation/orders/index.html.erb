@@ -25,7 +25,7 @@
     </div>
 
     <div class="expresses_list mt20" id="expresses_list">
-      <table class="table table-hover expresses">
+      <table class="table table-hover expresses table-responsive">
         <thead>
           <tr>
             <th>订单号</th>
@@ -45,11 +45,11 @@
               <td><%= order.out_id%></td>
               <td><%= order.user_name  %></td>
               <td><%= order.user_mobile %></td>
-              <td width="400px"><%= order.user_address %></td>
+              <td><%= order.user_address %></td>
               <td><%= order.status_cn %></td>
               <td><%= order.show.try(:ticket_type_cn) %></td>
               <td id="td_express_id_<%= order.id %>"><%= order.express_id %></td>
-              <td width="400px"><%= order.remark %></td>
+              <td><%= order.remark %></td>
               <td class="text-center">
                 <%= link_to '确认出票', set_order_to_success_operation_order_path(order), method: 'post', class: 'btn btn-default' if order.paid? && order.r_ticket? %>
                 <button class="btn btn-default change_express_data" data-order-id="<%= order.id %>">修改单号</button>

@@ -25,6 +25,9 @@ class Ability
         can :manage, Ticket
         can :manage, Topic
         can :manage, User, boom_id: nil
+        can :manage, Admin
+        can :manage, Feedback
+        can :manage, CommonData
 
         can :set_channels
       elsif user.operator?
@@ -60,6 +63,8 @@ class Ability
         can :update, Startup
         # Message
         can :create, Message
+        # SiteSetting
+        can :manage, CommonData
 
         basic_read_only
       end
@@ -94,5 +99,6 @@ class Ability
     can :read, Message
     can :read, Startup
     can :read, Banner
+    can :read, Feedback
   end
 end
