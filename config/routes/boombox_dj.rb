@@ -49,6 +49,7 @@ module Routes
             resources :boom_topics, except: [:update, :new] do
               collection do
                 post :create_attachment
+                post :destroy_attachment
               end
             end
 

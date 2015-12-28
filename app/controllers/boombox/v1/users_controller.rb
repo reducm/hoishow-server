@@ -128,11 +128,15 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_playlists
-    @playlists = @user.follow_playlists.page(params[:page])
+    @playlists = @user.follow_playlists.order('created_at desc').page(params[:page])
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
+    @playlists = if params[:all].present?
+                   @user.boom_playlists.order('is_default desc, created_at desc')
+                 else
+                   @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
+                 end
   end
 
   def comment_list
