@@ -1,8 +1,8 @@
 # encoding: utf-8
 class Boombox::Operation::TracksController < Boombox::Operation::ApplicationController
   include ConvertAudio::Logger
-  before_filter :check_login!
-  before_filter :get_track, except: [:search, :index, :new, :create]
+  before_filter :check_login!, except: [:convert_audio_notify]
+  before_filter :get_track, except: [:search, :index, :new, :create, :convert_audio_notify]
 
   def index
     params[:tracks_page] ||= 1
