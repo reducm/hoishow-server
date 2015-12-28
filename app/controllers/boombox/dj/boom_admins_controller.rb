@@ -52,18 +52,8 @@ class Boombox::Dj::BoomAdminsController < Boombox::Dj::ApplicationController
   end
 
   def send_reset_password_email
-    if params[:boom_admins].present?
-      if @boom_admin = BoomAdmin.dj.where(email: params[:boom_admins][:email]).first
-        @boom_admin.set_confirmation_token
-        BoomAdminMailer.forget_password(@boom_admin).deliver_now
-        flash[:notice] = "发送成功！请登录您的邮箱按照提示操作"
-        redirect_to boombox_dj_after_send_reset_password_email_url(boom_admin_id: @boom_admin.id)
-      else
-        flash[:alert] = "邮箱未注册"
-        redirect_to boombox_dj_signin_url
-      end
     # 重新发送
-    elsif params[:boom_admin_id].present?
+    if params[:boom_admin_id].present?
       if @boom_admin = BoomAdmin.dj.where(id: params[:boom_admin_id]).first
         @boom_admin.set_confirmation_token
         BoomAdminMailer.forget_password(@boom_admin).deliver_now
@@ -73,6 +63,20 @@ class Boombox::Dj::BoomAdminsController < Boombox::Dj::ApplicationController
         flash[:alert] = "未授权操作"
         redirect_to boombox_dj_signin_url
       end
+
+    elsif params[:email].present?
+      if @boom_admin = BoomAdmin.dj.where(email: params[:email]).first
+        @boom_admin.set_confirmation_token
+        BoomAdminMailer.forget_password(@boom_admin).deliver_now
+        flash[:notice] = "发送成功！请登录您的邮箱按照提示操作"
+        redirect_to boombox_dj_after_send_reset_password_email_url(boom_admin_id: @boom_admin.id)
+      else
+        flash[:alert] = "邮箱未注册"
+        redirect_to boombox_dj_forget_password_url
+      end
+    else
+      flash[:alert] = "请输入邮箱"
+      redirect_to boombox_dj_forget_password_url
     end
   end
 
