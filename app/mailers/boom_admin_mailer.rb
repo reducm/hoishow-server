@@ -6,4 +6,9 @@ class BoomAdminMailer < ApplicationMailer
     @dj = dj 
     mail(:to => "<#{dj.email}>", :subject => "播霸邮箱验证")
   end
+
+  def forget_password(dj)
+    @dj = dj
+    mail(:to => "<#{dj.email}>", :subject => "播霸密码重置")
+  end
 end
