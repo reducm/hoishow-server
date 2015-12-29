@@ -23,7 +23,11 @@
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="timeline">
-      <%= render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>
+      <% if @boom_topics.any? %>
+        <%= render partial: 'boombox/operation/boom_topics/table', locals: {topics: @boom_topics} %>
+      <% else %>
+        无Timeline数据
+      <% end %>
     </div>
     <div role="tabpanel" class="tab-pane" id="tracks">
       <% if @boom_tracks.any? %>

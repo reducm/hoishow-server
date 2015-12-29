@@ -22,5 +22,4 @@
   <div>每页显示数量
     <%= select_tag :tracks_per, options_for_select([5, 10, 15, 20], selected: params[:tracks_per] || 10), class: "form-control tracks_filter" %>
   </div>
-
 <% end %>

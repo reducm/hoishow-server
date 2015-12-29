@@ -4,7 +4,7 @@ class Boombox::Operation::BoomAdminsController < Boombox::Operation::Application
   before_filter :get_boom_admin, except: [:index, :new, :create]
 
   def index
-    @boom_admins = BoomAdmin.page(params[:page]).order("created_at desc")
+    @boom_admins = BoomAdmin.where.not(admin_type: 2).page(params[:page]).order("created_at desc")
   end
 
   def new
@@ -14,7 +14,7 @@ class Boombox::Operation::BoomAdminsController < Boombox::Operation::Application
   def create
     @boom_admin = BoomAdmin.new(name: params[:boom_admin_new_username], admin_type: params[:admin_type].to_i)
     @boom_admin.set_password(params[:boom_admin_new_password])
-    
+
     if @boom_admin.save!
       flash[:notice] = '管理员创建成功'
       redirect_to boombox_operation_boom_admins_url

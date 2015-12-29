@@ -14,7 +14,6 @@
     <% end %>
   </div>
   <div id="track_form">
-    <%= hidden_field_tag "track_tag_ids", track.boom_tags.pluck(:id) %>
     <%= simple_form_for( track, url: form_url, method: form_method, html: { multipart: :true }) do |f| %>
       <div class="row">
         <div class="col-sm-5">
@@ -36,20 +35,22 @@
             <% end %>
             <%= f.hidden_field :duration %>
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
-            <%= f.input :artists, label: "艺人", placeholder: "请输入艺人名字" %>
             <%= f.input :is_top, label: "打勾推荐此音乐" %>
+            <%= f.input :artists, label: "艺术家", placeholder: "请输入艺人名字" , input_html:{ id: "operation_track_artists" }%>
 
             <%= label_tag "tags", "标签" %>
-            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
-            <div id="track_delete_tag">
-              <% tags = track.boom_tags.pluck(:name, :id) %>
-              <% tags.each do |track_tag| %>
-                <span class="btn btn-default"><%= track_tag[0] + "" %></span><button data-tag-id="<%= track_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
-              <% end %>
-            </div>
-            <div>
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), include_blank: "请选择标签", id: "track_tag_list" %>
-            </div>
+            <p>
+            <% if @tags.any? %>
+              <select id="tags" multiple="multiple" class="form-control">
+                <% @tags.each do |bt| %>
+                  <option value="<%= bt.id %>"><%= bt.name %></option>
+                <% end %>
+              </select>
+            <% else %>
+              没有标签
+            <% end %>
+            </p>
+            <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
           </div>
         </div>
       </div>
@@ -60,3 +61,14 @@
     <% end %>
   </div>
 </div>
+
+<% if params[:action] == 'edit' %>
+  <%= content_tag :div, id: "operation_track_tags_already_added", data: {
+    data: @tags_already_added_ids
+  } do %>
+  <% end %>
+  <%= content_tag :div, id: "operation_artist_names", data: {
+    data: @artist_names
+  } do %>
+  <% end %>
+<% end %>

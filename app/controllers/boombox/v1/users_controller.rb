@@ -128,11 +128,15 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   end
 
   def followed_playlists
-    @playlists = @user.follow_playlists.page(params[:page])
+    @playlists = @user.follow_playlists.order('created_at desc').page(params[:page])
   end
 
   def my_playlists
-    @playlists = @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
+    @playlists = if params[:all].present?
+                   @user.boom_playlists.order('is_default desc, created_at desc')
+                 else
+                   @user.boom_playlists.order('is_default desc, created_at desc').page(params[:page]).per(20)
+                 end
   end
 
   def comment_list
@@ -165,9 +169,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if params[:topic_id] && params[:content]
       options = {creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id]}
       if params[:parent_id].present?
-        options.merge!(parent_id: params[:parent_id])
-        @comment = BoomComment.create(options)
-        @comment.send_reply_push
+        parent = BoomComment.find_by_id params[:parent_id]
+        if parent
+          options.merge!(parent_id: parent.id)
+          @comment = BoomComment.create(options)
+          @comment.send_reply_push unless parent.creator_id == @user.id
+        end
       else
         @comment = BoomComment.create(options)
       end

@@ -1,5 +1,5 @@
 <div class="jumbotron col-md-6 col-md-offset-3" style="padding: 48px;">
-  <h2>邮箱验证</h1>
+  <h2>邮箱验证</h2>
   <p>我们已经发送邮件到您的邮箱 <%= @boom_admin.email %>，请登录您的邮箱按照提示操作。</p>
   <p>如果邮箱输入有误，请返回重试。<%= link_to '返回', boombox_dj_signup_url, class: 'btn btn-lg btn-default' %></p>
   <p>收不到邮件？<%= link_to '重新发送', boombox_dj_signup_resend_email_url(boom_admin_id: @boom_admin.id), class: 'btn btn-lg btn-default' %></p>
