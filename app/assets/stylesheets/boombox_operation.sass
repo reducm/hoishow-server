@@ -23,6 +23,8 @@
 @import "boombox/operation/boom_banners"
 
 @import "operation/bootstrap-select"
+@import "jquery-ui"
+@import "jquery.tagit"
 @import "jquery-ui/core"
 @import "jquery-ui/theme"
 @import "jquery-ui/sortable"
@@ -31,6 +33,7 @@
 @import "operation/basic"
 @import "operation/dropzone"
 @import "datatables.min"
+@import "select2.min"
 
 @import "simditor/simditor"
 @import "simditor/simditor-html"
@@ -53,3 +56,21 @@
 .btn-next-to-header
   margin-top: 15px
   margin-left: 10px
+
+.table
+  thead
+    tr
+      th
+        text-align: center
+  tbody
+    tr
+      background-color: #434c51
+      color: white
+      text-align: center
+      border: 15px solid #fff
+      &:hover
+        background-color: #434c55
+      td
+        vertical-align: middle
+        max-width: 150px
+

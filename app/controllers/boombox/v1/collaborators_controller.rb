@@ -36,19 +36,19 @@ class Boombox::V1::CollaboratorsController < Boombox::V1::ApplicationController
   end
 
   def playlists
-    @playlists = @collaborator.boom_playlists.playlist.page(params[:page])
+    @playlists = @collaborator.boom_playlists.playlist.order('created_at desc').page(params[:page])
   end
 
   def tracks
     @tracks = if params[:is_all]
-                @collaborator.boom_tracks
+                @collaborator.boom_tracks.order('created_at desc')
               else
-                @collaborator.boom_tracks.page(params[:page])
+                @collaborator.boom_tracks.order('created_at desc').page(params[:page])
               end
   end
 
   def shows
-    @shows = @collaborator.activities.page(params[:page])
+    @shows = @collaborator.activities.order('collaborator_activity_relations.created_at desc').page(params[:page])
   end
 
   private

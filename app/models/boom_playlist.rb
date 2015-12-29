@@ -136,6 +136,10 @@ class BoomPlaylist < ActiveRecord::Base
     end rescue nil
   end
 
+  def current_cover_url
+    cover_url || tracks.last.cover_url rescue nil
+  end
+
   private
   def set_removed_and_is_top
     if is_top

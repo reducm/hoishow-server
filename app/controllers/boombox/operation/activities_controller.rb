@@ -35,60 +35,59 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
 
   def new
     @activity = BoomActivity.new
+    @tags = BoomTag.all
+    @activity_collaborators = Collaborator.verified
   end
 
   def create
     @activity = BoomActivity.new(activity_params)
     @activity.mode = "activity"
     if @activity.save!
-      #关联tag
-      BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @activity.tag_for_activity(tag) }
-      #关联艺人
-      Collaborator.where('id in (?)', params[:collaborator_ids].split(',')).each{ |collaborator| @activity.relate_collaborator(collaborator) }
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @activity)
+      end
+
+      if params[:boom_collaborator_ids].present?
+        collaborator_ids = params[:boom_collaborator_ids].split(",")
+        Collaborator.where(id: collaborator_ids).each do |c|
+          c.collaborator_activity_relations.where(boom_activity_id: @activity.id).first_or_create!
+        end
+        @activity.collaborator_activity_relations.where.not(collaborator_id: collaborator_ids).delete_all
+      end
 
       flash[:notice] = '创建活动成功'
-      redirect_to boombox_operation_activities_url
+    else
+      flash[:alert] = '创建活动失败'
     end
+    redirect_to boombox_operation_activities_url
   end
 
   def update
     if @activity.update(activity_params)
-      #关联新tag，删除多余的tag
-      target_tag_ids = params[:tag_ids]
-      if target_tag_ids
-        target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @activity.boom_tags.pluck(:id)
-        new_tag_ids = target_tag_ids - source_tag_ids
-        if new_tag_ids.present?
-          BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @activity.tag_for_activity(tag) }
-        end
-        del_tag_ids = source_tag_ids - target_tag_ids
-        if del_tag_ids.present?
-          @activity.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
-        end
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @activity)
       end
 
-      #关联新collaborator，删除多余的collaborator
-      target_collaborator_ids = params[:collaborator_ids]
-      if target_collaborator_ids
-        target_collaborator_ids = target_collaborator_ids.split(",").map{|target| target.to_i}
-        source_collaborator_ids = @activity.collaborators.pluck(:id)
-        new_collaborator_ids = target_collaborator_ids - source_collaborator_ids
-        if new_collaborator_ids.present?
-          Collaborator.where('id in (?)', new_collaborator_ids).each{ |collaborator| @activity.relate_collaborator(collaborator) }
+      if params[:boom_collaborator_ids].present?
+        collaborator_ids = params[:boom_collaborator_ids].split(",")
+        Collaborator.where(id: collaborator_ids).each do |c|
+          c.collaborator_activity_relations.where(boom_activity_id: @activity.id).first_or_create!
         end
-        del_collaborator_ids = source_collaborator_ids - target_collaborator_ids
-        if del_collaborator_ids.present?
-          @activity.collaborator_activity_relations.where('collaborator_id in (?)', del_collaborator_ids).each{ |del_collaborator| del_collaborator.destroy! }
-        end
+        @activity.collaborator_activity_relations.where.not(collaborator_id: collaborator_ids).delete_all
       end
 
       flash[:notice] = '编辑活动成功'
-      redirect_to boombox_operation_activities_url
+    else
+      flash[:alert] = '编辑活动失败'
     end
+    redirect_to boombox_operation_activities_url
   end
 
   def edit
+    @tags = BoomTag.all
+    @activity_collaborators = Collaborator.verified
+    @tags_already_added_ids = get_subject_tags(@activity)
+    @collaborators_already_added_ids = @activity.collaborators.any? ? @activity.collaborators.pluck(:id) : []
   end
 
   def change_is_top

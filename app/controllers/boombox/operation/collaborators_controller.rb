@@ -121,25 +121,15 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def edit
+    @tags = BoomTag.all
+    @tags_already_added_ids = get_subject_tags(@collaborator)
   end
 
   def update
     if @collaborator.update(collaborator_params)
-      #处理tag关联
-      target_tag_ids = params[:tag_ids]
-      if target_tag_ids
-        target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @collaborator.boom_tags.pluck(:id)
-        #关联新tag，删除多余的tag
-        new_tag_ids = target_tag_ids - source_tag_ids
-        if new_tag_ids.present?
-          BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @collaborator.tag_for_collaborator(tag) }
-        end
-        del_tag_ids = source_tag_ids - target_tag_ids
-        if del_tag_ids.present?
-          @collaborator.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
-        end
-    end
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @collaborator)
+      end
       redirect_to boombox_operation_collaborator_url(@collaborator), notice: '更新成功'
     else
       flash[:alert] = @collaborator.errors.full_messages.to_sentence

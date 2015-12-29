@@ -21,6 +21,7 @@
                           url: create_attachment_boombox_dj_boom_topics_path, 
                           method: 'post', 
                           html: { class: 'dropzone', id: 'attachment-dz-form', multipart: :true }) do |f| %> 
+        <div id="upload_message" class="alert alert-warning" role="alert">正在上传，请稍后...</div>
       <% end %>
     </div>
   </div>

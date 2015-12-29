@@ -4,9 +4,8 @@
     <tr>
       <th class='text-center'>ID</th>
       <th class='text-center'>封面</th>
-      <th class='text-center'>播放</th>
       <th class='text-center'>标题</th>
-      <th class='text-center'>艺人</th>
+      <th class='text-center'>艺术家</th>
       <th class='text-center'>时长</th>
       <th class='text-center'>标签</th>
       <th class='text-center'>上传者</th>
@@ -28,29 +27,27 @@
             <% end %>
           </td>
           <td>
-            <% if track.current_file_url %>
-              <audio src="<%= track.current_file_url %>" controls="controls">你的浏览器不支持audio标签</audio>
-            <% end %>
+            <a class="glyphicon glyphicon-play audio_name">
+              <%= audio_tag(track.current_file_url, preload: 'none') if track.current_file_url %>
+              <%= track.name %>
+            </a>
           </td>
-          <td><%= track.name %></td>
           <td><%= track.artists %></td>
           <td><%= track.duration_to_time %></td>
           <td>
             <% cache tags = track.boom_tags.pluck(:name) do %>
-              <% if tags.present? %>
-                <%= truncate(tags.join(", "), length: 50) %>
-              <% end %>
+              <%= truncate(tags.join(", "), length: 50) if tags.present? %>
             <% end %>
           </td>
-          <td><%= track.creator.name if track.creator %></td>
+          <td><%= track.creator_name %></td>
           <td><%= get_datetime( track.created_at ) %></td>
           <td><%= track.is_top_cn %></td>
           <td>
             <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
             <% if list_type == "playlist_tracks" %>
-              <a data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
+              <a data-track-id="<%= track.id %>" class="btn remove_track_to_playlist">移除</a>
             <% elsif list_type == "search_tracks" %>
-              <a data-track-id="<%= track.id %>" type="button" class="btn btn-success add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</a>
+              <a data-track-id="<%= track.id %>" class="btn add_track_to_playlist">添加</a>
             <% else %>
               <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>
