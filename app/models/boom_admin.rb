@@ -73,6 +73,17 @@ class BoomAdmin < ActiveRecord::Base
     save!(:validate => false)
   end
 
+  def set_confirmation_token
+    self.confirm_token = SecureRandom.urlsafe_base64.to_s
+    save!(:validate => false)
+  end
+
+  def reset_password!(password)
+    self.set_password(password)
+    self.confirm_token = nil
+    save!(:validate => false)
+  end
+
   private
   def confirmation_token
     if self.confirm_token.blank?

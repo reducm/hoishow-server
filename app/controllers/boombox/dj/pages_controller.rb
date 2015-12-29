@@ -9,6 +9,10 @@ class Boombox::Dj::PagesController < Boombox::Dj::ApplicationController
     @collaborator = Collaborator.find(params[:collaborator_id])
   end
 
+  def after_send_reset_password_email
+    @boom_admin = BoomAdmin.find(params[:boom_admin_id])
+  end
+
   def resend_email
     @boom_admin = BoomAdmin.find(params[:boom_admin_id])
     BoomAdminMailer.registration_confirmation(@boom_admin).deliver_now

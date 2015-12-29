@@ -18,6 +18,10 @@ module Routes
             # 审核
             get "/signup_finished" => 'pages#after_create_collaborator'
 
+            ## 忘记密码
+            match "/forget_password" => "boom_admins#forget_password", via: [:get]
+            get '/after_send_reset_password_email' => 'pages#after_send_reset_password_email'
+
             resources :sessions, only: [:new, :create, :destroy]
             match "/signin" => "sessions#new", via: [:get]
             match "/signout" => "sessions#destroy", via: [:delete]
@@ -25,6 +29,12 @@ module Routes
             resources :boom_admins do
               member do
                 get :confirm_email
+                get :new_password
+                post :reset_password
+              end
+              collection do
+                get :forget_password
+                post :send_reset_password_email
               end
             end
 

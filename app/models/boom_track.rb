@@ -23,8 +23,8 @@ class BoomTrack < ActiveRecord::Base
   mount_uploader :file, AudioUploader
   mount_uploader :cover, BoomImageUploader
 
-  after_create :set_removed_and_is_top
-  after_create :convert_audio
+  after_create :set_removed_and_is_top, :convert_audio
+  after_commit :convert_audio_if_changed, on: :update
 
   scope :valid, -> {where(removed: false).order('is_top desc, created_at desc')}
 
@@ -153,6 +153,15 @@ class BoomTrack < ActiveRecord::Base
     file_url || fetch_file_url
   end
 
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.display_name
+    when CREATOR_ADMIN
+      creator.default_name
+    end rescue nil
+  end
+
   private
   def set_removed_and_is_top
     unless is_top
@@ -164,5 +173,9 @@ class BoomTrack < ActiveRecord::Base
 
   def convert_audio
     ConvertAudioWorker.perform_async(file.path) if file_url
+  end
+
+  def convert_audio_if_changed
+    convert_audio if previous_changes['file']
   end
 end
