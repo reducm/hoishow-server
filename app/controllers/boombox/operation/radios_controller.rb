@@ -35,6 +35,7 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
 
   def new
     @radio = BoomPlaylist.new
+    @tags = BoomTag.all
   end
 
   def create
@@ -43,34 +44,31 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
     @radio.creator_type = BoomTrack::CREATOR_ADMIN
     @radio.mode = 1
     if @radio.save!
-      BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @radio.tag_for_playlist(tag) }
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @radio)
+      end
       flash[:notice] = '创建电台成功'
-      redirect_to boombox_operation_radios_url
+    else
+      flash[:alert] = '创建电台失败'
     end
+    redirect_to boombox_operation_radios_url
   end
 
   def update
     if @radio.update(radio_params)
-      target_tag_ids = params[:tag_ids]
-      if target_tag_ids
-        target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @radio.boom_tags.pluck(:id)
-        #关联新tag，删除多余的tag
-        new_tag_ids = target_tag_ids - source_tag_ids
-        if new_tag_ids.present?
-          BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @radio.tag_for_playlist(tag) }
-        end
-        del_tag_ids = source_tag_ids - target_tag_ids 
-        if del_tag_ids.present?
-          @radio.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
-        end
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @radio)
       end
       flash[:notice] = '编辑电台成功'
-      redirect_to boombox_operation_radios_url
+    else
+      flash[:alert] = '编辑电台失败'
     end
+    redirect_to boombox_operation_radios_url
   end
 
   def edit
+    @tags = BoomTag.all
+    @tags_already_added_ids = get_subject_tags(@radio)
   end
 
   def destroy

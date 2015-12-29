@@ -2,6 +2,22 @@ $ ->
   $(document).on 'change', '.tracks_filter', ->
     $('#tracks_form').submit()
 
+  # 艺术家标签化
+  if $('div#operation_artist_names').length > 0
+    $('#operation_track_artists').tagit
+      allowSpaces: true
+      availableTags: $('div#operation_artist_names').data('data')
+  else
+    $('#operation_track_artists').tagit
+      allowSpaces: true
+
+  # 标签
+  if $('div#operation_track_tags_already_added').length > 0
+    data = $('div#operation_track_tags_already_added').data('data')
+    $('select#tags').val(data).select2()
+  else
+    $('select#tags').select2()
+
   #播放音频
   $(".audio_name").on "click", (e) ->
     e.preventDefault()
@@ -16,36 +32,6 @@ $ ->
         $(this).removeClass("glyphicon-pause")
         $(this).addClass("glyphicon-play")
         audio.pause()
-
-  #如果当前track有标签的话就把标签id保存起来
-  track_tag_ids_val = $("#track_tag_ids").val()
-  if track_tag_ids_val
-    tag_ids = track_tag_ids_val.split(" ")
-  else
-    tag_ids = []
-
-  #tag-filter
-  $("#track_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
-
-  #添加tag
-  $("#track_tag_list").on "change", (e) ->
-    e.preventDefault()
-    tag_name = $("#track_tag_list option:selected").text()
-    tag_id = $("#track_tag_list option:selected").val()
-    if tag_id in tag_ids
-      alert("该标签已选，请不要重复添加")
-    else
-      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#track_delete_tag")
-      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#track_delete_tag")
-      tag_ids.push(tag_id)
-
-  #删除tag
-  $("#track_delete_tag").on "click", ".remove_tag", (e) ->
-    e.preventDefault()
-    tag_id = $(this).data("tag-id")
-    $(this).prev().remove()
-    $(this).remove()
-    tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
 
   $('.track-cover-uploader').change ->
     readURL this, $("#track_cover_preview")
@@ -62,8 +48,7 @@ $ ->
 #2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
     #1
-    tag_ids.join(",")
-    $("#boom_tag_ids").val(tag_ids)
+    $("#boom_tag_ids").val($('select#tags').val())
     #2
     duration = $("#track-file-pre")[0].duration
     if duration
