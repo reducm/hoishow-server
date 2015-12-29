@@ -55,7 +55,7 @@
 </div>
 
 <%= content_tag :div, id: "message_subject_data", data: {
-  collaborator: ( Collaborator.verified.select(:name, :id).map{|c| { name: c.name, id: c.id }} ),
+  collaborator: ( Collaborator.verified.map{|c| { name: c.display_name, id: c.id }} ),
   activity: ( BoomActivity.activity.is_display.select(:name, :id).map{|activity| { name: activity.name, id: activity.id }} ),
   show: ( BoomActivity.show.is_display.select(:name, :id).map{|show| { name: show.name, id: show.id }} ),
   playlist: ( BoomPlaylist.playlist.open.select(:name, :id).map{|playlist| { name: playlist.name, id: playlist.id }} )

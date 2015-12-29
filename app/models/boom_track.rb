@@ -153,6 +153,15 @@ class BoomTrack < ActiveRecord::Base
     file_url || fetch_file_url
   end
 
+  def creator_name
+    case creator_type
+    when CREATOR_COLLABORATOR
+      creator.display_name
+    when CREATOR_ADMIN
+      creator.default_name
+    end rescue nil
+  end
+
   private
   def set_removed_and_is_top
     unless is_top

@@ -31,7 +31,6 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
       format.html
       format.js
     end
-
   end
 
   def new
@@ -93,7 +92,8 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   def convert_audio_notify
     upyun_logger.info '============'
     upyun_logger.info params
-    upyun_logger.info '============'
+
+    render nothing: true
   end
 
   private

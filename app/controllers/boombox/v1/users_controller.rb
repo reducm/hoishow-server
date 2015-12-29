@@ -169,9 +169,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if params[:topic_id] && params[:content]
       options = {creator_type: BoomComment::CREATOR_USER, creator_id: @user.id, content: params[:content], boom_topic_id: params[:topic_id]}
       if params[:parent_id].present?
-        options.merge!(parent_id: params[:parent_id])
-        @comment = BoomComment.create(options)
-        @comment.send_reply_push
+        parent = BoomComment.find_by_id params[:parent_id]
+        if parent
+          options.merge!(parent_id: parent.id)
+          @comment = BoomComment.create(options)
+          @comment.send_reply_push unless parent.creator_id == @user.id
+        end
       else
         @comment = BoomComment.create(options)
       end

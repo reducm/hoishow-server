@@ -1,5 +1,5 @@
 # encoding: utf-8
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800 poster cover radio playlist image)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800 poster cover radio playlist image blur)
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 

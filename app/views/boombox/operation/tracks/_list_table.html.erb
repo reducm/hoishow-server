@@ -27,22 +27,16 @@
               <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
             <% end %>
           </td>
-          <td>
-            <% if track.current_file_url %>
-              <audio src="<%= track.current_file_url %>" controls="controls">你的浏览器不支持audio标签</audio>
-            <% end %>
-          </td>
+          <td><%= audio_tag(track.current_file_url, preload: 'none', controls: true) if track.current_file_url %></td>
           <td><%= track.name %></td>
           <td><%= track.artists %></td>
           <td><%= track.duration_to_time %></td>
           <td>
             <% cache tags = track.boom_tags.pluck(:name) do %>
-              <% if tags.present? %>
-                <%= truncate(tags.join(", "), length: 50) %>
-              <% end %>
+              <%= truncate(tags.join(", "), length: 50) if tags.present? %>
             <% end %>
           </td>
-          <td><%= track.creator.name if track.creator %></td>
+          <td><%= track.creator_name %></td>
           <td><%= get_datetime( track.created_at ) %></td>
           <td><%= track.is_top_cn %></td>
           <td>
