@@ -34,7 +34,9 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   end
 
   def new
+    @tags = BoomTag.all
     @track = BoomTrack.new
+    get_all_track_artists
   end
 
   def create
@@ -42,35 +44,38 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
     @track.creator_id = @current_admin.id
     @track.creator_type = BoomTrack::CREATOR_ADMIN
     if @track.save!
-      BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @track.tag_for_track(tag) }
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @track)
+      end
+      if params[:boom_track][:artists].present?
+        @track.create_tag_using_artists(params[:boom_track][:artists])
+      end
       flash[:notice] = '创建音乐成功'
-      redirect_to boombox_operation_tracks_url
+    else
+      flash[:alert] = "创建音乐失败"
     end
+    redirect_to boombox_operation_tracks_url
   end
 
   def update
     if @track.update(track_params)
-      #找出track的tag，跟params[:tag_ids]比较，没有的就删除,params[:tag_ids]格式为"1,2,3"
-      target_tag_ids = params[:tag_ids]
-      if target_tag_ids
-        target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @track.boom_tags.pluck(:id)
-        #关联新tag，删除多余的tag
-        new_tag_ids = target_tag_ids - source_tag_ids
-        if new_tag_ids.present?
-          BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @track.tag_for_track(tag) }
-        end
-        del_tag_ids = source_tag_ids - target_tag_ids
-        if del_tag_ids.present?
-          @track.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
-        end
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @track)
+      end
+      if params[:boom_track][:artists].present?
+        @track.create_tag_using_artists(params[:boom_track][:artists])
       end
       flash[:notice] = '编辑音乐成功'
-      redirect_to boombox_operation_tracks_url
+    else
+      flash[:alert] = '编辑音乐失败'
     end
+    redirect_to boombox_operation_tracks_url
   end
 
   def edit
+    @tags = BoomTag.all
+    @tags_already_added_ids = get_subject_tags(@track)
+    get_all_track_artists
   end
 
   def destroy
@@ -97,6 +102,14 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   end
 
   private
+  def get_all_track_artists
+    artist_names = []
+    all_artists = BoomTrack.pluck(:artists)
+    all_artists.map { |art| artist_names << art.split(",") } if all_artists.present?
+    
+    @artist_names = artist_names.flatten.uniq
+  end
+
   def get_track
     @track = BoomTrack.find(params[:id])
   end

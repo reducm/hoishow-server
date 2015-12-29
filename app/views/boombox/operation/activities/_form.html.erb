@@ -13,8 +13,6 @@
     <% end %>
   </div>
   <div id="activity_form">
-    <%= hidden_field_tag "activity_tag_ids", activity.boom_tags.pluck(:id) %>
-    <%= hidden_field_tag "activity_collaborator_ids", activity.collaborators.pluck(:id) %>
     <%= simple_form_for(activity, url: form_url, method: form_method, html: { class: 'form-horizontal', multipart: :true }) do |f| %>
       <div class="row">
         <div class="col-xs-9 col-sm-6 cover_area">
@@ -37,28 +35,32 @@
             <%= f.input :is_display, label: "打勾显示此活动" %>
 
             <%= label_tag "tags", "标签" %>
-            <%= hidden_field_tag "tag_ids", params[:boom_tag_ids], id: 'boom_tag_ids' %>
-            <div id="activity_delete_tag">
-              <% tags = activity.boom_tags.pluck(:name, :id) %>
-              <% tags.each do |activity_tag| %>
-                <span class="btn btn-default"><%= activity_tag[0] + "" %></span><button data-tag-id="<%= activity_tag[1] %>" class="btn btn-danger remove_tag">删除</button>
-              <% end %>
-            </div>
-            <div class="form-group">
-              <%= select_tag "select_tags", options_for_select(BoomTag.valid_tags.collect{|boom_tag| [boom_tag.name, boom_tag.id]}), include_blank: "请选择标签", class:"form-control", id: "activity_tag_list" %>
-            </div>
+            <p>
+            <% if @tags.any? %>
+              <select id="tags" multiple="multiple" class="form-control">
+                <% @tags.each do |bt| %>
+                  <option value="<%= bt.id %>"><%= bt.name %></option>
+                <% end %>
+              </select>
+            <% else %>
+              没有标签
+            <% end %>
+            </p>
+            <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
 
             <%= label_tag "collaborators", "艺人" %>
-            <%= hidden_field_tag "collaborator_ids", params[:boom_collaborator_ids], id: 'boom_collaborator_ids' %>
-            <div id="activity_delete_collaborator">
-              <% collaborators = activity.collaborators.pluck(:name, :id) %>
-              <% collaborators.each do |activity_collaborator| %>
-                <span class="btn btn-default"><%= activity_collaborator[0] + "" %></span><button data-collaborator-id="<%= activity_collaborator[1] %>" class="btn btn-danger remove_collaborator">删除</button>
-              <% end %>
-            </div>
-            <div class="form-group">
-              <%= select_tag "select_collaborators", options_for_select(Collaborator.verified.collect{|collaborator| [collaborator.name, collaborator.id]}), include_blank: "请选择艺人", class:"form-control", id: "activity_collaborator_list" %>
-            </div>
+            <p>
+            <% if @activity_collaborators.any? %>
+              <select id="activity_collaborators" multiple="multiple" class="form-control">
+                <% @activity_collaborators.each do |ac| %>
+                  <option value="<%= ac.id %>"><%= ac.nickname %></option>
+                <% end %>
+              </select>
+            <% else %>
+              没有艺人
+            <% end %>
+            </p>
+            <%= hidden_field_tag "boom_collaborator_ids", params[:boom_collaborator_ids] %>
           </div>
         </div>
       </div>
@@ -96,6 +98,18 @@
     </div>
   </div>
 </div>
+
+<% if params[:action] == 'edit' %>
+  <%= content_tag :div, id: "operation_activity_tags_already_added", data: {
+    data: @tags_already_added_ids
+  } do %>
+  <% end %>
+
+  <%= content_tag :div, id: "operation_activity_collaborators_already_added", data: {
+    data: @collaborators_already_added_ids
+  } do %>
+  <% end %>
+<% end %>
 
 <style media="screen">
   .modal-content{

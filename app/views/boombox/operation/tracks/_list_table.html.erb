@@ -4,9 +4,8 @@
     <tr>
       <th class='text-center'>ID</th>
       <th class='text-center'>封面</th>
-      <th class='text-center'>播放</th>
       <th class='text-center'>标题</th>
-      <th class='text-center'>艺人</th>
+      <th class='text-center'>艺术家</th>
       <th class='text-center'>时长</th>
       <th class='text-center'>标签</th>
       <th class='text-center'>上传者</th>
@@ -27,8 +26,12 @@
               <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
             <% end %>
           </td>
-          <td><%= audio_tag(track.current_file_url, preload: 'none', controls: true) if track.current_file_url %></td>
-          <td><%= track.name %></td>
+          <td>
+            <a class="glyphicon glyphicon-play audio_name">
+              <%= audio_tag(track.current_file_url, preload: 'none') if track.current_file_url %>
+              <%= track.name %>
+            </a>
+          </td>
           <td><%= track.artists %></td>
           <td><%= track.duration_to_time %></td>
           <td>
@@ -42,9 +45,9 @@
           <td>
             <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
             <% if list_type == "playlist_tracks" %>
-              <a data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
+              <a data-track-id="<%= track.id %>" class="btn remove_track_to_playlist">移除</a>
             <% elsif list_type == "search_tracks" %>
-              <a data-track-id="<%= track.id %>" type="button" class="btn btn-success add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</a>
+              <a data-track-id="<%= track.id %>" class="btn add_track_to_playlist">添加</a>
             <% else %>
               <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>

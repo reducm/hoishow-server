@@ -1,5 +1,6 @@
 #= require jquery
 #= require jquery-ui
+#= require tag-it.min
 #= require jquery_ujs
 #= require bootstrap-sprockets
 #= require operation/sb-admin-2
@@ -7,6 +8,8 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
+#= require select2.full.min
+#
 #= require boombox/operation/collaborators
 #= require boombox/operation/boom_albums
 #= require boombox/operation/boom_topics
