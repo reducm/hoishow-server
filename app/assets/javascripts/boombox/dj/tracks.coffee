@@ -25,10 +25,8 @@ $ ->
   # 上传音乐后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
-      reader = new FileReader
-      reader.onload = (e) ->
-        $("#track-file-pre").attr("src", e.target.result).attr("controls", "controls")
-      reader.readAsDataURL this.files[0]
+      obj_url = window.URL.createObjectURL(this.files[0])
+      $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
 
       name = this.files[0].name
       filename = name.replace(/\.[^/.]+$/, "")
