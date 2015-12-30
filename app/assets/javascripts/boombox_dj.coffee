@@ -39,6 +39,12 @@
 #= require operation/jquery.datetimepicker
 
 $ ->
+  $(window).on 'load resize', ->
+    if window.width <= 1200
+      $('div#boombox_dj_container').addClass('boombox_dj_width_1200')
+    else
+      $('div#boombox_dj_container').removeClass('boombox_dj_width_1200')
+
   #datetimepicker
   $('div.datetimepicker input').datetimepicker({
     format: 'Y-m-d H:i',
