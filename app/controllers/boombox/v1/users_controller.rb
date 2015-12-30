@@ -24,7 +24,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   #验证码正确则创建用户
   def sign_up
     if params[:code] && params[:mobile] && params[:password]
-      return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
+      #return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
 
       code = find_or_create_code(params[:mobile])
       if params[:code] == code

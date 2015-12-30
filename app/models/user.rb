@@ -309,7 +309,7 @@ class User < ActiveRecord::Base
   end
 
   def is_boombox_user?
-    bike_user_id.nil?
+    encrypted_password.present? || bike_user_id.nil? 
   end
 
   private
