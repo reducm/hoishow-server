@@ -308,6 +308,10 @@ class User < ActiveRecord::Base
     return pbkdf2 == testHash
   end
 
+  def is_boombox_user?
+    bike_user_id.nil?
+  end
+
   private
   def set_default_playlist
     self.boom_playlists.create(name: '我喜欢的音乐', is_default: 1, mode: 0)

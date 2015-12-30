@@ -11,6 +11,8 @@
 </head>
 <body data-page="<%= controller_name + '-' + action_name %>" >
 
+<div id="boombox_dj_container">
+
 <script type="text/javascript">
   $(function(){
     var notice = "<%= flash[:notice] %>";
@@ -39,5 +41,8 @@
   <% else %>
     <%= yield %>
   <% end %>
+
+</div>
+
 </body>
 </html>

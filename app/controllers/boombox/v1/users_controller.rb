@@ -14,7 +14,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   def verified_mobile
     mobile = params[:mobile]
     user = User.where(mobile: mobile).first
-    if user
+    if user && user.is_boombox_user?
       render json: { is_member: true, mobile: mobile }
     else
       render json: { is_member: false, mobile: mobile }
