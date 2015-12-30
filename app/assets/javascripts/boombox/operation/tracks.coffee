@@ -38,11 +38,8 @@ $ ->
 
   $('.track-file-uploader').change ->
     if this.files[0]
-      reader = new FileReader
-      reader.onload = (e) ->
-        $("#track-file-pre").attr("src", e.target.result).attr("controls", "controls")
-      reader.readAsDataURL this.files[0]
-    return
+      obj_url = window.URL.createObjectURL(this.files[0])
+      $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
 
 #1.提交前将标签id数组组装成字符串，并传入hidden field
 #2.获取音乐的duration
