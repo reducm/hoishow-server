@@ -3,20 +3,18 @@ $ ->
     $('#tracks_form').submit()
 
   # 艺术家标签化
-  if $('div#operation_artist_names').length > 0
-    $('#operation_track_artists').tagit
-      allowSpaces: true
-      availableTags: $('div#operation_artist_names').data('data')
-  else
-    $('#operation_track_artists').tagit
-      allowSpaces: true
+  all_artists = $('div#operation_artist_names').data('data')
+  $('#operation_track_artists').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_artists }
+    showAutocompleteOnFocus: true
 
   # 标签
-  if $('div#operation_track_tags_already_added').length > 0
-    data = $('div#operation_track_tags_already_added').data('data')
-    $('select#tags').val(data).select2()
-  else
-    $('select#tags').select2()
+  all_tags = $("div#operation_track_tags").data("all-tags")
+  $('#operation_track_tags').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_tags }
+    showAutocompleteOnFocus: true
 
   #播放音频
   $(".audio_name").on "click", (e) ->
@@ -44,12 +42,8 @@ $ ->
       reader.readAsDataURL this.files[0]
     return
 
-#1.提交前将标签id数组组装成字符串，并传入hidden field
-#2.获取音乐的duration
+#获取音乐的duration
   $("#track-submit").on "click", (e) ->
-    #1
-    $("#boom_tag_ids").val($('select#tags').val())
-    #2
     duration = $("#track-file-pre")[0].duration
     if duration
       $("#boom_track_duration").attr("value", duration)

@@ -4,10 +4,12 @@ class BoomTrack < ActiveRecord::Base
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
 
+  attr_accessor :track_tag_names
+
   has_many :playlist_track_relations, dependent: :destroy
   has_many :playlists, through: :playlist_track_relations, source: :boom_playlist
 
-  has_many :activity_track_relations
+  has_many :activity_track_relations, dependent: :destroy
   #实际数据为boom_activity中的show
   has_many :activities, ->{ where mode: 0 }, through: :activity_track_relations, source: :boom_activity
 
@@ -160,6 +162,10 @@ class BoomTrack < ActiveRecord::Base
     when CREATOR_ADMIN
       creator.default_name
     end rescue nil
+  end
+
+  def track_tag_names
+    boom_tags.pluck(:name).join(",")
   end
 
   private

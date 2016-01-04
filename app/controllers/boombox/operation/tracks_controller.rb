@@ -34,7 +34,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   end
 
   def new
-    @tags = BoomTag.all
+    @tag_names = BoomTag.valid_tags.pluck(:name)
     @track = BoomTrack.new
     get_all_track_artists
   end
@@ -43,38 +43,40 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
     @track = BoomTrack.new(track_params)
     @track.creator_id = @current_admin.id
     @track.creator_type = BoomTrack::CREATOR_ADMIN
+
     if @track.save!
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @track)
+      if params[:boom_track][:track_tag_names].present?
+        subject_relate_tag(params[:boom_track][:track_tag_names], @track)
       end
       if params[:boom_track][:artists].present?
-        @track.create_tag_using_artists(params[:boom_track][:artists])
+        subject_relate_tag(params[:boom_track][:artists], @track, false)
       end
       flash[:notice] = '创建音乐成功'
     else
       flash[:alert] = "创建音乐失败"
     end
+
     redirect_to boombox_operation_tracks_url
   end
 
   def update
     if @track.update(track_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @track)
+      if params[:boom_track][:track_tag_names].present?
+        subject_relate_tag(params[:boom_track][:track_tag_names], @track)
       end
       if params[:boom_track][:artists].present?
-        @track.create_tag_using_artists(params[:boom_track][:artists])
+        subject_relate_tag(params[:boom_track][:artists], @track, false)
       end
       flash[:notice] = '编辑音乐成功'
     else
       flash[:alert] = '编辑音乐失败'
     end
+
     redirect_to boombox_operation_tracks_url
   end
 
   def edit
-    @tags = BoomTag.all
-    @tags_already_added_ids = get_subject_tags(@track)
+    @tag_names = BoomTag.valid_tags.pluck(:name)
     get_all_track_artists
   end
 

@@ -36,21 +36,9 @@
             <%= f.hidden_field :duration %>
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
             <%= f.input :is_top, label: "打勾推荐此音乐" %>
-            <%= f.input :artists, label: "艺术家", placeholder: "请输入艺人名字" , input_html:{ id: "operation_track_artists" }%>
+            <%= f.input :artists, label: "艺术家", input_html:{ id: "operation_track_artists" }%>
+            <%= f.input :track_tag_names, label: "标签", input_html:{ id: "operation_track_tags" }%>
 
-            <%= label_tag "tags", "标签" %>
-            <p>
-            <% if @tags.any? %>
-              <select id="tags" multiple="multiple" class="form-control">
-                <% @tags.each do |bt| %>
-                  <option value="<%= bt.id %>"><%= bt.name %></option>
-                <% end %>
-              </select>
-            <% else %>
-              没有标签
-            <% end %>
-            </p>
-            <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
           </div>
         </div>
       </div>
@@ -62,13 +50,12 @@
   </div>
 </div>
 
-<% if params[:action] == 'edit' %>
-  <%= content_tag :div, id: "operation_track_tags_already_added", data: {
-    data: @tags_already_added_ids
-  } do %>
-  <% end %>
-  <%= content_tag :div, id: "operation_artist_names", data: {
-    data: @artist_names
-  } do %>
-  <% end %>
+<%= content_tag :div, id: "operation_track_tags", data: {
+  all_tags: @tag_names
+} do %>
+<% end %>
+
+<%= content_tag :div, id: "operation_artist_names", data: {
+  data: @artist_names
+} do %>
 <% end %>
