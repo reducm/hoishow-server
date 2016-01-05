@@ -28,7 +28,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
-        @user = User.create(mobile: params[:mobile])
+        @user = User.where(mobile: params[:mobile]).first_or_create!
         if @user
           @user.sign_in_api
           @user.set_password(params[:password])
