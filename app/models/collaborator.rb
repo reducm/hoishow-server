@@ -35,7 +35,7 @@ class Collaborator < ActiveRecord::Base
   validates :birth, presence: {message: "生日不能为空"}
   validates :email, presence: {message: "邮箱不能为空"}
   # 艺人简介字数上限100字
-  validates :description, length: { maximum: 200}
+  validates :description, length: { maximum: 1000}
 
   # 身份
   enum identity: {

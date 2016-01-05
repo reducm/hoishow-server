@@ -139,7 +139,11 @@ class BoomTrack < ActiveRecord::Base
     a_tags = []
     artists.each do |artist|
       name = artist.gsub(/\s/, "").downcase
-      a_tags << BoomTag.where(name: name, lower_string: name).first_or_create!
+      # 用唯一字段lower_string去找，然后再对name赋值
+      if a_tag = BoomTag.where(lower_string: name).first_or_create
+        a_tag.update(name: artist)
+        a_tags << a_tag
+      end
     end
     a_tags.each do |tag|
       tag.tag_subject_relations.where(subject_id: self.id, subject_type: 'BoomTrack').first_or_create!

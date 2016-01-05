@@ -112,7 +112,11 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
   def get_all_track_artists
     artist_names = []
     all_artists = BoomTrack.pluck(:artists)
-    all_artists.map { |art| artist_names << art.split(",") } if all_artists.present?
+    all_artists.map do |art|
+      if art.present?
+        artist_names << art.split(",")
+      end
+    end
     
     @artist_names = artist_names.flatten.uniq
   end
