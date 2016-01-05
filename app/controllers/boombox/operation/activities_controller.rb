@@ -35,21 +35,24 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
 
   def new
     @activity = BoomActivity.new
-    @tags = BoomTag.all
-    @activity_collaborators = Collaborator.verified
+    @tags = get_all_tag_names
+    @activity_collaborators = Collaborator.verified.pluck(:nickname)
   end
 
   def create
     @activity = BoomActivity.new(activity_params)
     @activity.mode = "activity"
-    if @activity.save!
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @activity)
+
+    if @activity.save
+      if params[:boom_activity][:activity_tag_names].present?
+        subject_relate_tag(params[:boom_activity][:activity_tag_names], @activity)
       end
 
-      if params[:boom_collaborator_ids].present?
-        collaborator_ids = params[:boom_collaborator_ids].split(",")
-        Collaborator.where(id: collaborator_ids).each do |c|
+      if params[:boom_activity][:activity_collaborator_nicknames].present?
+        collaborator_nicknames_array = params[:boom_activity][:activity_collaborator_nicknames].split(",")
+        collaborators = Collaborator.where(nickname: collaborator_nicknames_array)
+        collaborator_ids = collaborators.pluck(:id)
+        collaborators.each do |c|
           c.collaborator_activity_relations.where(boom_activity_id: @activity.id).first_or_create!
         end
         @activity.collaborator_activity_relations.where.not(collaborator_id: collaborator_ids).delete_all
@@ -59,35 +62,36 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     else
       flash[:alert] = '创建活动失败'
     end
+    
     redirect_to boombox_operation_activities_url
   end
 
   def update
     if @activity.update(activity_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @activity)
+      if params[:boom_activity][:activity_tag_names].present?
+        subject_relate_tag(params[:boom_activity][:activity_tag_names], @activity)
       end
 
-      if params[:boom_collaborator_ids].present?
-        collaborator_ids = params[:boom_collaborator_ids].split(",")
-        Collaborator.where(id: collaborator_ids).each do |c|
+      if params[:boom_activity][:activity_collaborator_nicknames].present?
+        collaborator_nicknames_array = params[:boom_activity][:activity_collaborator_nicknames].split(",")
+        collaborators = Collaborator.where(nickname: collaborator_nicknames_array)
+        collaborator_ids = collaborators.pluck(:id)
+        collaborators.each do |c|
           c.collaborator_activity_relations.where(boom_activity_id: @activity.id).first_or_create!
         end
         @activity.collaborator_activity_relations.where.not(collaborator_id: collaborator_ids).delete_all
       end
-
       flash[:notice] = '编辑活动成功'
     else
       flash[:alert] = '编辑活动失败'
     end
+
     redirect_to boombox_operation_activities_url
   end
 
   def edit
-    @tags = BoomTag.all
-    @activity_collaborators = Collaborator.verified
-    @tags_already_added_ids = get_subject_tags(@activity)
-    @collaborators_already_added_ids = @activity.collaborators.any? ? @activity.collaborators.pluck(:id) : []
+    @tags = get_all_tag_names
+    @activity_collaborators = Collaborator.verified.pluck(:nickname)
   end
 
   def change_is_top

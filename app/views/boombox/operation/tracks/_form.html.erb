@@ -6,11 +6,9 @@
     <% if params[:action] == 'new' %>
       <% form_url = "/boombox/operation/tracks" %>
       <% form_method = "POST" %>
-      <h1>上传音乐</h1>
     <% elsif params[:action] == 'edit' %>
       <% form_url = "/boombox/operation/tracks/#{track.id}" %>
       <% form_method = "PATCH" %>
-      <h1>编辑音乐</h1>
     <% end %>
   </div>
   <div id="track_form">
@@ -38,7 +36,6 @@
             <%= f.input :is_top, label: "打勾推荐此音乐" %>
             <%= f.input :artists, label: "艺术家", input_html:{ id: "operation_track_artists" }%>
             <%= f.input :track_tag_names, label: "标签", input_html:{ id: "operation_track_tags" }%>
-
           </div>
         </div>
       </div>

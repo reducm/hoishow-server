@@ -1,6 +1,8 @@
 class Collaborator < ActiveRecord::Base
   include Searchable
 
+  attr_reader :collaborator_tag_names
+
   has_many :user_follow_collaborators
   has_many :followers, through: :user_follow_collaborators, source: :user
 
@@ -63,9 +65,9 @@ class Collaborator < ActiveRecord::Base
 
   def is_top_cn
     if is_top?
-      "推荐"
+      "是"
     else
-      ""
+      "否"
     end
   end
 
@@ -103,6 +105,10 @@ class Collaborator < ActiveRecord::Base
 
   def track_count
     boom_tracks.count
+  end
+
+  def collaborator_tag_names
+    boom_tags.pluck(:name).join(",")
   end
 
   private

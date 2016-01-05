@@ -33,6 +33,10 @@ class Boombox::Operation::ApplicationController < ApplicationController
     end
   end
 
+  def get_all_tag_names
+    BoomTag.valid_tags.pluck(:name)
+  end
+
   protected
 
   def check_login!

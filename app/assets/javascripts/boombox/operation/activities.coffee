@@ -55,18 +55,18 @@ $ ->
     $('#activities_form').submit()
 
   # 标签
-  if $('div#operation_activity_tags_already_added').length > 0
-    data = $('div#operation_activity_tags_already_added').data('data')
-    $('select#tags').val(data).select2()
-  else
-    $('select#tags').select2()
+  all_tags = $("div#operation_activity_tags_data").data("data")
+  $('#operation_activity_tags').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_tags }
+    showAutocompleteOnFocus: true
 
   # 艺人
-  if $('div#operation_activity_collaborators_already_added').length > 0
-    data = $('div#operation_activity_collaborators_already_added').data('data')
-    $('select#activity_collaborators').val(data).select2()
-  else
-    $('select#activity_collaborators').select2()
+  all_collaborators = $("div#operation_activity_collaborators_data").data("data")
+  $('#operation_activity_collaborators').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_collaborators }
+    showAutocompleteOnFocus: true
   
   #上传海报
   $('.activity_cover_uploader').fileupload
@@ -79,9 +79,3 @@ $ ->
   $('#boom_activity_cover').change ->
     readURL this, $('.cover_preview')
 
-  #提交前将标签和艺人id数组组装成字符串，并传入hidden field
-  $("#activity-submit").on "click", (e) ->
-    e.preventDefault()
-    $("#boom_tag_ids").val($('select#tags').val())
-    $("#boom_collaborator_ids").val($('select#activity_collaborators').val())
-    $(this).parents('form').submit()
