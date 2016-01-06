@@ -2,7 +2,7 @@ class MessageTask < ActiveRecord::Base
   default_scope {order('created_at')}
   belongs_to :boom_message
 
-  delegate :title, :content, :subject_type, :subject_id, :start_time, :expire_time, to: :boom_message
+  delegate :cast_type, :title, :content, :subject_type, :subject_id, :start_time, :expire_time, to: :boom_message
   after_commit :async_push, on: :create
 
   scope :ios, -> {where(platform: 'ios')}
@@ -30,7 +30,9 @@ class MessageTask < ActiveRecord::Base
   end
 
   def async_push
-    UmengPushWorker.perform_async(self.id, "upload")
+    flag = cast_type == 'broadcast' ? 'push' : 'upload'
+
+    UmengPushWorker.perform_async(self.id, flag)
     UmengPushWorker.perform_in(8.minutes, self.id, "check")
   end
 end

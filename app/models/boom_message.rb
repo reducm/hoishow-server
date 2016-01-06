@@ -31,6 +31,12 @@ class BoomMessage < ActiveRecord::Base
     specific: 2 #指定用户
   }
 
+  enum cast_type: {
+    broadcast: 0,  #广播
+    grougroupcastp: 1,  #组播
+    customizedcast: 2   #别名
+  }
+
   paginates_per 10
 
   after_create :set_start_time, :set_user_message_relations, :set_message_tasks

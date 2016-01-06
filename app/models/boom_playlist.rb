@@ -5,13 +5,15 @@ class BoomPlaylist < ActiveRecord::Base
   CREATOR_COLLABORATOR = 'Collaborator'
   CREATOR_USER = 'User'
 
-  has_many :user_follow_playlists
+  attr_reader :playlist_tag_names
+
+  has_many :user_follow_playlists, dependent: :destroy
   has_many :followers, through: :user_follow_playlists, source: :user
 
   has_many :playlist_track_relations, dependent: :destroy
   has_many :tracks, through: :playlist_track_relations, source: :boom_track
 
-  has_many :tag_subject_relations, as: :subject
+  has_many :tag_subject_relations, as: :subject, dependent: :destroy
   has_many :boom_tags, through: :tag_subject_relations, as: :subject,
             after_add: [ lambda { |a,c| a.__elasticsearch__.index_document } ],
             after_remove: [ lambda { |a,c| a.__elasticsearch__.index_document } ]
@@ -138,6 +140,10 @@ class BoomPlaylist < ActiveRecord::Base
 
   def current_cover_url
     cover_url || tracks.last.cover_url rescue nil
+  end
+
+  def playlist_tag_names
+    boom_tags.pluck(:name).join(",")
   end
 
   private

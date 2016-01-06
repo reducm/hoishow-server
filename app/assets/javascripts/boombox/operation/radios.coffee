@@ -50,17 +50,12 @@ $ ->
       )
 
   # 标签
-  if $('div#operation_radio_tags_already_added').length > 0
-    data = $('div#operation_radio_tags_already_added').data('data')
-    $('select#tags').val(data).select2()
-  else
-    $('select#tags').select2()
+  all_tags = $("div#operation_radio_tags_data").data("data")
+  $('#operation_radio_tags').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_tags }
+    showAutocompleteOnFocus: true
 
   $('.radio-cover-uploader').change ->
     readURL this, $("#radio_cover_preview")
 
-  #提交前将标签id数组组装成字符串，并传入hidden field
-  $("#radio-submit").on "click", (e) ->
-    e.preventDefault()
-    $("#boom_tag_ids").val($('select#tags').val())
-    $("form").submit()

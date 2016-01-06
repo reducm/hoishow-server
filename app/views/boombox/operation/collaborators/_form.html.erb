@@ -3,7 +3,6 @@
 <legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(collaborator) %>/艺人资料</legend>
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <h3 class="pull-left header-primary">艺人资料</h3>
     <% if collaborator.reload.verified? %>
       <h4><span class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span><span class="label label-success pull-right">已审核</span></h4>
     <% else %>
@@ -59,18 +58,7 @@
     </div>
     <div class="col-md-5 tag-area">
       <legend class="legend-without-border">标签</legend>
-      <p>
-      <% if @tags.any? %>
-        <select id="tags" multiple="multiple" class="form-control">
-          <% @tags.each do |bt| %>
-            <option value="<%= bt.id %>"><%= bt.name %></option>
-          <% end %>
-        </select>
-      <% else %>
-        没有标签
-      <% end %>
-      </p>
-      <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
+      <%= f.input :collaborator_tag_names, label: false, input_html:{ id: "operation_collaborator_tags" }%>
     </div>
   </div>
 
@@ -88,8 +76,8 @@
 <% end %>
 
 <% if params[:action] == 'edit' %>
-  <%= content_tag :div, id: "operation_collaborator_tags_already_added", data: {
-    data: @tags_already_added_ids
+  <%= content_tag :div, id: "operation_collaborator_tags_data", data: {
+    data: @tags
   } do %>
   <% end %>
 <% end %>

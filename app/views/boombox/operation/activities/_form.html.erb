@@ -5,11 +5,9 @@
     <% if params[:action] == 'new' %>
       <% form_url = "/boombox/operation/activities" %>
       <% form_method = "POST" %>
-      <h1>新建活动</h1>
     <% elsif params[:action] == 'edit' %>
       <% form_url = "/boombox/operation/activities/#{activity.id}" %>
       <% form_method = "PATCH" %>
-      <h1>编辑活动</h1>
     <% end %>
   </div>
   <div id="activity_form">
@@ -28,39 +26,13 @@
             <span>请上传 1280x720 jpg 类型图像文件</span>
           </div>
         </div>
-        <div class="col-xs-3 col-sm-4">
-          <div class="form-group">
+        <div class="col-xs-3 col-sm-5">
+          <div id="activity_form_content">
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
             <%= f.input :is_hot, label: "打勾推荐此活动" %>
             <%= f.input :is_display, label: "打勾显示此活动" %>
-
-            <%= label_tag "tags", "标签" %>
-            <p>
-            <% if @tags.any? %>
-              <select id="tags" multiple="multiple" class="form-control">
-                <% @tags.each do |bt| %>
-                  <option value="<%= bt.id %>"><%= bt.name %></option>
-                <% end %>
-              </select>
-            <% else %>
-              没有标签
-            <% end %>
-            </p>
-            <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
-
-            <%= label_tag "collaborators", "艺人" %>
-            <p>
-            <% if @activity_collaborators.any? %>
-              <select id="activity_collaborators" multiple="multiple" class="form-control">
-                <% @activity_collaborators.each do |ac| %>
-                  <option value="<%= ac.id %>"><%= ac.nickname %></option>
-                <% end %>
-              </select>
-            <% else %>
-              没有艺人
-            <% end %>
-            </p>
-            <%= hidden_field_tag "boom_collaborator_ids", params[:boom_collaborator_ids] %>
+            <%= f.input :activity_tag_names, label: "标签", input_html:{ id: "operation_activity_tags" }%>
+            <%= f.input :activity_collaborator_nicknames, label: "艺人", input_html:{ id: "operation_activity_collaborators" }%>
           </div>
         </div>
       </div>
@@ -99,16 +71,14 @@
   </div>
 </div>
 
-<% if params[:action] == 'edit' %>
-  <%= content_tag :div, id: "operation_activity_tags_already_added", data: {
-    data: @tags_already_added_ids
-  } do %>
-  <% end %>
+<%= content_tag :div, id: "operation_activity_tags_data", data: {
+  data: @tags
+} do %>
+<% end %>
 
-  <%= content_tag :div, id: "operation_activity_collaborators_already_added", data: {
-    data: @collaborators_already_added_ids
-  } do %>
-  <% end %>
+<%= content_tag :div, id: "operation_activity_collaborators_data", data: {
+  data: @activity_collaborators
+} do %>
 <% end %>
 
 <style media="screen">

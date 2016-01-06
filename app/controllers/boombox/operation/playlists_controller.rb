@@ -35,44 +35,50 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
 
   def new
     @playlist = BoomPlaylist.new
-    @tags = BoomTag.all
+    @tags = get_all_tag_names
   end
 
   def create
     @playlist = BoomPlaylist.new(playlist_params)
     @playlist.creator_id = @current_admin.id
-    @playlist.creator_type = BoomTrack::CREATOR_ADMIN
+    @playlist.creator_type = BoomPlaylist::CREATOR_ADMIN
     @playlist.mode = 0
-    if @playlist.save!
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @playlist)
+
+    if @playlist.save
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @playlist)
       end
       flash[:notice] = '创建Playlist成功'
     else
       flash[:alert] = '创建Playlist失败'
     end
+    
     redirect_to boombox_operation_playlists_url
   end
 
   def update
     if @playlist.update(playlist_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @playlist)
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @playlist)
       end
       flash[:notice] = '编辑Playlist成功'
     else
       flash[:alert] = '编辑Playlist失败'
     end
-      redirect_to boombox_operation_playlists_url
+
+    redirect_to boombox_operation_playlists_url
   end
 
   def edit
-    @tags = BoomTag.all
-    @tags_already_added_ids = get_subject_tags(@playlist)
+    @tags = get_all_tag_names
   end
 
   def destroy
-    @playlist.destroy!
+    if @playlist.destroy
+      flash[:notice] = "删除Playlist成功"
+    else
+      flash[:alert] = "删除Playlist失败"
+    end
     redirect_to action: :index
   end
 
@@ -104,15 +110,18 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   end
 
   def add_track
-    @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create
     render json: { success: true }
   end
 
   def remove_track
     relation = @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
     if relation
-      relation.destroy!
-      render json: { success: true }
+      if relation.destroy
+        render json: { success: true }
+      else
+        render json: { success: false }
+      end
     end
   end
 

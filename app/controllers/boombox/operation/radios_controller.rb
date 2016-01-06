@@ -35,7 +35,7 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
 
   def new
     @radio = BoomPlaylist.new
-    @tags = BoomTag.all
+    @tags = get_all_tag_names
   end
 
   def create
@@ -43,36 +43,42 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
     @radio.creator_id = @current_admin.id
     @radio.creator_type = BoomTrack::CREATOR_ADMIN
     @radio.mode = 1
-    if @radio.save!
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @radio)
+
+    if @radio.save
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @radio)
       end
       flash[:notice] = '创建电台成功'
     else
       flash[:alert] = '创建电台失败'
     end
+
     redirect_to boombox_operation_radios_url
   end
 
   def update
     if @radio.update(radio_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @radio)
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @radio)
       end
       flash[:notice] = '编辑电台成功'
     else
       flash[:alert] = '编辑电台失败'
     end
+
     redirect_to boombox_operation_radios_url
   end
 
   def edit
-    @tags = BoomTag.all
-    @tags_already_added_ids = get_subject_tags(@radio)
+    @tags = get_all_tag_names
   end
 
   def destroy
-    @radio.destroy!
+    if @radio.destroy
+      flash[:notice] = "删除电台成功"
+    else
+      flash[:alert] = "删除电台失败"
+    end
     redirect_to action: :index
   end
 
@@ -104,15 +110,18 @@ class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationCont
   end
 
   def add_track
-    @radio.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
+    @radio.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create
     render json: { success: true }
   end
 
   def remove_track
     relation = @radio.playlist_track_relations.where(boom_track_id: params[:track_id]).first
     if relation
-      relation.destroy!
-      render json: { success: true }
+      if relation.destroy
+        render json: { success: true }
+      else
+        render json: { success: false }
+      end
     end
   end
 
