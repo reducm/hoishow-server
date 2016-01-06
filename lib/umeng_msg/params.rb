@@ -2,11 +2,11 @@
 module UmengMsg
   module Params
 
-    def self.push_params(platform, title: "", content: "", file_id: "", subject_type: "", subject_id: "", targets: "", start_time: "", expire_time: "", description: "", activity_name: "")
+    def self.push_params(platform, cast_type, title: "", content: "", file_id: "", subject_type: "", subject_id: "", targets: "", start_time: "", expire_time: "", description: "", activity_name: "")
       params = {
         appkey:          UmengMsg.appkey(platform),
         timestamp:       Time.now.to_i.to_s,
-        type:            "customizedcast",
+        type:            cast_type,
         alias_type:      "user_id",
         file_id:         file_id,
         production_mode: UmengMessageSetting["production_mode"],
@@ -22,7 +22,10 @@ module UmengMsg
       if platform == 'ios'
         params = {
           payload: {
-            aps:      { alert: content },
+            aps:      {
+                        alert: content,
+                        sound: 'default'
+                      },
             subject_type: subject_type,
             subject_id: subject_id,
             title:    activity_name,

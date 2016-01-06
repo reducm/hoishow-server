@@ -9,8 +9,8 @@ module UmengMsg
     UPLOAD_URL = "http://msg.umeng.com/upload"
     CHECK_URL = "http://msg.umeng.com/api/status"
 
-    def self.push(platform, options)
-      params = Params.push_params(platform, options)
+    def self.push(platform, cast_type, options)
+      params = Params.push_params(platform, cast_type, options)
       mysign = Sign.generate(platform, PUSH_URL, params)
       post_and_parse(PUSH_URL, mysign, params)
     end
