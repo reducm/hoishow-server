@@ -52,8 +52,10 @@ class User < ActiveRecord::Base
   has_many :user_message_relations
   has_many :messages, through: :user_message_relations, source: :message
 
-  #validates :mobile, presence: {message: "手机号不能为空"}, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true
+  validates :mobile, format: { with: /^0?(13[0-9]|15[012356789]|18[0-9]|17[0-9]|14[57])[0-9]{8}$/, multiline: true, message: "手机号码有误"}, uniqueness: true, allow_nil: true
   validates :bike_user_id, presence: {message: "bike_ticket 渠道 bike_user_id 不能为空"}, if: :is_bike_ticket?
+  validates :nickname, uniqueness: {message: I18n.t("errors.messages.nickname_duplicate")}, allow_nil: true
+
   after_create :set_default_playlist
   mount_uploader :avatar, ImageUploader
 
@@ -309,7 +311,7 @@ class User < ActiveRecord::Base
   end
 
   def is_boombox_user?
-    encrypted_password.present? || bike_user_id.nil? 
+    encrypted_password.present?
   end
 
   private

@@ -3,7 +3,6 @@
 <legend><%= link_to "用户列表", boombox_operation_boom_users_path %>/用户详情</legend>
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <h3 class="col-md-offset-4">用户详情</h3>
     <% if @user.is_block %>
       <%= link_to "解除屏蔽", block_user_boombox_operation_boom_user_path(@user, is_block: 0), method: 'post', class: "btn btn-success pull-right" %>
     <% else %>

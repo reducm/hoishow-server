@@ -12,6 +12,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
   def create
     @message = BoomMessage.new(message_params)
     @message.subject_type = get_subject_type(params[:boom_message][:subject_type])
+    @message.cast_type = get_cast_type(params[:boom_message][:targets])
     if @message.save
       flash[:notice] = "消息创建成功"
       redirect_to boombox_operation_messages_url
@@ -42,6 +43,15 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
       'BoomActivity'
     else
       type
+    end
+  end
+
+  def get_cast_type(targets)
+    case targets
+    when 'all_users'
+      'broadcast'
+    else
+      'customizedcast'
     end
   end
 end

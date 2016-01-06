@@ -3,14 +3,16 @@ $ ->
     $('#playlists_form').submit()
 
   if sessionStorage.getItem('show_search_tab') == "t"
-    $("#playlist_manage_tab a[href='#search_tracks']").tab("show")
+    $("#playlist_manage_tab a[href='#playlist_search_tracks']").tab("show")
 
-  $("#search_track_btn").on "click", (e) ->
+  #按了搜索按钮
+  $("#playlist_search_track_btn").on "click", (e) ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 't')
-    $("form").submit()
+    $("#search_playlist_tracks_form").submit()
 
-  $("#playlist_search_track_table .pagination a").on "click", () ->
+  #playlist_search_tracks换页
+  $("#playlist_search_track_table .pagination a").on "click", (e) ->
     sessionStorage.setItem('show_search_tab', 't')
     
   #刷新playlist_track_list
@@ -21,18 +23,16 @@ $ ->
     location.href = "/boombox/dj/playlists/#{playlist_id}/manage_tracks"
 
   #添加音乐 
-  $("#search_tracks").on "click", ".add_track_to_playlist", (e) ->
+  $("#playlist_search_tracks").on "click", ".add_track_to_playlist", (e) ->
     e.preventDefault()
     track_id = $(this).data("track-id")
-    playlist_id = $(this).data("playlist-id")
+    playlist_id = $("#playlist_id").val()
     pop_btn = $(this)
     if track_id && playlist_id
       $.post("/boombox/dj/playlists/#{playlist_id}/add_track", { track_id: track_id}, (data)->
         if data.success
-          pop_btn.popover("show")
-          setTimeout(()->
-            pop_btn.popover("hide")
-          ,1000)
+          pop_btn.text("已添加")
+          pop_btn.addClass("btn-success")
       )
 
   #移除音乐 
@@ -40,55 +40,29 @@ $ ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 'f')
     track_id = $(this).data("track-id")
-    playlist_id = $(this).data("playlist-id")
+    playlist_id = $("#playlist_id").val()
     if track_id && playlist_id
       $.post("/boombox/dj/playlists/#{playlist_id}/remove_track", { track_id: track_id}, (data)->
         if data.success
           location.reload()
       )
 
-
-  #如果当前playlist有标签的话就把标签id保存起来
-  tag_ids_val = $("#playlist_tag_ids").val()
-  if tag_ids_val
-    tag_ids = tag_ids_val.split(" ")
+  # 标签
+  if $('div#dj_playlist_tags_already_added').length > 0
+    data = $('div#dj_playlist_tags_already_added').data('data')
+    $('select#tags').val(data).select2()
   else
-    tag_ids = []
-
-  #tag-filter
-  $("#playlist_tag_list").addClass('selectpicker').attr('data-live-search', true).attr('data-width', '135px').selectpicker()
-
-  #添加tag
-  $("#playlist_add_tag").on "click", (e) ->
-    e.preventDefault()
-    tag_name = $("#playlist_tag_list option:selected").text()
-    tag_id = $("#playlist_tag_list option:selected").val()
-    if tag_id in tag_ids
-      alert("该标签已选，请不要重复添加")
-    else
-      $("<span>#{tag_name}</span>").addClass("btn btn-default").appendTo("#playlist_delete_tag")
-      $("<button data-tag-id='#{tag_id}'>删除</button>").addClass("btn btn-danger remove_tag").appendTo("#playlist_delete_tag")
-      tag_ids.push(tag_id)
-
-  #删除tag
-  $("#playlist_delete_tag").on "click", ".remove_tag", (e) ->
-    e.preventDefault()
-    tag_id = $(this).data("tag-id")
-    $(this).prev().remove()
-    $(this).remove()
-    tag_ids.splice(tag_ids.indexOf(tag_id.toString()),1)
-
+    $('select#tags').select2()
 
   $('.playlist-cover-uploader').change ->
     readURL this, $("#playlist_cover_preview")
 
+  # 上传图片后隐藏playlist_cover_preview
+  $('input#boom_playlist_cover').on 'change', ->
+    $('div#playlist_cover_preview').hide()
+
   #提交前将标签id数组组装成字符串，并传入hidden field
   $("#playlist-submit").on "click", (e) ->
     e.preventDefault()
-    tag_ids.join(",")
-    $("#boom_tag_ids").val(tag_ids)
+    $("#boom_tag_ids").val($('select#tags').val())
     $("form").submit()
-
-  #上传图片后隐藏playlist_cover_preview
-  $('input#boom_playlist_cover').on 'change', ->
-    $('div#playlist_cover_preview').hide()

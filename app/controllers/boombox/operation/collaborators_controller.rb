@@ -121,14 +121,13 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   def edit
-    @tags = BoomTag.all
-    @tags_already_added_ids = get_subject_tags(@collaborator)
+    @tags = get_all_tag_names
   end
 
   def update
     if @collaborator.update(collaborator_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @collaborator)
+      if params[:collaborator][:collaborator_tag_names].present?
+        subject_relate_tag(params[:collaborator][:collaborator_tag_names], @collaborator)
       end
       redirect_to boombox_operation_collaborator_url(@collaborator), notice: '更新成功'
     else

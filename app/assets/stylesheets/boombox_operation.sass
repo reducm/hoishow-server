@@ -33,12 +33,15 @@
 @import "operation/basic"
 @import "operation/dropzone"
 @import "datatables.min"
-@import "select2.min"
 
 @import "simditor/simditor"
 @import "simditor/simditor-html"
 
 @import "jquery.qeditor"
+
+#wrapper
+  width: 1200px
+  margin: auto
 
 #page-wrapper
   background-color: #F4F4F4
@@ -74,3 +77,11 @@
         vertical-align: middle
         max-width: 150px
 
+.ui-autocomplete
+  top: -77px
+  width: 333px
+  height: 255px
+  overflow: auto
+  padding-left: 10px
+  .ui-menu-item
+    list-style-type: none
