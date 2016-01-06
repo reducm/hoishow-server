@@ -5,11 +5,9 @@
     <% if params[:action] == 'new' %>
       <% form_url = "/boombox/operation/playlists" %>
       <% form_method = "POST" %>
-      <h1>新建Playlist</h1>
     <% elsif params[:action] == 'edit' %>
       <% form_url = "/boombox/operation/playlists/#{playlist.id}" %>
       <% form_method = "PATCH" %>
-      <h1>编辑Playlist</h1>
     <% end %>
   </div>
   <div id="playlist_form">
@@ -28,20 +26,7 @@
           <div class="playlist_info">
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入标题名字" %>
             <%= f.input :is_top, label: "打勾推荐此Playlist" %>
-
-            <%= label_tag "tags", "标签" %>
-            <p>
-            <% if @tags.any? %>
-              <select id="tags" multiple="multiple" class="form-control">
-                <% @tags.each do |bt| %>
-                  <option value="<%= bt.id %>"><%= bt.name %></option>
-                <% end %>
-              </select>
-            <% else %>
-              没有标签
-            <% end %>
-            </p>
-            <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
+            <%= f.input :playlist_tag_names, label: "标签", input_html:{ id: "operation_playlist_tags" }%>
           </div>
         </div>
       </div>
@@ -53,9 +38,7 @@
   </div>
 </div>
 
-<% if params[:action] == 'edit' %>
-  <%= content_tag :div, id: "operation_playlist_tags_already_added", data: {
-    data: @tags_already_added_ids
-  } do %>
-  <% end %>
+<%= content_tag :div, id: "operation_playlist_tags_data", data: {
+  data: @tags
+} do %>
 <% end %>

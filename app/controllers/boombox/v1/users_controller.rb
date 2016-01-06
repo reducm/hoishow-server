@@ -24,15 +24,12 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
   #验证码正确则创建用户
   def sign_up
     if params[:code] && params[:mobile] && params[:password]
-      #return error_respond I18n.t("errors.messages.mobile_duplicate") if User.where(mobile: params[:mobile]).any?
-
       code = find_or_create_code(params[:mobile])
       if params[:code] == code
         @user = User.where(mobile: params[:mobile]).first_or_create!
         if @user
           @user.sign_in_api
           @user.set_password(params[:password])
-          # 播霸新用户注册时给个boom_id？
         end
       else
         return error_respond I18n.t("errors.messages.mobile_code_not_correct")
@@ -94,7 +91,6 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
 
   def update_user
     return error_respond(I18n.t("errors.messages.email_format_wrong")) if params[:email].present? && !verify_email?(params[:email])
-    return error_respond(I18n.t("errors.messages.nickname_duplicate")) if params[:nickname].present? && User.where(nickname: params[:nickname]).any?
 
     if @user.update(user_params)
       render partial: "user", locals:{ user: @user }

@@ -8,13 +8,20 @@ class Boombox::Operation::ApplicationController < ApplicationController
     redirect_to boombox_operation_root_url, :alert => exception.message
   end
 
-  def subject_relate_tag(tag_ids = [], subject = nil)
-    if subject
-      tag_ids = tag_ids.split(",")
-      BoomTag.where(id: tag_ids).each do |tag|
+  def subject_relate_tag(tag_names = [], subject = nil, need_del_tag = true)
+    if subject && tag_names.present?
+      tags_array = []
+      tag_names.split(",").each do |name|
+        downcase_name = name.gsub(/\s/, "").downcase
+        tags_array << BoomTag.where(name: name, lower_string: downcase_name).first_or_create!
+      end
+      tags_array.each do |tag|
         tag.tag_subject_relations.where(subject_id: subject.id, subject_type: subject.class.name).first_or_create!
       end
-      subject.tag_subject_relations.where.not(boom_tag_id: tag_ids).delete_all
+      #对艺术家来说，只需要创建，关联标签，不需要删除标签
+      if need_del_tag
+        subject.tag_subject_relations.where.not(boom_tag_id: tags_array.map{|tag| tag.id}).delete_all
+      end
     end
   end
 
@@ -24,6 +31,10 @@ class Boombox::Operation::ApplicationController < ApplicationController
     else
       []
     end
+  end
+
+  def get_all_tag_names
+    BoomTag.valid_tags.pluck(:name)
   end
 
   protected

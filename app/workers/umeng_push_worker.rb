@@ -25,9 +25,10 @@ class UmengPushWorker
       title: task.title,
       content: task.content,
       subject_type: task.subject_type,
-      subject_id: task.subject_id,
-      file_id: task.file_id
+      subject_id: task.subject_id
     }
+
+    push_params.merge!({file_id: task.file_id}) if message.customizedcast?
 
     if message.message_tasks.all? { |task| task.status.nil?  }
       push_params = {
@@ -43,7 +44,7 @@ class UmengPushWorker
       }.merge(push_params)
     end
 
-    if push_result = UmengMsg::Service.push(task.platform, push_params)
+    if push_result = UmengMsg::Service.push(task.platform, task.cast_type, push_params)
       task.update(task_id: push_result["task_id"])
       if message.status.to_i < 3
         message.update(status: 3)
