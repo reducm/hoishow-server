@@ -40,9 +40,9 @@
           <td><%= playlist.id %></td>
           <td>
             <% if playlist.cover_url %>
-              <%= image_tag(playlist.cover_url, size: "90x60") %>
+              <%= image_tag(playlist.cover_url, size: "50x50") %>
             <% else %>
-              <%= image_tag('/boombox_default_cover.png', size: "90x60") %>
+              <%= image_tag('/boombox_default_cover.png', size: "50x50") %>
             <% end %>
           </td>
           <td><%= playlist.name %></td>

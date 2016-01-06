@@ -1,6 +1,8 @@
 class BoomActivity < ActiveRecord::Base
   include Searchable
 
+  attr_reader :activity_tag_names, :activity_collaborator_nicknames
+
   belongs_to :boom_location
   belongs_to :boom_admin
 
@@ -82,6 +84,14 @@ class BoomActivity < ActiveRecord::Base
 
   def relate_collaborator(collaborator)
     collaborator_activity_relations.where(collaborator_id: collaborator.id).first_or_create!
+  end
+
+  def activity_tag_names
+    boom_tags.pluck(:name).join(",")
+  end
+
+  def activity_collaborator_nicknames
+    collaborators.pluck(:nickname).join(",")
   end
 
   private

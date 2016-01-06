@@ -8,7 +8,7 @@ class BoomTag < ActiveRecord::Base
   #取出合集得时候不要忘记过滤
   scope :valid_tags, -> {where removed: false}
   scope :hot_tags, -> { where is_hot: true }
-  after_create :set_removed_and_is_hot, :generate_radio
+  after_create :set_removed_and_is_hot
 
   validates :lower_string, uniqueness: true
 
@@ -29,8 +29,4 @@ class BoomTag < ActiveRecord::Base
     end
   end
 
-  def generate_radio
-    admin = BoomAdmin.first
-    BoomPlaylist.create(name: name, creator_type: BoomPlaylist::CREATOR_ADMIN, creator_id: admin.id, mode: 1)
-  end
 end
