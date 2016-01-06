@@ -41,7 +41,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
   def create
     @playlist = BoomPlaylist.new(playlist_params)
     @playlist.creator_id = @current_admin.id
-    @playlist.creator_type = BoomTrack::CREATOR_ADMIN
+    @playlist.creator_type = BoomPlaylist::CREATOR_ADMIN
     @playlist.mode = 0
 
     if @playlist.save

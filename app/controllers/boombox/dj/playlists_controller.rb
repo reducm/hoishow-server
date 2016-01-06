@@ -26,7 +26,7 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   def create
     @playlist = current_collaborator.boom_playlists.new(playlist_params)
     @playlist.creator_id = current_collaborator.id
-    @playlist.creator_type = BoomTrack::CREATOR_COLLABORATOR
+    @playlist.creator_type = BoomPlaylist::CREATOR_COLLABORATOR
     @playlist.mode = 0
     if @playlist.save!
       if params[:boom_tag_ids].present?
