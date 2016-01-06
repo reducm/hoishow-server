@@ -20,40 +20,40 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
   def new
     @playlist = BoomPlaylist.new
+    @tags = BoomTag.all
   end
 
   def create
     @playlist = current_collaborator.boom_playlists.new(playlist_params)
+    @playlist.creator_id = current_collaborator.id
+    @playlist.creator_type = BoomTrack::CREATOR_COLLABORATOR
     @playlist.mode = 0
     if @playlist.save!
-      BoomTag.where('id in (?)', params[:tag_ids].split(',')).each{ |tag| @playlist.tag_for_playlist(tag) }
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @playlist)
+      end
       flash[:notice] = '创建Playlist成功'
-      redirect_to boombox_dj_playlists_url
+    else
+      flash[:alert] = '创建Playlist失败'
     end
+    redirect_to boombox_dj_playlists_url
   end
 
   def update
     if @playlist.update(playlist_params)
-      target_tag_ids = params[:tag_ids]
-      if target_tag_ids
-        target_tag_ids = target_tag_ids.split(",").map{|target| target.to_i}
-        source_tag_ids = @playlist.boom_tags.pluck(:id)
-        #关联新tag，删除多余的tag
-        new_tag_ids = target_tag_ids - source_tag_ids
-        if new_tag_ids.present?
-          BoomTag.where('id in (?)', new_tag_ids).each{ |tag| @playlist.tag_for_playlist(tag) }
-        end
-        del_tag_ids = source_tag_ids - target_tag_ids 
-        if del_tag_ids.present?
-          @playlist.tag_subject_relations.where('boom_tag_id in (?)', del_tag_ids).each{ |del_tag| del_tag.destroy! }
-        end
+      if params[:boom_tag_ids].present?
+        subject_relate_tag(params[:boom_tag_ids], @playlist)
       end
       flash[:notice] = '编辑Playlist成功'
-      redirect_to boombox_dj_playlists_url
+    else
+      flash[:alert] = '编辑Playlist失败'
     end
+      redirect_to boombox_dj_playlists_url
   end
 
   def edit
+    @tags = BoomTag.all
+    @tags_already_added_ids = get_subject_tags(@playlist)
   end
 
   def destroy
