@@ -23,7 +23,7 @@ $ ->
     location.href = "/boombox/dj/playlists/#{playlist_id}/manage_tracks"
 
   #添加音乐 
-  $("#search_tracks").on "click", ".add_track_to_playlist", (e) ->
+  $("#playlist_search_tracks").on "click", ".add_track_to_playlist", (e) ->
     e.preventDefault()
     track_id = $(this).data("track-id")
     playlist_id = $("#playlist_id").val()

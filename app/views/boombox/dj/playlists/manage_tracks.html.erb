@@ -13,7 +13,7 @@
       <%= render partial: "/boombox/dj/tracks/list_table", locals: {tracks: @playlist_tracks, list_type: "playlist_tracks"} %>
     </div>
 
-    <div role="tabpanel" class="tab-pane" id="search_tracks">
+    <div role="tabpanel" class="tab-pane" id="playlist_search_tracks">
       <div class="search">
         <%= form_tag(manage_tracks_boombox_dj_playlist_path, class: 'form-inline', method: 'get') do %>
           <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入音乐名字的关键字进行搜索", size: 50 %>
