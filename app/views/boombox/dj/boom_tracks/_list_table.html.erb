@@ -32,13 +32,13 @@
           <td><%= track.creator_name %></td>
           <td><%= get_datetime( track.created_at ) %></td>
           <td>
-            <%= link_to "编辑", edit_boombox_operation_track_path(track)%>
+            <%= link_to "编辑", edit_boombox_dj_track_path(track)%>
             <% if list_type == "playlist_tracks" %>
               <a data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" class="remove_track_to_playlist">移除</a>
             <% elsif list_type == "search_tracks" %>
               <button data-playlist-id="<%= @playlist.id %>" data-track-id="<%= track.id %>" type="button" class="btn btn-default add_track_to_playlist" data-toggle="popover" data-placement="left" data-content="添加音乐成功">添加</button>
             <% else %>
-              <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
+              <%= link_to "删除", boombox_dj_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>
           </td>
         </tr>
