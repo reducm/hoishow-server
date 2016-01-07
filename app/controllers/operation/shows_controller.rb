@@ -320,7 +320,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source)
+    params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell)
   end
 
   def get_show

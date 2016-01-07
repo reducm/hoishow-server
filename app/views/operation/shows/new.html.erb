@@ -21,7 +21,14 @@
   </div>
 
   <%= simple_form_for [:operation, @show], html: {class: 'show-form form-horizontal'} do |f| %>
-    <%= f.input :is_display, label: "是否显示" %>
+    <div class='form-group'>
+      <%= f.check_box :is_display %>
+      <%= f.label :is_display, '是否显示' %>
+
+      <%= f.check_box :is_presell %>
+      <%= f.label :is_presell, '是否预售' %>
+    </div>
+
     <%= f.input :source, collection:[["自有资源", "hoishow"], ["第三方资源", "third_party"]], selected: "自有资源", as: :radio_buttons, label: "资源提供方" %>
     <div class="form-group">
       <div class="col-sm-3">
