@@ -339,6 +339,9 @@ zh-CN:
       show/is_display:
         'true': '显示'
         'false': '不显示'
+      show/is_presell:
+        'true': '预售'
+        'false': '在售'
       show/ticket_type:
         e_ticket: "电子票"
         r_ticket: "实体票"

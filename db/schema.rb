@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160105072153) do
+ActiveRecord::Schema.define(version: 20160107024636) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -718,6 +718,7 @@ ActiveRecord::Schema.define(version: 20160105072153) do
     t.string   "ticket_pic",       limit: 255
     t.string   "description_time", limit: 255
     t.integer  "source",           limit: 4,                              default: 0
+    t.boolean  "is_presell",       limit: 1,                              default: false
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree

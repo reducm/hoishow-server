@@ -109,6 +109,11 @@ class Show < ActiveRecord::Base
     tran("is_display")
   end
 
+  def is_presell_cn
+    # is_presell ? "预售" : "在售"
+    tran("is_presell")
+  end
+
   def ticket_type_cn
     # e_ticket: "电子票"
     # r_ticket: "实体票"
