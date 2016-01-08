@@ -27,7 +27,8 @@ class BoomTrack < ActiveRecord::Base
   after_create :set_removed_and_is_top, :convert_audio
   after_commit :convert_audio_if_changed, on: :update
 
-  scope :valid, -> {where(removed: false).order('is_top desc, created_at desc')}
+  # 关系查询时相同名称的字段，例如created_at可能会重复，所以指明表名
+  scope :valid, -> {where(removed: false).order('boom_tracks.is_top desc, boom_tracks.created_at desc')}
 
   paginates_per 10
 
