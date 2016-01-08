@@ -265,7 +265,6 @@ $ ->
 
   #show new form
   if $(".new_show").length > 0
-
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
       if $selected.val()
@@ -307,23 +306,26 @@ $ ->
     $(".submit-form").on 'click', (e) ->
       e.preventDefault()
       stadium_select = $("#show_stadium_select").val()
-      if stadium_select == "" or stadium_select == null or stadium_select == "所选城市暂无场馆"
-        alert('场馆不能为空，请重新选择')
-      else if $("#show_city_select").val() == ""
-        alert('城市不能为空，请重新选择')
-      else if $("div.stars span").length < 1
-        alert('艺人不能为空，请重新选择')
-      else if $("#show_name").val().length < 1
-        alert('演出名称不能为空，请填写')
-      else if $('div.show_ticket_type input[type=radio]:checked').size() < 1
-        alert('取票方式不能为空，请重新选择')
-      else
-        ids = $('.stars span').map(()->
-          return $(this).data('id')
-        ).toArray().join(',')
-        $form = $(this).parents('form')
-        $form.append("<input type='hidden' value='#{ids}' name='star_ids'/>")
-        $form.submit()
+      switch
+        when $("div.stars span").length < 1
+          alert('艺人不能为空，请重新选择')
+        when $('#show_source').val() == ""
+          alert('资源提供方不能为空, 请重新选择')
+        when $("#show_name").val().length < 1
+          alert('演出名称不能为空，请填写')
+        when $('div.show_ticket_type input[type=radio]:checked').size() < 1
+          alert('取票方式不能为空，请重新选择')
+        when $("#show_city_select").val() == ""
+          alert('城市不能为空，请重新选择')
+        when stadium_select == "" or stadium_select == null or stadium_select == "所选城市暂无场馆"
+          alert('场馆不能为空，请重新选择')
+        else
+          ids = $('.stars span').map(()->
+            return $(this).data('id')
+          ).toArray().join(',')
+          $form = $(this).parents('form')
+          $form.append("<input type='hidden' value='#{ids}' name='star_ids'/>")
+          $form.submit()
 
   if $('.edit_show').length > 0
     show_id = $("#show_id").val()

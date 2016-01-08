@@ -334,8 +334,10 @@ zh-CN:
         refund: '已退款'
         outdate: '已过期'
       show/source:
-        hoishow: "自有资源"
-        third_party: "第三方资源"
+        hoishow: "自有"
+        damai: "大麦"
+        yongle: "永乐"
+        weipiao: "微票"
       show/is_display:
         'true': '显示'
         'false': '不显示'

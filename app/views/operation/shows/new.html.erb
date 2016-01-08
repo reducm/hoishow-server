@@ -28,20 +28,23 @@
       <%= f.check_box :is_presell %>
       <%= f.label :is_presell, '是否预售' %>
     </div>
-
-    <%= f.input :source, collection:[["自有资源", "hoishow"], ["第三方资源", "third_party"]], selected: "自有资源", as: :radio_buttons, label: "资源提供方" %>
     <div class="form-group">
-      <div class="col-sm-3">
+      <div class="col-sm-2">
+        <%= f.input :source, collection:[["请选择", ''], ["自有", "hoishow"], ["大麦", "damai"], ["永乐", "yongle"], ["微票", "weipiao"]], selected: "请选择", label: "资源提供方" %>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-5">
         <%= f.input :name, label: "演出名称" %>
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-3">
+      <div class="col-sm-2">
         <%= f.input :status, collection:[["开放购票中", "selling"], ["购票结束", "sell_stop"], ["即将开放", "going_to_open"]], selected: "开放购票中", label: '演出购票状态' %>
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-2">
+      <div class="col-sm-6">
         <%= f.input :description_time, label: "描述时间(当购票状态为即将开放时用这时间)" %>
       </div>
     </div>
