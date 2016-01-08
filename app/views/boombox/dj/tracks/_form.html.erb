@@ -1,14 +1,14 @@
 <%# encoding: utf-8 %>
 
-<legend class="boom-top-topic"><%= link_to "音乐列表", boombox_dj_boom_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
+<legend class="boom-top-topic"><%= link_to "音乐列表", boombox_dj_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 
 <div class="row page_header">
   <% if params[:action] == 'new' %>
-    <% form_url = "/boombox/dj/boom_tracks" %>
+    <% form_url = "/boombox/dj/tracks" %>
     <% form_method = "POST" %>
     <h3>上传音乐</h3>
   <% elsif params[:action] == 'edit' %>
-    <% form_url = "/boombox/dj/boom_tracks/#{track.id}" %>
+    <% form_url = "/boombox/dj/tracks/#{track.id}" %>
     <% form_method = "PATCH" %>
     <h3>编辑音乐</h3>
   <% end %>
@@ -67,7 +67,7 @@
       <% if params[:action] == 'edit' %>
         <div class="row">
           <div class="col-sm-5 delete_area">
-            <%= link_to "删除音乐", boombox_dj_boom_track_path(track), method: "delete", data: {confirm: "确定删除吗？"}, class: 'btn btn-danger' %>
+            <%= link_to "删除音乐", boombox_dj_track_path(track), method: "delete", data: {confirm: "确定删除吗？"}, class: 'btn btn-danger' %>
           </div>
         </div>
       <% end %>

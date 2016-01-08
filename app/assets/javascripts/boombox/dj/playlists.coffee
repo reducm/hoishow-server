@@ -20,7 +20,6 @@ $ ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 'f')
     playlist_id = $("#playlist_id").val()
-    location.href = "/boombox/dj/playlists/#{playlist_id}/manage_tracks"
 
   #添加音乐 
   $("#playlist_search_tracks").on "click", ".add_track_to_playlist", (e) ->
@@ -29,10 +28,16 @@ $ ->
     playlist_id = $("#playlist_id").val()
     pop_btn = $(this)
     if track_id && playlist_id
-      $.post("/boombox/dj/playlists/#{playlist_id}/add_track", { track_id: track_id}, (data)->
-        if data.success
-          pop_btn.text("已添加")
-          pop_btn.addClass("btn-success")
+      $.ajax(
+        url: "/boombox/dj/playlists/#{playlist_id}/add_track"
+        method: 'POST'
+        data:
+          track_id: track_id
+        success: (data, text, xhr) ->
+          $.notify('添加音乐成功',
+            globalPosition: 'top center'
+            className: 'success'
+          )
       )
 
   #移除音乐 
@@ -42,9 +47,16 @@ $ ->
     track_id = $(this).data("track-id")
     playlist_id = $("#playlist_id").val()
     if track_id && playlist_id
-      $.post("/boombox/dj/playlists/#{playlist_id}/remove_track", { track_id: track_id}, (data)->
-        if data.success
-          location.reload()
+      $.ajax(
+        url: "/boombox/dj/playlists/#{playlist_id}/remove_track"
+        method: 'POST'
+        data:
+          track_id: track_id
+        success: (data, text, xhr) ->
+          $.notify('移除音乐成功',
+            globalPosition: 'top center'
+            className: 'success'
+          )
       )
 
   # 标签

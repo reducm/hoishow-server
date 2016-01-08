@@ -2,11 +2,11 @@
 <div class="nav" id='tracks'>
   <div class="clearfix">
     <h1 class="text-center">个人音乐</h1>
-    <%= link_to "上传音乐", new_boombox_dj_boom_track_path, class: 'btn btn-primary flr' %>
+    <%= link_to "上传音乐", new_boombox_dj_track_path, class: 'btn btn-primary flr' %>
   </div>
   
   <div class="tracks_search_form mt20">
-    <%= render partial: "boombox/dj/search_form", locals: {form_path: search_boombox_dj_boom_tracks_path} %>
+    <%= render partial: "boombox/dj/search_form", locals: {form_path: search_boombox_dj_tracks_path} %>
   </div>
 
   <div class="tracks_list mt20">

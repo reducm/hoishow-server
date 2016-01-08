@@ -62,24 +62,36 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
   end
 
   def manage_tracks
-    @playlist_tracks = @playlist.tracks.valid.page(params[:tracks_page])
-    tracks = current_collaborator.boom_tracks.valid
-    if params[:q].present?
-      tracks = tracks.where("name like '%#{params[:q]}%'")
+    get_manage_tracks
+
+    respond_to do |format|
+      format.html
+      format.js
     end
-    @tracks = tracks.page(params[:tracks_page])
   end
 
   def add_track
     @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first_or_create!
-    render json: { success: true }
+
+    get_manage_tracks
+    respond_to do |format|
+      format.js {
+        render 'manage_tracks.js.erb'
+      }
+    end
   end
 
   def remove_track
     relation = @playlist.playlist_track_relations.where(boom_track_id: params[:track_id]).first
     if relation
       relation.destroy!
-      render json: { success: true }
+    end
+
+    get_manage_tracks
+    respond_to do |format|
+      format.js {
+        render 'manage_tracks.js.erb'
+      }
     end
   end
 
@@ -90,5 +102,14 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
   def playlist_params
     params.require(:boom_playlist).permit(:cover, :name, :is_top)
+  end
+
+  def get_manage_tracks
+    @playlist_tracks = @playlist.tracks.valid.page(params[:playlist_tracks_page])
+    tracks = current_collaborator.boom_tracks.valid.where.not(id: @playlist.tracks.valid.ids)
+    if params[:q].present?
+      tracks = tracks.where("name like '%#{params[:q]}%'")
+    end
+    @tracks = tracks.page(params[:search_tracks_page])
   end
 end
