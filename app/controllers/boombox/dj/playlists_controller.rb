@@ -75,7 +75,9 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
     get_manage_tracks
     respond_to do |format|
-      format.js
+      format.js {
+        render 'manage_tracks.js.erb'
+      }
     end
   end
 
@@ -87,7 +89,9 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
     get_manage_tracks
     respond_to do |format|
-      format.js
+      format.js {
+        render 'manage_tracks.js.erb'
+      }
     end
   end
 
