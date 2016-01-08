@@ -55,7 +55,7 @@
 </table>
 
 <% if list_type == "playlist_tracks" %>
-  <%= paginate tracks, param_name: "playlist_tracks_page", remote: true %>
+  <%= paginate tracks, param_name: "playlist_tracks_page", remote: true, params: {controller: 'playlists', action: 'manage_tracks'} %>
 <% elsif list_type == "search_tracks" %>
-  <%= paginate tracks, param_name: "search_tracks_page", remote: true %>
+  <%= paginate tracks, param_name: "search_tracks_page", remote: true, params: {controller: 'playlists', action: 'manage_tracks'} %>
 <% end %>
