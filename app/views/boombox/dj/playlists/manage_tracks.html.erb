@@ -1,11 +1,14 @@
 <%# encoding: utf-8 %>
+
+<audio src="#" preload="metadata" controls="controls" id="track_player">你的浏览器不支持audio标签</audio>
+
 <%= hidden_field_tag "playlist_id", @playlist.id %>
 
 <h3 class="header-primary">Playlist: <%= @playlist.name %></h3>
 <div role="tabpanel">
   <ul class="nav nav-tabs" role="tablist" id="playlist_manage_tab">
     <li role="presentation" class="active" id="playlist_track_list"><a href="#playlist_tracks" aria-controls="playlist_tracks" role="tab" data-toggle="tab">音乐列表</a></li>
-    <li role="presentation"><a href="#search_tracks" aria-controls="search_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
+    <li role="presentation"><a href="#playlist_search_tracks" aria-controls="search_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
   </ul>
 
   <div class="tab-content">
@@ -15,9 +18,9 @@
 
     <div role="tabpanel" class="tab-pane" id="playlist_search_tracks">
       <div class="search">
-        <%= form_tag(manage_tracks_boombox_dj_playlist_path, class: 'form-inline', method: 'get') do %>
+        <%= form_tag(manage_tracks_boombox_dj_playlist_path, class: 'form-inline', method: 'get', remote: true) do %>
           <%= text_field_tag "q", nil,  class: 'form-control', placeholder: "输入音乐名字的关键字进行搜索", size: 50 %>
-          <%= submit_tag "搜索", class: 'btn btn-default', id: "search_track_btn" %>
+          <%= link_to "搜索", '#', class: 'btn btn-default', id: "playlist_search_track_btn" %>
         <% end %>
       </div>
       <div id="playlist_search_track_table">
