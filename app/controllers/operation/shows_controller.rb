@@ -4,15 +4,18 @@ class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
   before_action :get_orders_filters, only: :show
+  before_action :get_shows_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    params[:page] ||= 1
-    @shows = Show.page(params[:page]).order("created_at desc")
+    respond_to do |format|
+      format.html
+      # 订单json数据组装, 详见app/services/shows_datatable.rb
+      format.json { render json: ShowsDatatable.new(view_context) }
+    end
   end
 
   def search
-    params[:page] ||= 1
     star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
     concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
     @shows = Show.where("name like ? or concert_id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
@@ -325,5 +328,31 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def get_show
     @show = Show.find(params[:id])
+  end
+
+  def get_shows_filters
+    @status_filter = status_filter
+    @source_filter = source_filter
+    @is_display_filter = is_display_filter
+  end
+  # {"售票中"=>0, "售票结束"=>1, ...}
+  def status_filter
+    hash = {}
+    Show.statuses.each do |k, v|
+      hash[Show.human_attribute_name("status.#{k}")] = v
+    end
+    hash
+  end
+
+  def source_filter
+    hash = {}
+    Show.sources.each do |k, v|
+      hash[Show.human_attribute_name("source.#{k}")] = v
+    end
+    hash
+  end
+
+  def is_display_filter
+    {"显示"=>1, "不显示"=>0}
   end
 end

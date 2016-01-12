@@ -46,8 +46,8 @@ class Show < ActiveRecord::Base
   }
 
   enum status: {
-    selling: 0, #购票中
-    sell_stop: 1, #购票结束
+    selling: 0, #售票中
+    sell_stop: 1, #售票结束
     going_to_open: 2, #即将开放
   }
 
@@ -210,7 +210,13 @@ class Show < ActiveRecord::Base
   end
 
   def event_show_time
-    events.verified.first.try(:show_time)
+    showtime = events.verified.first.try(:show_time)
+    return nil if showtime.nil?
+    showtime.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def star_names
+    stars.pluck(:name).join(",")
   end
 
   private

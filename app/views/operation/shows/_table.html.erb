@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<table class="table table-hover shows">
+<table id="shows_table" class="table table-hover shows" data-source="<%= operation_shows_url(format: 'json') %>">
   <thead>
     <tr>
       <th class='text-center'>演出艺人</th>
@@ -18,30 +18,12 @@
     </tr>
   </thead>
   <tbody class='text-center'>
-    <% shows.each do|show| %>
-      <% tickets = show.tickets %>
-      <tr>
-        <td><%= show.stars.pluck(:name).join(",") %></td>
-        <td><%= show.name %></td>
-        <td><%= show.is_display_cn %></td>
-        <td><%= show.is_presell_cn %></td>
-        <td><%= show.source_cn %></td>
-        <td><%= show.seat_type_cn %></td>
-        <td><%= show.status_cn %></td>
-        <td><%= show.ticket_type_cn %></td>
-        <td><%= show.stadium.try(:name) %></td>
-        <td><%= get_datetime(show.event_show_time) %></td>
-        <td><%= tickets.sold_tickets.count %> / <%= show.total_seats_count %></td>
-        <td>
-          <%= link_to "查看详情", operation_show_path(show)%>
-          <%= link_to "场次管理", event_list_operation_show_path(show) %>
-          <% if can? :update, show%>
-            <%= link_to "编辑", edit_operation_show_path(show)%>
-            <%= link_to (show.is_top ? "取消置顶" : "置顶"), toggle_is_top_operation_show_path(show), method: 'PATCH' %>
-          <% end %>
-        </td>
-      </tr>
-    <%end%>
   </tbody>
 </table>
-<%= paginate shows %>
+
+<%= content_tag :div, id: 'shows_filter', data: {
+  status_filter: @status_filter,
+  source_filter: @source_filter,
+  is_display_filter: @is_display_filter
+} do %>
+<% end %>
