@@ -13,24 +13,20 @@ class Boombox::Operation::ApplicationController < ApplicationController
       tags_array = []
       tag_names.split(",").each do |name|
         downcase_name = name.gsub(/\s/, "").downcase
-        tags_array << BoomTag.where(name: name, lower_string: downcase_name).first_or_create!
+        tag = BoomTag.where(lower_string: downcase_name).first_or_create(name: name)
+        tags_array.push(tag) if tag
       end
       tags_array.each do |tag|
         tag.tag_subject_relations.where(subject_id: subject.id, subject_type: subject.class.name).first_or_create!
       end
       #对艺术家来说，只需要创建，关联标签，不需要删除标签
-      if need_del_tag
-        subject.tag_subject_relations.where.not(boom_tag_id: tags_array.map{|tag| tag.id}).delete_all
-      end
+
+      subject.tag_subject_relations.where.not(boom_tag_id: tags_array.map{|tag| tag.id}).delete_all if need_del_tag
     end
   end
 
   def get_subject_tags(subject = nil)
-    if subject
-      subject.boom_tags.any? ? subject.boom_tags.pluck(:id) : []
-    else
-      []
-    end
+    subject.present? ? subject.boom_tags.pluck(:id) : []
   end
 
   def get_all_tag_names

@@ -1,5 +1,5 @@
 # encoding: utf-8
-class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
+class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   before_filter :check_login!
   before_filter :get_track, except: [:search, :index, :new, :create]
 
@@ -34,7 +34,7 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
         @track.create_tag_using_artists(params[:boom_track][:artists])
       end
       flash[:notice] = '创建音乐成功'
-      redirect_to boombox_dj_boom_tracks_url
+      redirect_to boombox_dj_tracks_url
     else
       flash[:alert] = @track.errors.full_messages 
       @track = current_collaborator.boom_tracks.new
@@ -51,7 +51,7 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
         @track.create_tag_using_artists(params[:boom_track][:artists])
       end
       flash[:notice] = '编辑音乐成功'
-      redirect_to boombox_dj_boom_tracks_url
+      redirect_to boombox_dj_tracks_url
     end
   end
 
@@ -67,7 +67,7 @@ class Boombox::Dj::BoomTracksController < Boombox::Dj::ApplicationController
     else
       flash[:alert] = @track.errors.full_messages
     end
-    redirect_to boombox_dj_boom_tracks_url
+    redirect_to boombox_dj_tracks_url
   end
 
   private

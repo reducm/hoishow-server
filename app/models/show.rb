@@ -19,6 +19,7 @@ class Show < ActiveRecord::Base
   has_many :tickets
 
   validates :name, presence: {message: "演出名不能为空"}
+  validates :source, presence: {message: "资源方不能为空"}
   validates :concert, presence: {message: "投票不能为空"}
   validates :stadium, presence: {message: "场馆不能为空"}
 
@@ -34,7 +35,9 @@ class Show < ActiveRecord::Base
   # 演出资源提供方
   enum source: {
     hoishow: 0, # 自有资源
-    third_party: 1, # 第三方资源
+    damai: 1, # 大麦
+    yongle: 2, # 永乐
+    weipiao: 3 # 微票
   }
 
   enum mode: {
@@ -43,8 +46,8 @@ class Show < ActiveRecord::Base
   }
 
   enum status: {
-    selling: 0, #购票中
-    sell_stop: 1, #购票结束
+    selling: 0, #售票中
+    sell_stop: 1, #售票结束
     going_to_open: 2, #即将开放
   }
 
@@ -100,7 +103,9 @@ class Show < ActiveRecord::Base
 
   def source_cn
     # hoishow: "自有资源"
-    # third_party: "第三方资源"
+    # damai: "大麦"
+    # yongle: "永乐"
+    # weipiao: "微票"
     tran("source")
   end
 
@@ -205,7 +210,13 @@ class Show < ActiveRecord::Base
   end
 
   def event_show_time
-    events.verified.first.try(:show_time)
+    showtime = events.verified.first.try(:show_time)
+    return nil if showtime.nil?
+    showtime.strftime("%Y年%m月%d日%H:%M")
+  end
+
+  def star_names
+    stars.pluck(:name).join(",")
   end
 
   private

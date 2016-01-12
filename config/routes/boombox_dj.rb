@@ -55,7 +55,7 @@ module Routes
 
             resources :boom_comments, only: [:index, :new, :create] 
 
-            resources :boom_tracks do
+            resources :tracks do
               collection do
                 get :search
               end

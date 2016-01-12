@@ -1,7 +1,8 @@
 <%# encoding: utf-8 %>
 <% collaborator = @boom_topic.collaborator %>
 <legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(collaborator) %>/动态详情</legend>
-<div class="row">
+
+<div class="detail-topic clearfix">
   <h3 class="pull-left">动态详情</h3>
   <%= link_to '删除动态', boombox_operation_boom_topic_path, method: :delete, class: 'btn btn-danger', data: {confirm: '确定吗？'} %>
 </div>
@@ -18,10 +19,10 @@
       <tr>
         <td><%= truncate(@boom_topic.content, length: 80) %></td>
         <td>
-          <% if @boom_topic.image_url%>
-            <%= image_tag(@boom_topic.image_url, size: "200x200") %>
-          <% else %>
-            没有图片
+          <% if @boom_topic.attachments.any? %>
+            <% @boom_topic.attachments.each do |attach| %>
+              <img src=<%= attach.photo_version %> class="thumb"></img>
+            <% end %>
           <% end %>
         </td>
       </tr>

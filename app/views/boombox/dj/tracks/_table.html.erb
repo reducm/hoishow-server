@@ -40,8 +40,8 @@
           <td><%= track.creator.nickname if track.creator %></td>
           <td><%= track.created_at.try(:strfcn_time) %></td>
           <td>
-            <%= link_to "编辑", edit_boombox_dj_boom_track_path(track), class: 'btn btn-default' %>
-            <%= link_to "删除", boombox_dj_boom_track_path(track), method: "delete", data: {confirm: "确定删除吗？"}, class: 'btn btn-danger' %>
+            <%= link_to "编辑", edit_boombox_dj_track_path(track), class: 'btn btn-default' %>
+            <%= link_to "删除", boombox_dj_track_path(track), method: "delete", data: {confirm: "确定删除吗？"}, class: 'btn btn-danger' %>
           </td>
         </tr>
       <%end%>

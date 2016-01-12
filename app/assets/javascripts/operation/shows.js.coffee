@@ -248,6 +248,134 @@ $ ->
   $('.image-uploader').change ->
     readURL this
 
+#演出列表搜索过滤开始---------------
+  # 服务器提供的过滤条件数据源
+  f_data = $('#shows_filter').data()
+  # 返回当前季节的开始日期
+  season_start_date = ->
+    current_month = moment().format('M')
+    switch current_month
+      when "3", "4", "5"
+        moment().format('YYYY/03/01 00:00')
+      when "6", "7", "8"
+        moment().format('YYYY/06/01 00:00')
+      when "9", "10", "11"
+        moment().format('YYYY/09/01 00:00')
+      when "12", "1", "2"
+        moment().format('YYYY/12/01 00:00')
+      else
+        alert "sth wrong", current_month
+
+    # 订单列表初始化
+  ShowLists = do ->
+    loadTable = ->
+      if !jQuery().DataTable
+        return
+      showTable = $("#shows_table").DataTable(
+        # 基本配置
+        stateSave: true
+        ordering: false
+        # 语言文件放在public下面
+        language:
+          url: "/Chinese.json"
+        # 从服务器的Order#index获取数据
+        processing: true
+        serverSide: true
+        # 把过滤条件回传服务器
+        ajax:
+          url: $("#shows_table").data("source")
+          data: (d) ->
+            $.extend {}, d,
+              'status': $('#status_filter').val()
+              'source': $('#source_filter').val()
+              'is_display': $('#is_display_filter').val()
+              'start_date': $('#start_date_filter').val()
+              'end_date': $('#end_date_filter').val()
+              # 控件有问题，现固定每页显示10行
+              'length': 10
+        initComplete: ->
+          api = @api()
+          # 按购票状态过滤
+          select = $('<select><option selected="selected" value="">购票状态：全部</option></select>').attr("id", "status_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["statusFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "购票状态：" + key + '</option>'
+          # 按演出来源过滤
+          select = $('<select><option selected="selected" value="">演出来源：全部</option></select>').attr("id", "source_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["sourceFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "演出来源：" + key + '</option>'
+          # 按显示状态过滤
+          select = $('<select><option selected="selected" value="">显示状态：全部</option></select>').attr("id", "is_display_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["isDisplayFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "显示状态：" + key + '</option>'
+          # 时间过滤预设
+          timenow = moment().format('YYYY/MM/DD hh:mm')
+          # 时间过滤预设：全部
+          $('<br />').appendTo($("#shows_table_length"))
+          $('<button>全部</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val("")
+            $('#end_date_filter').val("")
+            api.ajax.reload()
+          # 时间过滤预设：今天
+          $('<button>今天</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本周
+          $('<button>本周</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('week').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本月
+          $('<button>本月</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('month').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本季
+          $('<button>本季</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val(season_start_date)
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 时间过滤预设：本年
+          $('<button>本年</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#start_date_filter').val(moment().startOf('year').format('YYYY/MM/DD 00:00'))
+            $('#end_date_filter').val(timenow)
+            api.ajax.reload()
+          # 按下单开始时间过滤
+          $('<br />').appendTo($("#shows_table_length"))
+          input = $('<input></input>').attr('id', 'start_date_filter').attr('placeholder', '演出时间').addClass('form-control date_range').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $('<label>至</label>').appendTo($("#shows_table_length"))
+          $('#start_date_filter').datetimepicker()
+          # 按下单结束时间过滤
+          input = $('<input></input>').attr('id', 'end_date_filter').attr('placeholder', '演出时间').addClass('form-control date_range').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $('#end_date_filter').datetimepicker()
+          # 重置
+          $('<button>重置所有条件</button>').addClass('btn btn-default shows_buttons').appendTo($("#shows_table_length")).on 'click', ->
+            $('#status_filter').val('')
+            $('#channel_filter').val('')
+            $('#buy_origin_filter').val('')
+            $('#show_filter').val('')
+            $('#start_date_filter').val('')
+            $('#end_date_filter').val('')
+            api.search('').draw()
+          # 文本搜索提示
+          $('div#shows_table_filter.dataTables_filter label input').attr('placeholder', '演出或艺人名字').removeClass('input-sm')
+          # 隐藏显示行数控件
+          $('#shows_table_length label:first').hide()
+      )
+    {
+      init: ->
+        loadTable()
+    }
+
+  jQuery(document).ready ->
+    ShowLists.init()
+#演出列表搜索过滤结束---------------
+
   if $('#show_description').length > 0
     $('#show_description').qeditor({})
     init_editor()
@@ -265,7 +393,6 @@ $ ->
 
   #show new form
   if $(".new_show").length > 0
-
     $('.add_star').on 'click', ()->
       $selected = $('#select_star option:selected')
       if $selected.val()
@@ -307,23 +434,26 @@ $ ->
     $(".submit-form").on 'click', (e) ->
       e.preventDefault()
       stadium_select = $("#show_stadium_select").val()
-      if stadium_select == "" or stadium_select == null or stadium_select == "所选城市暂无场馆"
-        alert('场馆不能为空，请重新选择')
-      else if $("#show_city_select").val() == ""
-        alert('城市不能为空，请重新选择')
-      else if $("div.stars span").length < 1
-        alert('艺人不能为空，请重新选择')
-      else if $("#show_name").val().length < 1
-        alert('演出名称不能为空，请填写')
-      else if $('div.show_ticket_type input[type=radio]:checked').size() < 1
-        alert('取票方式不能为空，请重新选择')
-      else
-        ids = $('.stars span').map(()->
-          return $(this).data('id')
-        ).toArray().join(',')
-        $form = $(this).parents('form')
-        $form.append("<input type='hidden' value='#{ids}' name='star_ids'/>")
-        $form.submit()
+      switch
+        when $("div.stars span").length < 1
+          alert('艺人不能为空，请重新选择')
+        when $('#show_source').val() == ""
+          alert('资源提供方不能为空, 请重新选择')
+        when $("#show_name").val().length < 1
+          alert('演出名称不能为空，请填写')
+        when $('div.show_ticket_type input[type=radio]:checked').size() < 1
+          alert('取票方式不能为空，请重新选择')
+        when $("#show_city_select").val() == ""
+          alert('城市不能为空，请重新选择')
+        when stadium_select == "" or stadium_select == null or stadium_select == "所选城市暂无场馆"
+          alert('场馆不能为空，请重新选择')
+        else
+          ids = $('.stars span').map(()->
+            return $(this).data('id')
+          ).toArray().join(',')
+          $form = $(this).parents('form')
+          $form.append("<input type='hidden' value='#{ids}' name='star_ids'/>")
+          $form.submit()
 
   if $('.edit_show').length > 0
     show_id = $("#show_id").val()
