@@ -61,7 +61,7 @@ class BoomTrack < ActiveRecord::Base
       end
     else
       Rails.cache.fetch("tracks:recommend", expires_in: 1.day) do
-        order('is_top, RAND()').limit(20).to_a
+        where(removed: false).order('is_top, RAND()').limit(20).to_a
       end
     end
   end
