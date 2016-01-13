@@ -22,6 +22,30 @@ $ ->
   else
     $('select#tags').select2()
 
+  # 直传又拍云
+  $('.progress').hide()
+  $('#upload_status').hide()
+
+  $('#upload_track').on 'click', ->
+    if $('#upyun_upload').length > 0
+      ext = '.' + $('#upyun_upload').val().split('.').pop()
+      config =
+        bucket: 'boombox-file'
+        expiration: parseInt((new Date().getTime() + 3600000) / 1000),
+        form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
+      instance = new Sand(config)
+      #options = 'notify_url': 'http://upyun.com'
+      #instance.setOptions options
+      path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
+      instance.upload(path, '#upyun_upload')
+      $('.progress').show()
+      $('#track-submit').addClass('disabled').val('正在上传')
+      $('#upload_track').addClass('disabled')
+
+      document.addEventListener 'uploaded', (e) ->
+        full_path = 'http://boombox-file.b0.upaiyun.com' + path
+        $("#boom_track_file").attr("value", full_path)
+
   # 上传音乐后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
@@ -50,7 +74,7 @@ $ ->
   # 2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
     e.preventDefault()
-    if $('#current_file').attr('data-url') == ""
+    if $('#boom_track_file').val() == ""
       alert '请上传音乐'
       return
     else if $('#boom_track_name').val() == ""

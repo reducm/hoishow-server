@@ -58,6 +58,7 @@ module Routes
             resources :tracks do
               collection do
                 get :search
+                #get :get_upyun_policy_and_signature
               end
             end
 

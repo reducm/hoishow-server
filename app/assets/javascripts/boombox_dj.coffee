@@ -17,6 +17,9 @@
 #= require boombox/dj/tracks
 #= require boombox/dj/playlists
 #
+#= require async.min
+#= require spark-md5.min
+#= require upyun-mu
 #= require jquery-fileupload
 #= require dropzone
 #= require datatables.min
