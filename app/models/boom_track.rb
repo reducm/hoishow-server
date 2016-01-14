@@ -3,7 +3,7 @@ class BoomTrack < ActiveRecord::Base
 
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
-  ImgUpyunSetting = Rails.env.production? ? UpyunSetting['boombox-img'] : UpyunSetting['hoishow-img']
+  ImgUpyunSetting = UpyunSetting['boombox-file']
 
   attr_reader :track_tag_names
 

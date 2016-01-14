@@ -27,29 +27,33 @@ $ ->
   # 选择文件后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
-      obj_url = window.URL.createObjectURL(this.files[0])
-      $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
-
-      name = this.files[0].name
-      filename = name.replace(/\.[^/.]+$/, "")
-      size = Math.round(this.files[0].size / 1024 / 1024 * 100) / 100
-      $('#current_file').attr('data-url', 'true')
-      $('#boom_track_name').val(filename)
-      $('#track_filename').text("文件：" + name)
-      $('#track_size').text("大小：" + size + " MB")
-
-      # 直传又拍云
       ext = '.' + $('#upyun_upload').val().split('.').pop()
-      config =
-        bucket: 'boombox-file'
-        expiration: parseInt((new Date().getTime() + 3600000) / 1000),
-        form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
-      instance = new Sand(config)
-      path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
-      instance.upload(path, '#upyun_upload')
+      if ext != '.mp3'
+        $('.track-file-uploader').val('')
+        alert '请上传mp3格式音乐'
+      else
+        obj_url = window.URL.createObjectURL(this.files[0])
+        $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
 
-      document.addEventListener 'uploaded', (e) ->
-        $("#boom_track_file").attr("value", path)
+        name = this.files[0].name
+        filename = name.replace(/\.[^/.]+$/, "")
+        size = Math.round(this.files[0].size / 1024 / 1024 * 100) / 100
+        $('#current_file').attr('data-url', 'true')
+        $('#boom_track_name').val(filename)
+        $('#track_filename').text("文件：" + name)
+        $('#track_size').text("大小：" + size + " MB")
+
+        # 直传又拍云
+        config =
+          bucket: 'boombox-file'
+          expiration: parseInt((new Date().getTime() + 3600000) / 1000),
+          form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
+        instance = new Sand(config)
+        path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
+        instance.upload(path, '#upyun_upload')
+
+        document.addEventListener 'uploaded', (e) ->
+          $("#boom_track_file").attr("value", path)
     return
 
   if $("#track-file-pre")[0]
