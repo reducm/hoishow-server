@@ -3,6 +3,7 @@ class BoomTrack < ActiveRecord::Base
 
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
+  UPYUN_PREFIX = 'http://boombox-file.b0.upaiyun.com'
 
   attr_reader :track_tag_names
 
@@ -30,7 +31,6 @@ class BoomTrack < ActiveRecord::Base
   # 关系查询时相同名称的字段，例如created_at可能会重复，所以指明表名
   scope :valid, -> {where(removed: false).order('boom_tracks.is_top desc, boom_tracks.created_at desc')}
 
-  alias_attribute :file_url, :file
 
   paginates_per 10
 
@@ -172,6 +172,14 @@ class BoomTrack < ActiveRecord::Base
 
   def track_tag_names
     boom_tags.pluck(:name).join(",")
+  end
+
+  def file_url
+    if file
+      UPYUN_PREFIX + file
+    else
+      nil
+    end
   end
 
   private

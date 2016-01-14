@@ -7,11 +7,18 @@
   update_progress = (start, end) ->
     width = Math.round(start / end * 100.00)
     $('.progress-bar').attr("aria-valuenow", width).css('width', width + '%').text(width + '%')
-  # 上传完成
-  upload_finished = ->
+  # 上传完成提示
+  display_finished = ->
     $('#upload_status').show()
     $('#upload_status').removeClass('alert-warning').addClass('alert-success')
     $('#upload_status').text('上传成功')
+  # 错误提示
+  display_error = (error_message) ->
+    $.notify error_message,
+      globalPosition: 'top center'
+      className: 'error'
+  # 上传和保存按钮可用
+  unlock_command_buttons = ->
     $('#track-submit').removeClass('disabled').val('保存')
     $('#upload_track').removeClass('disabled')
 
@@ -85,10 +92,7 @@
         else
           files = document.querySelector(fileSelector).files
         if !files.length
-          #console.log 'no file is selected'
-          $.notify('请先选择文件上传', {
-            globalPosition:"top center",
-            className: 'error',} )
+          display_error('请先选择文件上传')
           return
         file = files[0]
         chunks = Math.ceil(file.size / chunkSize)
@@ -114,10 +118,7 @@
           return
 
         frOnerror = ->
-          #console.warn 'oops, something went wrong.'
-          $.notify('操作失败，请稍后重试', {
-            globalPosition:"top center",
-            className: 'error',} )
+          display_error('操作失败，请稍后重试')
           return
 
         loadNext()
@@ -143,6 +144,15 @@
         request = new XMLHttpRequest
         request.open 'POST', _config.api + _config.bucket + '/'
         request.setRequestHeader 'Content-type', 'application/x-www-form-urlencoded'
+
+        request.onreadystatechange = ->
+          if request.readyState == 4 and request.status == 200
+            data = $.parseJSON(request.responseText)
+            uploadResult = data['message']
+            if uploadResult == 'failure'
+              display_error('操作失败，请稍后重试')
+              unlock_command_buttons()
+          return
         
         request.onload = (e) ->
           if request.status == 200
@@ -220,7 +230,8 @@
 
         request.onload = (e) ->
           if request.status == 200
-            upload_finished()
+            display_finished()
+            unlock_command_buttons()
             callback null, request.response
           else
             callback null, request.response

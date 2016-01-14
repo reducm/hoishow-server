@@ -1,5 +1,9 @@
 <%# encoding: utf-8 %>
 
+<%= javascript_include_tag 'async.min' %>
+<%= javascript_include_tag 'spark-md5.min' %>
+<%= javascript_include_tag 'upyun-mu' %>
+
 <legend class="boom-top-topic"><%= link_to "音乐列表", boombox_dj_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 
 <div class="row page_header">

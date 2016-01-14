@@ -43,8 +43,7 @@ $ ->
       $('#upload_track').addClass('disabled')
 
       document.addEventListener 'uploaded', (e) ->
-        full_path = 'http://boombox-file.b0.upaiyun.com' + path
-        $("#boom_track_file").attr("value", full_path)
+        $("#boom_track_file").attr("value", path)
 
   # 上传音乐后显示文件信息
   $('.track-file-uploader').change ->
