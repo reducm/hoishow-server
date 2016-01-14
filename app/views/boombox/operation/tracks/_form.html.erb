@@ -1,5 +1,9 @@
 <%# encoding: utf-8 %>
 
+<%= javascript_include_tag 'async.min' %>
+<%= javascript_include_tag 'spark-md5.min' %>
+<%= javascript_include_tag 'upyun-mu' %>
+
 <legend><%= link_to "音乐列表", boombox_operation_tracks_path %>/<%= params[:action] == "new" ? "上传音乐" : "编辑音乐"%></legend>
 <div class="nav">
   <div class="col-md-offset-5">
@@ -25,13 +29,21 @@
 
         <div class="col-sm-6">
           <div>
-            <%= f.input :file, label: "上传音乐,支持格式:mp3", input_html: {class: "track-file-uploader col-sm-offset-3"}, label_html: {class: "col-sm-offset-3"} %>
+            <p>上传音乐,支持格式：mp3</p>
+            <%= file_field_tag 'upyun_upload', class: "track-file-uploader" %>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
+                0%
+              </div>
+            </div>
+            <div id="upload_status" class="alert alert-warning" role="alert"></div>
             <% if track.current_file_url %>
               <audio src="<%= track.current_file_url %>" id="track-file-pre" controls="controls">你的浏览器不支持audio标签</audio>
             <% else %>
               <audio src="#" id="track-file-pre">你的浏览器不支持audio标签</audio>
             <% end %>
             <%= f.hidden_field :duration %>
+            <%= f.hidden_field :file %>
             <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
             <%= f.input :is_top, label: "打勾推荐此音乐" %>
             <%= f.input :artists, label: "艺术家", input_html:{ id: "operation_track_artists" }%>

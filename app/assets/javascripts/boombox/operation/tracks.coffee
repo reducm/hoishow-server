@@ -34,11 +34,31 @@ $ ->
   $('.track-cover-uploader').change ->
     readURL this, $("#track_cover_preview")
 
+  $('.progress').hide()
+  $('#upload_status').hide()
+  # 选择文件后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
-      obj_url = window.URL.createObjectURL(this.files[0])
-      $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
+      ext = '.' + $('#upyun_upload').val().split('.').pop()
+      if ext != '.mp3'
+        $('.track-file-uploader').val('')
+        alert '请上传mp3格式音乐'
+      else
+        obj_url = window.URL.createObjectURL(this.files[0])
+        $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
 
+        # 直传又拍云
+        config =
+          bucket: 'boombox-file'
+          expiration: parseInt((new Date().getTime() + 3600000) / 1000),
+          form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
+        instance = new Sand(config)
+        path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
+        instance.upload(path, '#upyun_upload')
+
+        document.addEventListener 'uploaded', (e) ->
+          $("#boom_track_file").attr("value", path)
+    return
 #获取音乐的duration
   $("#track-submit").on "click", (e) ->
     duration = $("#track-file-pre")[0].duration
