@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 <%= form_tag(boombox_operation_news_index_path, id: "news_form", class: 'form-inline', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "资讯总数：#{newses.total_count}"%></h4>
+  <h4><%= "资讯总数：#{newses.total_count}"%></h4>
   <div class="search">
     <div class="datetimepicker form-group">
       <label> 创建时间</label>

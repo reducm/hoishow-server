@@ -5,7 +5,7 @@
   <% form_path = boombox_operation_activities_path %>
 <% end %>
 <%= form_tag(form_path, id: "activities_form", class: 'form-inline', method: 'get', remote: true) do %>
-  <h4 class="pull-left"><%= "活动总数：#{activities.total_count}"%></h4>
+  <h4><%= "活动总数：#{activities.total_count}"%></h4>
   <div class="search">
     <div class="datetimepicker form-group">
       <label> 创建时间</label>
