@@ -151,7 +151,7 @@
         request.setRequestHeader 'Content-type', 'application/x-www-form-urlencoded'
 
         request.onreadystatechange = ->
-          if request.readyState == 4 && request.status == 0
+          if request.readyState == 4 and request.status == 0
             display_error('网络故障，请稍后重试')
             $('.track-file-uploader').val('')
             $('.progress').hide()
@@ -207,6 +207,9 @@
               setTimeout (->
                 callback null
               ), 0
+            else if e.currentTarget.readyState == 4 and e.currentTarget.status != 200
+              request.open 'POST', _config.api + _config.bucket + '/', true
+              request.send formDataPart
             return
 
           request.open 'POST', _config.api + _config.bucket + '/', true
