@@ -1,0 +1,11 @@
+ <%= @dj.display_name %> 申请加入播霸音乐，请于三个工作日内处理。
+
+ 艺人链接:
+
+<% if Rails.env.production? %>
+  <%= edit_boombox_operation_collaborator_url(@dj, host: "10.6.23.41") %>
+<% else %>
+  <%= edit_boombox_operation_collaborator_url(@dj, host: "boombox.dan-che.com") %>
+<% end %>
+
+（如点击后无法打开，请复制链接到浏览器访问）

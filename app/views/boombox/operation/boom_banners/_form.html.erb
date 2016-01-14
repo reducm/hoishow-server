@@ -2,7 +2,7 @@
 
 <legend><%= link_to "Banner列表", boombox_operation_boom_banners_path %>/<%= params[:action] == "new" ? "新建Banner" : "编辑Banner"%></legend>
 <div class="row">
-      <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
+  <%= simple_form_for [:boombox, :operation, banner], html: { class: 'form-horizontal', id: "boom_banner_form"  } do |f| %>
     <div class="row">
       <div class="col-sm-6">
         <div class="text-center">
@@ -16,11 +16,7 @@
         <div class="form-group">
           <%= f.label :subject_type, '类型', class: 'col-md-4 control-label' %>
           <div class="col-md-2">
-            <% if params[:action] == "new" %>
-              <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
-            <% elsif params[:action] == "edit" %>
-              <%= f.select :subject_type, options_for_select([["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], subject_type_option( banner.subject_type )), {}, class: 'form-control' %>
-            <% end %>
+            <%= f.select :subject_type, options_for_select([["请选择", ""], ["艺人", "Collaborator"], ["活动", "Activity"], ["playlist", "Playlist"], ["资讯", "News"]], subject_type_option( banner.subject_type )), {}, class: 'form-control' %>
           </div>
         </div>
         <div class="form-group">
@@ -41,6 +37,7 @@
   collaborator: ( Collaborator.verified.select(:name, :id).map{|c| { name: c.name, id: c.id }} ),
   activity: ( BoomActivity.activity.is_display.select(:name, :id).map{|activity| { name: activity.name, id: activity.id }} ),
   show: ( BoomActivity.show.is_display.select(:name, :id).map{|show| { name: show.name, id: show.id }} ),
+  news: ( BoomActivity.news.is_display.select(:name, :id).map{|news| { name: news.name, id: news.id }} ),
   playlist: ( BoomPlaylist.playlist.open.select(:name, :id).map{|playlist| { name: playlist.name, id: playlist.id }} )
 } do %>
 <% end %>

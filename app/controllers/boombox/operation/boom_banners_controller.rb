@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::BoomBannersController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   before_filter :get_boom_banner, except: [:index, :new, :create, :sort]
 
   def index
@@ -65,9 +64,7 @@ class Boombox::Operation::BoomBannersController < Boombox::Operation::Applicatio
     case type
     when 'Playlist'
       'BoomPlaylist'
-    when 'Show'
-      'BoomActivity'
-    when 'Activity'
+    when 'Show', 'Activity', 'News'
       'BoomActivity'
     else
       type

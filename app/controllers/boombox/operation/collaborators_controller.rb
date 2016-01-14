@@ -1,5 +1,4 @@
 class Boombox::Operation::CollaboratorsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   load_and_authorize_resource
 
   def index
@@ -148,7 +147,7 @@ class Boombox::Operation::CollaboratorsController < Boombox::Operation::Applicat
   end
 
   # 通过审核
-  def verify 
+  def verify
     if @collaborator.update_attributes(verified: true)
       redirect_to boombox_operation_collaborator_url(@collaborator), notice: '通过审核成功'
     else

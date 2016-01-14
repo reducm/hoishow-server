@@ -72,4 +72,8 @@ class PagesController < ApplicationController
     @cities = result[0..9]
     render layout: 'mobile'
   end
+
+  def boombox_copyright
+    render layout: 'boombox_mobile'
+  end
 end

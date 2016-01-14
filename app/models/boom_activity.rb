@@ -19,12 +19,13 @@ class BoomActivity < ActiveRecord::Base
 
   enum mode: {
     show: 0,
-    activity: 1
+    activity: 1,
+    news: 2
   }
 
   after_create :set_activity_param
 
-  scope :is_display, ->{where(is_display: true, removed: false).order('is_top desc, is_hot desc, created_at desc')}
+  scope :is_display, ->{where(is_display: true, removed: false).order('is_top desc, is_hot desc, mode desc, created_at desc')}
 
   mount_uploader :cover, BoomImageUploader
 
@@ -92,6 +93,10 @@ class BoomActivity < ActiveRecord::Base
 
   def activity_collaborator_nicknames
     collaborators.pluck(:nickname).join(",")
+  end
+
+  def need_description?
+    activity? || news?
   end
 
   private

@@ -1,6 +1,6 @@
 <%= form_tag(boombox_operation_boom_topic_path(@boom_topic), class: 'form-inline', id: 'likers_form', method: 'get', remote: true) do %>
   <div class="row">
-    <%= label_tag 'likers_count', '点赞数：' + @likers.total_count.to_s %> 
+    <%= label_tag 'likers_count', '点赞数：' + @likers.total_count.to_s %>
   </div>
 
   <div class="row">

@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::RadiosController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   before_filter :get_radio, except: [:search, :index, :new, :create]
 
   def index

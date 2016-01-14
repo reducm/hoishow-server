@@ -1,5 +1,4 @@
 class Boombox::Operation::BoomAlbumsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   load_and_authorize_resource
 
   def index
@@ -10,7 +9,7 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
 
     # 显示
     params[:page] ||= 1
-    @boom_albums = BoomAlbum.where(collaborator_id: params[:collaborator_id]).order(is_cover: :desc, created_at: :desc).page(params[:page]) 
+    @boom_albums = BoomAlbum.where(collaborator_id: params[:collaborator_id]).order(is_cover: :desc, created_at: :desc).page(params[:page])
     # 上传
     @collaborator = Collaborator.find(params[:collaborator_id])
     @boom_album = BoomAlbum.new
@@ -26,24 +25,24 @@ class Boombox::Operation::BoomAlbumsController < Boombox::Operation::Application
       @boom_album.update(is_cover: true)
 
       respond_to do |format|
-        flash[:notice] = '上传成功' 
+        flash[:notice] = '上传成功'
         format.json {render nothing: true}
       end
     else
-      flash[:alert] = @boom_album.errors.full_messages 
+      flash[:alert] = @boom_album.errors.full_messages
       redirect_to boombox_operation_boom_albums_url(collaborator_id: @collaborator.id)
     end
   end
 
-  def set_cover 
+  def set_cover
     @boom_album.update(is_cover: true)
-    flash[:notice] = "设置封面成功" 
+    flash[:notice] = "设置封面成功"
     redirect_to boombox_operation_boom_albums_url(collaborator_id: @boom_album.collaborator.id)
   end
 
-  def unset_cover 
+  def unset_cover
     @boom_album.update(is_cover: false)
-    flash[:notice] = "取消封面成功" 
+    flash[:notice] = "取消封面成功"
     @collaborator = Collaborator.find(params[:collaborator_id])
     warn_if_current_no_cover(@collaborator)
 

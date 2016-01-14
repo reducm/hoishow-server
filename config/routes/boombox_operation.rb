@@ -68,6 +68,12 @@ module Routes
               post :upload_image, on: :collection
             end
 
+            resources :news, except: [:show, :destroy] do
+              member do
+                post :toggle_is_top
+              end
+            end
+
             resources :boom_tags, only: [:index, :create, :destroy] do
               member do
                 post :change_is_hot

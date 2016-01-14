@@ -4,7 +4,7 @@ class Boombox::V1::ActivitiesController < Boombox::V1::ApplicationController
 
   def index
     if params[:keyword]
-      @activities = BoomboxSearch.query_search(params[:keyword])[:activities]
+      @activities = BoomActivity.search(params[:keyword]).records.where.not(mode: 2).is_display.to_a
       @activities = Kaminari.paginate_array(@activities).page(params[:page]).per(10)
     else
       @activities = BoomActivity.is_display.page(params[:page])
