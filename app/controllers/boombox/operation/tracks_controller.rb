@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Boombox::Operation::TracksController < Boombox::Operation::ApplicationController
   include ConvertAudio::Logger
-  before_filter :check_login!, except: [:convert_audio_notify]
+  skip_before_filter :check_login!, only: [:convert_audio_notify]
   before_filter :get_track, except: [:search, :index, :new, :create, :convert_audio_notify]
 
   def index
@@ -117,7 +117,7 @@ class Boombox::Operation::TracksController < Boombox::Operation::ApplicationCont
         artist_names << art.split(",")
       end
     end
-    
+
     @artist_names = artist_names.flatten.uniq
   end
 

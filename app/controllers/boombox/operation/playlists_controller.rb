@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   before_filter :get_playlist, except: [:search, :index, :new, :create]
 
   def index
@@ -52,7 +51,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
     else
       flash[:alert] = '创建Playlist失败'
     end
-    
+
     redirect_to boombox_operation_playlists_url
   end
 

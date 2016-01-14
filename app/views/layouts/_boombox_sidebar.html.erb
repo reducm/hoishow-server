@@ -65,9 +65,19 @@
             <% end %>
           </li>
           <li>
-            <%= link_to boombox_operation_activities_path do %>
-              <i class="fa fa-file fa-fw"></i> 活动
-            <% end %>
+            <a href="#"><i class="fa fa-cog fa-fw"></i> 发现<span class="fa arrow"></span></a>
+            <ul class="nav nav-second-level">
+              <li>
+                <%= link_to boombox_operation_activities_path do %>
+                  <i class="fa fa-file fa-fw"></i> 活动
+                <% end %>
+              </li>
+              <li>
+                <%= link_to boombox_operation_news_index_path do %>
+                  <i class="fa fa-file fa-fw"></i> 资讯
+                <% end %>
+              </li>
+            </ul>
           </li>
           <li>
             <%= link_to boombox_operation_boom_users_path do %>

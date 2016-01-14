@@ -13,7 +13,6 @@
 #= require boombox/operation/boom_albums
 #= require boombox/operation/boom_topics
 #= require boombox/operation/boom_comments
-#= require boombox/operation/users
 #
 #= require boombox/operation/home
 #= require boombox/operation/sessions
@@ -21,6 +20,7 @@
 #= require boombox/operation/playlists
 #= require boombox/operation/radios
 #= require boombox/operation/activities
+#= require boombox/operation/news
 #= require boombox/operation/messages
 #= require boombox/operation/boom_tags
 #= require boombox/operation/boom_admins

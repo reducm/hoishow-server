@@ -6,7 +6,7 @@ insert_obj = (obj)->
     $('.qeditor_preview').append(obj)
 
 init_editor = ()->
-  toolbar = $('#boom_activity_description').parent().find('.qeditor_toolbar')
+  toolbar = $('#news_description').parent().find('.qeditor_toolbar')
   editor = $(".qeditor_preview")
 
   video = $("<a href='#' class='qe-video'><span class='fa fa-video-camera'></span></a>")
@@ -45,35 +45,12 @@ init_editor = ()->
 
   toolbar.append(video, image)
 $ ->
-  activity_id = $('#activity_id').val()
-  if $('#boom_activity_description').length > 0
-    $('#boom_activity_description').qeditor()
+  $(document).on "change", '#news_form .news_filter', ->
+    $(this).submit()
+
+  if $('#news_description').length > 0
+    $('#news_description').qeditor()
     init_editor()
 
-  $(document).on 'change', '.activities_filter', ->
-    $('#activities_form').submit()
-
-  # 标签
-  all_tags = $("div#operation_activity_tags_data").data("data")
-  $('#operation_activity_tags').tagit
-    allowSpaces: true
-    autocomplete: { delay: 0, minLength: 0, source: all_tags }
-    showAutocompleteOnFocus: true
-
-  # 艺人
-  all_collaborators = $("div#operation_activity_collaborators_data").data("data")
-  $('#operation_activity_collaborators').tagit
-    allowSpaces: true
-    autocomplete: { delay: 0, minLength: 0, source: all_collaborators }
-    showAutocompleteOnFocus: true
-
-  #上传海报
-  $('.activity_cover_uploader').fileupload
-    url: "/boombox/operation/activities/#{activity_id}/upload_cover"
-    dataType: "json"
-    done: (e, data) ->
-      if data.result.success
-        $('.cover_preview img').attr('src', data.result.cover_path)
-
-  $('#boom_activity_cover').change ->
-    readURL this, $('.cover_preview')
+    $('.news_cover_uploader').change ->
+      readURL this, $('.cover_preview')

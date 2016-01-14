@@ -1,0 +1,43 @@
+<%# encoding: utf-8 %>
+<%= form_tag(boombox_operation_news_index_path, id: "news_form", class: 'form-inline', method: 'get', remote: true) do %>
+  <h4 class="pull-left"><%= "资讯总数：#{newses.total_count}"%></h4>
+  <div class="search">
+    <div class="datetimepicker form-group">
+      <label> 创建时间</label>
+      <%= text_field_tag "news_start_time", params[:news_start_time],  class: 'form-control news_filter news_datetime', placeholder: "起始时间", size:30 %>
+      <label> 至</label>
+      <%= text_field_tag "news_end_time", params[:news_end_time],  class: 'form-control news_filter news_datetime', placeholder: "结束时间", size:30 %>
+    </div>
+    <%= text_field_tag "news_q", params[:news_q],  class: 'form-control news_filter', placeholder: "输入关键词进行搜索", size:30 %>
+  </div>
+
+  <table class="table table-hover news">
+    <thead>
+      <tr>
+        <th class='text-center'>显示状态</th>
+        <th class='text-center'>标题</th>
+        <th class='text-center'>创建时间</th>
+        <th class='text-center'>操作</th>
+      </tr>
+    </thead>
+    <tbody class='text-center'>
+      <% newses.each do |news| %>
+        <tr>
+          <td><%= news.is_display_cn %></td>
+          <td><%= news.name %></td>
+          <td><%= get_datetime(news.created_at) %></td>
+          <td>
+            <%= link_to news.is_top ? "取消置顶" : "置顶", toggle_is_top_boombox_operation_news_path(news), method: "post" %>
+            <%= link_to "编辑", edit_boombox_operation_news_path(news)%>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div>每页显示数量
+    <%= select_tag :news_per, options_for_select([5, 10, 15, 20], selected: params[:news_per] || 10), class: "form-control news_filter" %>
+  </div>
+
+  <%= paginate newses, param_name: "news_page", remote: true %>
+<% end %>

@@ -1,5 +1,4 @@
 class Boombox::Operation::BoomTopicsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   load_and_authorize_resource
 
   def index
@@ -35,7 +34,7 @@ class Boombox::Operation::BoomTopicsController < Boombox::Operation::Application
     @likers = likers.order("boom_user_likes.created_at").page(params[:likers_page]).per(params[:likers_per])
   end
 
-  def destroy 
+  def destroy
     collaborator = @boom_topic.collaborator
     if @boom_topic.destroy
       redirect_to boombox_operation_collaborator_url(collaborator), notice: '删除成功'
