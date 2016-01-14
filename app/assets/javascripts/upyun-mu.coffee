@@ -3,6 +3,12 @@
   init_progress = ->
     $('.progress-bar').attr("aria-valuenow", 0).css('width', 0 + '%').text(0 + '%')
     $('#upload_status').removeClass('alert-success').addClass('alert-warning').hide()
+  # 初始化提示
+  display_init = ->
+    $('.progress').show()
+    $('#upload_status').show()
+    $('#upload_status').text('正在初始化')
+    $('#track-submit').addClass('disabled').val('正在上传')
   # 进度条更新
   update_progress = (start, end) ->
     width = Math.round(start / end * 100.00)
@@ -17,10 +23,9 @@
     $.notify error_message,
       globalPosition: 'top center'
       className: 'error'
-  # 上传和保存按钮可用
+  # 保存按钮可用
   unlock_command_buttons = ->
     $('#track-submit').removeClass('disabled').val('保存')
-    $('#upload_track').removeClass('disabled')
 
   _extend = (dst, src) ->
     for i of src
@@ -146,13 +151,12 @@
         request.setRequestHeader 'Content-type', 'application/x-www-form-urlencoded'
 
         request.onreadystatechange = ->
-          if request.readyState == 4 and request.status == 200
-            data = $.parseJSON(request.responseText)
-            uploadResult = data['message']
-            if uploadResult == 'failure'
-              display_error('操作失败，请稍后重试')
-              unlock_command_buttons()
-          return
+          if request.readyState == 4 && request.status == 0
+            display_error('网络故障，请稍后重试')
+            $('.track-file-uploader').val('')
+            $('.progress').hide()
+            $('#upload_status').hide()
+            unlock_command_buttons()
         
         request.onload = (e) ->
           if request.status == 200
@@ -163,7 +167,7 @@
             request.send urlencParams
           return
         request.send urlencParams
-        
+        display_init()
         return
       (chunkInfo, res, callback) ->
         res = JSON.parse(res)
@@ -196,6 +200,7 @@
 
           request.onreadystatechange = (e) ->
             if e.currentTarget.readyState == 4 and e.currentTarget.status == 200
+              $('#upload_status').hide()
               update_progress(end, file.size)
               _status = JSON.parse(e.currentTarget.response).status
               result = request.response

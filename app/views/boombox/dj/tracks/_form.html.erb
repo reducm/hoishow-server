@@ -41,9 +41,8 @@
           <% end %>
           <p id="track_size">大小：<%= track.file_size %> MB</p>
           <p id="track_duration">时长：<%= track.duration_to_time %></p>
-          <p>上传音乐,支持格式:mp3</p>
+          <p>上传音乐,支持格式：mp3</p>
           <%= file_field_tag 'upyun_upload', class: "track-file-uploader" %>
-          <a id="upload_track" class="btn btn-default">上传音乐</a>
           <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;">
               0%

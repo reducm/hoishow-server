@@ -3,9 +3,6 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   before_filter :check_login!
   before_filter :get_track, except: [:search, :index, :new, :create]
 
-#  UPYUN_BUCKET = 'boombox-file'
-#  UPYUN_FORM_API = 's83au5+hc0rd545EsOXcb9Io/8g='
-
   def index
     @tracks = current_collaborator.boom_tracks 
     @tracks = @tracks.valid.page(params[:tracks_page]).order("created_at desc")
@@ -26,12 +23,6 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
     @track = current_collaborator.boom_tracks.new
     get_all_artists
   end
-
-#  def get_upyun_policy_and_signature
-    #render :json => {
-      #:signature => upyun_upload_signature
-    #}
-#  end
 
   def create
     @track = current_collaborator.boom_tracks.new(track_params)
@@ -106,18 +97,4 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   def track_params
     params.require(:boom_track).permit(:cover, :name, :is_top, :file, :artists, :duration)
   end
-
-  #def upyun_upload_policy_document
-    #return @policy if @policy
-    #ret = {
-      #"expiration" => 5.minutes.from_now.utc.xmlschema,
-      #"bucket" =>  YOUR_BUCKET_NAME
-    #}
-    #@policy = Base64.encode64(ret.to_json).gsub(/\n/,'')
-  #end
-
-  #def upyun_upload_signature
-    #string = upyun_upload_policy_document + '&' + UPYUN_FORM_API
-    #signature = Digest::MD5.hexdigest(string)
-  #end
 end

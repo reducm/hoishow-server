@@ -22,30 +22,9 @@ $ ->
   else
     $('select#tags').select2()
 
-  # 直传又拍云
   $('.progress').hide()
   $('#upload_status').hide()
-
-  $('#upload_track').on 'click', ->
-    if $('#upyun_upload').length > 0
-      ext = '.' + $('#upyun_upload').val().split('.').pop()
-      config =
-        bucket: 'boombox-file'
-        expiration: parseInt((new Date().getTime() + 3600000) / 1000),
-        form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
-      instance = new Sand(config)
-      #options = 'notify_url': 'http://upyun.com'
-      #instance.setOptions options
-      path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
-      instance.upload(path, '#upyun_upload')
-      $('.progress').show()
-      $('#track-submit').addClass('disabled').val('正在上传')
-      $('#upload_track').addClass('disabled')
-
-      document.addEventListener 'uploaded', (e) ->
-        $("#boom_track_file").attr("value", path)
-
-  # 上传音乐后显示文件信息
+  # 选择文件后显示文件信息
   $('.track-file-uploader').change ->
     if this.files[0]
       obj_url = window.URL.createObjectURL(this.files[0])
@@ -58,6 +37,19 @@ $ ->
       $('#boom_track_name').val(filename)
       $('#track_filename').text("文件：" + name)
       $('#track_size').text("大小：" + size + " MB")
+
+      # 直传又拍云
+      ext = '.' + $('#upyun_upload').val().split('.').pop()
+      config =
+        bucket: 'boombox-file'
+        expiration: parseInt((new Date().getTime() + 3600000) / 1000),
+        form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
+      instance = new Sand(config)
+      path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
+      instance.upload(path, '#upyun_upload')
+
+      document.addEventListener 'uploaded', (e) ->
+        $("#boom_track_file").attr("value", path)
     return
 
   if $("#track-file-pre")[0]
