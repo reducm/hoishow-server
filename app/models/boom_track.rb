@@ -3,7 +3,7 @@ class BoomTrack < ActiveRecord::Base
 
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
-  TrackUpyunSetting = UpyunSetting['boombox-file']
+  UPYUN_PREFIX = 'http://boombox-file.b0.upaiyun.com'
 
   attr_reader :track_tag_names
 
@@ -176,8 +176,7 @@ class BoomTrack < ActiveRecord::Base
 
   def file_url
     if file
-      prefix = Rails.env.development? ? 'http://boombox-file.b0.upaiyun.com' : TrackUpyunSetting["upyun_upload_url"]
-      prefix + file
+      UPYUN_PREFIX + file
     else
       nil
     end
