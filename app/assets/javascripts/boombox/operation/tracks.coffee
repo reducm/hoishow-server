@@ -64,4 +64,5 @@ $ ->
     duration = $("#track-file-pre")[0].duration
     if duration
       $("#boom_track_duration").attr("value", duration)
+    $('#upyun_upload').remove()
     $("form").submit()
