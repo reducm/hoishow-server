@@ -91,7 +91,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
         @message = '订单确认失败'
       end
     # 第三方的演出，必须确定库存才能出票
-    elsif @order.show.third_party?
+    else
       if !@order.pre_pay! || (@order.e_ticket? && !@order.success_pay!)
         @error_code = 3012
         @message = '订单确认失败'
