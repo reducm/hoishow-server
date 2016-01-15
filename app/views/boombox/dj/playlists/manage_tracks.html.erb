@@ -10,7 +10,6 @@
     <li role="presentation" class="active" id="playlist_track_list"><a href="#playlist_tracks" aria-controls="playlist_tracks" role="tab" data-toggle="tab">音乐列表</a></li>
     <li role="presentation"><a href="#playlist_search_tracks" aria-controls="search_tracks" role="tab" data-toggle="tab">搜索添加</a></li>
   </ul>
-
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="playlist_tracks">
       <%= render partial: "/boombox/dj/tracks/list_table", locals: {tracks: @playlist_tracks, list_type: "playlist_tracks"} %>
@@ -28,5 +27,4 @@
       </div>
     </div>
   </div>
-
 </div>

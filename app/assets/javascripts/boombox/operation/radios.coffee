@@ -14,7 +14,7 @@ $ ->
   #radio_search_tracks换页
   $("#radio_search_track_table .pagination a").on "click", (e) ->
     sessionStorage.setItem('show_search_tab', 't')
-    
+
   #刷新radio_track_list
   $("#radio_track_list").on "click", (e) ->
     e.preventDefault()
@@ -22,7 +22,7 @@ $ ->
     radio_id = $("#radio_id").val()
     location.href = "/boombox/operation/radios/#{radio_id}/manage_tracks"
 
-  #添加音乐 
+  #添加音乐
   $("#radio_search_tracks").on "click", ".add_track_to_playlist", (e) ->
     e.preventDefault()
     track_id = $(this).data("track-id")
@@ -31,13 +31,11 @@ $ ->
     if track_id && radio_id
       $.post("/boombox/operation/radios/#{radio_id}/add_track", { track_id: track_id}, (data)->
         if data.success
-          pop_btn.popover("show")
-          setTimeout(()->
-            pop_btn.popover("hide")
-          ,1000)
+          pop_btn.text("已添加")
+          pop_btn.addClass("btn-success")
       )
 
-  #移除音乐 
+  #移除音乐
   $("#radio_tracks").on "click", ".remove_track_to_playlist", (e) ->
     e.preventDefault()
     sessionStorage.setItem('show_search_tab', 'f')
@@ -58,4 +56,3 @@ $ ->
 
   $('.radio-cover-uploader').change ->
     readURL this, $("#radio_cover_preview")
-

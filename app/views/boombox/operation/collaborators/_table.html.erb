@@ -13,7 +13,6 @@
         <th>标签</th>
         <th>粉丝数</th>
         <th>创建时间</th>
-        <th>修改时间</th>
         <th>审核状态</th>
         <th>是否推荐</th>
         <th>操作</th>
@@ -40,12 +39,12 @@
           <% end %>
           <td><%= collaborator.followers.count %></td>
           <td><%= get_datetime( collaborator.created_at ) %></td>
-          <td><%= get_datetime( collaborator.updated_at ) %></td>
           <td><%= collaborator.verified_cn %></td>
           <td><%= collaborator.is_top_cn %></td>
           <td>
             <%= link_to "查看详情", boombox_operation_collaborator_path(collaborator)%>
             <%= link_to '编辑', edit_boombox_operation_collaborator_path(collaborator) %>
+            <br />
             <% if collaborator.is_top? %>
               <%= link_to "取消推荐", toggle_is_top_boombox_operation_collaborator_path(collaborator), method: :post %>
             <% else %>

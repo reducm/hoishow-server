@@ -3,6 +3,7 @@
 <legend><%= link_to "艺人列表", boombox_operation_collaborators_path %>/<%= link_to "艺人详情", boombox_operation_collaborator_path(collaborator) %>/艺人资料</legend>
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
+    <span class="pull-left font-gray">最后修改时间: <%= get_datetime collaborator.updated_at %></span>
     <% if collaborator.reload.verified? %>
       <h4><span class="glyphicon glyphicon-ok pull-right" aria-hidden="true"></span><span class="label label-success pull-right">已审核</span></h4>
     <% else %>
@@ -64,7 +65,7 @@
 
   <div class="row">
     <div class="col-md-10 col-md-offset-1 introduction-area">
-      <%= f.input :description, as: :text, label: '个人简介' %>        
+      <%= f.input :description, as: :text, label: '个人简介' %>
     </div>
   </div>
 

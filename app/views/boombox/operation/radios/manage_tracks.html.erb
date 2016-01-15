@@ -2,6 +2,7 @@
 <legend>
   <%= link_to "电台列表", boombox_operation_radios_path %>/管理音乐
   <%= link_to "发布电台", publish_boombox_operation_radio_path(@radio), method: :post, class: 'btn btn-primary' unless @radio.is_display %>
+  <span class="font-gray pull-right">最后修改时间: <%= get_datetime @radio.updated_at %></span>
 </legend>
 <%= hidden_field_tag "radio_id", @radio.id %>
 <div role="tabpanel">
