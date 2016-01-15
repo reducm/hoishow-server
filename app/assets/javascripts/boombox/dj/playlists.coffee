@@ -4,6 +4,7 @@ $ ->
 
   if sessionStorage.getItem('show_search_tab') == "t"
     $("#playlist_manage_tab a[href='#playlist_search_tracks']").tab("show")
+    sessionStorage.setItem('show_search_tab', 'f')
 
   #按了搜索按钮
   $("#playlist_search_track_btn").on "click", (e) ->
@@ -77,4 +78,11 @@ $ ->
   $("#playlist-submit").on "click", (e) ->
     e.preventDefault()
     $("#boom_tag_ids").val($('select#tags').val())
+    $("form").submit()
+
+  $("#new-playlist-submit").on "click", (e) ->
+    e.preventDefault()
+    $("#boom_tag_ids").val($('select#tags').val())
+    # 新建 playlist 后，应跳转至“管理音乐”页面，并在“搜索添加”的 tab 下
+    sessionStorage.setItem('show_search_tab', 't')
     $("form").submit()

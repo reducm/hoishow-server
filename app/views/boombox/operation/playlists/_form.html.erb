@@ -32,7 +32,11 @@
       </div>
 
       <div class="col-md-offset-5">
-        <%= submit_tag "保存", class: "btn btn-primary", id: "playlist-submit", data: { disable_with: "loading" } %>
+        <% if params[:action] == 'edit' %>
+          <%= submit_tag "保存", class: "btn btn-primary", id: "playlist-submit", data: { disable_with: "loading" } %>
+        <% else %>
+          <%= submit_tag "保存", class: "btn btn-primary", id: "new-playlist-submit", data: { disable_with: "loading" } %>
+        <% end %>
       </div>
     <% end %>
   </div>
