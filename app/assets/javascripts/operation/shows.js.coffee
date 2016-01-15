@@ -29,7 +29,8 @@ set_pie_cake = (unpaid_count, left_count, sold_count, area_name, tickets_count) 
 set_title = (el)->
   seat_no = $(el).data('seat-no')
   price = if parseFloat($(el).data('seat-price')) then parseFloat($(el).data('seat-price')) else 0
-  text = "座位号: #{seat_no} 价格: #{price}"
+  love_index = $(el).data('love-index')
+  text = "座位号: #{seat_no} 价格: #{price} 情侣座: #{love_index}"
   $(el).attr('data-original-title', text)
   $('ul.seats span').tooltip()
 
@@ -55,8 +56,9 @@ get_seats_info = (target)->
       if status != undefined && status != ''
         row_key = $(this).data('row-id')
         col_key = $(this).data('column-id')
+        love_index = $(this).data('love-index')
         seat_no = "#{row_key}排#{col_key}座"
-        value = {"#{col_key}": { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no } }
+        value = {"#{col_key}": { status: status, price: $(this).data('seat-price'), channels: $(this).data('channel-ids'), seat_no: seat_no, love_index: love_index } }
         # 组成 hash
         data['seats'][row_key] = if data['seats'][row_key] != undefined
           merge data['seats'][row_key], value
@@ -221,6 +223,14 @@ get_coordinates = (show_id, event_id)->
     canvas.height = canvas.parentNode.clientHeight
     set_area(event_id)
     draw_areas(canvas.getContext("2d"), $("##{event_id} .coordinate_hash").data('area-coordinates'), $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates"))
+  )
+
+# 设置情侣座号以及修改提示
+set_love_index = ($first_s, $last_s)->
+  $.each([$first_s, $last_s], (idx, val)->
+    result = if idx == 0 then 'L' else 'R'
+    $(val).data('love-index', result)
+    set_title(val)
   )
 $ ->
   star_ids = []
@@ -759,6 +769,26 @@ $ ->
           )
         else
           alert('价格必须为数字')
+
+    #设置情侣座
+    $('.set_love').on 'click', ()->
+      return alert('只有选中两个座位才能设置情侣座') unless $(".ui-selected").length == 2
+
+      $first_s = $(".ui-selected:first")
+      $last_s = $(".ui-selected:last")
+      switch
+        when $first_s.data('row-id') != $last_s.data('row-id')
+          alert('只有选中两个同一排的座位才能设置情侣座')
+        when Math.abs($first_s.data('column-id') - $last_s.data('column-id')) != 1
+          alert('只有选中两个相邻的座位才能设置情侣座')
+        when $first_s.data('love_index') != ''
+          $first_s.prev().data('love_index', '')
+          set_love_index($first_s, $last_s)
+        when $last_s.data('love_index') != ''
+          $last_s.next().data('love_index', '')
+          set_love_index($first_s, $last_s)
+        else
+          set_love_index($first_s, $last_s)
 
     #设置渠道
     $('.set_channel').on 'click', ()->
