@@ -45,6 +45,12 @@
 #= require operation/jquery.datetimepicker
 
 $ ->
+  $(window).on 'load resize', ->
+  if $(document).width() < 1200
+    $('.boombox_operation').addClass('responsive-width')
+  else
+    $('.boombox_operation').removeClass('responsive-width')
+
   #datetimepicker
   $('div.datetimepicker input').datetimepicker({
     format: 'Y-m-d H:i',
