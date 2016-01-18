@@ -27,7 +27,6 @@
       <th class='text-center'>标签</th>
       <th class='text-center'>创建者</th>
       <th class='text-center'>创建时间</th>
-      <th class='text-center'>修改时间</th>
       <th class='text-center'>推荐状态</th>
       <th class='text-center'>发布状态</th>
       <th class='text-center'>操作</th>
@@ -65,12 +64,12 @@
             <% end %>
           </td>
           <td><%= get_datetime( playlist.created_at ) %></td>
-          <td><%= get_datetime( playlist.updated_at ) %></td>
           <td><%= playlist.is_top_cn %></td>
           <td><%= playlist.is_display_cn %></td>
           <td>
             <%= link_to "编辑", edit_boombox_operation_playlist_path(playlist)%>
             <%= link_to "管理音乐", manage_tracks_boombox_operation_playlist_path(playlist)%>
+            <%= link_to playlist.is_top ? "取消推荐" : "推荐", change_is_top_boombox_operation_playlist_path(playlist), method: "post" %>
             <%= link_to "删除", boombox_operation_playlist_path(playlist), method: "delete", data: {confirm: "确定删除吗？"} %>
           </td>
         </tr>

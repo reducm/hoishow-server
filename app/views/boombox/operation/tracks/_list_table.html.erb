@@ -49,6 +49,7 @@
             <% elsif list_type == "search_tracks" %>
               <a data-track-id="<%= track.id %>" class="btn add_track_to_playlist">添加</a>
             <% else %>
+              <%= link_to track.is_top ? "取消推荐" : "推荐", change_is_top_boombox_operation_track_path(track), method: "post" %>
               <%= link_to "删除", boombox_operation_track_path(track), method: "delete", data: {confirm: "确定删除吗？"} %>
             <% end %>
           </td>
