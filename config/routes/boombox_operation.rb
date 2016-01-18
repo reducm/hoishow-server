@@ -65,6 +65,7 @@ module Routes
             resources :activities do
               member do
                 post :change_is_top
+                post :change_is_hot
                 patch :upload_cover
               end
 
