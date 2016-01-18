@@ -51,8 +51,7 @@
             <td><%= get_datetime( activity.created_at ) %></td>
             <td><%= activity.is_hot_cn %></td>
             <td>
-              <%= link_to activity.is_top ? "取消置顶" : "置顶", change_is_top_boombox_operation_activity_path(activity), method: "post" %>
-              <%= link_to "编辑", edit_boombox_operation_activity_path(activity)%>
+              <%= link_to activity.is_top ? "取消推荐" : "推荐", change_is_top_boombox_operation_activity_path(activity), method: "post" %>
             </td>
           </tr>
         <%end%>
