@@ -48,11 +48,11 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
         subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @playlist)
       end
       flash[:notice] = '创建Playlist成功'
+      redirect_to manage_tracks_boombox_operation_playlist_url(@playlist)
     else
       flash[:alert] = '创建Playlist失败'
+      redirect_to boombox_operation_playlists_url
     end
-
-    redirect_to boombox_operation_playlists_url
   end
 
   def update

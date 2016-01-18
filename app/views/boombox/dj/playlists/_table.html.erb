@@ -18,7 +18,13 @@
     <% if playlists.any? %>
       <% playlists.each do|playlist| %>
         <tr>
-          <td><%= playlist.id %></td>
+          <td>
+            <% if playlist.is_display %>
+              <span class="label label-success"><%= playlist.id %></span>
+            <% else %>
+              <span class="label label-warning"><%= playlist.id %></span>
+            <% end %>
+          </td>
           <td><%= image_tag(playlist.cover_url, size: "50x50") if playlist.cover_url %></td>
           <td><%= playlist.name %></td>
           <td><%= playlist.tracks.count %></td>

@@ -33,10 +33,21 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
         subject_relate_tag(params[:boom_tag_ids], @playlist)
       end
       flash[:notice] = '创建Playlist成功'
+      redirect_to manage_tracks_boombox_dj_playlist_url(@playlist)
     else
       flash[:alert] = '创建Playlist失败'
+      redirect_to boombox_dj_playlists_url
     end
-    redirect_to boombox_dj_playlists_url
+  end
+
+  def publish
+    if @playlist.update(is_display: 1)
+      flash[:notice] = 'playlist发布成功'
+    else
+      flash[:error] = 'playlist发布失败'
+    end
+
+    redirect_to manage_tracks_boombox_dj_playlist_url(@playlist)
   end
 
   def update
