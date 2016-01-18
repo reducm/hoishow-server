@@ -1,7 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
-
   def index
     params[:page] ||= 1
     params[:per] ||= 10

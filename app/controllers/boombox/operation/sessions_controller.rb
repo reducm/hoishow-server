@@ -1,5 +1,5 @@
 class Boombox::Operation::SessionsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!, only: [:destroy]
+  skip_before_filter :check_login!, except: [:destroy]
 
   def new
   end

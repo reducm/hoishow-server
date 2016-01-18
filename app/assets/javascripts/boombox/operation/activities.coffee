@@ -1,6 +1,6 @@
 insert_obj = (obj)->
   node = window.getSelection().anchorNode
-  if node && (node.nodeType == 1 || node.nodeType == 3)
+  if node && (node.nodeType == 1 || node.nodeType == 3) && $('.qeditor_preview').find(node).length > 0
     $(node).after(obj)
   else
     $('.qeditor_preview').append(obj)
@@ -32,7 +32,6 @@ init_editor = ()->
         file = data.files[0]
         if types.test(file.type) || types.test(file.name)
           data.submit()
-          $('.qeditor_preview').append($('<div id="progress" style="width: 300px;"><div class="bar" style="width: 0%;"></div></div>'))
         else
           alert("#{file.name}不是gif, jpeg, 或png图像文件")
       submit: (e, data) ->
@@ -67,7 +66,7 @@ $ ->
     allowSpaces: true
     autocomplete: { delay: 0, minLength: 0, source: all_collaborators }
     showAutocompleteOnFocus: true
-  
+
   #上传海报
   $('.activity_cover_uploader').fileupload
     url: "/boombox/operation/activities/#{activity_id}/upload_cover"
@@ -78,4 +77,3 @@ $ ->
 
   $('#boom_activity_cover').change ->
     readURL this, $('.cover_preview')
-

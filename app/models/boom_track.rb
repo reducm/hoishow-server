@@ -3,6 +3,7 @@ class BoomTrack < ActiveRecord::Base
 
   CREATOR_ADMIN = 'BoomAdmin'
   CREATOR_COLLABORATOR = 'Collaborator'
+  UPYUN_PREFIX = 'http://boombox-file.b0.upaiyun.com'
 
   attr_reader :track_tag_names
 
@@ -21,7 +22,7 @@ class BoomTrack < ActiveRecord::Base
   validates :creator_id, presence: true
   validates :creator_type, presence: true
 
-  mount_uploader :file, AudioUploader
+  #mount_uploader :file, AudioUploader
   mount_uploader :cover, BoomImageUploader
 
   after_create :set_removed_and_is_top, :convert_audio
@@ -29,6 +30,7 @@ class BoomTrack < ActiveRecord::Base
 
   # 关系查询时相同名称的字段，例如created_at可能会重复，所以指明表名
   scope :valid, -> {where(removed: false).order('boom_tracks.is_top desc, boom_tracks.created_at desc')}
+
 
   paginates_per 10
 
@@ -172,6 +174,14 @@ class BoomTrack < ActiveRecord::Base
     boom_tags.pluck(:name).join(",")
   end
 
+  def file_url
+    if file
+      UPYUN_PREFIX + file
+    else
+      nil
+    end
+  end
+
   private
   def set_removed_and_is_top
     unless is_top
@@ -182,7 +192,8 @@ class BoomTrack < ActiveRecord::Base
   end
 
   def convert_audio
-    ConvertAudioWorker.perform_async(file.path) if file_url
+    #ConvertAudioWorker.perform_async(file.path) if file_url
+    ConvertAudioWorker.perform_async(file) if file_url
   end
 
   def convert_audio_if_changed

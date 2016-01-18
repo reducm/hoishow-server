@@ -39,6 +39,7 @@ module Routes
 
             resources :tracks do
               post :convert_audio_notify, on: :collection
+              post :change_is_top, on: :member
             end
 
             resources :playlists do
@@ -47,6 +48,7 @@ module Routes
                 post :remove_track
                 get :manage_tracks
                 post :publish
+                post :change_is_top
               end
             end
 
@@ -56,16 +58,24 @@ module Routes
                 post :remove_track
                 get :manage_tracks
                 post :publish
+                post :change_is_top
               end
             end
 
             resources :activities do
               member do
                 post :change_is_top
+                post :change_is_hot
                 patch :upload_cover
               end
 
               post :upload_image, on: :collection
+            end
+
+            resources :news, except: [:show, :destroy] do
+              member do
+                post :toggle_is_top
+              end
             end
 
             resources :boom_tags, only: [:index, :create, :destroy] do
