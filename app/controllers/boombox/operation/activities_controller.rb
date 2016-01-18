@@ -104,6 +104,15 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     redirect_to boombox_operation_activities_url
   end
 
+  def change_is_hot
+    if @activity.is_hot
+      @activity.update(is_hot: false)
+    else
+      @activity.update(is_hot: true)
+    end
+    redirect_to boombox_operation_activities_url
+  end
+
   def upload_cover
     @activity.update(activity_params)
 

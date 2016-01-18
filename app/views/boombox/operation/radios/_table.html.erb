@@ -65,6 +65,7 @@
             <td>
               <%= link_to "编辑", edit_boombox_operation_radio_path(radio)%>
               <%= link_to "管理音乐", manage_tracks_boombox_operation_radio_path(radio)%>
+              <%= link_to radio.is_top ? "取消推荐" : "推荐", change_is_top_boombox_operation_radio_path(radio), method: "post" %>
               <%= link_to "删除", boombox_operation_radio_path(radio), method: "delete", data: {confirm: "确定删除吗？"} %>
             </td>
           </tr>

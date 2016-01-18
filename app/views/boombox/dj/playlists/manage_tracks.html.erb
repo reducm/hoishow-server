@@ -1,5 +1,10 @@
 <%# encoding: utf-8 %>
 
+<legend>
+  <%= link_to "Playlist列表", boombox_dj_playlists_path %>/管理音乐
+  <%= link_to "发布playlist", publish_boombox_dj_playlist_path(@playlist), method: :post, class: 'btn btn-primary' unless @playlist.is_display %>
+</legend>
+
 <audio src="#" preload="metadata" controls="controls" id="track_player">你的浏览器不支持audio标签</audio>
 
 <%= hidden_field_tag "playlist_id", @playlist.id %>

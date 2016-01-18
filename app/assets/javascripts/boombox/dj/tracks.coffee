@@ -2,8 +2,14 @@ $ ->
   ####### 编辑页
   # 上传图片后隐藏默认占位图
   $('input#boom_track_cover').on 'change', ->
-    $('div#track_cover_preview').hide()
-    readURL this
+    if this.files[0]
+      ext = '.' + $(this).val().split('.').pop()
+      if $.inArray(ext, [".jpg", ".jpeg", ".gif", ".png"]) == -1
+        $(this).val('')
+        alert '请上传.jpg, .jpeg, .gif, .png格式图片'
+      else
+        $('div#track_cover_preview').hide()
+        readURL this
 
   # 艺术家标签化
   $(document).ready ->
@@ -32,6 +38,7 @@ $ ->
         $('.track-file-uploader').val('')
         alert '请上传mp3格式音乐'
       else
+        $('#upyun_upload').hide()
         obj_url = window.URL.createObjectURL(this.files[0])
         $("#track-file-pre").attr("src", obj_url).attr("controls", "controls")
 
@@ -50,6 +57,10 @@ $ ->
           form_api_secret: 's83au5+hc0rd545EsOXcb9Io/8g='
         instance = new Sand(config)
         path = '/track_upload/' + parseInt(((new Date).getTime() + 3600000) / 1000) + ext
+        $('.progress').show()
+        $('.progress-bar').attr("aria-valuenow", 0).css('width', 0 + '%').text(0 + '%')
+        $('#upload_status').removeClass('alert-success').addClass('alert-warning').show().text('正在初始化')
+        $('#track-submit').addClass('disabled').val('正在上传')
         instance.upload(path, '#upyun_upload')
 
         document.addEventListener 'uploaded', (e) ->

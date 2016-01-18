@@ -1,14 +1,4 @@
 (->
-  # 进度条初始化
-  init_progress = ->
-    $('.progress-bar').attr("aria-valuenow", 0).css('width', 0 + '%').text(0 + '%')
-    $('#upload_status').removeClass('alert-success').addClass('alert-warning').hide()
-  # 初始化提示
-  display_init = ->
-    $('.progress').show()
-    $('#upload_status').show()
-    $('#upload_status').text('正在初始化')
-    $('#track-submit').addClass('disabled').val('正在上传')
   # 进度条更新
   update_progress = (start, end) ->
     width = Math.round(start / end * 100.00)
@@ -72,7 +62,6 @@
     indices
 
   upload = (path, fileSelector) ->
-    init_progress()
     self = this
     blobSlice = File::slice or File::mozSlice or File::webkitSlice
     chunkSize = _config.chunkSize
@@ -167,7 +156,6 @@
             request.send urlencParams
           return
         request.send urlencParams
-        display_init()
         return
       (chunkInfo, res, callback) ->
         res = JSON.parse(res)
