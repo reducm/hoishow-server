@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::BoomAdminsController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   before_filter :get_boom_admin, except: [:index, :new, :create]
 
   def index

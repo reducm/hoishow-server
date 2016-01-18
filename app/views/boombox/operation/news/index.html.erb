@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+<div class="nav" id='news'>
+  <div class="text-center">
+    <h1>资讯</h1>
+    <%= link_to "新建资讯", new_boombox_operation_news_url, class: 'btn btn-primary' %>
+  </div>
+
+  <div class="mt20" id="news_list">
+    <%= render partial: "table", locals: {newses: @newses} %>
+  </div>
+</div>

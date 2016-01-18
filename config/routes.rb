@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   get "/mobile/shows/sharing" => "pages#sharing_show"
   get "/mobile/concerts/sharing" => "pages#sharing_concert"
 
+  #版权页
+  get "/copyright" => "pages#boombox_copyright"
+
   namespace :api do
     namespace :v1 do
       post "alipay/notify" => "alipay#notify"

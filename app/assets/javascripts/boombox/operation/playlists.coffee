@@ -4,6 +4,7 @@ $ ->
 
   if sessionStorage.getItem('show_search_tab') == "t"
     $("#playlist_manage_tab a[href='#playlist_search_tracks']").tab("show")
+    sessionStorage.setItem('show_search_tab', 'f')
 
   #按了搜索按钮
   $("#playlist_search_track_btn").on "click", (e) ->
@@ -57,3 +58,8 @@ $ ->
   $('.playlist-cover-uploader').change ->
     readURL this, $("#playlist_cover_preview")
 
+  # 新建 playlist 后，应跳转至“管理音乐”页面，并在“搜索添加”的 tab 下
+  $("#new-playlist-submit").on "click", (e) ->
+    e.preventDefault()
+    sessionStorage.setItem('show_search_tab', 't')
+    $("form").submit()
