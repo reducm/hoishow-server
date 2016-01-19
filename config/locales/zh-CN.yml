@@ -170,7 +170,7 @@ zh-CN:
     collaborators: "个人资料"
     boom_albums: "相册"
     boom_topics: "动态"
-    boom_tracks: "个人音乐"
+    tracks: "个人音乐"
     playlists: "个人Playlist"
   boombox_controller:
     sessions: "登录"
