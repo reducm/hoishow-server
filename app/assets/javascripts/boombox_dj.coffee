@@ -8,7 +8,6 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
-#= require select2.full.min
 #
 #= require boombox/dj/boom_albums
 #= require boombox/dj/boom_topics
