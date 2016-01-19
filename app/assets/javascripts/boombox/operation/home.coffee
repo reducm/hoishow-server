@@ -34,6 +34,8 @@ get_graphic_data = (time) ->
 
 $ ->
   if $("#home").length > 0
+    width = $('#home').width()
+    $('#data_collection').width(width)
     get_graphic_data("today")
 
     $(".select-begin-time a").on "click", ()->
