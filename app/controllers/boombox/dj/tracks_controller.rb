@@ -19,46 +19,49 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
   end
 
   def new
-    @tags = BoomTag.all
+    @tag_names = get_all_tag_names
     @track = current_collaborator.boom_tracks.new
-    get_all_artists
+    get_all_track_artists
   end
 
   def create
     @track = current_collaborator.boom_tracks.new(track_params)
+    @track.creator_id = current_collaborator.id
+    @track.creator_type = BoomTrack::CREATOR_COLLABORATOR
     if @track.save
-      if params[:boom_tag_ids].present?
-        @track.create_or_update_tag_relations(params[:boom_tag_ids])
+      if params[:boom_track][:track_tag_names].present?
+        subject_relate_tag(params[:boom_track][:track_tag_names], @track)
       end
       if params[:boom_track][:artists].present?
-        @track.create_tag_using_artists(params[:boom_track][:artists])
+        subject_relate_tag(params[:boom_track][:artists], @track, false)
       end
       flash[:notice] = '创建音乐成功'
-      redirect_to boombox_dj_tracks_url
     else
-      flash[:alert] = @track.errors.full_messages 
-      @track = current_collaborator.boom_tracks.new
-      render :new
+      flash[:alert] = "创建音乐失败"
     end
+
+    redirect_to boombox_dj_tracks_url
   end
 
   def update
     if @track.update(track_params)
-      if params[:boom_tag_ids].present?
-        @track.create_or_update_tag_relations(params[:boom_tag_ids])
+      if params[:boom_track][:track_tag_names].present?
+        subject_relate_tag(params[:boom_track][:track_tag_names], @track)
       end
       if params[:boom_track][:artists].present?
-        @track.create_tag_using_artists(params[:boom_track][:artists])
+        subject_relate_tag(params[:boom_track][:artists], @track, false)
       end
       flash[:notice] = '编辑音乐成功'
-      redirect_to boombox_dj_tracks_url
+    else
+      flash[:alert] = '编辑音乐失败'
     end
+
+    redirect_to boombox_dj_tracks_url
   end
 
   def edit
-    @tags = BoomTag.all
-    get_tags_already_added
-    get_all_artists
+    @tag_names = get_all_tag_names
+    get_all_track_artists
   end
 
   def destroy
@@ -72,22 +75,16 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
 
   private
 
-  def get_all_artists
+  def get_all_track_artists
     artist_names = []
-    BoomTrack.all.each do |track|
-      if track.artists.present?
-        artist_names << track.artists.split(',')
+    all_artists = BoomTrack.pluck(:artists)
+    all_artists.map do |art|
+      if art.present?
+        artist_names << art.split(",")
       end
     end
-    @artist_names = artist_names.flatten.uniq
-  end
 
-  def get_tags_already_added
-    if @track.boom_tags.any?
-      @tags_already_added_ids = @track.boom_tags.pluck(:id)
-    else
-      @tags_already_added_ids = []
-    end
+    @artist_names = artist_names.flatten.uniq
   end
 
   def get_track
