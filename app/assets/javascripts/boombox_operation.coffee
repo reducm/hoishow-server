@@ -53,11 +53,10 @@ $ ->
     # 首页图表自适应
     if $('#home')
       width = $('#home').width()
-      if $('#data_collection')
-        $('#data_collection').width(width)
-        if $('#data_collection').attr('_echarts_instance_')
-          echarts_id = $('#data_collection').attr('_echarts_instance_')
-          echarts.getInstanceById(echarts_id).resize()
+      $('#data_collection').width(width)
+      if $('#data_collection').attr('_echarts_instance_')
+        echarts_id = $('#data_collection').attr('_echarts_instance_')
+        echarts.getInstanceById(echarts_id).resize()
 
   #datetimepicker
   $('div.datetimepicker input').datetimepicker({
