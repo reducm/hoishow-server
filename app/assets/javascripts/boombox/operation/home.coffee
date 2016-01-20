@@ -5,7 +5,7 @@ set_recent_data = (users_array, time_array) ->
     tooltip :
       trigger: 'axis'
     legend:
-      data:['新增用户量']
+      data: ['新增用户数']
     calculable : false
     xAxis : [
       type : 'category'
@@ -16,9 +16,9 @@ set_recent_data = (users_array, time_array) ->
     ]
     series : [
       {
-      name:'新增用户量'
-      type:'line'
-      data:users_array
+      name: '新增用户数'
+      type: 'bar'
+      data: users_array
       }
     ]
 
@@ -36,7 +36,7 @@ $ ->
   if $("#home").length > 0
     width = $('#home').width()
     $('#data_collection').width(width)
-    get_graphic_data("today")
+    get_graphic_data("seven_days_from_now")
 
     $(".select-begin-time a").on "click", ()->
       id_value = $(this).attr("id")

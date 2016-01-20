@@ -5,32 +5,30 @@
   <table class="table">
     <thead>
       <tr>
-        <th>总用户数量</th>
-        <th>今日新增用户数</th>
         <th>音乐数量(<%= link_to "查看更多", boombox_operation_tracks_path %>)</th>
-        <th>playlist数量(<%= link_to "查看更多", boombox_operation_playlists_path %>)</th>
         <th>艺人数量(<%= link_to "查看更多", boombox_operation_collaborators_path %>)</th>
+        <th>playlist数量(<%= link_to "查看更多", boombox_operation_playlists_path %>)</th>
+        <th>活动数量(<%= link_to "查看更多", boombox_operation_activities_path %>)</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span><%= @total_users_count %></span></td>
-        <td><span><%= @today_registered_users_count %></span></td>
         <td><span><%= @tracks_count %></span></td>
-        <td><span><%= @playlists_count %></span></td>
         <td><span><%= @collaborators_count %></span></td>
+        <td><span><%= @playlists_count %></span></td>
+        <td><span><%= @activities_count %></span></td>
       </tr>
     </tbody>
   </table>
   <div class="btn-group">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-      <span class="display-time">本日</span>
+      <span class="display-time">过去7天</span>
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu select-begin-time" role="menu">
-      <li><a href="javascript:void(0);" id="today">本日</a>
+      <li><a href="javascript:void(0);" id="seven_days_from_now">过去7天</a>
       </li>
-      <li><a href="javascript:void(0);" id="this_month">本月</a>
+      <li><a href="javascript:void(0);" id="thirty_days_from_now">过去30天</a>
       </li>
       <li><a href="javascript:void(0);" id="this_year">本年</a>
       </li>

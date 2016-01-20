@@ -1,20 +1,18 @@
 # encoding: utf-8
 class Boombox::Operation::HomeController < Boombox::Operation::ApplicationController
   def index
-    # 总用户数量
-    @total_users_count = User.from_boombox.count
-    # 今日新增用户数
-    @today_registered_users_count = User.from_boombox.today_registered_users.count
     # 音乐数量
     @tracks_count = BoomTrack.valid.count
+    # 艺人数量
+    @collaborators_count = Collaborator.verified.count
     # playlist数量
     @playlists_count = BoomPlaylist.valid_playlists.count
-    # 艺人数量
-    @collaborators_count = Collaborator.count
+    # 活动数量
+    @activities_count = BoomActivity.is_display.count
   end
 
   def get_graphic_data
-    begin_time = params[:time] || "today"
+    begin_time = params[:time] || "seven_days_from_now"
     a = generate_adapt_array(begin_time)
     adapt_time_array = a[0]
     adapt_date_array = a[1]
@@ -26,12 +24,20 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
   def generate_adapt_array(begin_time)
     a = []
     case begin_time
-    when "today"
-      a.push([Time.now.at_beginning_of_day..Time.now, "本日", "'%H时'"])
-      a.push(["00时","01时","02时","03时","04时","05时","06时","07时","08时","09时","10时","11时","12时","13时","14时","15时","16时","17时","18时","19时","20时","21时","22时","23时"])
-    when "this_month"
-      a.push([Time.now.at_beginning_of_month..Time.now, "本月", "'%d日'"])
-      a.push(["01日","02日","03日","04日","05日","06日","07日","08日","09日","10日","11日","12日","13日","14日","15日","16日","17日","18日","19日","20日","21日","22日","23日","24日","25日","26日","27日","28日","29日","30日"])
+    when "seven_days_from_now"
+      a.push([(DateTime.now - 7).to_time..Time.now, "过去7天", "'%m-%d'"])
+      x_axis = []
+      (0..7).each do |n|
+        x_axis << (DateTime.now - n).strftime('%m-%d')
+      end
+      a.push x_axis.reverse
+    when "thirty_days_from_now"
+      a.push([(DateTime.now - 30).to_time..Time.now, "过去30天", "'%m-%d'"])
+      x_axis = []
+      (0..30).each do |n|
+        x_axis << (DateTime.now - n).strftime('%m-%d')
+      end
+      a.push x_axis.reverse
     when "this_year"
       a.push([Time.now.at_beginning_of_year..Time.now, "本年", "'%m月'"])
       a.push(["01月","02月","03月","04月","05月","06月","07月","08月","09月","10月","11月","12月"])
