@@ -36,10 +36,10 @@
         <div class="track_file_area">
           <% if params[:action] == 'new' %>
             <p id="track_filename">文件：未上传</p>
+            <p id="track_size">大小：0 MB</p>
           <% else %>
             <p id="track_filename">文件：已上传</p>
           <% end %>
-          <p id="track_size">大小：<%= track.file_size %> MB</p>
           <p id="track_duration">时长：<%= track.duration_to_time %></p>
           <p>上传音乐,支持格式：mp3</p>
           <%= file_field_tag 'upyun_upload', class: "track-file-uploader" %>

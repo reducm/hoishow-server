@@ -120,15 +120,6 @@ class BoomTrack < ActiveRecord::Base
     id.in? (user.boom_playlists.default.tracks.ids) rescue false
   end
 
-  # 以mb为单位
-  def file_size
-    if file.present?
-      (file.size / 1024 / 1024.to_f).round(2)
-    else
-      0
-    end
-  end
-
   def create_or_update_tag_relations(tag_ids = [])
     tag_ids = tag_ids.split(",")
     BoomTag.where(id: tag_ids).each do |tag|
