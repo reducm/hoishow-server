@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160107024636) do
+ActiveRecord::Schema.define(version: 20160115052006) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -486,6 +486,7 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.string   "coordinate_map", limit: 255
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.string   "ticket_path",    limit: 255
   end
 
   add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree
@@ -683,15 +684,17 @@ ActiveRecord::Schema.define(version: 20160107024636) do
   add_index "recommend_types", ["boom_id"], name: "index_recommend_types_on_boom_id", using: :btree
 
   create_table "show_area_relations", force: :cascade do |t|
-    t.integer  "show_id",     limit: 4
-    t.integer  "area_id",     limit: 4
-    t.decimal  "price",                   precision: 10, scale: 2
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
-    t.boolean  "is_sold_out", limit: 1,                            default: false
-    t.integer  "seats_count", limit: 4,                            default: 0
-    t.string   "channels",    limit: 255
-    t.integer  "left_seats",  limit: 4,                            default: 0
+    t.integer  "show_id",         limit: 4
+    t.integer  "area_id",         limit: 4
+    t.decimal  "price",                       precision: 10, scale: 2
+    t.datetime "created_at",                                                           null: false
+    t.datetime "updated_at",                                                           null: false
+    t.boolean  "is_sold_out",     limit: 1,                            default: false
+    t.integer  "seats_count",     limit: 4,                            default: 0
+    t.string   "channels",        limit: 255
+    t.integer  "left_seats",      limit: 4,                            default: 0
+    t.string   "price_range",     limit: 255
+    t.integer  "third_inventory", limit: 4
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree
@@ -790,6 +793,7 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.string   "poster",      limit: 255
     t.text     "description", limit: 65535
     t.string   "token",       limit: 255
+    t.string   "event_path",  limit: 255
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree

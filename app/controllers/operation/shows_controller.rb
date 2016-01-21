@@ -321,6 +321,43 @@ class Operation::ShowsController < Operation::ApplicationController
     render json: {success: true}
   end
 
+  def update_event_info
+    if event = Event.find(params[:event_id])
+      ticket_info_array = ViagogoDataToHoishow::Service.fetch_event_data(event.ticket_path)
+      if ticket_info_array
+        ticket_info_group_by_section_hash = ticket_info_array.group_by{|x| x["Section"]}
+        ticket_info_group_by_section_hash.each do |name_info_hash|
+          area_name = name_info_hash[0]
+          if area = Area.where(name: area_name, event_id: event.id).first
+            if relation = @show.show_area_relations.where(area_id: area.id).first
+              ticket_info_group_by_section_array = name_info_hash[1]
+              seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
+              price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
+              max_price = price_array.last
+              price_range = price_array.first + " - " + price_array.last
+              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+            end
+          end
+        end
+        render partial: "area_table", locals: {show: @show, event: event}
+      else
+        nil
+      end
+    else
+      nil
+    end
+  end
+
+  def update_area_data_for_viagogo
+    if area = @show.areas.find_by_id(params[:area_id])
+      area.update(name: params[:area_name])
+    end
+    if relation = @show.show_area_relations.where(area_id: area.id).first
+      relation.update(price: params[:price])
+    end
+    render partial: "area_table", locals:{show: @show, event: area.event}
+  end
+
   protected
   def show_params
     params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell)

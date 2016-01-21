@@ -18,7 +18,7 @@ class Star < ActiveRecord::Base
 
   scope :is_display, -> { where(is_display: true) }
 
-  before_create :set_position
+  after_commit :set_position, on: :create
 
   mount_uploader :avatar, ImageUploader
   mount_uploader :poster, ImageUploader
