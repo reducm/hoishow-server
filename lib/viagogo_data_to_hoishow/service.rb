@@ -25,6 +25,7 @@ module ViagogoDataToHoishow
 
         event_path_array = client.hgetall("viagogo_events", :list).select{|x| x.include? "/Concert-Tickets/"}.map{|x| x = x[1..-2]}
 
+        star_position = Star.maximum("position").to_i + 1
         Star.transaction do
           event_path_array.each do |event_path|
             #event_info_array为event的所有场次信息
@@ -41,7 +42,8 @@ module ViagogoDataToHoishow
 
             if event_info_array.present?
               star_name = event_path.split("/").last[0..-9]
-              star = Star.where(name: star_name, event_path: event_path).first_or_create
+              star = Star.where(name: star_name, event_path: event_path, position: star_position).first_or_create
+              star_position = star_position + 1
               concert = Concert.create(name: "#{star.id}(自动生成)", is_show: "auto_hide", status: "finished")
               star.hoi_concert(concert)
             else
@@ -98,7 +100,7 @@ module ViagogoDataToHoishow
 
                   price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
                   max_price = price_array.last
-                  price_range = price_array.first + " - " + price_array.last
+                  price_range = "#{price_array.first} - #{max_price}"
                   ShowAreaRelation.where(show_id: show.id, area_id: area.id).first_or_create!(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
                 end
               end
@@ -216,6 +218,10 @@ module ViagogoDataToHoishow
         viagogo_logger.info "访问#{path}超时"
         nil
       end
+    end
+
+    def data_clear
+      ["Star", "Concert", "City", "Stadium", "Show", "Event", "Area", "ShowAreaRelation"].each{ |x| Object::const_get(x).delete_all }
     end
 
   end

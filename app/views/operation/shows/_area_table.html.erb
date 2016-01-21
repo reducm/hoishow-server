@@ -8,13 +8,8 @@
       <% if @show.viagogo? %>
         <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
         <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
-        <% price_list = relation.price_list %>
-        <% if price_list %>
-          <% price_list_array = price_list.split("/") %>
-          <td ><%= price_list_array.first + " - " + price_list_array.last %></td>
-        <% else %>
-          <td>没有数据</td>
-        <% end %>
+        <% price_range = relation.price_range %>
+        <td ><%= price_range.present? ? price_range : "没有数据" %></td>
         <td><%= relation.try(:third_inventory) %></td>
         <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
         <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">

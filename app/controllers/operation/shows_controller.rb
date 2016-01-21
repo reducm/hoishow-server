@@ -334,7 +334,7 @@ class Operation::ShowsController < Operation::ApplicationController
               seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
               price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
               max_price = price_array.last
-              price_range = price_array.first + " - " + price_array.last
+              price_range = "#{price_array.first} - #{max_price}"
               relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
             end
           end
