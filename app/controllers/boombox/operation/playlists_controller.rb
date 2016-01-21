@@ -23,7 +23,7 @@ class Boombox::Operation::PlaylistsController < Boombox::Operation::ApplicationC
       playlists = playlists.where("name like ?", "%#{params[:playlists_q]}%")
     end
 
-    @playlists = playlists.page(params[:playlists_page]).order("created_at desc").per(params[:playlists_per])
+    @playlists = playlists.order("created_at desc").page(params[:playlists_page]).per(params[:playlists_per])
 
     respond_to do |format|
       format.html

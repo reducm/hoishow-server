@@ -5,7 +5,7 @@ class Boombox::Dj::TracksController < Boombox::Dj::ApplicationController
 
   def index
     @tracks = current_collaborator.boom_tracks 
-    @tracks = @tracks.valid.page(params[:tracks_page]).order("created_at desc")
+    @tracks = @tracks.order("created_at desc").page(params[:tracks_page])
   end
 
   def search
