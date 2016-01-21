@@ -1,6 +1,4 @@
 class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
-
   def index
     @messages = BoomMessage.manual.page(params[:page])
   end

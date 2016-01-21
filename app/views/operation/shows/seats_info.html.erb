@@ -11,6 +11,7 @@
   </div>
   <div class="nav-control">
     <%= link_to '全选座位', 'javascript:void(0);', class: 'check_all_seats btn btn-info' %>
+    <%= link_to '设为情侣座', 'javascript:void(0);', class: 'set_love btn btn-info' %>
     <%= link_to '设为可选', 'javascript:void(0);', class: 'set_avaliable btn' %>
     <%= link_to '设为不可选', 'javascript:void(0);', class: 'set_locked btn' %>
     <%= link_to '设为空白', 'javascript:void(0);', class: 'set_unused btn' %>
@@ -46,15 +47,15 @@
           <% 1.upto(@max_row) do |row| %>
             <li class="row_<%= row %> row_li">
               <% column_array.each do |col| %>
-                <%seat = @seats[row.to_s][col.to_s] if @seats[row.to_s].present?
+                <% seat = @seats[row.to_s][col.to_s] if @seats[row.to_s].present?
                   default_seat_no = "#{row}排#{col}座"
                   if seat.nil?
-                    status, price, channels, seat_no = '', '', '', default_seat_no
+                    status, price, channels, seat_no, love_index = '', '', '', default_seat_no, ''
                   else
-                    status, price, channels, seat_no = seat['status'], seat['price'], seat['channels'], seat['seat_no']
+                    status, price, channels, seat_no, love_index = seat['status'], seat['price'], seat['channels'], seat['seat_no'], seat['love_index']
                   end%>
 
-                <span title="座位号: <%= seat_no %> 价格: <%= price %>元" class="seat <%= status %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-seat-no="<%= seat_no %>" data-status="<%= status %>" data-seat-price="<%= price %>" data-channel-ids="<%= channels %>"></span>
+                <span title="座位号: <%= seat_no %> 价格: <%= price %>元 情侣座: <%= love_index%>" class="seat <%= status %>" data-row-id="<%= row %>" data-column-id="<%= col %>" data-seat-no="<%= seat_no %>" data-status="<%= status %>" data-seat-price="<%= price %>" data-channel-ids="<%= channels %>" data-love-index="<%= love_index %>"></span>
               <% end %>
             </li>
           <% end %>

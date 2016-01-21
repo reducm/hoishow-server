@@ -1,0 +1,11 @@
+<%# encoding: utf-8 %>
+
+<legend><%= link_to "资讯列表", boombox_operation_news_index_path %>/新建资讯</legend>
+
+<div class="nav">
+  <div id="news_form">
+    <%= simple_form_for(@news, url: "/boombox/operation/news", html: { class: 'form-horizontal', multipart: :true }) do |f| %>
+      <%= render partial: "form", locals: {news: @news, f: f} %>
+    <% end %>
+  </div>
+</div>

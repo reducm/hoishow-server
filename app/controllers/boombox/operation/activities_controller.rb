@@ -1,6 +1,5 @@
 # encoding: utf-8
 class Boombox::Operation::ActivitiesController < Boombox::Operation::ApplicationController
-  before_filter :check_login!
   before_filter :get_activity, except: [:search, :index, :new, :create, :upload_image]
 
   def index
@@ -62,7 +61,7 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     else
       flash[:alert] = '创建活动失败'
     end
-    
+
     redirect_to boombox_operation_activities_url
   end
 
@@ -101,6 +100,15 @@ class Boombox::Operation::ActivitiesController < Boombox::Operation::Application
     else
       BoomActivity.activity.update_all(is_top: false)
       @activity.update(is_top: true)
+    end
+    redirect_to boombox_operation_activities_url
+  end
+
+  def change_is_hot
+    if @activity.is_hot
+      @activity.update(is_hot: false)
+    else
+      @activity.update(is_hot: true)
     end
     redirect_to boombox_operation_activities_url
   end

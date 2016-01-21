@@ -51,5 +51,13 @@ class Boombox::Operation::ApplicationController < ApplicationController
     @current_ability ||= ::Ability.new(current_admin)
   end
 
-  helper_method :current_admin
+  def unverified_count
+    @unverified_count ||= Collaborator.where(verified: 0).count
+  end
+
+  def unread_count
+    @unread_count ||= BoomFeedback.where(status: 0).count
+  end
+
+  helper_method :current_admin, :unverified_count, :unread_count
 end

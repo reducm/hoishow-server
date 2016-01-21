@@ -10,7 +10,7 @@
   <%= csrf_meta_tags %>
 </head>
 <body id='boombox_<%= "#{params[:controller].split('/')[2]}_#{params[:action]}" %>'>
-
+<div class="boombox_operation">
 <script type="text/javascript">
   $(function(){
     var notice = "<%= flash[:notice] %>";
@@ -39,5 +39,6 @@
   <% else %>
     <%= yield %>
   <% end %>
+</div>
 </body>
 </html>

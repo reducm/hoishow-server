@@ -189,19 +189,19 @@ class User < ActiveRecord::Base
 
   def recommend_tracks
     Rails.cache.fetch("user:#{id}:recommend_tracks", expires_in: 1.day) do
-      recommend_tags.map{|tag| tag.tracks}.flatten.uniq.shuffle.first(20)
+      recommend_tags.map{|tag| tag.tracks.valid}.flatten.uniq.shuffle.first(20)
     end
   end
 
   def recommend_playlists
     Rails.cache.fetch("user:#{id}:recommend_playlists", expires_in: 1.day) do
-      recommend_tags.map{|tag| tag.playlists.playlist}.flatten.uniq.shuffle.first(10)
+      recommend_tags.map{|tag| tag.playlists.playlist.open}.flatten.uniq.shuffle.first(10)
     end
   end
 
   def recommend_radios
     Rails.cache.fetch("user:#{id}:recommend_playlists", expires_in: 1.day) do
-      recommend_tags.map{|tag| tag.playlists.radio}.flatten.uniq.shuffle.first(10)
+      recommend_tags.map{|tag| tag.playlists.radio.open}.flatten.uniq.shuffle.first(10)
     end
   end
   #----------------------boombox
