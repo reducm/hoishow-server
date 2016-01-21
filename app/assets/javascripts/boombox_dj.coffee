@@ -15,6 +15,7 @@
 #= require boombox/dj/users
 #= require boombox/dj/tracks
 #= require boombox/dj/playlists
+#= require boombox/dj/collaborators
 #
 #= require jquery-fileupload
 #= require dropzone

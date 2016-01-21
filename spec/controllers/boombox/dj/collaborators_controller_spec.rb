@@ -17,6 +17,18 @@ RSpec.describe Boombox::Dj::CollaboratorsController, :type => :controller do
         }.to change(Collaborator, :count).by(1)
       end
 
+      it "create two tags" do
+        expect{
+          post :create, collaborator: collaborator_attributes.merge({collaborator_tag_names: '坑,爹'})
+        }.to change(BoomTag, :count).by(2)
+      end
+
+      it "create two tag relations" do
+        expect{
+          post :create, collaborator: collaborator_attributes.merge({collaborator_tag_names: '坑,爹'})
+        }.to change(TagSubjectRelation, :count).by(2)
+      end
+
       it "redirect_to signup_finished page" do 
         post :create, collaborator: collaborator_attributes
         expect(response).to redirect_to boombox_dj_signup_finished_url(collaborator_id: assigns[:collaborator].id)
