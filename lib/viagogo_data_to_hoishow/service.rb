@@ -110,7 +110,7 @@ module ViagogoDataToHoishow
       end
     end
 
-    def update_star_cover
+    def update_star_avatar
       client = SSDB::Client.new.connect
       if client.connected?
         Star.all.each do |star|
@@ -124,11 +124,11 @@ module ViagogoDataToHoishow
                 begin
                   temp = 
                     Timeout::timeout(5) do
-                      star.remote_poster_url = cover_url  
+                      star.remote_avatar_url = cover_url  
                       star.save!
                     end
                   if temp
-                    viagogo_logger.info "star_id: #{star.id} 更新poster成功"
+                    viagogo_logger.info "star_id: #{star.id} 更新avatar成功"
                     break
                   else
                     viagogo_logger.info "star_id: #{star.id} timeout, 即将重试"
