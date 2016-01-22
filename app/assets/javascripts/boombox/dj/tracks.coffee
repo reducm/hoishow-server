@@ -12,21 +12,18 @@ $ ->
         readURL this
 
   # 艺术家标签化
-  $(document).ready ->
-    if $('div#artist_names').length > 0
-      $('#boom_track_artists').tagit
-        allowSpaces: true
-        availableTags: $('div#artist_names').data('data')
-    else
-      $('#boom_track_artists').tagit
-        allowSpaces: true
+  all_artists = $('div#dj_artist_names').data('data')
+  $('#dj_track_artists').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_artists }
+    showAutocompleteOnFocus: true
 
   # 标签
-  if $('div#tags_already_added').length > 0
-    data = $('div#tags_already_added').data('data')
-    $('select#tags').val(data).select2()
-  else
-    $('select#tags').select2()
+  all_tags = $("div#dj_track_tags").data("all-tags")
+  $('#dj_track_tags').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_tags }
+    showAutocompleteOnFocus: true
 
   $('.progress').hide()
   $('#upload_status').hide()
@@ -76,8 +73,6 @@ $ ->
       secs = if secs > 9 then secs else "0" + secs
       $('#track_duration').text("时长：" + mins + ":" + secs)
 
-  # 1.提交前将标签传入hidden field
-  # 2.获取音乐的duration
   $("#track-submit").on "click", (e) ->
     e.preventDefault()
     if $('#boom_track_file').val() == ""
@@ -87,9 +82,7 @@ $ ->
       alert '请填写标题'
       return
     else
-      #1
-      $("#boom_tag_ids").val($('select#tags').val())
-      #2
+      # 获取音乐的duration
       duration = $("#track-file-pre")[0].duration
       if duration
         $("#boom_track_duration").attr("value", duration)

@@ -124,6 +124,7 @@
           'file_blocks': chunkInfo.chunksNum
           'file_size': chunkInfo.file_size
           'file_hash': chunkInfo.entire
+          'content-md5': chunkInfo.entire
         signature = undefined
         _extend options, self.options
         if self._signature
@@ -143,6 +144,7 @@
           if request.readyState == 4 and request.status == 0
             display_error('网络故障，请稍后重试')
             $('.track-file-uploader').val('')
+            $('.track-file-uploader').show()
             $('.progress').hide()
             $('#upload_status').hide()
             unlock_command_buttons()
@@ -196,6 +198,7 @@
                 callback null
               ), 0
             else if e.currentTarget.readyState == 4 and e.currentTarget.status != 200
+              $('#upload_status').show().text('网络中断，正在尝试恢复上传')
               request.open 'POST', _config.api + _config.bucket + '/', true
               request.send formDataPart
             return
@@ -205,7 +208,11 @@
           return
         ), (err) ->
           if err
-            callback err
+            # wait 10 secs to run the next iteration
+            setTimeout (->
+              callback err
+              return
+            ), 10000
           callback null, chunkInfo, result
           return
         return
@@ -230,6 +237,7 @@
             unlock_command_buttons()
             callback null, request.response
           else
+            request.send formParamsUrlenc
             callback null, request.response
           return
 

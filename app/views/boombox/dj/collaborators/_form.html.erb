@@ -55,7 +55,7 @@
   </div>
 
   <div class="row">
-    <div class="col-md-10 col-md-offset-1 poster-area">
+    <div class="col-md-5 col-md-offset-1 poster-area">
       <legend class="legend-without-border">海报</legend>
       <% if collaborator.cover_url.present? %>
         <a href="#imageModal" role="button" class="btn btn-default image" data-toggle="modal">
@@ -66,6 +66,10 @@
         <p>没有海报</p>
       <% end %>
       <%= f.input :cover, label: "（请上传 720x480 jpg 类型图像文件）", input_html: {class: "image-uploader"} %>
+    </div>
+    <div class="col-md-5 tag-area">
+      <legend class="legend-without-border">标签</legend>
+      <%= f.input :collaborator_tag_names, label: false, input_html:{ id: "dj_collaborator_tags" }%>
     </div>
   </div>
 
@@ -86,4 +90,9 @@
       </div>
     </div>
   </div>
+<% end %>
+
+<%= content_tag :div, id: "dj_collaborator_tags_data", data: {
+  data: @tags
+  } do %>
 <% end %>
