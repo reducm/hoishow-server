@@ -37,7 +37,7 @@ class Boombox::Operation::MessagesController < Boombox::Operation::ApplicationCo
     case type
     when 'Playlist'
       'BoomPlaylist'
-    when 'Show', 'Activity'
+    when 'Show', 'Activity', 'News'
       'BoomActivity'
     else
       type
