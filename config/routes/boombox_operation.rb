@@ -6,7 +6,7 @@ module Routes
         namespace :boombox do
           namespace :operation do
             root to: "home#index"
-            match "/home/get_graphic_data" => "home#get_graphic_data", via: [:get]
+            match "/home/get_new_users_data" => "home#get_new_users_data", via: [:get]
 
             resources :sessions, only: [:new, :create, :destroy]
             match "/signin" => "sessions#new", via: [:get]

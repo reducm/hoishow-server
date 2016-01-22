@@ -11,52 +11,34 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
     @activities_count = BoomActivity.is_display.count
   end
 
-  def get_graphic_data
-    begin_time = params[:time] || "seven_days_from_now"
-    a = generate_adapt_array(begin_time)
-    adapt_time_array = a[0]
-    adapt_date_array = a[1]
-    render json: get_data_array(begin_time, adapt_time_array, adapt_date_array)
+  def get_new_users_data(time = params[:time]) 
+    case time
+    when 'seven_days_from_now'
+      count_new_users(DateTime.now - 7)
+    when 'thirty_days_from_now'
+      count_new_users(DateTime.now - 30)
+    when 'this_year'
+      count_new_users(DateTime.now.at_beginning_of_year)
+    end
   end
 
   private
 
-  def generate_adapt_array(begin_time)
-    a = []
-    case begin_time
-    when "seven_days_from_now"
-      a.push([(DateTime.now - 7).to_time..Time.now, "过去7天", "'%m-%d'"])
-      x_axis = []
-      (0..7).each do |n|
-        x_axis << (DateTime.now - n).strftime('%m-%d')
-      end
-      a.push x_axis.reverse
-    when "thirty_days_from_now"
-      a.push([(DateTime.now - 30).to_time..Time.now, "过去30天", "'%m-%d'"])
-      x_axis = []
-      (0..30).each do |n|
-        x_axis << (DateTime.now - n).strftime('%m-%d')
-      end
-      a.push x_axis.reverse
-    when "this_year"
-      a.push([Time.now.at_beginning_of_year..Time.now, "本年", "'%m月'"])
-      a.push(["01月","02月","03月","04月","05月","06月","07月","08月","09月","10月","11月","12月"])
-    end
-    a
-  end
-
-  def get_data_array(begin_time, adapt_time_array, adapt_date_array)
-    users_hash_data = User.from_boombox.where(created_at: adapt_time_array[0]).group("date_format(convert_tz(created_at, '+00:00', '+08:00'), #{adapt_time_array[2]} )").count
-    users_array = []
-    adapt_date_array.each do |date|
-      temp = users_hash_data[date]
-      if temp.blank?
-        users_array.push(0)
-      else
-        users_array.push(temp)
+  def count_new_users(begin_time)
+    new_users = User.where('created_at > ?', begin_time).group("DATE_FORMAT(created_at, '%m-%d')").count
+    (begin_time..DateTime.now).each do |date|
+      date = date.strftime('%m-%d')
+      # 没有数据的显示0
+      if new_users[date].blank?
+        new_users[date] = 0
+        # 今天显示为“今天”而不是日期
+        if date == DateTime.now.strftime('%m-%d')
+          new_users['今天'] = new_users.delete date
+        end
       end
     end
+    new_users = new_users.sort.to_h
 
-    { users_array: users_array, success: true, time_type: adapt_time_array[1], time_array: adapt_date_array }
+    render json: { x_axis: new_users.keys, y_axis: new_users.values, success: true }
   end
 end
