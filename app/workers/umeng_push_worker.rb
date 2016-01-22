@@ -37,7 +37,7 @@ class UmengPushWorker
       }.merge(push_params)
     end
 
-    if message.subject_type == 'BoomActivity' && message.subject.activity?
+    if message.subject_type == 'BoomActivity' && message.subject.need_description?
       push_params = {
         description: "/api/boombox/v1/activities/#{message.subject_id}/description",
         activity_name: message.subject_name

@@ -36,10 +36,10 @@
         <div class="track_file_area">
           <% if params[:action] == 'new' %>
             <p id="track_filename">文件：未上传</p>
+            <p id="track_size">大小：0 MB</p>
           <% else %>
             <p id="track_filename">文件：已上传</p>
           <% end %>
-          <p id="track_size">大小：<%= track.file_size %> MB</p>
           <p id="track_duration">时长：<%= track.duration_to_time %></p>
           <p>上传音乐,支持格式：mp3</p>
           <%= file_field_tag 'upyun_upload', class: "track-file-uploader" %>
@@ -59,20 +59,8 @@
           <%= f.hidden_field :duration %>
           <%= f.hidden_field :file %>
           <%= f.input :name, label: "(必填)标题", placeholder: "请输入少于10字的标题", input_html:{} %>
-          <%= f.input :artists, label: "艺术家" %>
-          <%= label_tag "标签" %>
-          <p>
-            <% if @tags.any? %>
-              <select id="tags" multiple="multiple" class="form-control">
-                <% @tags.each do |bt| %>
-                  <option value="<%= bt.id %>"><%= bt.name %></option>
-                <% end %>
-              </select>
-            <% else %>
-              没有标签
-            <% end %>
-          </p>
-          <%= hidden_field_tag "boom_tag_ids", params[:boom_tag_ids] %>
+          <%= f.input :artists, label: "艺术家", input_html:{ id: "dj_track_artists" }%>
+          <%= f.input :track_tag_names, label: "标签", input_html:{ id: "dj_track_tags" }%>
         </div>
       </div>
 
@@ -93,18 +81,12 @@
   <% end %>
 </div>
 
-<%= content_tag :div, id: "current_file", data: {
-  url: track.current_file_url.present? ? track.current_file_url : ""
+<%= content_tag :div, id: "dj_track_tags", data: {
+  all_tags: @tag_names
 } do %>
 <% end %>
 
-<% if params[:action] == 'edit' %>
-  <%= content_tag :div, id: "tags_already_added", data: {
-    data: @tags_already_added_ids
-  } do %>
-  <% end %>
-  <%= content_tag :div, id: "artist_names", data: {
-    data: @artist_names
-  } do %>
-  <% end %>
+<%= content_tag :div, id: "dj_artist_names", data: {
+  data: @artist_names
+} do %>
 <% end %>

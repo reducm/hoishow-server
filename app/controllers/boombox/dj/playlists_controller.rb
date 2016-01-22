@@ -20,7 +20,7 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
   def new
     @playlist = BoomPlaylist.new
-    @tags = BoomTag.all
+    @tags = get_all_tag_names
   end
 
   def create
@@ -28,9 +28,10 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
     @playlist.creator_id = current_collaborator.id
     @playlist.creator_type = BoomPlaylist::CREATOR_COLLABORATOR
     @playlist.mode = 0
-    if @playlist.save!
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @playlist)
+
+    if @playlist.save
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @playlist)
       end
       flash[:notice] = '创建Playlist成功'
       redirect_to manage_tracks_boombox_dj_playlist_url(@playlist)
@@ -52,19 +53,19 @@ class Boombox::Dj::PlaylistsController < Boombox::Dj::ApplicationController
 
   def update
     if @playlist.update(playlist_params)
-      if params[:boom_tag_ids].present?
-        subject_relate_tag(params[:boom_tag_ids], @playlist)
+      if params[:boom_playlist][:playlist_tag_names].present?
+        subject_relate_tag(params[:boom_playlist][:playlist_tag_names], @playlist)
       end
       flash[:notice] = '编辑Playlist成功'
     else
       flash[:alert] = '编辑Playlist失败'
     end
-      redirect_to boombox_dj_playlists_url
+
+    redirect_to boombox_dj_playlists_url
   end
 
   def edit
-    @tags = BoomTag.all
-    @tags_already_added_ids = get_subject_tags(@playlist)
+    @tags = get_all_tag_names
   end
 
   def destroy

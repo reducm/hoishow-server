@@ -101,7 +101,7 @@ zh-CN:
     messages:
       mobile_duplicate: 手机号已注册
       cannot_remove_default_playlist: 不能删除默认的playlist
-      nickname_duplicate: 该昵称已被使用
+      nickname_duplicate: 已被使用
       track_is_not_liked: 音乐未收藏
       track_already_liked: 音乐已收藏
       data_status_error: 数据状态错误
@@ -170,7 +170,7 @@ zh-CN:
     collaborators: "个人资料"
     boom_albums: "相册"
     boom_topics: "动态"
-    boom_tracks: "个人音乐"
+    tracks: "个人音乐"
     playlists: "个人Playlist"
   boombox_controller:
     sessions: "登录"
@@ -374,6 +374,8 @@ zh-CN:
         avatar: 头像
         poster: 海报
         description: 图文内容
+      user:
+        nickname: 昵称
       help:
         name: 名称
         description: 内容
