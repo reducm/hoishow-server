@@ -3,7 +3,7 @@ require "uri"
 require "connection_pool"
 require "pry"
 
-SSDB_DEFAULT_URL = "ssdb://127.0.0.1:6380/"
+SSDB_DEFAULT_URL = ViagogoSetting["ssdb_default_url"]
 
 class SSDB
   Error           = Class.new(RuntimeError)

@@ -35,3 +35,8 @@ end
 every 1.day do
   rake "boom_playlists:get_newest_cover"
 end
+
+#viagogo
+every 1.day, :at => '4:30 am' do
+  rake "viagogo:data"
+end
