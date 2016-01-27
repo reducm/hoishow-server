@@ -28,7 +28,7 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
 
     it "verified_mobile should success and is_member should be true" do
       mobile = "15934567890"
-      user = create(:user, mobile: mobile)
+      user = create(:user, mobile: mobile, encrypted_password: '123')
       options = {mobile: mobile}
       get :verified_mobile, encrypted_params_in_boombox(api_key, options)
       expect(json["is_member"]).to be true
@@ -225,7 +225,7 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
   context "#my_playlists" do
     before("each") do
       @user = create(:user)
-      10.times do |n|
+      9.times do |n|
         create(:boom_playlist, name: n.to_s)
       end
     end
@@ -243,10 +243,11 @@ RSpec.describe Boombox::V1::UsersController, :type => :controller do
   context "#comment_list" do
     before("each") do
       @user = create(:user)
+      user = create(:user)
+      topic = create(:boom_topic, content: '123', collaborator_id: 1)
+      comment = create(:boom_comment, content: '123', creator_id: @user.id, boom_topic_id: topic.id)
       3.times do |n|
-        user = create :user
-        comment = create(:boom_comment, content: n.to_s, creator_id: @user.id)
-        create(:boom_comment, content: ( n+10 ).to_s, parent_id: comment.id, creator_id: user.id)
+        create(:boom_comment, content: ( n+10 ).to_s, parent_id: comment.id, creator_id: user.id, boom_topic_id: topic.id)
       end
     end
 

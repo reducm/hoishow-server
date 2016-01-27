@@ -479,7 +479,7 @@ RSpec.describe Open::V1::OrdersController, :type => :controller do
     end
 
     it 'will return refund when order be refunded' do
-      order.success!
+      order.paid!
       post :cancel_order, params
       expect(json[:result_code]).to eq 0
       order.reload
