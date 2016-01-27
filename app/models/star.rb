@@ -18,8 +18,6 @@ class Star < ActiveRecord::Base
 
   scope :is_display, -> { where(is_display: true) }
 
-  #after_commit :set_position, on: :create
-  #新建艺人的position全部为1
   before_create :set_position
 
   mount_uploader :avatar, ImageUploader
