@@ -11,26 +11,12 @@ module ViagogoDataToHoishow
     def data_transform
       client = SSDB::Client.new.connect
       if client.connected?
-        #key为"/Concert-Tickets/Alternative-and-Indie/Adele-Tickets"
-        #event_info_hash = client.hgetall("viagogo_events_info")
-
-        #key为"/cn/Concert-Tickets/Alternative-and-Indie/Adele-Tickets/E-1389466"
-
-        #只取concert的票
-        #不一次过取出全部，用event_path来逐个取出，在需要用的时候
-        #:list参数只取values，不取keys
-
-        #event_path_array = client.hgetall("viagogo_events", :list).select{|x| x.include? "/Concert-Tickets/"}.map{|x| x = x[1..-2]}
 
         event_path_array = client.hgetall("viagogo_hot_events", :list).map{|x| JSON.parse x}.flatten
 
         Star.transaction do
           event_path_array.each do |event_path|
-            #event_info_array为event的所有场次信息
-            #格式为[{info_hash},{},{}...]
-            #temp_data = event_info_hash[event_path]
 
-            #每次都从ssdb取出，减少服务器负担
             temp_data = client.hget("viagogo_events_info", event_path)
             if temp_data
               event_info_array = JSON.parse temp_data
@@ -72,9 +58,6 @@ module ViagogoDataToHoishow
 
                 ticket_info_path = single_event_info_hash["EventUrl"]
 
-                #ticket_info_array为event的所有区域信息
-                #格式为[{info_hash},{},{}...]
-                #temp_data = ticket_info_hash[ticket_info_path]
                 temp_data = client.hget("viagogo_tickets_info", ticket_info_path)
                 if temp_data
                   ticket_info_array = JSON.parse temp_data
@@ -98,9 +81,7 @@ module ViagogoDataToHoishow
                   ticket_info_group_by_section_array = name_info_hash[1]
                   area_name = name_info_hash[0]
 
-                  if area_name.blank?
-                    next
-                  end
+                  next if area_name.blank?
 
                   seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
                   price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
