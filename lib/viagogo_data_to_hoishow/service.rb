@@ -30,7 +30,7 @@ module ViagogoDataToHoishow
                 star = Star.where(name: star_name, event_path: event_path).first
                 if star
                   concert = Concert.where(name: "#{star.id}(自动生成)").first
-                  return nil unless concert
+                  next unless concert
                 else
                   star = Star.create(name: star_name, event_path: event_path)
                   concert = Concert.create(name: "#{star.id}(自动生成)", is_show: "auto_hide", status: "finished")
