@@ -34,12 +34,8 @@ class Star < ActiveRecord::Base
   end
 
   def status_cn
-    if concerts.count > 0
-      if shows.count > 0
-        "开售中"
-      else
-        "投票中"
-      end
+    if concerts.count > 0 && shows.count > 0
+      "开售中"
     else
       "无演出"
     end
