@@ -33,7 +33,7 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
   private
   # 按yyyy-mm-dd格式汇总，参考http://www.w3school.com.cn/sql/func_date_format.asp
   def count_new_users(begin_time)
-    new_users = User.where('created_at > ?', begin_time).group("DATE_FORMAT(created_at, '%Y-%m-%d')").count
+    new_users = User.where('created_at > ?', begin_time).group("DATE_FORMAT(convert_tz(created_at, '+00:00', '+08:00'), '%Y-%m-%d')").count
     (begin_time..DateTime.now).each do |date|
       date = date.strftime '%Y-%m-%d'
       # 没有数据的显示0
@@ -89,8 +89,8 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
   def count_users_by_year
     users = {}
     users_count = 0
-    new_users = User.group("DATE_FORMAT(created_at, '%Y')").count
-    start_year = User.order(:created_at).pluck("DATE_FORMAT(created_at, '%Y')").first
+    new_users = User.group("DATE_FORMAT(convert_tz(created_at, '+00:00', '+08:00'), '%Y')").count
+    start_year = User.order(:created_at).pluck("DATE_FORMAT(convert_tz(created_at, '+00:00', '+08:00'), '%Y')").first
     this_year = Time.now.strftime '%Y'
 
     (start_year..this_year).each do |year|
