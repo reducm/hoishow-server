@@ -3,7 +3,6 @@ class Star < ActiveRecord::Base
   acts_as_cached(:version => 1, :expires_in => 1.week)
 
   include ModelAttrI18n
-  default_scope {order(:position)}
   has_many :videos, dependent: :destroy
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
@@ -11,14 +10,10 @@ class Star < ActiveRecord::Base
   has_many :star_concert_relations
   has_many :concerts, through: :star_concert_relations
 
-  validates :name, presence: {message: "姓名不能为空"}
-  validates :position, uniqueness: true
-
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'
 
+  validates :name, presence: {message: "姓名不能为空"}
   scope :is_display, -> { where(is_display: true) }
-
-  before_create :set_position
 
   mount_uploader :avatar, ImageUploader
   mount_uploader :poster, ImageUploader
@@ -34,12 +29,8 @@ class Star < ActiveRecord::Base
   end
 
   def status_cn
-    if concerts.count > 0
-      if shows.count > 0
-        "开售中"
-      else
-        "投票中"
-      end
+    if concerts.count > 0 && shows.count > 0
+      "开售中"
     else
       "无演出"
     end
@@ -66,10 +57,5 @@ class Star < ActiveRecord::Base
     def search(q)
       where("name like ?", "%#{q}%")
     end
-  end
-
-  private
-  def set_position
-    self.position = Star.maximum("position").to_i + 1
   end
 end

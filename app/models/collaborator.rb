@@ -37,6 +37,8 @@ class Collaborator < ActiveRecord::Base
   # 艺人简介字数上限100字
   validates :description, length: { maximum: 1000}
 
+  paginates_per 10
+
   # 身份
   enum identity: {
     dj: 0, # DJ

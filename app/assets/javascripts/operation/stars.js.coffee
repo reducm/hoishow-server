@@ -16,16 +16,6 @@ $ ->
           file.previewTemplate.appendChild document.createTextNode "上传完毕"
     maxFilesize: 30
 
-  $('#status_select').change ->
-    $(".status_cn").parent().show()
-    vtxt = $('#status_select').val()
-    if vtxt == "全部"
-      location.reload()
-    else
-      $(".status_cn:not(:contains('" + vtxt + "'))").parent().hide()
-      $( '#stars_list'  ).sortable( "disable"  )
-      $('.handle').hide()
-
   star_id = $("#star_id").val()
   if star_id
     $(".add_topic").on "click", ()->
@@ -72,3 +62,49 @@ $ ->
         if data.success
           location.reload()
       )
+
+## 艺人列表过滤开始 ##
+  f_data = $('#stars_filter').data()
+
+  StarLists = do ->
+    loadTable = ->
+      if !jQuery().DataTable
+        return
+      starTable = $("#stars_table").DataTable(
+        # 基本配置
+        stateSave: true
+        ordering: false
+        # 语言文件放在public下面
+        language:
+          url: "/Chinese.json"
+        # 从服务器的Order#index获取数据
+        processing: true
+        serverSide: true
+        # 把过滤条件回传服务器
+        ajax:
+          url: $("#stars_table").data("source")
+          data: (d) ->
+            $.extend {}, d,
+              'status': $('#status_filter').val()
+              # 控件有问题，现固定每页显示10行
+              'length': 10
+        initComplete: ->
+          api = @api()
+          # 按艺人状态过滤
+          select = $('<select><option selected="selected" value="">艺人状态：全部</option></select>').attr("id", "status_filter").addClass('form-control stars_filters').appendTo($("#stars_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["statusFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "艺人状态：" + key + '</option>'
+          # 文本搜索提示
+          $('div#stars_table_filter.dataTables_filter label input').attr('placeholder', '艺人名字').removeClass('input-sm')
+          # 隐藏显示行数控件
+          $('#stars_table_length label:first').hide()
+      )
+    {
+      init: ->
+        loadTable()
+    }
+
+  jQuery(document).ready ->
+    StarLists.init()
+## 艺人列表过滤结束 ##

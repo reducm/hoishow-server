@@ -24,7 +24,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       end
 
       get :index, encrypted_params_in_open
-      
+
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
       json[:data].each do |d|
@@ -47,7 +47,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
         expect(d[:ticket_type]).to eq s.ticket_type
         expect(d[:stadium_map]).to eq s.stadium_map_url
         expect(d[:seat_type]).to eq s.seat_type
-        expect(d[:mode]).to eq s.mode
+        expect(d[:mode]).to eq s.source
         expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       expect(d[:ticket_type]).to eq s.ticket_type
       expect(d[:stadium_map]).to eq s.stadium_map_url
       expect(d[:seat_type]).to eq s.seat_type
-      expect(d[:mode]).to eq s.mode
+      expect(d[:mode]).to eq s.source
       expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
     end
 

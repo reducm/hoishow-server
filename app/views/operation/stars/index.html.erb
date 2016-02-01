@@ -1,47 +1,27 @@
 <%# encoding: utf-8 %>
 
-<div class="nav stars_list">
+<div class="nav star-index">
   <h1 class="pull-left">艺人列表</h1>
-  <div class="search">
-    <%= form_tag(operation_stars_url, method: "get", class: 'navbar-form') do %>
-      <div class="form-group">
-        <%= select_tag "status_select", options_for_select(%w(开售中 投票中 无演出 全部), "全部"), class: 'form-control' %>
-      </div>
-    <% end %>
-  </div>
-
   <%= link_to "新增艺人", new_operation_star_url, class: 'btn btn-primary add-star' %>
-
-  <table class="table table-hover" id="stars">
+</div>
+<div class="stars_list mt20">
+  <table class="table table-hover" id="stars_table">
     <thead>
       <tr>
-        <th>排序</th>
-        <th>艺人头像</th>
-        <th>艺人名称</th>
-        <th>是否显示</th>
-        <th>演出状态</th>
-        <th>总投票数量</th>
-        <th>粉丝数</th>
-        <th>操作</th>
+        <th class="text-center">ID</th>
+        <th class="text-center">艺人名称</th>
+        <th class="text-center">是否显示</th>
+        <th class="text-center">演出状态</th>
+        <th class="text-center">总投票数量</th>
+        <th class="text-center">粉丝数</th>
+        <th class="text-center">操作</th>
       </tr>
     </thead>
-    <tbody class= "dragable_items" id="stars_list"  data-update-url="<%= sort_operation_stars_url %>">
-      <% @stars.each do|star|%>
-        <%= content_tag_for :tr, star, remote: true do %>
-          <td><%= star.position %></td>
-          <td><%= image_tag(star.avatar_url, size: "50x50") if star.avatar_url %></td>
-          <td><%= star.name %></td>
-          <td><%= star.is_display_cn %></td>
-          <td class="status_cn"><%= star.status_cn %></td>
-          <td><%= star.vote_count %></td>
-          <td><%= star.followers_count %></td>
-          <td>
-            <span class="handle">[拉我排序] </span>
-            <%= link_to "编辑", edit_operation_star_path(star)%>
-            <%= link_to "查看详情", operation_star_path(star)%>
-          </td>
-        <% end %>
-      <% end %>
+    <tbody class='text-center'>
     </tbody>
   </table>
+  <%= content_tag :div, id: 'stars_filter', data: {
+    status_filter: @status_filter
+  } do %>
+  <% end %>
 </div>

@@ -3,10 +3,15 @@ class Operation::StarsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_star, only: [:new_show, :show, :edit, :update]
   before_action :get_videos, only: [:edit]
+  before_action :get_stars_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    @stars = Star.all
+    respond_to do |format|
+      format.html
+      # 艺人json数据组装, 详见app/services/stars_datatable.rb
+      format.json { render json: StarsDatatable.new(view_context) }
+    end
   end
 
   def show
@@ -82,15 +87,6 @@ class Operation::StarsController < Operation::ApplicationController
     end
   end
 
-  def sort
-    if params[:star].present?
-      params[:star].each_with_index do |id, index|
-        Star.where(id: id).update_all(position: index+1)
-      end
-    end
-    render nothing: true
-  end
-
   def get_topics
     @topics = @star.topics.page(params[:page])
 
@@ -108,5 +104,13 @@ class Operation::StarsController < Operation::ApplicationController
 
   def get_videos
     @videos = @star.videos.order(is_main: :desc)
+  end
+
+  def get_stars_filters
+    @status_filter = status_filter
+  end
+
+  def status_filter
+    {"开售中"=>1, "无演出"=>0}
   end
 end

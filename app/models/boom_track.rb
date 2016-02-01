@@ -56,7 +56,7 @@ class BoomTrack < ActiveRecord::Base
         if tracks.size >= 20
           tracks
         else
-          order('is_top, RAND()').limit(20).to_a
+          where(removed: false).order('is_top, RAND()').limit(20).to_a
         end
       end
     else

@@ -35,11 +35,11 @@ describe User do
   end
 
   context "validates" do
-    it "mobile should be presences" do
-      user = User.new
-      expect(user.valid?).to be_falsey
-      expect(user).to have(2).error_on(:mobile)
-    end
+    # it "mobile should be presences" do
+    #   user = User.new
+    #   expect(user.valid?).to be_falsey
+    #   expect(user).to have(2).error_on(:mobile)
+    # end
 
     it "mobile should be formated" do
       user = User.new(mobile: "123")
