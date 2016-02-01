@@ -56,7 +56,7 @@ class BoomTrack < ActiveRecord::Base
         if tracks.size >= 20
           tracks
         else
-          order('is_top, RAND()').limit(20).to_a
+          where(removed: false).order('is_top, RAND()').limit(20).to_a
         end
       end
     else
@@ -118,15 +118,6 @@ class BoomTrack < ActiveRecord::Base
 
   def is_liked?(user)
     id.in? (user.boom_playlists.default.tracks.ids) rescue false
-  end
-
-  # 以mb为单位
-  def file_size
-    if file.present?
-      (file.size / 1024 / 1024.to_f).round(2)
-    else
-      0
-    end
   end
 
   def create_or_update_tag_relations(tag_ids = [])

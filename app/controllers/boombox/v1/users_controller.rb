@@ -95,7 +95,7 @@ class Boombox::V1::UsersController < Boombox::V1::ApplicationController
     if @user.update(user_params)
       render partial: "user", locals:{ user: @user }
     else
-      error_respond(I18n.t("update_user_type_not_correct"))
+      error_respond(@user.errors.full_messages)
     end
   end
 

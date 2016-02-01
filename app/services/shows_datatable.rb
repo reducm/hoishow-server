@@ -65,7 +65,7 @@ private
     end
     # 按显示状态过滤
     if params[:is_display].present?
-      shows = shows.where("shows.is_display = ?", params[:buy_origin])
+      shows = shows.where("shows.is_display = ?", params[:is_display])
     end
     # 按演出时间称过滤
     if params[:start_date].present? && params[:end_date].present?

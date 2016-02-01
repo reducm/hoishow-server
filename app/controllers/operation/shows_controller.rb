@@ -10,7 +10,7 @@ class Operation::ShowsController < Operation::ApplicationController
   def index
     respond_to do |format|
       format.html
-      # 订单json数据组装, 详见app/services/shows_datatable.rb
+      # 演出json数据组装, 详见app/services/shows_datatable.rb
       format.json { render json: ShowsDatatable.new(view_context) }
     end
   end

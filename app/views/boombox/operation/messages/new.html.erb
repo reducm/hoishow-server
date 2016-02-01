@@ -6,7 +6,7 @@
     <div class="form-group">
       <%= f.label :subject_type, '类型', class: 'col-md-2 control-label' %>
       <div class="col-md-2">
-        <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
+        <%= f.select :subject_type, [["请选择"], ["艺人", "Collaborator"], ["活动", "Activity"], ["演出", "Show"], ["资讯", "News"], ["playlist", "Playlist"]], {},  class: 'form-control' %>
       </div>
     </div>
     <div class="form-group">
@@ -58,6 +58,7 @@
   collaborator: ( Collaborator.verified.map{|c| { name: c.display_name, id: c.id }} ),
   activity: ( BoomActivity.activity.is_display.select(:name, :id).map{|activity| { name: activity.name, id: activity.id }} ),
   show: ( BoomActivity.show.is_display.select(:name, :id).map{|show| { name: show.name, id: show.id }} ),
+  news: ( BoomActivity.news.is_display.select(:name, :id).map{|news| { name: news.name, id: news.id }} ),
   playlist: ( BoomPlaylist.playlist.open.select(:name, :id).map{|playlist| { name: playlist.name, id: playlist.id }} )
 } do %>
 <% end %>

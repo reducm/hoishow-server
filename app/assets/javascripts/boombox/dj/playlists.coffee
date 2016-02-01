@@ -61,11 +61,11 @@ $ ->
       )
 
   # 标签
-  if $('div#dj_playlist_tags_already_added').length > 0
-    data = $('div#dj_playlist_tags_already_added').data('data')
-    $('select#tags').val(data).select2()
-  else
-    $('select#tags').select2()
+  all_tags = $("div#dj_playlist_tags_data").data("data")
+  $('#dj_playlist_tags').tagit
+    allowSpaces: true
+    autocomplete: { delay: 0, minLength: 0, source: all_tags }
+    showAutocompleteOnFocus: true
 
   $('.playlist-cover-uploader').change ->
     readURL this, $("#playlist_cover_preview")
@@ -74,15 +74,8 @@ $ ->
   $('input#boom_playlist_cover').on 'change', ->
     $('div#playlist_cover_preview').hide()
 
-  #提交前将标签id数组组装成字符串，并传入hidden field
-  $("#playlist-submit").on "click", (e) ->
-    e.preventDefault()
-    $("#boom_tag_ids").val($('select#tags').val())
-    $("form").submit()
-
+  # 新建 playlist 后，应跳转至“管理音乐”页面，并在“搜索添加”的 tab 下
   $("#new-playlist-submit").on "click", (e) ->
     e.preventDefault()
-    $("#boom_tag_ids").val($('select#tags').val())
-    # 新建 playlist 后，应跳转至“管理音乐”页面，并在“搜索添加”的 tab 下
     sessionStorage.setItem('show_search_tab', 't')
     $("form").submit()

@@ -8,7 +8,6 @@
 #= require operation/bootstrap-select
 #= require operation/echarts-all
 #= require operation/notify
-#= require select2.full.min
 #
 #= require boombox/dj/boom_albums
 #= require boombox/dj/boom_topics
@@ -16,6 +15,7 @@
 #= require boombox/dj/users
 #= require boombox/dj/tracks
 #= require boombox/dj/playlists
+#= require boombox/dj/collaborators
 #
 #= require jquery-fileupload
 #= require dropzone

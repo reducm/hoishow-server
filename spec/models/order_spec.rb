@@ -179,6 +179,7 @@ describe Order do
         expect(payment.status).to eq 'success'
         expect(t.status).to eq 'success'
 
+        new_order.paid!
         new_order.refunds!({payment: payment, refund_amount: '100', handle_ticket_method: 'refund'})
         expect(t.reload.status).to eq 'pending'
         payment.reload

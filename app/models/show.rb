@@ -69,7 +69,7 @@ class Show < ActiveRecord::Base
   mount_uploader :stadium_map, ImageUploader
 
   def self.finished_shows
-    Show.where.not(source: 0).select{|show| show.events.any? && show.events.last.show_time < Time.now - 1.week}
+    Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now - 1.week}
   end
 
   # 该区域已出票，但订单未支付的票数
