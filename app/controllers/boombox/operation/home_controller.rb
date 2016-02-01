@@ -19,6 +19,8 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
       count_new_users(DateTime.now - 30)
     when 'this_year'
       count_new_users(DateTime.now.at_beginning_of_year)
+    when 'all'
+      count_new_users_by_year
     end
   end
 
@@ -52,6 +54,20 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
     end
     # '今天'保持在最后
     new_users['今天'] = new_users.delete '今天'
+
+    render json: { x_axis: new_users.keys, y_axis: new_users.values, success: true }
+  end
+
+  # 年度
+  def count_new_users_by_year
+    new_users = User.group("DATE_FORMAT(created_at, '%Y')").count
+    start_year = User.order(:created_at).pluck("DATE_FORMAT(created_at, '%Y')").first
+    end_year = User.order(:created_at).pluck("DATE_FORMAT(created_at, '%Y')").last
+    (start_year..end_year).each do |year|
+      new_users[year] = 0 if new_users[year].blank?
+      new_users['今年'] = new_users.delete year if year == end_year
+    end
+    new_users = new_users.sort.to_h
 
     render json: { x_axis: new_users.keys, y_axis: new_users.values, success: true }
   end
