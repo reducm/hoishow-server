@@ -21,7 +21,6 @@ private
     stars_per_page.map do |star|
       [
         star.id,
-        "#{image_tag(star.avatar_url, size: '50x50') if star.avatar_url}",
         star.name,
         star.is_display_cn,
         star.status_cn,
