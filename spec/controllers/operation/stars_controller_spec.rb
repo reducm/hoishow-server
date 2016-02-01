@@ -12,23 +12,23 @@ RSpec.describe Operation::StarsController, :type => :controller do
       expect(assigns(:star)).to eq @star
     end
 
-    it "renders the :show template" do 
+    it "renders the :show template" do
       get :show, id: @star
-      expect(response).to render_template :show 
+      expect(response).to render_template :show
     end
 
     it "should get star's followers if exist" do
       user = create(:user)
       user.follow_star(@star)
       get :show, id: @star
-      expect(@star.followers.first).to eq user 
+      expect(@star.followers.first).to eq user
     end
 
     it "should get star's concerts if exist" do
       concert = create(:concert)
       @star.hoi_concert(concert)
       get :show, id: @star
-      expect(@star.concerts.first).to eq concert 
+      expect(@star.concerts.first).to eq concert
     end
 
     it "should paginate star's concerts if exist" do
@@ -37,13 +37,13 @@ RSpec.describe Operation::StarsController, :type => :controller do
         @star.hoi_concert(concert)
       end
       get :show, id: @star
-      expect(@star.concerts.page.size).to eq 10 
+      expect(@star.concerts.page.size).to eq 10
     end
 
     it "should get star's topics if exist" do
       topic = create(:star_topic, subject_id: @star.id)
       get :show, id: @star
-      expect(@star.topics.first).to eq topic 
+      expect(@star.topics.first).to eq topic
     end
 
     it "should paginate star's topics if exist" do
@@ -51,14 +51,14 @@ RSpec.describe Operation::StarsController, :type => :controller do
         topic = create(:star_topic, subject_id: @star.id)
       end
       get :show, id: @star
-      expect(@star.topics.page.size).to eq 10 
+      expect(@star.topics.page.size).to eq 10
     end
 
     it "should get star's followers if exist" do
       user = create(:user)
       user.follow_star(@star)
       get :show, id: @star
-      expect(@star.followers.first).to eq user 
+      expect(@star.followers.first).to eq user
     end
 
     it "should paginate star's followers if exist" do
@@ -67,7 +67,7 @@ RSpec.describe Operation::StarsController, :type => :controller do
         user.follow_star(@star)
       end
       get :show, id: @star
-      expect(@star.followers.page.size).to eq 10 
+      expect(@star.followers.page.size).to eq 10
     end
   end
 
@@ -80,13 +80,13 @@ RSpec.describe Operation::StarsController, :type => :controller do
     end
 
     context 'with order(:position)' do
-      it "populates an array of stars order by position" do 
-        get :index 
+      it "populates an array of stars order by position" do
+        get :index
         expect(Star.order(:position)).to eq [@smith, @jones]
       end
 
       it "renders the :index template" do
-        get :index 
+        get :index
         expect(response).to render_template :index
       end
     end
@@ -100,12 +100,12 @@ RSpec.describe Operation::StarsController, :type => :controller do
 
     it "assigns a new Star to @star" do
       get :new
-      expect(assigns(:star)).to be_a_new(Star) 
+      expect(assigns(:star)).to be_a_new(Star)
     end
 
-    it "renders the :new template" do 
+    it "renders the :new template" do
       get :new
-      expect(response).to render_template :new 
+      expect(response).to render_template :new
     end
   end
 
@@ -115,17 +115,17 @@ RSpec.describe Operation::StarsController, :type => :controller do
       session[:admin_id] = admin.id
     end
 
-    it "assigns the requested star to @star" do 
+    it "assigns the requested star to @star" do
       star = create(:star)
-      get :edit, id: star 
+      get :edit, id: star
       expect(assigns(:star)).to eq star
     end
 
     it "renders the :edit template" do
       star = create(:star)
-      get :edit, id: star 
+      get :edit, id: star
       expect(response).to render_template :edit
-    end 
+    end
   end
 
   describe 'POST #create' do
@@ -141,10 +141,10 @@ RSpec.describe Operation::StarsController, :type => :controller do
         }.to_not change(Star, :count)
       end
 
-      it "re-renders the :new template" do 
+      it "re-renders the :new template" do
         post :create, star: attributes_for(:invalid_star)
         expect(response).to render_template :new
-      end 
+      end
     end
 
     context "with valid star attributes without video" do
@@ -154,14 +154,14 @@ RSpec.describe Operation::StarsController, :type => :controller do
         }.to change(Star, :count).by(1)
       end
 
-      it "redirect_to star's show page" do 
+      it "redirect_to star's show page" do
         post :create, star: attributes_for(:star)
         expect(response).to redirect_to operation_star_path(assigns[:star])
-      end 
+      end
     end
   end
 
-  describe 'PATCH #update' do 
+  describe 'PATCH #update' do
     before :each do
       admin = create :admin
       session[:admin_id] = admin.id
@@ -174,14 +174,14 @@ RSpec.describe Operation::StarsController, :type => :controller do
         expect(assigns(:star)).to eq(@star)
       end
 
-      it "changes @star's attributes" do 
+      it "changes @star's attributes" do
         patch :update, id: @star, star: attributes_for(:star, name: "大佬")
         @star.reload
         expect(@star.name).to eq("大佬")
       end
 
       it "redirects to the updated star" do
-        patch :update, id: @star, star: attributes_for(:star) 
+        patch :update, id: @star, star: attributes_for(:star)
         expect(response).to redirect_to operation_star_path(@star)
       end
     end
@@ -199,24 +199,5 @@ RSpec.describe Operation::StarsController, :type => :controller do
         expect(response).to render_template :edit
       end
     end
-  end
-
-  describe "PATCH sort" do 
-    before :each do
-      @star1 = create(:star) 
-      @star2 = create(:star) 
-      admin = create :admin
-      session[:admin_id] = admin.id
-    end
-
-    it "set star's position" do
-      patch :sort, star: [@star2.id, @star1.id] 
-      expect @star2.reload.position < @star1.reload.position
-    end
-
-    it "render nothing" do
-      patch :sort, star: [@star2.id, @star1.id] 
-      expect(response.status).to eq 200
-    end 
   end
 end
