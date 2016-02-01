@@ -11,7 +11,7 @@ class Boombox::Operation::HomeController < Boombox::Operation::ApplicationContro
     @activities_count = BoomActivity.is_display.count
   end
 
-  def get_users_data(time = params[:time]) 
+  def get_users_data(time = params[:time])
     case time
     when 'seven_days_from_now'
       new_users = count_new_users(DateTime.now - 7)
