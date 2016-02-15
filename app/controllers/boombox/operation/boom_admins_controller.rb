@@ -14,7 +14,7 @@ class Boombox::Operation::BoomAdminsController < Boombox::Operation::Application
     @boom_admin = BoomAdmin.new(name: params[:boom_admin_new_username], admin_type: params[:admin_type].to_i)
     @boom_admin.set_password(params[:boom_admin_new_password])
 
-    if @boom_admin.save!
+    if @boom_admin.save
       flash[:notice] = '管理员创建成功'
       redirect_to boombox_operation_boom_admins_url
     else

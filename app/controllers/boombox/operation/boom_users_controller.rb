@@ -60,7 +60,7 @@ class Boombox::Operation::BoomUsersController < Boombox::Operation::ApplicationC
   def remove_avatar
     @user.remove_avatar!
     @user.remove_avatar = true
-    if @user.save!
+    if @user.save
       flash[:notice] = "屏蔽头像成功"
     end
 
