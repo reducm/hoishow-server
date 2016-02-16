@@ -15,8 +15,8 @@ module ViagogoDataToHoishow
         event_path_array = client.hgetall("viagogo_hot_events", :list).map{|x| JSON.parse x}.flatten
 
         begin
-          Star.transaction do
-            event_path_array.each do |event_path|
+          event_path_array.each do |event_path|
+            Star.transaction do
 
               temp_data = client.hget("viagogo_events_info", event_path)
               if temp_data
@@ -174,7 +174,8 @@ module ViagogoDataToHoishow
     end
 
     def data_to_hoishow
-      data_transform
+      #data_transform
+      nba_data
       update_star_avatar
       update_event_stadium_map
     end
@@ -210,6 +211,123 @@ module ViagogoDataToHoishow
           end
         end
       end
+    end
+
+    def nba_data
+      client = SSDB::Client.new.connect
+      if client.connected?
+        data = client.hgetall("viagogo_events")
+
+        nba_team_paths = data.values.select{|x| x.start_with? "\"/Sports-Tickets/NBA/NBA-Regular-Season"}.map{|x| x = x[1..-2]}
+
+        #nba_team_paths = ["/Sports-Tickets/NBA/NBA-Regular-Season/Washington-Wizards-Tickets", "/Sports-Tickets/NBA/NBA-Regular-Season/Detroit-Pistons-Tickets"]
+
+        begin
+          nba_team_paths.each do |path|
+            if event_info = client.hget("viagogo_events_info", path)
+              event_info = JSON.parse event_info
+            else
+              next
+            end
+
+            if event_info.present?
+              star_name = path.split("/").last[0..-9]
+              Star.transaction do
+                unless star = Star.where(name: star_name, event_path: path).first
+                  star = Star.create(name: star_name, event_path: path)
+                end
+
+                event_info.each do |event_info_hash|
+                  if concert_name = event_info_hash["EventName"]
+                    concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
+                    star.hoi_concert(concert)
+                  else
+                    next
+                  end
+
+                  show_time = event_info_hash["DateVal"]
+
+                  ticket_info_path = event_info_hash["EventUrl"]
+                  event_url_id = ticket_info_path.split("/").last
+                  if show = Show.where(event_url_id: event_url_id).first
+                    next
+                  else
+                    stadium_name = event_info_hash["VenueName"]
+                    city_name = event_info_hash["VenueCity"]
+                    if stadium_name && city_name
+                      city = City.where(name: city_name).first_or_create
+                      stadium = Stadium.where(name: stadium_name, city_id: city.id).first_or_create
+                    else
+                      next
+                    end
+                    show = Show.create(event_url_id: event_url_id, name: concert_name, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, source: 4, ticket_type: 1, mode: 1, status: 0, seat_type: 1)
+                  end
+                  
+                  ticket_info = client.hget("viagogo_tickets_info", ticket_info_path)
+                  if ticket_info
+                    ticket_info = JSON.parse ticket_info
+                  else
+                    next
+                  end
+
+                  if ticket_info.present?
+                    if event = Event.where(ticket_path: ticket_info_path).first
+                      event.update(show_time: show_time, show_id: show.id)
+                    else
+                      event = Event.create(ticket_path: ticket_info_path, show_time: show_time, show_id: show.id)
+                    end
+                  else
+                    next
+                  end
+
+                  #格式为{"section_id" => [{},...],...}
+                  #TODO
+                  #价格取值问题
+
+
+                  #每次更新清空区域信息
+                  event.areas.delete_all
+                  #只取电子票
+                  ticket_info = ticket_info.select{|x| x["TicketTypeNotes"] == "E-Ticket"}
+                  ticket_info_group_by_section_hash = ticket_info.group_by{|x| x["Section"]}
+                  ticket_info_group_by_section_hash.each do |name_info_hash|
+                    ticket_info_group_by_section_array = name_info_hash[1]
+                    area_name = name_info_hash[0]
+
+                    next if area_name.blank?
+
+                    seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
+                    price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
+                    max_price = price_array.last
+                    price_range = "#{price_array.first} - #{max_price}"
+
+                    if area = Area.where(name: area_name, event_id: event.id, stadium_id: stadium.id).first
+                      area.update(seats_count: seats_count, left_seats: seats_count)
+                      if relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
+                        relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+                      else
+                        ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+                      end
+                    else
+                      area = Area.create(name: area_name, event_id: event.id, stadium_id: stadium.id, seats_count: seats_count, left_seats: seats_count)
+                      ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+                    end
+                  end
+
+                end
+              end
+
+            else
+              next
+            end
+
+          end
+        rescue Exception => e
+          viagogo_logger.info "exception: #{e}"
+        end
+
+      end
+
     end
 
   end
