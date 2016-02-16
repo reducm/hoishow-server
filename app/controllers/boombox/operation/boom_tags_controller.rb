@@ -19,7 +19,6 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
       format.html
       format.js
     end
-
   end
 
   def create
@@ -27,7 +26,7 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
       tag_name = params[:tag_name]
       @boom_tag = BoomTag.new(name: tag_name)
       @boom_tag.lower_string = tag_name.gsub(/\s/, "").downcase
-      if @boom_tag.save!
+      if @boom_tag.save
         flash[:notice] = '创建标签成功'
       else
         flash[:alert] = '标签名称重复，创建标签失败'
@@ -55,5 +54,4 @@ class Boombox::Operation::BoomTagsController < Boombox::Operation::ApplicationCo
     end
     redirect_to boombox_operation_boom_tags_url
   end
-
 end
