@@ -11,7 +11,7 @@ class Show < ActiveRecord::Base
   has_many :show_followers, through: :user_follow_shows, source: :user
 
   has_many :events
-  has_many :show_area_relations
+  has_many :show_area_relations, dependent: :destroy
   has_many :areas, through: :show_area_relations
   has_many :seats
 
@@ -37,7 +37,8 @@ class Show < ActiveRecord::Base
     hoishow: 0, # 自有资源
     damai: 1, # 大麦
     yongle: 2, # 永乐
-    weipiao: 3 # 微票
+    weipiao: 3, # 微票
+    viagogo: 4 # viagogo
   }
 
   enum mode: {

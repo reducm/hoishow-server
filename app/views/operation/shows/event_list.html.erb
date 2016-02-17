@@ -12,6 +12,10 @@
     <% @events.each do |event| %>
       <div role="tabpanel" class="tab-pane" id="<%= event.id %>">
         <div class="toolbar">
+          <% if @show.viagogo? %>
+            <a class="btn btn-default" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问原链接</a>
+            <%= link_to '更新信息', 'javascript:void(0);', class: 'btn btn-default update_event_info', data: {id: event.id} %>
+          <% end %>
           <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
           <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default add_area', data: {id: event.id} %>
           <span class="upload_stadium_map" data-id="<%= event.id %>">
@@ -45,10 +49,19 @@
             <tr>
               <th>区域名</th>
               <% if @show.selected? %>
-                <th>票价</th>
+                <% if @show.viagogo? %>
+                  <th>票价(默认为最高价)</th>
+                  <th>价格区间</th>
+                <% else %>
+                  <th>票价</th>
+                <% end %>
               <% end %>
-              <th>座位数(座位数不能少于已售出数量)</th>
-              <th>库存</th>
+              <% if @show.viagogo? %>
+                <th>第三方实时库存</th>
+              <% else %>
+                <th>座位数(座位数不能少于已售出数量)</th>
+                <th>库存</th>
+              <% end %>
               <th>当前区域售出票数</th>
               <th>操作</th>
             </tr>
@@ -94,6 +107,16 @@
     </div>
   </div>
 </div>
+
+<!-- 数据同步提示 -->
+<div id="data_fetching_tip" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <p>数据同步中，请稍后...</p>
+    </div>
+  </div>
+</div>
+
 
 <!-- 设置渠道 -->
 <div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">

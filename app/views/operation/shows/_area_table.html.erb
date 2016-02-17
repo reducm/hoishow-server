@@ -1,22 +1,38 @@
 <%# encoding: utf-8 %>
 
+<% if event.areas.present? %>
 <% event.areas.each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr area_id="<%= area.id %>" color="<%= area.color %>" area_name="<%= area.name %>">
-    <% if show.selected? %>
-      <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
-      <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
-      <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control', disabled: true %></td>
-      <td class="left_seats_<%= area.id %>"><%= relation.try(:left_seats) %></td>
-      <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
-      <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">
-        <%= button_tag "修改", class: "btn btn-default editable_toggle" %>
-        <%= link_to "保存", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
-        <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
-        <%= link_to (area.is_top ? "取消置顶" : "置顶"), 'javascript:void(0);', class: 'btn btn-default set_top' %>
-        <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-info' if can? :set_channels, current_admin %>
-      </td>
+    <% if show.selected? && relation %>
+      <% if @show.viagogo? %>
+        <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
+        <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
+        <% price_range = relation.price_range %>
+        <td ><%= price_range.present? ? price_range : "没有数据" %></td>
+        <td><%= relation.try(:third_inventory) %></td>
+        <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+        <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">
+          <%= button_tag "修改", class: "btn btn-default viagogo_editable_toggle" %>
+          <%= link_to "保存", 'javascript:void(0);', class: 'viagogo_change_show_area_data btn btn-default' %>
+          <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+          <%= link_to (area.is_top ? "取消置顶" : "置顶"), 'javascript:void(0);', class: 'btn btn-default set_top' %>
+        </td>
+      <% else %>
+        <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
+        <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
+        <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control', disabled: true %></td>
+        <td class="left_seats_<%= area.id %>"><%= relation.try(:left_seats) %></td>
+        <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
+        <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">
+          <%= button_tag "修改", class: "btn btn-default editable_toggle" %>
+          <%= link_to "保存", 'javascript:void(0);', class: 'change_show_area_data btn btn-default' %>
+          <%= link_to "删除", 'javascript:void(0);', class: 'del_area btn btn-danger' %>
+          <%= link_to (area.is_top ? "取消置顶" : "置顶"), 'javascript:void(0);', class: 'btn btn-default set_top' %>
+          <%= link_to '设置渠道', 'javascript:void(0);', class: 'set_channel btn btn-info' if can? :set_channels, current_admin %>
+        </td>
+      <% end %>
     <% elsif show.selectable? %>
       <td><%= area.name %></td>
       <td><%= relation.try(:seats_count) %></td>
@@ -29,4 +45,7 @@
       </td>
     <% end %>
   </tr>
+<% end %>
+<% else %>
+  没有数据，请点击更新信息按钮
 <% end %>

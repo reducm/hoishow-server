@@ -171,6 +171,7 @@ Rails.application.routes.draw do
       end
       member do
         post "update_area_data"
+        post "update_area_data_for_viagogo"
         post "update_mode"
         patch :toggle_is_top
         post :new_area
@@ -188,6 +189,7 @@ Rails.application.routes.draw do
         post :upload_map
         get :get_coordinates
         patch :toggle_area_is_top
+        post :update_event_info
       end
     end
     resources :orders do
