@@ -1,7 +1,7 @@
 require "socket"
 require "uri"
 require "connection_pool"
-require "pry"
+#require "pry"
 
 SSDB_DEFAULT_URL = ViagogoSetting["ssdb_default_url"]
 
