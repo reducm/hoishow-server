@@ -877,9 +877,16 @@ $ ->
     show_id = $("#show_id").val()
     $('#data_fetching_tip').modal('show')
     $.post("/operation/shows/#{show_id}/update_event_info", {event_id: event_id}, (data)->
-      $(".#{event_id}_areas tbody").html(data)
-      $('#data_fetching_tip').modal('hide')
-      $.notify "更新完成",
-        globalPosition: 'top center'
-        className: 'success'
+      if data.success
+        $(".#{event_id}_areas tbody").html(data)
+        $('#data_fetching_tip').modal('hide')
+        $.notify "更新失败",
+          globalPosition: 'top center'
+          className: 'error'
+      else
+        $(".#{event_id}_areas tbody").html(data)
+        $('#data_fetching_tip').modal('hide')
+        $.notify "更新完成",
+          globalPosition: 'top center'
+          className: 'success'
     )

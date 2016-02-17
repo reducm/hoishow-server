@@ -159,13 +159,57 @@ module ViagogoDataToHoishow
     def fetch_event_data(path)
       url = VIAGOGO_URL + path
       options = {"PageSize" => "950", "CurrentPage" => "1", "sortBy" => "POPULARITY", "sortDirection" => "0", "Quantity" => "0"}
-      res = Timeout::timeout(8) { RestClient.post(url, options) }
-      if res
-        res = JSON.parse res
-        res["Items"]
-      else
-        viagogo_logger.info "访问#{path}超时"
-        nil
+      3.times do
+        begin
+          res = Timeout::timeout(8) { RestClient.post(url, options) }
+          if res
+            res = JSON.parse res
+            return res["Items"]
+          else
+            next
+          end
+        rescue Exception => e
+          viagogo_logger.info "访问#{path}超时"
+          next
+        end
+      end
+      nil
+    end
+
+    def update_event_data(event, show, ticket_info_array)
+      if ticket_info_array.present? && show && event
+        #只取电子票
+        ticket_info_array = ticket_info_array.select{|x| x["TicketTypeNotes"] == "E-Ticket"}
+        #按区域名字分组
+        ticket_info_group_by_section_hash = ticket_info_array.group_by{|x| x["Section"]}
+
+        source_area_ids = event.areas.pluck(:id)
+        updated_area_ids = []
+
+        ticket_info_group_by_section_hash.each do |name_info_hash|
+          area_name = name_info_hash[0]
+          next if area_name.blank?
+
+          ticket_info_group_by_section_array = name_info_hash[1]
+
+          seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
+          price_array = ticket_info_group_by_section_array.map{|x| x["RawPrice"]}.sort
+          max_price = price_array.last
+          price_range = "#{price_array.first} - #{max_price}"
+          if area = Area.where(name: area_name, event_id: event.id).first_or_create
+            area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: seats_count)
+            updated_area_ids << area.id
+            #show area信息的更新，显示的是event的areas的信息
+            if relation = show.show_area_relations.where(area_id: area.id).first_or_create
+
+              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+            end
+
+          end
+        end
+        #官网不存在的area
+        not_exist_ids = source_area_ids - updated_area_ids
+        Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)
       end
     end
 
@@ -233,7 +277,7 @@ module ViagogoDataToHoishow
             if event_info.present?
               star_name = path.split("/").last[0..-9]
               Star.transaction do
-                unless star = Star.where(name: star_name, event_path: path).first
+                unless star = Star.where(event_path: path).first
                   star = Star.create(name: star_name, event_path: path)
                 end
 
@@ -255,8 +299,8 @@ module ViagogoDataToHoishow
                     stadium_name = event_info_hash["VenueName"]
                     city_name = event_info_hash["VenueCity"]
                     if stadium_name && city_name
-                      city = City.where(name: city_name).first_or_create
-                      stadium = Stadium.where(name: stadium_name, city_id: city.id).first_or_create
+                      city = City.where(source_name: city_name).first_or_create(name: city_name)
+                      stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name)
                     else
                       next
                     end
@@ -280,39 +324,7 @@ module ViagogoDataToHoishow
                     next
                   end
 
-                  #格式为{"section_id" => [{},...],...}
-                  #TODO
-                  #价格取值问题
-
-
-                  #每次更新清空区域信息
-                  event.areas.delete_all
-                  #只取电子票
-                  ticket_info = ticket_info.select{|x| x["TicketTypeNotes"] == "E-Ticket"}
-                  ticket_info_group_by_section_hash = ticket_info.group_by{|x| x["Section"]}
-                  ticket_info_group_by_section_hash.each do |name_info_hash|
-                    ticket_info_group_by_section_array = name_info_hash[1]
-                    area_name = name_info_hash[0]
-
-                    next if area_name.blank?
-
-                    seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
-                    price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
-                    max_price = price_array.last
-                    price_range = "#{price_array.first} - #{max_price}"
-
-                    if area = Area.where(name: area_name, event_id: event.id, stadium_id: stadium.id).first
-                      area.update(seats_count: seats_count, left_seats: seats_count)
-                      if relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
-                        relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                      else
-                        ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                      end
-                    else
-                      area = Area.create(name: area_name, event_id: event.id, stadium_id: stadium.id, seats_count: seats_count, left_seats: seats_count)
-                      ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                    end
-                  end
+                  update_event_data(event, show, ticket_info)
 
                 end
               end

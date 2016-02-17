@@ -79,6 +79,6 @@ class Operation::StadiumsController < Operation::ApplicationController
   end
 
   def stadium_params
-    params.require(:stadium).permit(:name, :address, :longitude, :latitude, :city_id, :pic, :pic_cache)
+    params.require(:stadium).permit(:name, :address, :longitude, :latitude, :city_id, :pic, :pic_cache, :source_name)
   end
 end
