@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160216025104) do
+ActiveRecord::Schema.define(version: 20160217051009) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 20160216025104) do
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
     t.boolean  "is_top",      limit: 1,        default: false
+    t.boolean  "is_exist",    limit: 1,        default: true
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -372,12 +373,13 @@ ActiveRecord::Schema.define(version: 20160216025104) do
   add_index "boom_user_statuses", ["boom_id"], name: "index_boom_user_statuses_on_boom_id", using: :btree
 
   create_table "cities", force: :cascade do |t|
-    t.string   "pinyin",     limit: 255
-    t.string   "name",       limit: 255
-    t.string   "code",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.boolean  "is_hot",     limit: 1
+    t.string   "pinyin",      limit: 255
+    t.string   "name",        limit: 255
+    t.string   "code",        limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.boolean  "is_hot",      limit: 1
+    t.string   "source_name", limit: 255
   end
 
   create_table "collaborator_activity_relations", force: :cascade do |t|
@@ -769,6 +771,7 @@ ActiveRecord::Schema.define(version: 20160216025104) do
     t.datetime "updated_at",                                       null: false
     t.integer  "district_id", limit: 4
     t.string   "pic",         limit: 255
+    t.string   "source_name", limit: 255
   end
 
   add_index "stadiums", ["city_id"], name: "index_stadiums_on_city_id", using: :btree

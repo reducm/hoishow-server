@@ -1,7 +1,7 @@
 <%# encoding: utf-8 %>
 
 <% if event.areas.present? %>
-<% event.areas.each do |area| %>
+<% event.areas.order("is_exist DESC").each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr area_id="<%= area.id %>" color="<%= area.color %>" area_name="<%= area.name %>">
@@ -11,6 +11,7 @@
         <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
         <% price_range = relation.price_range %>
         <td ><%= price_range.present? ? price_range : "没有数据" %></td>
+        <td><%= area.is_exist ? "在售" : "已售罄" %></td>
         <td><%= relation.try(:third_inventory) %></td>
         <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>
         <td data-id="<%= area.id %>" data-channels="<%= relation.channels %>">

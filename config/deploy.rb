@@ -12,7 +12,7 @@ set :pty, false
 
 set :linked_files, %w{config/database.yml config/settings/alipay.yml config/upyun.yml config/umeng_message.yml
                       config/danche.yml config/certs/rsa_private_key.pem config/certs/app_private_key.pem
-                      config/certs/alipay_public_key.pem config/viagogo.yml}
+                      config/certs/alipay_public_key.pem}
 
 set :linked_dirs, %w{tmp/pids tmp/cache tmp/sockets}
 # set the locations that we will look for changed assets to determine whether to precompile
