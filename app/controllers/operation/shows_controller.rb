@@ -329,7 +329,7 @@ class Operation::ShowsController < Operation::ApplicationController
         event.reload
         render partial: "area_table", locals: {show: @show, event: event}
       else
-        render json: {success: true}
+        render json: {error: true}
       end
     else
       render :index
@@ -337,9 +337,15 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def update_area_data_for_viagogo
-    area.update(name: params[:area_name]) if area = @show.areas.find_by_id(params[:area_id])
-    relation.update(price: params[:price]) if relation = @show.show_area_relations.where(area_id: area.id).first
-    render partial: "area_table", locals:{show: @show, event: area.event}
+    if area = @show.areas.find_by_id(params[:area_id])
+      area.update(name: params[:area_name]) 
+      if relation = @show.show_area_relations.where(area_id: area.id).first
+        relation.update(price: params[:price]) 
+      end
+      render partial: "area_table", locals:{show: @show, event: area.event}
+    else
+      render :index
+    end
   end
 
   protected
