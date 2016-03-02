@@ -29,7 +29,7 @@ every 30.minutes do
 end
 
 every 1.day do
-  rake "shows:check_finished_shows", environment: "staging"
+  rake "shows:check_finished_shows"
 end
 
 every 1.day do
