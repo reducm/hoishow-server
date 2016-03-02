@@ -69,7 +69,7 @@ class Show < ActiveRecord::Base
   mount_uploader :stadium_map, ImageUploader
 
   def self.finished_shows
-    Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now - 1.week}
+    Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now + 3.days}
   end
 
   # 该区域已出票，但订单未支付的票数
@@ -218,6 +218,23 @@ class Show < ActiveRecord::Base
 
   def star_names
     stars.pluck(:name).join(",")
+  end
+
+  def ticket_pic_url_for_danche
+    if self.viagogo?
+      #直传地址
+      "http://hoishow-img.b0.upaiyun.com/uploads/nba/img/5f91390ff56ed052466d87f65fd82182.png"
+    else
+      ticket_pic_url
+    end
+  end
+
+  def poster_url_for_danche
+    if self.viagogo?
+      ( poster_url + "!sportsposter" ) rescue ''
+    else
+      poster_url
+    end
   end
 
   private

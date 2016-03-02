@@ -47,6 +47,25 @@
           <% end %>
         </td>
       </tr>
+      <% show = @order.show %>
+      <% if show.viagogo? && show.e_ticket? %>
+        <tr>
+          <td>门票</td>
+          <td>
+            <%= form_for @order, url: "/operation/orders/#{@order.id}/update_ticket_pic", method: :post, html: { multipart: true  } do |f| %>
+              <%= f.file_field :ticket_pic %>
+              <%= f.submit "上传门票", class: "btn btn-primary" %>
+            <% end %>
+            <p></p>
+            <p></p>
+            <% if @order.ticket_pic_url %>
+              <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
+              <%= link_to '通知用户', "/operation/orders/#{@order.id}/notice_user_by_msg", class: 'btn btn-primary', data:{confirm:"确定给用户发送通知短信?"} %>
+            <% end %>
+          </td>
+        </tr>
+        <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
+      <% end %>
     </tbody>
   </table>
 </div>

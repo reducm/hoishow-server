@@ -878,7 +878,7 @@ $ ->
     $('#data_fetching_tip').modal('show')
     $.post("/operation/shows/#{show_id}/update_event_info", {event_id: event_id}, (data)->
       if data.error
-        $(".#{event_id}_areas tbody").html(data)
+        $(".#{event_id}_areas tbody").html("没有数据")
         $('#data_fetching_tip').modal('hide')
         $.notify "更新失败",
           globalPosition: 'top center'

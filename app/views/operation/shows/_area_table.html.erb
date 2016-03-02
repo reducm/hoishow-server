@@ -1,6 +1,5 @@
 <%# encoding: utf-8 %>
 
-<% if event.areas.present? %>
 <% event.areas.order("is_exist DESC").each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
@@ -46,7 +45,4 @@
       </td>
     <% end %>
   </tr>
-<% end %>
-<% else %>
-  没有数据，请点击更新信息按钮
 <% end %>

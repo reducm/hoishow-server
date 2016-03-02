@@ -23,7 +23,10 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def set_order_to_success
-    redirect_to operation_orders_url if @order.success_pay!
+    if @order.success_pay!
+      flash[:notice] = "出票成功"
+      redirect_to operation_orders_url 
+    end
   end
 
   def update_express_id
@@ -56,6 +59,22 @@ class Operation::OrdersController < Operation::ApplicationController
 
     flash[:notice] = '短信发送成功'
     redirect_to operation_orders_url
+  end
+
+  def update_ticket_pic
+    if params["order"].present? && params["order"]["ticket_pic"].present?
+      @order.update(ticket_pic: params["order"]["ticket_pic"])
+      flash[:notice] = '上传门票成功'
+    else
+      flash[:alert] = '上传门票失败'
+    end
+    redirect_to operation_order_url(@order)
+  end
+
+  def notice_user_by_msg
+    SendSmsWorker.perform_async(@order.user_mobile, "【单车娱乐】亲爱的单车用户，您购买的电子门票已经发送至您的邮箱，请注意查收。如有疑问，请致电客服 400-880-5380")
+    flash[:notice] = '通知用户成功'
+    redirect_to operation_order_url(@order)
   end
 
   private

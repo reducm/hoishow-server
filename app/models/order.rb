@@ -33,6 +33,8 @@ class Order < ActiveRecord::Base
 
   paginates_per 10
 
+  mount_uploader :ticket_pic, ImageUploader
+
   delegate :ticket_type, to: :show
   delegate :seat_type, to: :show
 
@@ -69,7 +71,7 @@ class Order < ActiveRecord::Base
     state :outdate
 
     # Alipay调用方法 order.pre_pay!({payment_type: 'alipay', trade_id: alipay_params["trade_no"]})
-    event :pre_pay, :after => :set_payment_to_success do
+    event :pre_pay, :after => [:set_payment_to_success, :notify_custom_service] do
       transitions :from => :pending, :to => :paid
     end
 
@@ -412,6 +414,14 @@ class Order < ActiveRecord::Base
                '您订购的演出门票已支付成功，我们将在一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
              end
       SendSmsWorker.perform_async(user.mobile, text)
+    end
+  end
+
+  def notify_custom_service
+    #if e_ticket? && Rails.env.production?
+    if e_ticket?
+      text = "【单车娱乐】用户#{@order.user_mobile}已经购票"
+      SendSmsWorker.perform_async("13430208544", text)
     end
   end
 

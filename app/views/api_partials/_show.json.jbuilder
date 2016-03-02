@@ -5,8 +5,8 @@ json.city_name show.city.name rescue ''
 json.stadium_name show.stadium.name rescue ''
 json.description show.description || ''
 json.description_time show.description_time || ''
-json.poster show.poster_url || ''
-json.ticket_pic show.ticket_pic_url || ''
+json.poster show.poster_url_for_danche
+json.ticket_pic show.ticket_pic_url_for_danche
 # 可能有效率问题，先用着
 json.stars show.concert.stars.pluck(:name).join(' | ')
 json.price_range show.get_price_range

@@ -62,7 +62,12 @@
           </li>
           <li>
             <%= link_to operation_orders_path do %>
-              <i class="fa fa-file fa-fw"></i> 订单
+              <% paid_orders = Order.where(status:1).count %>
+              <% if paid_orders > 0 %>
+                <i class="fa fa-file fa-fw"></i> 订单 <span class="badge" id="paid_orders_count"><%= paid_orders %></span>
+              <% else %>
+                <i class="fa fa-file fa-fw"></i> 订单
+              <% end %>
             <% end %>
           </li>
           <li>

@@ -199,6 +199,8 @@ Rails.application.routes.draw do
         post "update_remark_content"
         post :manual_refund
         get :manual_send_msg
+        post "update_ticket_pic"
+        get :notice_user_by_msg
       end
       collection do
         get :search
