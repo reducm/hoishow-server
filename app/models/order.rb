@@ -420,7 +420,7 @@ class Order < ActiveRecord::Base
   def notify_custom_service
     #if e_ticket? && Rails.env.production?
     if e_ticket?
-      text = "【单车娱乐】用户#{self.user.mobile}已经购票"
+      text = "用户#{self.user.mobile}已经购票【单车娱乐】"
       SendSmsWorker.perform_async("13430208544", text)
     end
   end
