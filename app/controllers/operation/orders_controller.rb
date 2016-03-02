@@ -72,7 +72,7 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def notice_user_by_msg
-    SendSmsWorker.perform_async(@order.user_mobile, "【单车娱乐】亲爱的单车用户，您购买的电子门票已经发送至您的邮箱，请注意查收。如有疑问，请致电客服 400-880-5380")
+    SendSmsWorker.perform_async(@order.user.mobile, "【单车娱乐】亲爱的单车用户，您购买的电子门票已经发送至您的邮箱，请注意查收。如有疑问，请致电客服 400-880-5380")
     flash[:notice] = '通知用户成功'
     redirect_to operation_order_url(@order)
   end
