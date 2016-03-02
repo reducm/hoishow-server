@@ -18,8 +18,6 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
-set :environment, "staging"
-
 set :output, "log/cron.log"
 
 every 5.minutes do
@@ -31,7 +29,7 @@ every 30.minutes do
 end
 
 every 1.day do
-  rake "shows:check_finished_shows"
+  rake "shows:check_finished_shows", environment: "staging"
 end
 
 every 1.day do
