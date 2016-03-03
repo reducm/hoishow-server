@@ -61,6 +61,8 @@
             <% if @order.ticket_pic_url %>
               <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
               <%= link_to '通知用户', "/operation/orders/#{@order.id}/notice_user_by_msg", class: 'btn btn-primary', data:{confirm:"确定给用户发送通知短信?"} %>
+              <% event = show.events.first %>
+              <a class="btn btn-primary" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问viagogo原链接</a>
             <% end %>
           </td>
         </tr>
