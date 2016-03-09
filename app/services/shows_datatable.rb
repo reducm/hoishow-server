@@ -51,9 +51,15 @@ private
 
   def fetch_shows
     shows = Show.order(created_at: :desc)
-    # 搜演出和艺人名字
     if params[:search].present? && params[:search][:value].present?
+      # 搜演出名字
       shows = shows.where("shows.name like :search", search: "%#{params[:search][:value]}%")
+      # 搜艺人名字
+      Star.where("stars.name like :search", search: "%#{params[:search][:value]}%").each do |star|
+        star.shows.each do |show|
+          shows << show
+        end
+      end
     end
     # 按购票状态过滤
     if params[:status].present?
