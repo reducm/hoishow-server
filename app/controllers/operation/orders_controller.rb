@@ -71,9 +71,15 @@ class Operation::OrdersController < Operation::ApplicationController
     redirect_to operation_order_url(@order)
   end
 
-  def notice_user_by_msg
+  def finish_order
+    #TODO
+    #2邮件
+    #3改状态
+    #1.短信
     text = "亲爱的单车用户，您购买的电子门票已经发送至您的邮箱，请注意查收。如有疑问，请致电客服 400-880-5380【单车娱乐】"
     SendSmsWorker.perform_async(@order.user.mobile, text)
+
+
     flash[:notice] = '通知用户成功'
     redirect_to operation_order_url(@order)
   end

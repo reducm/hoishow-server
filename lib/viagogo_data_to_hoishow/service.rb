@@ -257,16 +257,31 @@ module ViagogoDataToHoishow
           price_array = ticket_info_group_by_section_array.map{|x| x["RawPrice"]}.sort
           max_price = ( price_array.last * SERVICE_FEE * rate ).to_i + 1
           price_range = "#{( price_array.first * rate ).to_i} - #{( price_array.last * rate ).to_i}"
-          if area = Area.where(name: area_name, event_id: event.id).first_or_create
-            area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: seats_count, is_exist: true)
-            updated_area_ids << area.id
-            #show area信息的更新，显示的是event的areas的信息
-            if relation = show.show_area_relations.where(area_id: area.id).first_or_create
-              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
+          if area = Area.where(name: area_name, event_id: event.id).first_or_create(seats_count: 0, left_seats: 0)
+            if relation = show.show_area_relations.where(area_id: area.id).first_or_create(seats_count: 0, left_seats: 0)
+              #增减tickets
+              old_seats_count = relation.seats_count
+              old_seats_count ||= 0
+              if old_seats_count == 0 && seats_count > 0
+                seats_count.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
+              else
+                #减少了座位
+                if old_seats_count > seats_count
+                  rest_tickets = old_seats_count - seats_count
+                  show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
+                #增加了座位
+                elsif old_seats_count < seats_count
+                  rest_tickets = seats_count - old_seats_count
+                  rest_tickets.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
+                end
+              end
+              area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: seats_count, is_exist: true)
+              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count)
             end
-
+            updated_area_ids << area.id
           end
         end
+
         #官网不存在的area
         not_exist_ids = source_area_ids - updated_area_ids
         Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)

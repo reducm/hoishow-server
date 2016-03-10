@@ -233,13 +233,6 @@ binding_btn_action = ()->
     $(this).parent().siblings().children().attr('disabled', false)
     $(this).hide()
 
-binding_btn_action_for_viagogo = ()->
-  $('.viagogo_change_show_area_data').hide()
-  $('.viagogo_editable_toggle').on 'click', ->
-    $(this).siblings().eq(0).show()
-    $(this).parent().siblings().children().attr('disabled', false)
-    $(this).hide()
-
 # 设置情侣座号以及修改提示
 set_love_index = ($first_s, $last_s)->
   $.each([$first_s, $last_s], (idx, val)->
@@ -261,13 +254,10 @@ $ ->
     readURL this
 
   binding_btn_action()
-  binding_btn_action_for_viagogo()
 
   $(document).ajaxComplete ->
     $('.editable_toggle').parent().siblings().children().attr('disabled', true)
     binding_btn_action()
-    $('.viagogo_editable_toggle').parent().siblings().children().attr('disabled', true)
-    binding_btn_action_for_viagogo()
 
 #演出列表搜索过滤开始---------------
   # 服务器提供的过滤条件数据源
@@ -642,23 +632,6 @@ $ ->
         alert("座位数不能少于售出票数")
       else
         $.post("/operation/shows/#{show_id}/update_area_data", {area_id: area_id, area_name: area_name, seats_count: seats_count, price: price}, (data)->
-          $(".#{event_id}_areas tbody").html(data)
-          $.notify "修改成功",
-            globalPosition: 'top center'
-            className: 'success'
-        )
-
-    #修改区域for viagogo
-    $('.areas').on "click", ".viagogo_change_show_area_data", () ->
-      event_id = $(this).parents('table').data('id')
-      area_id = $(this).parent().data("id")
-      price = $(".price_#{area_id} input").val()
-      area_name = $(".area_name_#{area_id} input").val()
-      if (parseFloat(price) < 0.0)
-        alert("价格必须为数字且不能少于0")
-        return false
-      else
-        $.post("/operation/shows/#{show_id}/update_area_data_for_viagogo", {area_id: area_id, area_name: area_name, price: price}, (data)->
           $(".#{event_id}_areas tbody").html(data)
           $.notify "修改成功",
             globalPosition: 'top center'

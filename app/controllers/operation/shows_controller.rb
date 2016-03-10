@@ -337,18 +337,6 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
-  def update_area_data_for_viagogo
-    if area = @show.areas.find_by_id(params[:area_id])
-      area.update(name: params[:area_name]) 
-      if relation = @show.show_area_relations.where(area_id: area.id).first
-        relation.update(price: params[:price]) 
-      end
-      render partial: "area_table", locals:{show: @show, event: area.event}
-    else
-      render :index
-    end
-  end
-
   protected
   def show_params
     params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell)

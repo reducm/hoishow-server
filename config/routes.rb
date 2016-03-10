@@ -171,7 +171,6 @@ Rails.application.routes.draw do
       end
       member do
         post "update_area_data"
-        post "update_area_data_for_viagogo"
         post "update_mode"
         patch :toggle_is_top
         post :new_area
@@ -200,7 +199,7 @@ Rails.application.routes.draw do
         post :manual_refund
         get :manual_send_msg
         post "update_ticket_pic"
-        get :notice_user_by_msg
+        post :finish_order
       end
       collection do
         get :search

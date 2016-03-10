@@ -49,20 +49,14 @@
             <tr>
               <th>区域名</th>
               <% if @show.selected? %>
+                <th>票价</th>
                 <% if @show.viagogo? %>
-                  <th>票价(默认为最高价)</th>
                   <th>价格区间</th>
                   <th>销售状态</th>
-                <% else %>
-                  <th>票价</th>
                 <% end %>
               <% end %>
-              <% if @show.viagogo? %>
-                <th>第三方实时库存</th>
-              <% else %>
-                <th>座位数(座位数不能少于已售出数量)</th>
-                <th>库存</th>
-              <% end %>
+              <th>座位数(座位数不能少于已售出数量)</th>
+              <th>库存</th>
               <th>当前区域售出票数</th>
               <th>操作</th>
             </tr>
