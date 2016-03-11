@@ -4,7 +4,8 @@ class ViagogoMailer < ApplicationMailer
   def notify_user_ticket_pic(order)
     @user = order.user
     @show = order.show
-    attachments['门票.pdf'] = File.read(order.ticket_pic.current_path)  
+    #attachments['门票.pdf'] = File.read(order.ticket_pic.current_path)  
+    attachments['门票.pdf'] = File.read(order.ticket_pic_url)  
     mail(to: "tom@bestapp.us", subject: "演出门票test")
   end
 
