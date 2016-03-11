@@ -195,10 +195,9 @@ Rails.application.routes.draw do
       member do
         post :set_order_to_success
         post "update_express_id"
-        post "update_remark_content"
         post :manual_refund
         get :manual_send_msg
-        post "update_ticket_pic"
+        post "update_order_data"
         post :finish_order
       end
       collection do

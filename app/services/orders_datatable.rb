@@ -48,7 +48,7 @@ private
 
   def comfirm_ticket(order)
     "#{ link_to("查看详情", "/operation/orders/#{order.id}") }
-    #{ if order.paid?
+    #{ if ( order.paid? && !order.show.viagogo? )
     link_to("确认出票", "/operation/orders/#{order.id}/set_order_to_success", method: "post")
     else
       ""

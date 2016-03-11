@@ -259,24 +259,31 @@ module ViagogoDataToHoishow
           price_range = "#{( price_array.first * rate ).to_i} - #{( price_array.last * rate ).to_i}"
           if area = Area.where(name: area_name, event_id: event.id).first_or_create(seats_count: 0, left_seats: 0)
             if relation = show.show_area_relations.where(area_id: area.id).first_or_create(seats_count: 0, left_seats: 0)
-              #增减tickets
               old_seats_count = relation.seats_count
               old_seats_count ||= 0
+              #新建的区
               if old_seats_count == 0 && seats_count > 0
+                left_seats = seats_count
                 seats_count.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
               else
+                #旧有的区
                 #减少了座位
                 if old_seats_count > seats_count
                   rest_tickets = old_seats_count - seats_count
+                  left_seats = relation.left_seats - rest_tickets
                   show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
                 #增加了座位
                 elsif old_seats_count < seats_count
                   rest_tickets = seats_count - old_seats_count
+                  left_seats = relation.left_seats + rest_tickets
                   rest_tickets.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
+                #座位数量不变
+                else
+                  left_seats = relation.left_seats
                 end
               end
-              area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: seats_count, is_exist: true)
-              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count)
+              area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: left_seats, is_exist: true)
+              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: left_seats)
             end
             updated_area_ids << area.id
           end
@@ -414,7 +421,7 @@ module ViagogoDataToHoishow
                     #for sports ticket,有两个入口
                     events = show.events
                     if events.count > 0
-                      event = events.first
+                      event = events.last
                     #if event = Event.where(ticket_path: ticket_info_path).first
                       event.update(show_time: show_time)
                     else

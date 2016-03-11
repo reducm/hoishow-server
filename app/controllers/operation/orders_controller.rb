@@ -33,15 +33,6 @@ class Operation::OrdersController < Operation::ApplicationController
     render json: {success: true} if @order.update!(express_id: params[:content])
   end
 
-  def update_remark_content
-    if @order.update!(remark: params[:remark])
-      flash[:notice] = "更新备注成功"
-    else
-      flash[:alert] = "更新备注失败"
-    end
-    redirect_to operation_order_url(@order)
-  end
-
   def manual_refund
     payment = @order.payments.first
     if payment && payment.refund_order
@@ -61,24 +52,32 @@ class Operation::OrdersController < Operation::ApplicationController
     redirect_to operation_orders_url
   end
 
-  def update_ticket_pic
-    if params["order"].present? && params["order"]["ticket_pic"].present?
-      @order.update(ticket_pic: params["order"]["ticket_pic"])
-      flash[:notice] = '上传门票成功'
-    else
-      flash[:alert] = '上传门票失败'
+  def update_order_data
+    options = {}
+    if params["order"]["remark"].present?
+      options.merge!({remark: params["order"]["remark"]})
     end
+    if params["order"]["ticket_pic"].present?
+      options.merge!({ticket_pic: params["order"]["ticket_pic"]})
+    end
+    if params["order"]["buy_price"].present?
+      options.merge!({buy_price: params["order"]["buy_price"]})
+    end
+    @order.update(options)
+    flash[:notice] = '更新资料成功'
     redirect_to operation_order_url(@order)
   end
 
   def finish_order
-    #TODO
-    #2邮件
-    #3改状态
-    #1.短信
+    if @order.paid?
+      #变更状态
+      @order.success_pay!
+    end
+    #发短信
     text = "亲爱的单车用户，您购买的电子门票已经发送至您的邮箱，请注意查收。如有疑问，请致电客服 400-880-5380【单车娱乐】"
     SendSmsWorker.perform_async(@order.user.mobile, text)
-
+    #发邮件
+    ViagogoMailer.notify_user_ticket_pic(@order).deliver_now
 
     flash[:notice] = '通知用户成功'
     redirect_to operation_order_url(@order)
