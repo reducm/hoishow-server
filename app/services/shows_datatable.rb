@@ -1,5 +1,5 @@
 class ShowsDatatable
-  delegate :params, :link_to, to: :@view
+  delegate :params, :link_to, :content_tag, to: :@view
 
   def initialize(view)
     @view = view
@@ -21,8 +21,8 @@ private
     shows_per_page.map do |show|
       tickets = show.tickets
       [
+        is_upcoming(show),
         show.star_names,
-        show.name,
         show.is_display_cn,
         show.is_presell_cn,
         show.source_cn,
@@ -34,6 +34,14 @@ private
         "#{tickets.sold_tickets.count}/#{show.total_seats_count}",
         control_link(show)
       ]
+    end
+  end
+
+  def is_upcoming(show)
+    if show.is_upcoming?
+      "#{content_tag(:span, '即将到期', class: 'label label-danger')}" + " " + show.name
+    else
+      show.name
     end
   end
 
