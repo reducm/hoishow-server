@@ -5,7 +5,7 @@ class ShowsDatatable
     @view = view
   end
 
-# dataTable需要的参数
+  # dataTable需要的参数
   def as_json(options = {})
     {
       draw: params[:draw].to_i,
@@ -15,7 +15,7 @@ class ShowsDatatable
     }
   end
 
-private
+  private
 
   def data
     shows_per_page.map do |show|
@@ -51,15 +51,10 @@ private
 
   def fetch_shows
     shows = Show.order(created_at: :desc)
+    # 搜演出或艺人名字
     if params[:search].present? && params[:search][:value].present?
-      # 搜演出名字
-      shows = shows.where("shows.name like :search", search: "%#{params[:search][:value]}%")
-      # 搜艺人名字
-      Star.where("stars.name like :search", search: "%#{params[:search][:value]}%").each do |star|
-        star.shows.each do |show|
-          shows << show
-        end
-      end
+      shows = shows.joins(:concert => { :stars => :star_concert_relations  })
+                   .where("shows.name LIKE :search OR stars.name LIKE :search", search: "%#{params[:search][:value]}%")
     end
     # 按购票状态过滤
     if params[:status].present?
