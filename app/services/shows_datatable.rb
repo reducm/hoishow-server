@@ -42,7 +42,7 @@ class ShowsDatatable
   end
 
   def is_upcoming(show)
-    if show.is_upcoming
+    if show.is_upcoming?
       "#{content_tag(:span, '即将到期', class: 'label label-danger')}" + " " + show.name
     else
       wrap_text(show.name, '300px')

@@ -67,7 +67,7 @@ class Show < ActiveRecord::Base
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
 
-  def is_upcoming
+  def is_upcoming?
     showtime = events.verified.first.try(:show_time)
     showtime.present? ? showtime <= DateTime.now + 7 : false
   end
