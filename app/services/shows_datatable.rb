@@ -38,7 +38,7 @@ class ShowsDatatable
   end
 
   def is_upcoming(show)
-    if show.is_upcoming?
+    if show.is_upcoming
       "#{content_tag(:span, '即将到期', class: 'label label-danger')}" + " " + show.name
     else
       show.name
@@ -63,6 +63,7 @@ class ShowsDatatable
     if params[:search].present? && params[:search][:value].present?
       shows = shows.joins(:concert => { :stars => :star_concert_relations  })
                    .where("shows.name LIKE :search OR stars.name LIKE :search", search: "%#{params[:search][:value]}%")
+                   .uniq
     end
     # 按购票状态过滤
     if params[:status].present?
@@ -79,6 +80,10 @@ class ShowsDatatable
     # 按演出时间称过滤
     if params[:start_date].present? && params[:end_date].present?
       shows = shows.joins(:events).where("events.show_time between ? and ?", params[:start_date], params[:end_date])
+    end
+    # 按是否即将到期过滤
+    if params[:is_upcoming].present?
+      shows = params[:is_upcoming] == '1' ? shows.is_upcoming : shows.is_not_upcoming
     end
     shows
   end
