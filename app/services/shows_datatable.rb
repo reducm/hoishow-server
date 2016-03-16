@@ -30,18 +30,22 @@ private
         show.status_cn,
         show.ticket_type_cn,
         show.stadium.try(:name),
-        show.event_show_time,
+        wrap_text(show.event_show_time, '105px'),
         "#{tickets.sold_tickets.count}/#{show.total_seats_count}",
         control_link(show)
       ]
     end
   end
 
+  def wrap_text(text, px)
+    "#{content_tag(:p, text, style: "width: #{px}; word-wrap: break-word;") }"
+  end
+
   def is_upcoming(show)
     if show.is_upcoming?
-      "#{content_tag(:span, '即将到期', class: 'label label-danger')}" + " " + show.name
+      wrap_text(content_tag(:span, '即将到期', class: 'label label-danger') + " " + show.name, '300px')
     else
-      show.name
+      wrap_text(show.name, '300px')
     end
   end
 
