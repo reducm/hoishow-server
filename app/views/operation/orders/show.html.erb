@@ -53,9 +53,9 @@
               <% if @order.ticket_pic_url %>
                 <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
                 <% if @order.success? %>
-                  <%= link_to "再次通知用户", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
+                  <%= link_to "再次通知用户", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
                 <% elsif @order.paid? %>
-                  <%= link_to "确认出票", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
+                  <%= link_to "确认出票", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
                 <% end %>
                 <% event = show.events.last %>
                 <a class="btn btn-primary" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问viagogo原链接</a>
