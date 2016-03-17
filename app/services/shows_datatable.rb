@@ -62,7 +62,7 @@ class ShowsDatatable
   end
 
   def fetch_shows
-    shows = Show.order(created_at: :desc)
+    shows = Show.all
     # 搜演出或艺人名字
     if params[:search].present? && params[:search][:value].present?
       shows = shows.joins(:concert => { :stars => :star_concert_relations  })
@@ -89,7 +89,7 @@ class ShowsDatatable
     if params[:is_upcoming].present?
       shows = params[:is_upcoming] == '1' ? shows.is_upcoming : shows.is_not_upcoming
     end
-    shows
+    shows = shows.order(created_at: :desc)
   end
 
   def page
