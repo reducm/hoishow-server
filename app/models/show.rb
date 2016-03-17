@@ -72,6 +72,20 @@ class Show < ActiveRecord::Base
     showtime.present? ? showtime <= DateTime.now + 7 : false
   end
 
+  def self.is_upcoming
+    ##### 找出符合条件的event
+    # events = Event.verified.where("show_time <= ?", DateTime.now + 7)
+    ##### 找出event的show_id
+    # events.select(:show_id).group(:show_id).count
+    # { 682=>7, 159=>7, 132=>7, ... }
+    show_ids = Event.verified.where("show_time <= ?", DateTime.now + 7).select(:show_id).group(:show_id).pluck(:show_id)
+    Show.where(id: show_ids)
+  end
+
+  def self.is_not_upcoming
+    Show.all - Show.is_upcoming
+  end
+
   def self.finished_shows
     Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now - 1.week}
   end

@@ -55,7 +55,7 @@ private
   end
 
   def fetch_orders
-    orders = Order.order(created_at: :desc)
+    orders = Order.all
     # 搜订单号和手机号
     if params[:search].present?
       if params[:search][:value].present?
@@ -82,7 +82,7 @@ private
     if params[:start_date].present? && params[:end_date].present?
       orders = orders.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])
     end
-    orders
+    orders = orders.order(created_at: :desc)
   end
 
   def page
