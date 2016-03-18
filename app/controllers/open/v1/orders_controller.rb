@@ -90,6 +90,10 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       @error_code = 3012
       @message = '订单确认失败'
     end
+    # 更新用户邮箱
+    if email = params[:email]
+      @order.user.update(email: email)
+    end
     # 实体票的话，可更新快递信息
     if @order.user_address.nil? && @order.show.r_ticket?
       # user_name 暂时就不关联到 bike_ticket_user
