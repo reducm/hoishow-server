@@ -30,7 +30,10 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def update_express_id
-    render json: {success: true} if @order.update!(express_id: params[:content])
+    if @order.update(express_id: params[:content])
+      @order.query_express
+      render json: {success: true}
+    end
   end
 
   def manual_refund

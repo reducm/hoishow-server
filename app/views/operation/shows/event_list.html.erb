@@ -78,6 +78,7 @@
         <%= form_tag add_event_operation_show_path(@show) do %>
           <div class="form-group">
              <%= datetime_field_tag "show_time", nil, class: 'form-control' %>
+             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
           </div>
           <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>
         <% end %>
@@ -94,6 +95,7 @@
         <%= form_tag update_event_operation_show_path(@show) do %>
           <div class="form-group">
              <%= text_field_tag "show_time", nil, class: 'form-control' %>
+             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
              <%= hidden_field_tag "event_id" %>
           </div>
           <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>

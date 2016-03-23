@@ -47,6 +47,7 @@ config/umeng_message.yml
 config/settings/alipay.yml
 config/settings/wx_pay.yml
 config/danche.yml
+config/yongle.yml
 config/viagogo.yml
 
 # ignore local precompile assets file

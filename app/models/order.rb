@@ -1,5 +1,5 @@
 #encoding: UTF-8
-
+include QueryExpress
 # out_id        订单号
 # remark        备注
 # out_trade_no  交易单号
@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
   validates_presence_of ASSOCIATION_ATTRS.map{|sym| ( sym.to_s + "_name" ).to_sym}
 
   after_create :set_attr_after_create
+  after_create :refill_inventory, if: :area_is_infinite?
 
   paginates_per 10
 
@@ -37,13 +38,15 @@ class Order < ActiveRecord::Base
 
   delegate :ticket_type, to: :show
   delegate :seat_type, to: :show
+  delegate :source, to: :show
 
   enum status: {
     pending: 0, #未支付
     paid: 1, #已支付
     success: 2, #已出票
     refund: 3, #退款
-    outdate: 4 #过期
+    outdate: 4, #过期
+    refunding: 5 #退款中
   }
 
   enum channel: {
@@ -53,13 +56,12 @@ class Order < ActiveRecord::Base
 
   enum ticket_type: {
     e_ticket: 0, #电子票
-    r_ticket: 1, #实体票
+    r_ticket: 1 #实体票
   }
 
   scope :valid_orders, ->{ where("status != ?  and status != ?", statuses[:refund], statuses[:outdate]) }
   scope :orders_with_r_tickets, ->{ where("ticket_type = ? and (status = ? or status = ?)", ticket_types[:r_ticket], statuses[:paid], statuses[:success]).order("created_at desc") }
   scope :pending_outdate_orders, ->{ where("created_at < ? and status = ?", Time.now - 15.minutes, statuses[:pending]) }
-  scope :paid_refund_orders, ->{ where("created_at < ? and status = ?", Time.now - 30.minutes, statuses[:paid]) }
   scope :today_success_orders, ->{  where("created_at > ? and status = ?", Time.now.at_beginning_of_day, statuses[:success]) }
 
   # state_machine
@@ -69,9 +71,10 @@ class Order < ActiveRecord::Base
     state :success
     state :refund
     state :outdate
+    state :refunding
 
     # Alipay调用方法 order.pre_pay!({payment_type: 'alipay', trade_id: alipay_params["trade_no"]})
-    event :pre_pay, :after => [:set_payment_to_success, :notify_custom_service] do
+    event :pre_pay, :after => [:set_payment_to_success] do
       transitions :from => :pending, :to => :paid
     end
 
@@ -89,10 +92,50 @@ class Order < ActiveRecord::Base
       transitions :from => :paid, :to => :refund
     end
 
+    # 调用方法 order.refunds!({refund_amount: refund_amount, payment: payment, handle_ticket_method: 'refund'})
+    event :yongle_refunds, :after => [:set_payment_to_refund, :handle_seats_and_tickets] do
+      transitions :from => :refunding, :to => :refund
+    end
+
     # 调用方法 order.overtime!({handle_ticket_method: 'outdate'})
     event :overtime, :after => :handle_seats_and_tickets do
       transitions :from => :pending, :to => :outdate
     end
+  end
+
+  def area
+    Area.find_by(source_id: area_source_id)
+  end
+
+  def area_is_infinite?
+    area.present? ? area.is_infinite : false
+  end
+
+  def refill_inventory
+    # 算库存
+    relation = area.show_area_relations.first
+    show = area.shows.first
+    old_seats_count = relation.seats_count
+    old_left_seats = relation.left_seats
+    rest_tickets = seats_count - old_seats_count
+
+    # sinagle mass insert
+    inserts = []
+    show_id = show.id
+    area_id = area.id
+    status = Ticket::seat_types[:avaliable]
+    price = relation.price
+    timenow = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+    rest_tickets.times do
+      inserts.push "(#{show_id}, #{area_id}, #{status}, #{price}, '#{timenow}', '#{timenow}')"
+    end
+    sql = "INSERT INTO tickets (show_id, area_id, status, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
+    ActiveRecord::Base.connection.execute sql
+    #####################
+
+    relation.update(left_seats: rest_tickets + old_left_seats)
+    area.update(left_seats: rest_tickets + old_left_seats)
+    return true
   end
 
   def set_payment_to_success *args
@@ -162,7 +205,7 @@ class Order < ActiveRecord::Base
         if show.selected? # 选区则要更新库存
           # 释放 tickets
           self.tickets.update_all(status: Ticket.statuses[:pending],
-            seat_type: Ticket.seat_types[:avaliable], order_id: nil)
+                                  seat_type: Ticket.seat_types[:avaliable], order_id: nil)
 
           area_id = area_ids.uniq
           raise RuntimeError, 'area_id not uniq' if area_id.size != 1
@@ -216,23 +259,23 @@ class Order < ActiveRecord::Base
   #1. 执行Order.init_from_data(blahblahblah), 把要用到的model扔进来, 方法返回一个new order，未保存到数据库
   #2. new order执行order.set_tickets_and_price(show和area的中间表数组), 例如买三张三区，所以就扔三个三区的中间表数组[show_area_relation, show_area_relation, show_area_relation]
   #def self.to_csv(options = {})
-    #CSV.generate(options) do |csv|
-      #csv << ["订单号", "演出", "下单平台", "下单来源", "门票类型", "下单时间",
-              #"付款时间", "购票数量", "总金额", "手机号", "订单状态",
-              #"收货人姓名", "收货人电话", "收货人地址", "快递单号"]
-      #all.each do |o|
-        #if o.show.r_ticket?
-          ## 实体票
-          #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
-                  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
-                  #o.user_name, o.user_mobile, o.user_address, o.express_id]
-        #else
-          ## 电子票
-          #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
-                  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
-        #end
-      #end
-    #end
+  #CSV.generate(options) do |csv|
+  #csv << ["订单号", "演出", "下单平台", "下单来源", "门票类型", "下单时间",
+  #"付款时间", "购票数量", "总金额", "手机号", "订单状态",
+  #"收货人姓名", "收货人电话", "收货人地址", "快递单号"]
+  #all.each do |o|
+  #if o.show.r_ticket?
+  ## 实体票
+  #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn,
+  #o.user_name, o.user_mobile, o.user_address, o.express_id]
+  #else
+  ## 电子票
+  #csv << [o.out_id, o.show_name, o.buy_origin, o.channel, o.show.try(:ticket_type_cn), o.created_at_format,
+  #o.generate_ticket_at_format, o.tickets_count, o.amount, o.get_username(o.user), o.status_cn]
+  #end
+  #end
+  #end
   #end
 
   class << self
@@ -257,6 +300,7 @@ class Order < ActiveRecord::Base
         order = Order.init_from_show(show, order_attrs)
 
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
+        order.area_source_id = relation.area_id
         order.save!
 
         # update 库存
@@ -269,12 +313,12 @@ class Order < ActiveRecord::Base
           WHERE `show_area_relations`.`id` = #{relation.id}
           AND (`show_id` = #{relation.show_id} and `area_id` = #{relation.area_id})
           AND (`left_seats` >= #{quantity} and `left_seats` > 0)
-        EOQ
-        )
+          EOQ
+                                                )
 
         # 更新状态，关联 order
         Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
-          ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
+                                      ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
         order
       end
@@ -317,8 +361,8 @@ class Order < ActiveRecord::Base
           s.each_pair do |k, v|
             row_col = k.split('|')
             Ticket.create(show_id: show.id, area_id: area_id, order_id: order.id,
-              price: sf[k]['price'].to_f, seat_name: sf[k]['seat_no'],
-              row: row_col[0], column: row_col[1])
+                          price: sf[k]['price'].to_f, seat_name: sf[k]['seat_no'],
+                          row: row_col[0], column: row_col[1])
 
             # update seat status 相当于更新库存
             all_seat_info['seats'][row_col[0]][row_col[1]]['status'] = Area::SEAT_LOCKED
@@ -417,16 +461,138 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def notify_custom_service
-    #if e_ticket? && Rails.env.production?
-    if e_ticket?
-      text = "用户#{user.mobile}已购#{show.name}【单车娱乐】"
-      #phone_numbers = ["11", "22"]
-      #phone_numbers.each do |number|
-        #SendSmsWorker.perform_async(number, text)
-      #end
-      SendSmsWorker.perform_async(user.mobile, text)
+  def get_user_name
+    user_name || user.show_name
+  end
+
+  def get_user_mobile
+    user_mobile || user.mobile
+  end
+
+  def get_user_address
+    user_address || "单车娱乐"
+  end
+
+  def yongle_amount
+    if ticket_type == 'e_ticket'
+      unit_price.to_f * tickets_count
+    else
+      unit_price.to_f * tickets_count + YongleSetting['postage'].to_i
+    end rescue 0
+  end
+
+  def dispatch_way
+    ticket_type == 'e_ticket' ? 4 : 1
+  end
+
+  def add_order_to_yongle
+    options = {
+      onlineOrderReq: {
+        userName: get_user_name,
+        phone: get_user_mobile,
+        orderAddress: get_user_address,
+        created_at: created_at,
+        unionOrderList: {
+          order: {
+            unionOrderId: out_id,
+            expressPrice: YongleSetting['postage'],
+            ifpay: 1,
+            totalFee: yongle_amount,
+            dispatchWay: dispatch_way,
+            productList: {
+              product: {
+                productPlayid: area_source_id,
+                priceNum: tickets_count
+              }
+            }
+          }
+        }
+      }
+    }
+    if dispatch_way == 4
+      e_options = {dzp_type: show[:yl_dzp_type]}
+      e_options.merge!(IDCard: id_card) if show.idcard?
+
+      options[:onlineOrderReq][:unionOrderList][:order].merge!(e_options)
     end
+
+    YongleService::Service.online_order(options)
+  end
+
+  def update_pay_status_to_yongle
+    YongleService::Service.update_pay_status(out_id)
+  end
+
+  def sync_yongle_status
+    result_data = YongleService::Service.find_order_by_unionid_and_orderid(out_id)
+    update_by_yongle(result_data) if result_data['result'] == '1000'
+  end
+
+  def update_by_yongle(result)
+    data = result['data']['Response']['getOrderInfoRsp']['orderInfo']
+    Order.transaction do
+      options = {
+        source_id: data['orderID'],
+        status: convert_status(data['orderStarus']),
+        express_name: data['expressName'],
+        express_id: data['expressNo']
+      }
+
+      self.update(options)
+    end
+
+    notify_delivery if express_id.present?
+  end
+
+  def get_express_name
+    if express_name.present?
+      express_name
+    elsif express_id.present?
+      '顺丰速运'
+    else
+      ''
+    end
+  end
+
+  def notify_delivery
+    SendSmsWorker.perform_async(user_mobile, "您订购的演出门票已发货，#{get_express_name}:#{express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
+    NotifyDeliveryWorker.perform_async(open_trade_no) unless Rails.env.test?
+  end
+
+  def convert_status(status)
+    case status
+    when '1', '2', '3', '4'
+      Order.statuses['paid']
+    when '5', '6'
+      Order.statuses['success']
+    when '7', '12'
+      Order.statuses['outdate']
+    when '17', '21'
+      Order.statuses['refund']
+    else
+      Order.statuses['refunding']
+    end
+  end
+
+  def notify_refund
+    url = "#{BikeSetting['notify_refund_url']}?id=#{open_trade_no}"
+    begin
+      response = RestClient::Request.execute(
+          :method => :get,
+          :url => url,
+          :timeout => 10,
+          :open_timeout => 10
+      )
+      JSON.parse response
+    rescue => e
+      Rails.logger.fatal("*** errors: #{e.message}")
+      nil
+    end
+  end
+
+  def query_express
+    data = get_express_info(express_id)
+    update(express_name: data[:delivery_company]) if data
   end
 
   private

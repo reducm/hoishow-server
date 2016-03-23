@@ -6,6 +6,7 @@ class Show < ActiveRecord::Base
   belongs_to :concert
   belongs_to :city
   belongs_to :stadium
+  belongs_to :yl_play_type
 
   has_many :user_follow_shows
   has_many :show_followers, through: :user_follow_shows, source: :user
@@ -31,6 +32,13 @@ class Show < ActiveRecord::Base
   after_create :set_mode_after_create
 
   delegate :stars, to: :concert
+
+  # 永乐电子票类型
+  enum yl_dzp_type: {
+    onedcode: 0, # 一维码
+    qrcode: 1, # 二维码
+    idcard: 2 # 身份证
+  }
 
   # 演出资源提供方
   enum source: {
@@ -67,6 +75,36 @@ class Show < ActiveRecord::Base
   mount_uploader :ticket_pic, ImageUploader
   mount_uploader :poster, ImageUploader
   mount_uploader :stadium_map, ImageUploader
+
+  # 避免保存到mysql时遇到的4字节字符问题
+  def description=(value)
+    write_attribute(:description, Base64.encode64(value))
+  end
+
+  def description
+    Base64.decode64(read_attribute(:description)).force_encoding("utf-8")
+  end
+  #################################
+
+  def is_upcoming?
+    showtime = events.verified.first.try(:show_time)
+    showtime.present? ? showtime <= DateTime.now + 7 : false
+  end
+
+  def self.is_upcoming
+    ##### 找出符合条件的event
+    # events = Event.verified.where("show_time <= ?", DateTime.now + 7)
+    ##### 找出event的show_id
+    # events.select(:show_id).group(:show_id).count
+    # { 682=>7, 159=>7, 132=>7, ... }
+    show_ids = Event.verified.where("show_time <= ?", DateTime.now + 7).select(:show_id).group(:show_id).pluck(:show_id)
+    Show.where(id: show_ids)
+  end
+
+  def self.is_not_upcoming
+    show_ids = Event.verified.where("show_time > ?", DateTime.now + 7).select(:show_id).group(:show_id).pluck(:show_id)
+    Show.where(id: show_ids)
+  end
 
   def self.finished_shows
     Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now + 3.days}

@@ -12,6 +12,7 @@ json.qr_url show_for_qr_scan_api_v1_order_path(order)
 # json.valid_time order.valid_time.to_ms rescue ''
 json.ticketed_at order.generate_ticket_at.to_i rescue ''
 json.express_code order.express_id || ''
+json.express_name order.get_express_name
 
 # about express
 # json.express_id @express.id rescue ''

@@ -17,6 +17,13 @@ class Area < ActiveRecord::Base
     #option.has_many :seats, -> { where(order_id: nil) }
   #end
 
+  enum source: {
+    hoishow: 0, # 自有资源
+    damai: 1, # 大麦
+    yongle: 2, # 永乐
+    weipiao: 3 # 微票
+  }
+
   paginates_per 10
 
   def seats_info=(si)

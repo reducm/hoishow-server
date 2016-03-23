@@ -160,7 +160,7 @@ class CreateOrderLogic
       pending_orders = pending_orders_ids
 
       # set order attr
-      order_attrs = prepare_order_attrs({tickets_count: @quantity, amount: @relation.price * @quantity, ticket_type: show.ticket_type})
+      order_attrs = prepare_order_attrs({tickets_count: @quantity, unit_price: @relation.price, amount: @relation.price * @quantity, ticket_type: show.ticket_type})
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 

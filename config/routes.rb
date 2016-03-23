@@ -276,4 +276,7 @@ Rails.application.routes.draw do
 
   #simditor_image
   post '/simditor_image', to: 'simditor_image#upload'
+
+  #永乐退款回调
+  post '/lmapplyRefund', to: 'yongle#refund'
 end

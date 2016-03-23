@@ -300,6 +300,7 @@ $ ->
               'status': $('#status_filter').val()
               'source': $('#source_filter').val()
               'is_display': $('#is_display_filter').val()
+              'is_upcoming': $('#is_upcoming_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
               # 控件有问题，现固定每页显示10行
@@ -316,6 +317,11 @@ $ ->
             api.ajax.reload()
           $.each f_data["sourceFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "演出来源：" + key + '</option>'
+          # 按是否即将到期过滤
+          select = $('<select><option selected="selected" value="">即将到期：全部</option></select>').attr("id", "is_upcoming_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          select.append '<option value="1">' + "即将到期：是" + '</option>'
+          select.append '<option value="0">' + "即将到期：否" + '</option>'
           # 按显示状态过滤
           select = $('<select><option selected="selected" value="">显示状态：全部</option></select>').attr("id", "is_display_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
             api.ajax.reload()
@@ -387,6 +393,7 @@ $ ->
     ShowLists.init()
 #演出列表搜索过滤结束---------------
 
+#show edit
   if $('#show_description').length > 0
     $('#show_description').qeditor({})
     init_editor()

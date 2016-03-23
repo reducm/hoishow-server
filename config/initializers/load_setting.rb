@@ -8,4 +8,6 @@ UmengMessageSetting = YAML.load_file(File.join "#{Rails.root}", "config", "umeng
 
 BikeSetting = YAML.load_file(File.join "#{Rails.root}", "config", "danche.yml")[Rails.env || "development"]
 
+YongleSetting = YAML.load_file(File.join "#{Rails.root}", "config", "yongle.yml")[Rails.env || "development"]
+
 ChinaSMS.use :luosimao, username: 'api', password: 'key-ba9012f30f24c9cee1e0377b83462f52'

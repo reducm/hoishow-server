@@ -259,7 +259,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def add_event
-    event = @show.events.new(show_time: params[:show_time])
+    event = @show.events.new(show_time: params[:show_time], is_display: params[:is_display])
     if event.save
       flash[:notice] = '增加场次成功'
     else
@@ -270,7 +270,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event
     event = @show.events.find_by_id params[:event_id]
-    if event && event.update(show_time: params[:show_time])
+    if event && event.update(show_time: params[:show_time], is_display: params[:is_display])
       flash[:notice] = '修改场次成功'
     else
       flash[:error] = '修改场次失败'
