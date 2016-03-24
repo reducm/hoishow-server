@@ -88,8 +88,7 @@ module YongleService
           print "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}.\n"
           if result_data["result"] == '1000' && result_data["data"].present? # 成功且有数据
             yl_product = result_data["data"]["products"]["product"]
-            products = []
-            products = yl_product.class == Array ? yl_product : products << yl_product # 只有一场演出会返回hash
+            products = yl_product.class == Array ? yl_product : [yl_product] # 只有一场演出会返回hash
             if products.any? # 跳过没有票品的城市
               products.each_with_index do |product, i|
                 unit_start = Time.now
@@ -101,23 +100,21 @@ module YongleService
                 stadium = fetch_stadium(product["playAddressId"], city)
                 # Star and Concert
                 concert = fetch_star_and_concert(product)
-                if stadium.present? # 有可能调场馆接口时网络失败，暂定跳过
+                if stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
                   # Show
                   show = fetch_show(product, city, stadium, concert)
                   if show.present?
                     ticket_time_list = product["ticketTimeList"]
                     if ticket_time_list # 跳过没有场次的票品
                       tti = ticket_time_list["ticketTimeInfo"]
-                      ticket_time_infos = []
-                      ticket_time_infos = tti.class == Array ? tti : ticket_time_infos << tti # 只有一个场次会返回hash
+                      ticket_time_infos = tti.class == Array ? tti : [tti] # 只有一个场次会返回hash
                       ticket_time_infos.each do |ticket_time_info|
                         # Event
                         event = fetch_event(product, ticket_time_info["ticketTime"], show)
                         if event.present?
-                          tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
-                          tick_set_infos = []
                           fetch_area_ids = []
-                          tick_set_infos = tsi.class == Array ? tsi : tick_set_infos << tsi # 只有一种票价区会返回hash
+                          tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
+                          tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
                           tick_set_infos.each do |tick_set_info|
                             # Area and relation and Seat
                             if ['1', '4'].include?(tick_set_info["priceStarus"]) # 跳过不可卖的
@@ -156,7 +153,7 @@ module YongleService
                 @show_fetched = @show_fetched + 1
                 print "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
                 print "...Show fetched: #{@show_fetched}"
-                print "...Speed: #{(@show_fetched / @total_spend * 60).round(1)} shows/m.\n"
+                print "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
               end
             end
           end
@@ -178,9 +175,7 @@ module YongleService
           latitude:   venue["latitude"].to_f
         )
 
-        return stadium
-      else
-        return nil
+        stadium
       end
     end
 
@@ -205,35 +200,40 @@ module YongleService
           star.hoi_concert(concert)
         end
       end
-      return concert
+      concert
     end
 
     def fetch_show(product, city, stadium, concert)
       if ['0', '1'].include?(product["status"]) # 跳过不可卖的
         show = stadium.shows.where(source_id: product["productId"].to_i, source: Show.sources["yongle"]).first_or_initialize
-        show.concert_id = concert.id
+
+        show.update(
+          concert_id:         concert.id,
+          city_id:            city.id,
+          yl_play_city_id:    product["playCityId"],
+          yl_fconfig_id:      product["fconfigId"],
+          is_display:         product["shelfStatus"].to_i == 1 ? true : false,
+          yl_play_address_id: product["playAddressId"],
+          yl_play_type_a_id:  product["playTypeAId"],
+          yl_play_type_b_id:  product["playTypeBId"],
+          name:               product["playName"],
+          description:        product["ProductProfile"],
+          status:             Show.statuses["selling"],
+          is_presell:         product["status"].to_i.zero?,
+          ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
+          yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
+          seat_type:          Show.seat_types["selected"]
+        )
+
         begin # carrierwave remote_url 404
           show.remote_poster_url = product["productPicture"] unless show.poster_url.present?
           show.remote_ticket_pic_url = product["productPictureSmall"] unless show.ticket_pic_url.present?
           show.remote_stadium_map_url = product["seatPicture"] unless show.stadium_map_url.present? # 场区图
-        ensure
-          set_show_status_and_is_presell(show, product["status"].to_i)
-          show.update_attributes!(
-            city_id:            city.id,
-            yl_play_city_id:    product["playCityId"],
-            yl_fconfig_id:      product["fconfigId"],
-            is_display:         product["shelfStatus"].to_i == 1 ? true : false,
-            yl_play_address_id: product["playAddressId"],
-            yl_play_type_a_id:  product["playTypeAId"],
-            yl_play_type_b_id:  product["playTypeBId"],
-            name:               product["playName"],
-            description:        product["ProductProfile"],
-            ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
-            yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
-            seat_type:          Show.seat_types["selected"]
-          )
-          return show
+        rescue => e
+          print "更新图片出错, #{e}"
         end
+
+        show
       else
         show = stadium.shows.find_by(source_id: product["productId"].to_i, source: Show.sources["yongle"])
         # 有可能之前状态可卖，现在变成不可卖
@@ -246,24 +246,14 @@ module YongleService
       end
     end
 
-    def set_show_status_and_is_presell(show, yl_status)
-      return if yl_status.blank?
-
-      case yl_status
-      when 0
-        show.status = Show.statuses["selling"]
-      when 1
-        show.status = Show.statuses["selling"]
-        show.is_presell = true
-      end
-    end
-
     def fetch_event(product, ticket_time, show)
       # "2015-11-15-2016-05-08-10:00"这种场次的，不做拉取
-      show_time = DateTime.strptime(ticket_time, '%Y-%m-%d %H:%M') rescue nil
-      event = show.events.where(show_time: show_time).first_or_initialize
-      event.save!
-      return event
+      begin
+        show_time = DateTime.strptime(ticket_time, '%Y-%m-%d %H:%M')
+        show.events.where(show_time: show_time).first_or_create
+      rescue
+        nil
+      end
     end
 
     def update_inventory(show, area, relation, seats_count, price)
@@ -284,11 +274,12 @@ module YongleService
         timenow = Time.now.strftime('%Y-%m-%d %H:%M:%S')
         show_id = show.id
         area_id = area.id
-        status = Ticket::seat_types[:avaliable]
+        status = Ticket::statuses[:pending]
+        seat_type = Ticket::seat_types[:avaliable]
         rest_tickets.times do
-          inserts.push "(#{show_id}, #{area_id}, #{status}, #{price}, '#{timenow}', '#{timenow}')"
+          inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{price}, '#{timenow}', '#{timenow}')"
         end
-        sql = "INSERT INTO tickets (show_id, area_id, status, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
+        sql = "INSERT INTO tickets (show_id, area_id, status, seat_type, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
         ActiveRecord::Base.connection.execute sql
         #####################
 
@@ -301,7 +292,6 @@ module YongleService
       private :fetch_stadium
       private :fetch_star_and_concert
       private :fetch_show
-      private :set_show_status_and_is_presell
       private :fetch_event
       private :update_inventory
     end

@@ -30,7 +30,6 @@ class Order < ActiveRecord::Base
   validates_presence_of ASSOCIATION_ATTRS.map{|sym| ( sym.to_s + "_name" ).to_sym}
 
   after_create :set_attr_after_create
-  after_create :refill_inventory, if: :area_is_infinite?
 
   paginates_per 10
 
@@ -112,29 +111,29 @@ class Order < ActiveRecord::Base
   end
 
   def refill_inventory
-    # 算库存
+    # 算库存 如果seats_count为－1每次都要把left_seats补回30
     relation = area.show_area_relations.first
     show = area.shows.first
-    old_seats_count = relation.seats_count
     old_left_seats = relation.left_seats
-    rest_tickets = seats_count - old_seats_count
+    rest_tickets = 30 - old_left_seats
 
     # sinagle mass insert
     inserts = []
     show_id = show.id
     area_id = area.id
-    status = Ticket::seat_types[:avaliable]
+    status = Ticket::statuses[:pending]
+    seat_type = Ticket::seat_types[:avaliable]
     price = relation.price
     timenow = Time.now.strftime('%Y-%m-%d %H:%M:%S')
     rest_tickets.times do
-      inserts.push "(#{show_id}, #{area_id}, #{status}, #{price}, '#{timenow}', '#{timenow}')"
+      inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{price}, '#{timenow}', '#{timenow}')"
     end
-    sql = "INSERT INTO tickets (show_id, area_id, status, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
+    sql = "INSERT INTO tickets (show_id, area_id, status, seat_type, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
     ActiveRecord::Base.connection.execute sql
     #####################
 
-    relation.update(left_seats: rest_tickets + old_left_seats)
-    area.update(left_seats: rest_tickets + old_left_seats)
+    relation.update(left_seats: 30)
+    area.update(left_seats: 30)
     return true
   end
 
@@ -298,9 +297,9 @@ class Order < ActiveRecord::Base
         # create order
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
-
+        area = relation.area
         order.ticket_info = "#{relation.area.name} - #{quantity}张"
-        order.area_source_id = relation.area_id
+        order.area_source_id = area.source_id
         order.save!
 
         # update 库存
@@ -320,6 +319,7 @@ class Order < ActiveRecord::Base
         Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
                                       ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
+        order.refill_inventory if order.area_is_infinite?
         order
       end
     end
