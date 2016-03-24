@@ -10,12 +10,19 @@ class Area < ActiveRecord::Base
   belongs_to :event
   has_many :show_area_relations, dependent: :destroy
   has_many :shows, through: :show_area_relations
-  has_many :tickets
+  has_many :tickets, dependent: :destroy
   # 删除 seat 以后再改这里
   has_many :seats
   #with_options dependent: :destroy do |option|
     #option.has_many :seats, -> { where(order_id: nil) }
   #end
+
+  enum source: {
+    hoishow: 0, # 自有资源
+    damai: 1, # 大麦
+    yongle: 2, # 永乐
+    weipiao: 3 # 微票
+  }
 
   paginates_per 10
 

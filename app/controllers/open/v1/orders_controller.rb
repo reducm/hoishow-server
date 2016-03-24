@@ -58,6 +58,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
     if co_logic.success?
       @order = co_logic.order
+      @order.add_order_to_yongle if @order.source == 'yongle'
     else
       @error_code = co_logic.response
       @message = co_logic.error_msg
@@ -90,12 +91,20 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
         @error_code = 3012
         @message = '订单确认失败'
       end
-    # 第三方的演出，必须确定库存才能出票
-    else
-      if !@order.pre_pay! || (@order.e_ticket? && !@order.success_pay!)
+    elsif @order.show.yongle?
+      if !@order.pre_pay! || @order.update_pay_status_to_yongle['result'] != '1000'
         @error_code = 3012
         @message = '订单确认失败'
       end
+    # 第三方的演出，必须确定库存才能出票
+    else !@order.pre_pay! || (@order.show.hoishow? && !@order.success_pay!)
+      @error_code = 3012
+      @message = '订单确认失败'
+    end
+
+    # 更新用户邮箱
+    if params[:email].present?
+      @order.user.update(email: params[:email])
     end
     # 实体票的话，可更新快递信息
     if @order.user_address.nil? && @order.show.r_ticket?

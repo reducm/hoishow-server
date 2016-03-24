@@ -28,7 +28,8 @@ class Ticket < ActiveRecord::Base
 
   scope :sold_tickets, ->{where("status = ? or status = ?", statuses[:success], statuses[:used])}
   scope :avaliable_tickets, ->{where(status: statuses[:pending], seat_type: seat_types[:avaliable])}
-  after_save :generate_code, unless: :pending?
+  # after_save :generate_code, unless: :pending?
+  after_create :set_seat_type
 
   paginates_per 10
 
@@ -59,6 +60,11 @@ class Ticket < ActiveRecord::Base
 
   def search(q)
     where("nickname like ? or mobile like ?", "%#{q}%", "%#{q}%")
+  end
+
+  def set_seat_type
+    self.seat_type = 0 if seat_type.nil?
+    self.save
   end
 
   private

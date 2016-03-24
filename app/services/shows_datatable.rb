@@ -58,7 +58,8 @@ class ShowsDatatable
   end
 
   def shows_per_page
-    @shows_per_page ||= Kaminari.paginate_array(shows.to_a).page(page).per(10)
+    #@shows_per_page ||= Kaminari.paginate_array(shows.to_a).page(page).per(10)
+    @shows_per_page ||= shows.page(page).per(10)
   end
 
   def fetch_shows

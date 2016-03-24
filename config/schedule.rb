@@ -24,14 +24,24 @@ every 5.minutes do
   rake "orders:check_outdate_orders"
 end
 
-every 30.minutes do
-  rake "orders:check_refund_orders"
-end
+# every 30.minutes do
+#   rake "orders:check_refund_orders"
+# end
 
-every 30.minutes do
+every 1.day do
   rake "shows:check_finished_shows"
 end
 
 every 1.day do
   rake "boom_playlists:get_newest_cover"
+  runner "Event.hide_finished_event"
+end
+
+every 1.day, :at => '1:30 am' do
+  rake "fetcher:yongle:day_data"
+end
+
+#viagogo
+every 1.day, :at => '4:30 am' do
+  rake "viagogo:data"
 end

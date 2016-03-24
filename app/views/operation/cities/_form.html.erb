@@ -6,6 +6,10 @@
     <%= f.text_field :name %>
   </div>
   <div class="form-group">
+    <%= f.label :source_name, '原名' %>
+    <%= f.text_field :source_name, disabled: true %>
+  </div>
+  <div class="form-group">
     <%= f.label :pinyin, '城市拼音' %>
     <%= f.text_field :pinyin %>
   </div>

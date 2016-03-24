@@ -11,4 +11,11 @@ class Stadium < ActiveRecord::Base
 
   mount_uploader :pic, ImageUploader
   paginates_per 10
+
+  enum source: {
+    hoishow: 0, # 自有资源
+    damai: 1, # 大麦
+    yongle: 2, # 永乐
+    weipiao: 3 # 微票
+  }
 end

@@ -12,6 +12,10 @@
     <% @events.each do |event| %>
       <div role="tabpanel" class="tab-pane" id="<%= event.id %>">
         <div class="toolbar">
+          <% if @show.viagogo? %>
+            <a class="btn btn-default" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问原链接</a>
+            <%= link_to '更新信息', 'javascript:void(0);', class: 'btn btn-default update_event_info', data: {id: event.id} %>
+          <% end %>
           <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
           <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default add_area', data: {id: event.id} %>
           <span class="upload_stadium_map" data-id="<%= event.id %>">
@@ -46,6 +50,10 @@
               <th>区域名</th>
               <% if @show.selected? %>
                 <th>票价</th>
+                <% if @show.viagogo? %>
+                  <th>价格区间</th>
+                  <th>销售状态</th>
+                <% end %>
               <% end %>
               <th>座位数(座位数不能少于已售出数量)</th>
               <th>库存</th>
@@ -70,6 +78,7 @@
         <%= form_tag add_event_operation_show_path(@show) do %>
           <div class="form-group">
              <%= datetime_field_tag "show_time", nil, class: 'form-control' %>
+             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
           </div>
           <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>
         <% end %>
@@ -86,6 +95,7 @@
         <%= form_tag update_event_operation_show_path(@show) do %>
           <div class="form-group">
              <%= text_field_tag "show_time", nil, class: 'form-control' %>
+             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
              <%= hidden_field_tag "event_id" %>
           </div>
           <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>
@@ -94,6 +104,16 @@
     </div>
   </div>
 </div>
+
+<!-- 数据同步提示 -->
+<div id="data_fetching_tip" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <p>数据同步中，请稍后...</p>
+    </div>
+  </div>
+</div>
+
 
 <!-- 设置渠道 -->
 <div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">

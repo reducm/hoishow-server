@@ -34,19 +34,49 @@
       <tr><td>付款时间</td><td><%= @order.generate_ticket_at_format %></td></tr>
       <tr><td>退款时间</td><td><%= get_datetime(@order.payments.first.try(:refund_at)) %></td></tr>
       <tr><td>退款人</td><td><%= @order.refund_by %></td></tr>
-      <tr>
-        <td>备注</td>
-        <td>
-          <%= form_tag(update_remark_content_operation_order_path(@order), method: :post) do %>
-            <div class="form-group">
-              <%= text_area_tag "remark", @order.remark, rows: 5, cols: 50 %>
-            </div>
-            <div class="form-group">
-              <%= submit_tag "确认修改备注内容", class: 'btn btn-primary' %>
-            </div>
-          <% end %>
-        </td>
-      </tr>
+
+      <%= form_for @order, url: "/operation/orders/#{@order.id}/update_order_data", method: :post, html: { multipart: true  } do |f| %>
+        <tr>
+          <td>备注</td>
+          <td>
+            <%= f.text_area :remark, rows: 5, cols: 50 %>
+          </td>
+        </tr>
+        <% show = @order.show %>
+        <% if show.viagogo? && show.e_ticket? %>
+          <tr>
+            <td>门票</td>
+            <td>
+              <%= f.file_field :ticket_pic %>
+              <p></p>
+              <p></p>
+              <% if @order.ticket_pic_url %>
+                <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
+                <% if @order.success? %>
+                  <%= link_to "再次通知用户", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
+                <% elsif @order.paid? %>
+                  <%= link_to "确认出票", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
+                <% end %>
+                <% event = show.events.last %>
+                <a class="btn btn-primary" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问viagogo原链接</a>
+              <% end %>
+            </td>
+          </tr>
+          <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
+          <tr>
+            <td>购入价格</td>
+            <td>
+              <%= f.text_field :buy_price %>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <%= f.submit "保存", class: "btn btn-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
     </tbody>
   </table>
 </div>

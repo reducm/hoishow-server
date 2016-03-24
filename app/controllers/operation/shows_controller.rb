@@ -259,7 +259,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def add_event
-    event = @show.events.new(show_time: params[:show_time])
+    event = @show.events.new(show_time: params[:show_time], is_display: params[:is_display])
     if event.save
       flash[:notice] = '增加场次成功'
     else
@@ -270,7 +270,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event
     event = @show.events.find_by_id params[:event_id]
-    if event && event.update(show_time: params[:show_time])
+    if event && event.update(show_time: params[:show_time], is_display: params[:is_display])
       flash[:notice] = '修改场次成功'
     else
       flash[:error] = '修改场次失败'
@@ -319,6 +319,22 @@ class Operation::ShowsController < Operation::ApplicationController
       area.update(is_top: true)
     end
     render json: {success: true}
+  end
+
+  def update_event_info
+    if event = Event.find(params[:event_id])
+      ticket_info_array = ViagogoDataToHoishow::Service.fetch_event_data(event.ticket_path) 
+      rate = ViagogoDataToHoishow::Service.get_exchange_rate 
+      if ticket_info_array.present? && rate.present?
+        ViagogoDataToHoishow::Service.update_event_data(event, @show, ticket_info_array, rate) 
+        event.reload
+        render partial: "area_table", locals: {show: @show, event: event}
+      else
+        render json: {error: true}
+      end
+    else
+      render :index
+    end
   end
 
   protected

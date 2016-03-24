@@ -1,5 +1,5 @@
 # encoding: utf-8
-IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800 poster cover radio playlist image blur)
+IMAGE_UPLOADER_ALLOW_IMAGE_VERSION_NAMES = %(avatar photo 320 640 800 poster cover radio playlist image blur sportsposter)
 class ImageUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
 
@@ -33,7 +33,7 @@ class ImageUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-    %w(jpg jpeg gif png bmp)
+    %w(jpg jpeg gif png bmp pdf)
   end
 
   def md5

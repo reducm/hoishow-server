@@ -33,7 +33,7 @@ private
         link_to(order.get_username(user), "/operation/users/#{user.id}"),
         order.status_cn,
         refund_link(order), 
-        link_to("查看详情", "/operation/orders/#{order.id}")
+        comfirm_ticket(order)
       ]
     end
   end
@@ -46,12 +46,22 @@ private
     end
   end
 
+  def comfirm_ticket(order)
+    "#{ link_to("查看详情", "/operation/orders/#{order.id}") }
+    #{ if ( order.paid? && !order.show.viagogo? )
+    link_to("确认出票", "/operation/orders/#{order.id}/set_order_to_success", method: "post")
+    else
+      ""
+    end }"
+  end
+
   def orders
     @orders ||= fetch_orders
   end
 
   def orders_per_page
-    @orders_per_page ||= Kaminari.paginate_array(orders.to_a).page(page).per(per_page)
+    #@orders_per_page ||= Kaminari.paginate_array(orders.to_a).page(page).per(per_page)
+    @orders_per_page ||= orders.page(page).per(per_page)
   end
 
   def fetch_orders

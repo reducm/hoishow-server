@@ -188,15 +188,17 @@ Rails.application.routes.draw do
         post :upload_map
         get :get_coordinates
         patch :toggle_area_is_top
+        post :update_event_info
       end
     end
     resources :orders do
       member do
         post :set_order_to_success
         post "update_express_id"
-        post "update_remark_content"
         post :manual_refund
         get :manual_send_msg
+        post "update_order_data"
+        post :finish_order
       end
       collection do
         get :search
@@ -274,4 +276,7 @@ Rails.application.routes.draw do
 
   #simditor_image
   post '/simditor_image', to: 'simditor_image#upload'
+
+  #永乐退款回调
+  post '/lmapplyRefund', to: 'yongle#refund'
 end
