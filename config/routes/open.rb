@@ -14,6 +14,7 @@ module Routes
                 get :seats_info, on: :member
               end
               resources :events, only: [:index] do
+                get :today_shows, on: :collection
                 get :areas_map, on: :member
               end
               # resources :seats, only: [:index, :show]

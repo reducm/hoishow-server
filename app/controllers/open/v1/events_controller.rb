@@ -22,4 +22,9 @@ class Open::V1::EventsController < Open::V1::ApplicationController
     @invalid_areas = all_areas - valid_areas
     render layout: "mobile"
   end
+
+  def today_event_shows
+    show_ids = Event.where('created_at >= ?', DateTime.now.beginning_of_day).pluck(:show_id).compact.uniq
+    @today_event_shows = Show.where(id: show_ids)
+  end
 end
