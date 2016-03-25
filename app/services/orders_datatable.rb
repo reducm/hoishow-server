@@ -33,7 +33,7 @@ private
         link_to(order.get_username(user), "/operation/users/#{user.id}"),
         order.status_cn,
         refund_link(order),
-        comfirm_ticket(order)
+        link_to("查看详情", "/operation/orders/#{order.id}")
       ]
     end
   end
@@ -44,11 +44,6 @@ private
     else
       ""
     end
-  end
-
-  def comfirm_ticket(order)
-    "#{link_to("查看详情", "/operation/orders/#{order.id}")}
-    #{link_to("确认出票", "/operation/orders/#{order.id}/set_order_to_success", method: "post") if order.paid?}"
   end
 
   def orders

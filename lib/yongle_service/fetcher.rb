@@ -3,6 +3,7 @@ require 'benchmark'
 module YongleService
   module Fetcher
     extend YongleService::Service
+    extend YongleService::Logger
     extend self
 
     # 日数据
@@ -80,19 +81,19 @@ module YongleService
       if city_codes.any?
         city_codes.each do |citycode|
           @cityname = City.find_by(code: citycode).name
-          print ">fetching from #{@cityname}"
+          yongle_logger.info ">fetching from #{@cityname}"
           fetch_start = Time.now
           result_data = YongleService::Service.get_city_data(citycode)
           fetch_end = Time.now
           @total_spend = @total_spend + (fetch_end - fetch_start)
-          print "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}.\n"
+          yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}.\n"
           if result_data["result"] == '1000' && result_data["data"].present? # 成功且有数据
             yl_product = result_data["data"]["products"]["product"]
             products = yl_product.class == Array ? yl_product : [yl_product] # 只有一场演出会返回hash
             if products.any? # 跳过没有票品的城市
               products.each_with_index do |product, i|
                 unit_start = Time.now
-                print ">>#{@cityname}(#{i + 1}/#{products.count})"
+                yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
                 # City
                 city = City.where(yl_fconfig_id: product["fconfigId"].to_i, source: City.sources['yongle']).first
                 city.update_attributes!(source_id: product["playCityId"])
@@ -151,9 +152,9 @@ module YongleService
                 unit_end = Time.now
                 @total_spend = @total_spend + (unit_end - unit_start)
                 @show_fetched = @show_fetched + 1
-                print "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
-                print "...Show fetched: #{@show_fetched}"
-                print "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
+                yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
+                yongle_logger.info "...Show fetched: #{@show_fetched}"
+                yongle_logger.info "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
               end
             end
           end
@@ -205,35 +206,38 @@ module YongleService
 
     def fetch_show(product, city, stadium, concert)
       if ['0', '1'].include?(product["status"]) # 跳过不可卖的
-        show = stadium.shows.where(source_id: product["productId"].to_i, source: Show.sources["yongle"]).first_or_initialize
+        if product["ProductProfile"].length > 65535 # 跳过各种电影卡
+          yongle_logger.info "跳过各种电影卡, length: #{product["ProductProfile"].length}"
+        else
+          show = stadium.shows.where(source_id: product["productId"].to_i, source: Show.sources["yongle"]).first_or_initialize
 
-        show.update(
-          concert_id:         concert.id,
-          city_id:            city.id,
-          yl_play_city_id:    product["playCityId"],
-          yl_fconfig_id:      product["fconfigId"],
-          is_display:         product["shelfStatus"].to_i == 1 ? true : false,
-          yl_play_address_id: product["playAddressId"],
-          yl_play_type_a_id:  product["playTypeAId"],
-          yl_play_type_b_id:  product["playTypeBId"],
-          name:               product["playName"],
-          description:        product["ProductProfile"],
-          status:             Show.statuses["selling"],
-          is_presell:         product["status"].to_i.zero?,
-          ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
-          yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
-          seat_type:          Show.seat_types["selected"]
-        )
+          show.update(
+            concert_id:         concert.id,
+            city_id:            city.id,
+            yl_play_city_id:    product["playCityId"],
+            yl_fconfig_id:      product["fconfigId"],
+            is_display:         product["shelfStatus"].to_i == 1 ? true : false,
+            yl_play_address_id: product["playAddressId"],
+            yl_play_type_a_id:  product["playTypeAId"],
+            yl_play_type_b_id:  product["playTypeBId"],
+            name:               product["playName"],
+            status:             Show.statuses["selling"],
+            is_presell:         product["status"].to_i.zero?,
+            ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
+            yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
+            seat_type:          Show.seat_types["selected"]
+          )
 
-        begin # carrierwave remote_url 404
-          show.remote_poster_url = product["productPicture"] unless show.poster_url.present?
-          show.remote_ticket_pic_url = product["productPictureSmall"] unless show.ticket_pic_url.present?
-          show.remote_stadium_map_url = product["seatPicture"] unless show.stadium_map_url.present? # 场区图
-        rescue => e
-          print "更新图片出错, #{e}"
+          begin # carrierwave remote_url 404
+            show.remote_poster_url = product["productPicture"] unless show.poster_url.present?
+            show.remote_ticket_pic_url = product["productPictureSmall"] unless show.ticket_pic_url.present?
+            show.remote_stadium_map_url = product["seatPicture"] unless show.stadium_map_url.present? # 场区图
+          rescue => e
+            yongle_logger.info "更新图片出错, #{e}"
+          end
+
+          show
         end
-
-        show
       else
         show = stadium.shows.find_by(source_id: product["productId"].to_i, source: Show.sources["yongle"])
         # 有可能之前状态可卖，现在变成不可卖
@@ -251,8 +255,9 @@ module YongleService
       begin
         show_time = DateTime.strptime(ticket_time, '%Y-%m-%d %H:%M')
         show.events.where(show_time: show_time).first_or_create
-      rescue
-        nil
+      rescue => e
+        yongle_logger.info "跳过特殊场次, #{e}"
+        return nil
       end
     end
 

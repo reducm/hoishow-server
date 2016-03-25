@@ -1,6 +1,5 @@
 module YongleService
   module Service
-    extend self
     extend YongleService::Logger
     extend self
 

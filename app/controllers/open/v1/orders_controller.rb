@@ -25,7 +25,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   # 订单信息查询
   def show
-    @order.sync_yongle_status if @order.source == 'yongle'
+    @order.sync_yongle_status if @order.source == 'yongle' && Rails.env.production?
   end
 
   def check_inventory
