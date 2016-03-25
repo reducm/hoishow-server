@@ -86,10 +86,10 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
     t.boolean  "is_top",      limit: 1,        default: false
+    t.boolean  "is_exist",    limit: 1,        default: true
     t.integer  "source",      limit: 4
     t.integer  "source_id",   limit: 4
     t.boolean  "is_infinite", limit: 1,        default: false
-    t.boolean  "is_exist",    limit: 1,        default: true
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -382,10 +382,10 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.boolean  "is_hot",        limit: 1
+    t.string   "source_name",   limit: 255
     t.integer  "source",        limit: 4
     t.integer  "source_id",     limit: 4
     t.integer  "yl_fconfig_id", limit: 4
-    t.string   "source_name", limit: 255
   end
 
   create_table "collaborator_activity_relations", force: :cascade do |t|
@@ -494,8 +494,8 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.string   "coordinate_map", limit: 255
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
-    t.boolean  "is_display",     limit: 1,   default: true
     t.string   "ticket_path",    limit: 255
+    t.boolean  "is_display",     limit: 1,   default: true
   end
 
   add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree
@@ -584,11 +584,13 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.integer  "ticket_type",        limit: 4
     t.string   "ticket_info",        limit: 255
     t.decimal  "postage",                          precision: 4,  scale: 2, default: 0.0
+    t.string   "ticket_pic",         limit: 255
     t.integer  "source_id",          limit: 4
     t.integer  "area_source_id",     limit: 4
     t.decimal  "unit_price",                       precision: 10, scale: 2
     t.string   "express_name",       limit: 255
     t.string   "id_card",            limit: 255
+    t.decimal  "buy_price",                        precision: 10, scale: 2
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -698,17 +700,16 @@ ActiveRecord::Schema.define(version: 20160318022522) do
   add_index "recommend_types", ["boom_id"], name: "index_recommend_types_on_boom_id", using: :btree
 
   create_table "show_area_relations", force: :cascade do |t|
-    t.integer  "show_id",         limit: 4
-    t.integer  "area_id",         limit: 4
-    t.decimal  "price",                       precision: 10, scale: 2
-    t.datetime "created_at",                                                           null: false
-    t.datetime "updated_at",                                                           null: false
-    t.boolean  "is_sold_out",     limit: 1,                            default: false
-    t.integer  "seats_count",     limit: 4,                            default: 0
-    t.string   "channels",        limit: 255
-    t.integer  "left_seats",      limit: 4,                            default: 0
-    t.string   "price_range",     limit: 255
-    t.integer  "third_inventory", limit: 4
+    t.integer  "show_id",     limit: 4
+    t.integer  "area_id",     limit: 4
+    t.decimal  "price",                   precision: 10, scale: 2
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
+    t.boolean  "is_sold_out", limit: 1,                            default: false
+    t.integer  "seats_count", limit: 4,                            default: 0
+    t.string   "channels",    limit: 255
+    t.integer  "left_seats",  limit: 4,                            default: 0
+    t.string   "price_range", limit: 255
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree
@@ -736,6 +737,7 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.string   "description_time",   limit: 255
     t.integer  "source",             limit: 4,                                 default: 0
     t.boolean  "is_presell",         limit: 1,                                 default: false
+    t.string   "event_url_id",       limit: 255
     t.integer  "source_id",          limit: 4
     t.integer  "yl_play_address_id", limit: 4
     t.integer  "yl_play_type_a_id",  limit: 4
@@ -743,7 +745,6 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.integer  "yl_play_city_id",    limit: 4
     t.integer  "yl_fconfig_id",      limit: 4
     t.integer  "yl_dzp_type",        limit: 4
-    t.string   "event_url_id",       limit: 255
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
@@ -790,9 +791,9 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.datetime "updated_at",                                       null: false
     t.integer  "district_id", limit: 4
     t.string   "pic",         limit: 255
+    t.string   "source_name", limit: 255
     t.integer  "source",      limit: 4
     t.integer  "source_id",   limit: 4
-    t.string   "source_name", limit: 255
   end
 
   add_index "stadiums", ["city_id"], name: "index_stadiums_on_city_id", using: :btree

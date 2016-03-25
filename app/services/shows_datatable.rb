@@ -66,7 +66,8 @@ class ShowsDatatable
     shows = Show.all
     # 搜演出或艺人名字
     if params[:search].present? && params[:search][:value].present?
-      shows = shows.joins(:concert => { :stars => :star_concert_relations  })
+      # 确保能按演出名称搜索
+      shows = shows.eager_load(:concert => { :stars => :star_concert_relations })
                    .where("shows.name LIKE :search OR stars.name LIKE :search", search: "%#{params[:search][:value]}%")
                    .uniq
     end
