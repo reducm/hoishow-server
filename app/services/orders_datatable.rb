@@ -5,10 +5,10 @@ class OrdersDatatable
     @view = view
   end
 
-# dataTable需要的参数 
+# dataTable需要的参数
   def as_json(options = {})
     {
-      draw: params[:draw].to_i, 
+      draw: params[:draw].to_i,
       recordsTotal: Order.count,
       recordsFiltered: orders.size,
       data: data
@@ -32,7 +32,7 @@ private
         order.amount,
         link_to(order.get_username(user), "/operation/users/#{user.id}"),
         order.status_cn,
-        refund_link(order), 
+        refund_link(order),
         comfirm_ticket(order)
       ]
     end
@@ -47,12 +47,8 @@ private
   end
 
   def comfirm_ticket(order)
-    "#{ link_to("查看详情", "/operation/orders/#{order.id}") }
-    #{ if ( order.paid? && !order.show.viagogo? )
-    link_to("确认出票", "/operation/orders/#{order.id}/set_order_to_success", method: "post")
-    else
-      ""
-    end }"
+    "#{link_to("查看详情", "/operation/orders/#{order.id}")}
+    #{link_to("确认出票", "/operation/orders/#{order.id}/set_order_to_success", method: "post") if order.paid?}"
   end
 
   def orders
