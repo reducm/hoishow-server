@@ -25,6 +25,6 @@ class Open::V1::EventsController < Open::V1::ApplicationController
 
   def today_shows
     show_ids = Event.where('created_at >= ?', DateTime.now.beginning_of_day).pluck(:show_id).compact.uniq
-    @today_event_shows = Show.where(id: show_ids)
+    @today_event_shows = Show.where(id: show_ids).is_display
   end
 end
