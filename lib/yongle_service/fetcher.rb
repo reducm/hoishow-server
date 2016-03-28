@@ -221,6 +221,7 @@ module YongleService
             yl_play_type_a_id:  product["playTypeAId"],
             yl_play_type_b_id:  product["playTypeBId"],
             name:               product["playName"],
+            description:        product["ProductProfile"],
             status:             Show.statuses["selling"],
             is_presell:         product["status"].to_i.zero?,
             ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
