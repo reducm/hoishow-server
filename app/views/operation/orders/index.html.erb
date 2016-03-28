@@ -52,10 +52,10 @@
               <td><%= order.remark %></td>
               <td class="text-center">
                 <%= link_to '确认出票', set_order_to_success_operation_order_path(order), method: 'post', class: 'btn btn-default' if order.paid? && order.r_ticket? %>
-                <button class="btn btn-default change_express_data" data-order-id="<%= order.id %>">修改单号</button>
+                <%= link_to '修改单号', "javascript::void(0);", class: "btn btn-default change_express_data", data: {'order-id' => order.id} if order.success? %>
                 <%= link_to '发送短信和推送', manual_send_msg_operation_order_path(order), class: 'btn btn-default' if order.express_id.present? %>
                 <%= link_to "订单详情", operation_order_path(order), class: 'btn btn-default' %>
-                <%= link_to "快递详情", express_detail_path(code: order.express_id), class: 'btn btn-default' %>
+                <%= link_to "快递详情", query_express_path(order.express_name, order.express_id), target: '_blank', class: 'btn btn-default' %>
               </td>
             </tr>
           <% end %>

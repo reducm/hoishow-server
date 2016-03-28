@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160107024636) do
+ActiveRecord::Schema.define(version: 20160318022522) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -86,6 +86,10 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.integer  "event_id",    limit: 4
     t.integer  "left_seats",  limit: 4
     t.boolean  "is_top",      limit: 1,        default: false
+    t.boolean  "is_exist",    limit: 1,        default: true
+    t.integer  "source",      limit: 4
+    t.integer  "source_id",   limit: 4
+    t.boolean  "is_infinite", limit: 1,        default: false
   end
 
   add_index "areas", ["event_id"], name: "index_areas_on_event_id", using: :btree
@@ -372,12 +376,16 @@ ActiveRecord::Schema.define(version: 20160107024636) do
   add_index "boom_user_statuses", ["boom_id"], name: "index_boom_user_statuses_on_boom_id", using: :btree
 
   create_table "cities", force: :cascade do |t|
-    t.string   "pinyin",     limit: 255
-    t.string   "name",       limit: 255
-    t.string   "code",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.boolean  "is_hot",     limit: 1
+    t.string   "pinyin",        limit: 255
+    t.string   "name",          limit: 255
+    t.string   "code",          limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.boolean  "is_hot",        limit: 1
+    t.string   "source_name",   limit: 255
+    t.integer  "source",        limit: 4
+    t.integer  "source_id",     limit: 4
+    t.integer  "yl_fconfig_id", limit: 4
   end
 
   create_table "collaborator_activity_relations", force: :cascade do |t|
@@ -484,8 +492,10 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.datetime "show_time"
     t.string   "stadium_map",    limit: 255
     t.string   "coordinate_map", limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+    t.string   "ticket_path",    limit: 255
+    t.boolean  "is_display",     limit: 1,   default: true
   end
 
   add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree
@@ -574,6 +584,13 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.integer  "ticket_type",        limit: 4
     t.string   "ticket_info",        limit: 255
     t.decimal  "postage",                          precision: 4,  scale: 2, default: 0.0
+    t.string   "ticket_pic",         limit: 255
+    t.integer  "source_id",          limit: 4
+    t.integer  "area_source_id",     limit: 4
+    t.decimal  "unit_price",                       precision: 10, scale: 2
+    t.string   "express_name",       limit: 255
+    t.string   "id_card",            limit: 255
+    t.decimal  "buy_price",                        precision: 10, scale: 2
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
@@ -692,33 +709,42 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.integer  "seats_count", limit: 4,                            default: 0
     t.string   "channels",    limit: 255
     t.integer  "left_seats",  limit: 4,                            default: 0
+    t.string   "price_range", limit: 255
   end
 
   add_index "show_area_relations", ["show_id", "area_id"], name: "index_show_area_relations_on_show_id_and_area_id", using: :btree
 
   create_table "shows", force: :cascade do |t|
-    t.decimal  "min_price",                      precision: 10, scale: 2
-    t.decimal  "max_price",                      precision: 10, scale: 2
-    t.string   "poster",           limit: 255
-    t.string   "name",             limit: 255
+    t.decimal  "min_price",                           precision: 10, scale: 2
+    t.decimal  "max_price",                           precision: 10, scale: 2
+    t.string   "poster",             limit: 255
+    t.string   "name",               limit: 255
     t.datetime "show_time"
-    t.integer  "concert_id",       limit: 4
-    t.integer  "city_id",          limit: 4
-    t.integer  "stadium_id",       limit: 4
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
-    t.text     "description",      limit: 65535
-    t.integer  "status",           limit: 4
-    t.boolean  "is_display",       limit: 1,                              default: false
-    t.integer  "ticket_type",      limit: 4
-    t.boolean  "is_top",           limit: 1,                              default: false
-    t.string   "stadium_map",      limit: 255
-    t.integer  "seat_type",        limit: 4
-    t.integer  "mode",             limit: 4
-    t.string   "ticket_pic",       limit: 255
-    t.string   "description_time", limit: 255
-    t.integer  "source",           limit: 4,                              default: 0
-    t.boolean  "is_presell",       limit: 1,                              default: false
+    t.integer  "concert_id",         limit: 4
+    t.integer  "city_id",            limit: 4
+    t.integer  "stadium_id",         limit: 4
+    t.datetime "created_at",                                                                   null: false
+    t.datetime "updated_at",                                                                   null: false
+    t.text     "description",        limit: 16777215
+    t.integer  "status",             limit: 4
+    t.boolean  "is_display",         limit: 1,                                 default: false
+    t.integer  "ticket_type",        limit: 4
+    t.boolean  "is_top",             limit: 1,                                 default: false
+    t.string   "stadium_map",        limit: 255
+    t.integer  "seat_type",          limit: 4
+    t.integer  "mode",               limit: 4
+    t.string   "ticket_pic",         limit: 255
+    t.string   "description_time",   limit: 255
+    t.integer  "source",             limit: 4,                                 default: 0
+    t.boolean  "is_presell",         limit: 1,                                 default: false
+    t.string   "event_url_id",       limit: 255
+    t.integer  "source_id",          limit: 4
+    t.integer  "yl_play_address_id", limit: 4
+    t.integer  "yl_play_type_a_id",  limit: 4
+    t.integer  "yl_play_type_b_id",  limit: 4
+    t.integer  "yl_play_city_id",    limit: 4
+    t.integer  "yl_fconfig_id",      limit: 4
+    t.integer  "yl_dzp_type",        limit: 4
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
@@ -765,6 +791,9 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.datetime "updated_at",                                       null: false
     t.integer  "district_id", limit: 4
     t.string   "pic",         limit: 255
+    t.string   "source_name", limit: 255
+    t.integer  "source",      limit: 4
+    t.integer  "source_id",   limit: 4
   end
 
   add_index "stadiums", ["city_id"], name: "index_stadiums_on_city_id", using: :btree
@@ -790,6 +819,7 @@ ActiveRecord::Schema.define(version: 20160107024636) do
     t.string   "poster",      limit: 255
     t.text     "description", limit: 65535
     t.string   "token",       limit: 255
+    t.string   "event_path",  limit: 255
   end
 
   add_index "stars", ["name"], name: "index_stars_on_name", using: :btree
@@ -1046,5 +1076,14 @@ ActiveRecord::Schema.define(version: 20160107024636) do
 
   add_index "videos", ["concert_id"], name: "index_videos_on_concert_id", using: :btree
   add_index "videos", ["star_id"], name: "index_videos_on_star_id", using: :btree
+
+  create_table "yl_play_types", force: :cascade do |t|
+    t.integer  "play_type_a_id", limit: 4
+    t.string   "play_type_a",    limit: 255
+    t.integer  "play_type_b_id", limit: 4
+    t.string   "play_type_b",    limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
 
 end

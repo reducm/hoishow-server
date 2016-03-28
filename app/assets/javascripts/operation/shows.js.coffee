@@ -225,6 +225,14 @@ get_coordinates = (show_id, event_id)->
     draw_areas(canvas.getContext("2d"), $("##{event_id} .coordinate_hash").data('area-coordinates'), $("##{event_id} .coordinate_hash").data("no-bind-area-coordinates"))
   )
 
+binding_btn_action = ()->
+  # 修改按钮
+  $('.change_show_area_data').hide()
+  $('.editable_toggle').on 'click', ->
+    $(this).siblings().eq(0).show()
+    $(this).parent().siblings().children().attr('disabled', false)
+    $(this).hide()
+
 # 设置情侣座号以及修改提示
 set_love_index = ($first_s, $last_s)->
   $.each([$first_s, $last_s], (idx, val)->
@@ -232,6 +240,8 @@ set_love_index = ($first_s, $last_s)->
     $(val).data('love-index', result)
     set_title(val)
   )
+
+
 $ ->
   star_ids = []
   # 艺人搜索
@@ -239,24 +249,15 @@ $ ->
   $('#select_star').attr('data-live-search', true)
   $('#select_star').attr('data-width', '135px')
   $('#select_star').selectpicker()
-
-  $('.change_show_area_data').hide()
-  # 修改按钮
-  $('.editable_toggle').on 'click', ->
-    $(this).siblings().eq(0).show()
-    $(this).parent().siblings().children().attr('disabled', false)
-    $(this).hide()
-
-  $(document).ajaxComplete ->
-    $('.change_show_area_data').hide()
-    $('.editable_toggle').parent().siblings().children().attr('disabled', true)
-    $('.editable_toggle').on 'click', ->
-      $(this).siblings().eq(0).show()
-      $(this).parent().siblings().children().attr('disabled', false)
-      $(this).hide()
-
+  
   $('.image-uploader').change ->
     readURL this
+
+  binding_btn_action()
+
+  $(document).ajaxComplete ->
+    $('.editable_toggle').parent().siblings().children().attr('disabled', true)
+    binding_btn_action()
 
 #演出列表搜索过滤开始---------------
   # 服务器提供的过滤条件数据源
@@ -299,6 +300,7 @@ $ ->
               'status': $('#status_filter').val()
               'source': $('#source_filter').val()
               'is_display': $('#is_display_filter').val()
+              'is_upcoming': $('#is_upcoming_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
               # 控件有问题，现固定每页显示10行
@@ -315,6 +317,11 @@ $ ->
             api.ajax.reload()
           $.each f_data["sourceFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "演出来源：" + key + '</option>'
+          # 按是否即将到期过滤
+          select = $('<select><option selected="selected" value="">即将到期：全部</option></select>').attr("id", "is_upcoming_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          select.append '<option value="1">' + "即将到期：是" + '</option>'
+          select.append '<option value="0">' + "即将到期：否" + '</option>'
           # 按显示状态过滤
           select = $('<select><option selected="selected" value="">显示状态：全部</option></select>').attr("id", "is_display_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
             api.ajax.reload()
@@ -386,6 +393,7 @@ $ ->
     ShowLists.init()
 #演出列表搜索过滤结束---------------
 
+#show edit
   if $('#show_description').length > 0
     $('#show_description').qeditor({})
     init_editor()
@@ -842,3 +850,23 @@ $ ->
         get_seats_info('redirect') if result == 0
       else
         get_seats_info('redirect')
+
+    #更新event资料
+  $('.update_event_info').on 'click', ()->
+    event_id = $(this).data('id')
+    show_id = $("#show_id").val()
+    $('#data_fetching_tip').modal('show')
+    $.post("/operation/shows/#{show_id}/update_event_info", {event_id: event_id}, (data)->
+      if data.error
+        $(".#{event_id}_areas tbody").html("没有数据")
+        $('#data_fetching_tip').modal('hide')
+        $.notify "更新失败",
+          globalPosition: 'top center'
+          className: 'error'
+      else
+        $(".#{event_id}_areas tbody").html(data)
+        $('#data_fetching_tip').modal('hide')
+        $.notify "更新完成",
+          globalPosition: 'top center'
+          className: 'success'
+    )

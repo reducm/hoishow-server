@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "get_bmp_coordinate"
 class Open::V1::EventsController < Open::V1::ApplicationController
-  before_action :show_auth!, only: [:index] 
+  before_action :show_auth!, only: [:index]
   skip_before_filter :api_verify!, only: [:areas_map]
   skip_before_filter :find_auth!, only: [:areas_map]
   def index
@@ -21,5 +21,10 @@ class Open::V1::EventsController < Open::V1::ApplicationController
     all_areas.pop(2)
     @invalid_areas = all_areas - valid_areas
     render layout: "mobile"
+  end
+
+  def today_shows
+    show_ids = Event.where('created_at >= ?', DateTime.now.beginning_of_day).pluck(:show_id).compact.uniq
+    @today_event_shows = Show.where(id: show_ids)
   end
 end

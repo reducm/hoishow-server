@@ -49,6 +49,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
         expect(d[:seat_type]).to eq s.seat_type
         expect(d[:mode]).to eq s.source
         expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
+        expect(d[:is_presell]).to eq s.is_presell
       end
     end
   end
@@ -58,7 +59,6 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
 
     it 'should return current show with current id' do
       get :show, encrypted_params_in_open({id: s.id})
-
       expect(json[:result_code]).to eq 0
       d = json[:data]
       expect(d[:id]).to eq s.id
@@ -81,6 +81,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
       expect(d[:seat_type]).to eq s.seat_type
       expect(d[:mode]).to eq s.source
       expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
+      expect(d[:is_presell]).to eq s.is_presell
     end
 
     it 'will return error when show no found' do

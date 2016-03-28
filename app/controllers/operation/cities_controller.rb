@@ -49,6 +49,6 @@ class Operation::CitiesController < Operation::ApplicationController
   end
 
   def city_params
-    params.require(:city).permit(:name, :pinyin, :is_hot)
+    params.require(:city).permit(:name, :pinyin, :is_hot, :source_name)
   end
 end

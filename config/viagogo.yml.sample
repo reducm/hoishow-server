@@ -1,0 +1,11 @@
+development: &DEFAULT
+  ssdb_default_url: "ssdb://127.0.0.1:6380/"
+
+test:
+  <<: *DEFAULT
+
+production:
+  <<: *DEFAULT
+
+staging:
+  <<: *DEFAULT

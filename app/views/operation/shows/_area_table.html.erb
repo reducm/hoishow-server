@@ -1,12 +1,17 @@
 <%# encoding: utf-8 %>
 
-<% event.areas.each do |area| %>
+<% event.areas.order("is_exist DESC").each do |area| %>
   <% sold_tickets_count = show.sold_tickets_count(area.id) %>
   <% relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first %>
   <tr area_id="<%= area.id %>" color="<%= area.color %>" area_name="<%= area.name %>">
-    <% if show.selected? %>
+    <% if show.selected? && relation %>
       <td class="area_name_<%= area.id %>"><%= text_field_tag "area_name", area.name, class: 'form-control', disabled: true %></td>
       <td class="price_<%= area.id %>"><%= text_field_tag "area_price", relation.try(:price), class: 'form-control', disabled: true %></td>
+      <% if @show.viagogo? %>
+        <% price_range = relation.price_range %>
+        <td ><%= price_range.present? ? price_range : "没有数据" %></td>
+        <td><%= area.is_exist ? "在售" : "已售罄" %></td>
+      <% end %>
       <td class="seats_count_<%= area.id %>"><%= text_field_tag "area_seats_count", relation.try(:seats_count), class: 'form-control', disabled: true %></td>
       <td class="left_seats_<%= area.id %>"><%= relation.try(:left_seats) %></td>
       <td class="sold_tickets_<%= area.id %>"><%= sold_tickets_count %></td>

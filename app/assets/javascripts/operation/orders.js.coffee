@@ -172,3 +172,11 @@ $ ->
     url = '/operation/orders.xls'
     $('#export_excel').on 'click', ->
       window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
+
+  #点击确认出票按钮时监测有没有输入购买价格
+  $(".finish_order_btn").on "click", (e)->
+    buy_price = $("#order_buy_price").val()
+    unless buy_price && parseFloat(buy_price) > 0
+      e.preventDefault()
+      alert("确认出票之前请输入购入价格")
+      return false

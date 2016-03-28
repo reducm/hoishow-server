@@ -5,10 +5,10 @@ class OrdersDatatable
     @view = view
   end
 
-# dataTable需要的参数 
+# dataTable需要的参数
   def as_json(options = {})
     {
-      draw: params[:draw].to_i, 
+      draw: params[:draw].to_i,
       recordsTotal: Order.count,
       recordsFiltered: orders.size,
       data: data
@@ -32,7 +32,7 @@ private
         order.amount,
         link_to(order.get_username(user), "/operation/users/#{user.id}"),
         order.status_cn,
-        refund_link(order), 
+        refund_link(order),
         link_to("查看详情", "/operation/orders/#{order.id}")
       ]
     end
@@ -51,11 +51,12 @@ private
   end
 
   def orders_per_page
-    @orders_per_page ||= Kaminari.paginate_array(orders.to_a).page(page).per(per_page)
+    #@orders_per_page ||= Kaminari.paginate_array(orders.to_a).page(page).per(per_page)
+    @orders_per_page ||= orders.page(page).per(per_page)
   end
 
   def fetch_orders
-    orders = Order.order(created_at: :desc)
+    orders = Order.all
     # 搜订单号和手机号
     if params[:search].present?
       if params[:search][:value].present?
@@ -82,7 +83,7 @@ private
     if params[:start_date].present? && params[:end_date].present?
       orders = orders.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])
     end
-    orders
+    orders = orders.order(created_at: :desc)
   end
 
   def page

@@ -10,9 +10,16 @@ class City < ActiveRecord::Base
 
   has_many :topics
 
-  validates :name, presence: {message: "城市名字不能为空"}, uniqueness: {message: "城市名字不能重复"}
+  validates :name, presence: { message: "城市名字不能为空" }, uniqueness: { scope: :source, message: "城市名字不能重复" }
 
   paginates_per 10
+
+  enum source: {
+    hoishow: 0, # 自有资源
+    damai: 1, # 大麦
+    yongle: 2, # 永乐
+    weipiao: 3 # 微票
+  }
 
   def hold_concert(concert)
     concert_city_relations.where(concert: concert).first_or_create!

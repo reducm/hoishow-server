@@ -1,11 +1,11 @@
 class ShowsDatatable
-  delegate :params, :link_to, to: :@view
+  delegate :params, :link_to, :content_tag, to: :@view
 
   def initialize(view)
     @view = view
   end
 
-# dataTable需要的参数
+  # dataTable需要的参数
   def as_json(options = {})
     {
       draw: params[:draw].to_i,
@@ -15,14 +15,14 @@ class ShowsDatatable
     }
   end
 
-private
+  private
 
   def data
     shows_per_page.map do |show|
       tickets = show.tickets
       [
+        is_upcoming(show),
         show.star_names,
-        show.name,
         show.is_display_cn,
         show.is_presell_cn,
         show.source_cn,
@@ -30,10 +30,22 @@ private
         show.status_cn,
         show.ticket_type_cn,
         show.stadium.try(:name),
-        show.event_show_time,
+        wrap_text(show.event_show_time, '105px'),
         "#{tickets.sold_tickets.count}/#{show.total_seats_count}",
         control_link(show)
       ]
+    end
+  end
+
+  def wrap_text(text, px)
+    "#{content_tag(:p, text, style: "width: #{px}; word-wrap: break-word;") }"
+  end
+
+  def is_upcoming(show)
+    if show.is_upcoming?
+      "#{content_tag(:span, '即将到期', class: 'label label-danger')}" + " " + show.name
+    else
+      wrap_text(show.name, '300px')
     end
   end
 
@@ -46,14 +58,18 @@ private
   end
 
   def shows_per_page
-    @shows_per_page ||= Kaminari.paginate_array(shows.to_a).page(page).per(10)
+    #@shows_per_page ||= Kaminari.paginate_array(shows.to_a).page(page).per(10)
+    @shows_per_page ||= shows.page(page).per(10)
   end
 
   def fetch_shows
-    shows = Show.order(created_at: :desc)
-    # 搜演出和艺人名字
+    shows = Show.all
+    # 搜演出或艺人名字
     if params[:search].present? && params[:search][:value].present?
-      shows = shows.where("shows.name like :search", search: "%#{params[:search][:value]}%")
+      # 确保能按演出名称搜索
+      shows = shows.eager_load(:concert => { :stars => :star_concert_relations })
+                   .where("shows.name LIKE :search OR stars.name LIKE :search", search: "%#{params[:search][:value]}%")
+                   .uniq
     end
     # 按购票状态过滤
     if params[:status].present?
@@ -71,7 +87,11 @@ private
     if params[:start_date].present? && params[:end_date].present?
       shows = shows.joins(:events).where("events.show_time between ? and ?", params[:start_date], params[:end_date])
     end
-    shows
+    # 按是否即将到期过滤
+    if params[:is_upcoming].present?
+      shows = params[:is_upcoming] == '1' ? shows.is_upcoming : shows.is_not_upcoming
+    end
+    shows = shows.order(created_at: :desc)
   end
 
   def page
