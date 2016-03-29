@@ -23,15 +23,15 @@ module YongleService
       relation = area.show_area_relations.first
       result_data = YongleService::Service.find_productprice_info(area_source_id)
       if result_data["result_data"] == '1000'
-        area.update_attributes!(name: result_data["priceInfo"])
-        relation.update_attributes!(price: result_data["price"])
+        area.update!(name: result_data["priceInfo"])
+        relation.update!(price: result_data["price"])
         # 暂定－1以外的负数库存不可卖
         # 联盟可卖状态为1、4
         if (result_data["priceNum"] < 0 && result_data["priceNum"] != -1) || ['1', '4'].exclude?(result_data["priceStarus"])
           seats_count = 0
         elsif result_data["priceNum"] == -1
           seats_count = 30
-          area.update_attributes!(is_infinite: true)
+          area.update!(is_infinite: true)
         else
           seats_count = result_data["priceNum"]
         end
@@ -67,18 +67,12 @@ module YongleService
         CitySource.transaction do
           result_data["data"]["Response"]["getFconfigRsp"]["fconfigInfo"].each do |yongle_city|
             name = yongle_city["playCity"].gsub('市', '').gsub('特别行政区', '')
-            city_source = CitySource.where(
-              yl_fconfig_id: yongle_city['fconfigId'].to_i,
-              source: CitySource.sources['yongle']
-            ).first_or_initialize
+            city_source = CitySource.where(yl_fconfig_id: yongle_city['fconfigId'].to_i, source: CitySource.sources['yongle']).first_or_initialize
             if city_source.new_record?
               city = City.where(name: name).first_or_create!
               city_source.city = city
             end
-            city_source.update_attributes!(
-              name: name,
-              code: yongle_city['citycode']
-            )
+            city_source.update!(name: name,code: yongle_city['citycode'])
           end
         end
       end
@@ -106,7 +100,7 @@ module YongleService
                 yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
                 # City
                 city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
-                city_source.update_attributes!(source_id: product["playCityId"])
+                city_source.update!(source_id: product["playCityId"])
                 city = city_source.city
                 # Stadium
                 stadium = fetch_stadium(product["playAddressId"], city)
@@ -133,14 +127,14 @@ module YongleService
                               seats_count = tick_set_info["priceNum"].to_i
                               if seats_count > 0 || seats_count == -1 # 跳过库存不足的
                                 area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
-                                area.update_attributes!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
+                                area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
                                 if seats_count == -1 # -1代表无限库存，暂定库存为30
                                   seats_count = 30
-                                  area.update_attributes!(is_infinite: true)
+                                  area.update!(is_infinite: true)
                                 end
                                 fetch_area_ids.push(area.id)
                                 relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
-                                relation.update_attributes!(price: tick_set_info["price"])
+                                relation.update!(price: tick_set_info["price"])
 
                                 update_inventory(show, area, relation, seats_count, tick_set_info["price"])
                               end
@@ -180,7 +174,7 @@ module YongleService
       if result_data["result"] == '1000' # 成功
         venue = result_data["data"]["Response"]["getVenueInfoRsp"]["venue"]
         stadium = city.stadiums.where(source_id: venue["venueId"].to_i, source: Stadium.sources["yongle"]).first_or_initialize
-        stadium.update_attributes(
+        stadium.update(
           name:       venue["venueName"],
           address:    venue["address"],
           longitude:  venue["longitude"].to_f,
