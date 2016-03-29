@@ -5,7 +5,7 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   skip_before_filter :api_verify!, only: [:areas_map]
   skip_before_filter :find_auth!, only: [:areas_map]
   def index
-    @events = @show.events.all
+    @events = @show.events.verified
   end
 
   def areas_map
