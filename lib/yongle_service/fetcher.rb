@@ -64,11 +64,21 @@ module YongleService
     def fetch_cities
       result_data = YongleService::Service.get_all_fconfig
       if result_data["result"] == '1000' # 成功
-        City.transaction do
+        CitySource.transaction do
           result_data["data"]["Response"]["getFconfigRsp"]["fconfigInfo"].each do |yongle_city|
-            city = City.where(yl_fconfig_id: yongle_city['fconfigId'].to_i, source: City.sources['yongle']).first_or_initialize
             name = yongle_city["playCity"].gsub('市', '').gsub('特别行政区', '')
-            city.update_attributes!(name: name, code: yongle_city['citycode'])
+            city_source = CitySource.where(
+              yl_fconfig_id: yongle_city['fconfigId'].to_i,
+              source: CitySource.sources['yongle']
+            ).first_or_initialize
+            if city_source.new_record?
+              city = City.where(name: name).first_or_create!
+              city_source.city = city
+            end
+            city_source.update_attributes!(
+              name: name,
+              code: yongle_city['citycode']
+            )
           end
         end
       end
@@ -77,10 +87,10 @@ module YongleService
     def fetch_city_products
       @total_spend = 0
       @show_fetched = 0
-      city_codes = City.where('yl_fconfig_id IS NOT NULL AND source = ?', City.sources["yongle"]).pluck(:code).uniq.compact
+      city_codes = CitySource.where('yl_fconfig_id IS NOT NULL AND source = ?', CitySource.sources["yongle"]).pluck(:code).uniq.compact
       if city_codes.any?
         city_codes.each do |citycode|
-          @cityname = City.find_by(code: citycode).name
+          @cityname = CitySource.find_by(code: citycode).name
           yongle_logger.info ">fetching from #{@cityname}"
           fetch_start = Time.now
           result_data = YongleService::Service.get_city_data(citycode)
@@ -95,8 +105,9 @@ module YongleService
                 unit_start = Time.now
                 yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
                 # City
-                city = City.where(yl_fconfig_id: product["fconfigId"].to_i, source: City.sources['yongle']).first
-                city.update_attributes!(source_id: product["playCityId"])
+                city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
+                city_source.update_attributes!(source_id: product["playCityId"])
+                city = city_source.city
                 # Stadium
                 stadium = fetch_stadium(product["playAddressId"], city)
                 # Star and Concert

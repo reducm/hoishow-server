@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160318022522) do
+ActiveRecord::Schema.define(version: 20160329034944) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -385,6 +385,18 @@ ActiveRecord::Schema.define(version: 20160318022522) do
     t.string   "source_name",   limit: 255
     t.integer  "source",        limit: 4
     t.integer  "source_id",     limit: 4
+    t.integer  "yl_fconfig_id", limit: 4
+  end
+
+  create_table "city_sources", force: :cascade do |t|
+    t.string   "pinyin",        limit: 255
+    t.string   "name",          limit: 255
+    t.string   "code",          limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "source",        limit: 4
+    t.integer  "source_id",     limit: 4
+    t.integer  "city_id",       limit: 4
     t.integer  "yl_fconfig_id", limit: 4
   end
 
