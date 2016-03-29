@@ -2,6 +2,7 @@
 class City < ActiveRecord::Base
   acts_as_cached(:version => 1, :expires_in => 1.week)
 
+  has_many :city_sources
   has_many :stadiums
   has_many :shows
 
