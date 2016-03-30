@@ -21,6 +21,7 @@ class Event < ActiveRecord::Base
   end
 
   def self.hide_finished_event
-    Event.where('events.show_time <= ?', Time.now).update_all(is_display: false)
+    events = Event.eager_load(:areas).where('events.show_time is not null and events.show_time < ? or areas.event_id is null', Time.now)
+    events.update_all(is_display: false)
   end
 end

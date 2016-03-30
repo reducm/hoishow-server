@@ -12,9 +12,10 @@ json.stars show.concert.stars.pluck(:name).join(' | ') rescue ''
 json.price_range show.get_price_range
 json.postage show.r_ticket? ? CommonData.get_value('postage') : 0
 
-if show.events.any?
-  json.show_time show.events.last.show_time.to_i
-  json.stadium_map show.events.last.stadium_map_url || ''
+events = show.events.verified
+if events.any?
+  json.show_time events.last.show_time.to_i
+  json.stadium_map events.last.stadium_map_url || ''
 else
   json.show_time show.show_time.to_i
   json.stadium_map show.stadium_map_url || ''
