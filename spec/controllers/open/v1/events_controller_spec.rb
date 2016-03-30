@@ -46,7 +46,7 @@ RSpec.describe Open::V1::EventsController, :type => :controller do
         expect(d[:is_top]).to eq s.is_top
         expect(d[:status]).to eq s.status
         expect(d[:ticket_type]).to eq s.ticket_type
-        expect(d[:stadium_map]).not_to eq s.stadium_map_url
+        expect(d[:stadium_map]).to eq s.stadium_map_url # 这里测的是Show!
         expect(d[:seat_type]).to eq s.seat_type
         expect(d[:mode]).to eq s.source
         expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
