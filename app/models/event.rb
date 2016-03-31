@@ -1,7 +1,7 @@
 class Event < ActiveRecord::Base
   default_scope {order('show_time')}
   has_many :areas, dependent: :destroy
-  belongs_to :show
+  belongs_to :show, touch: true
 
   scope :verified, -> { where('events.show_time > ? AND events.is_display = ?', Time.now, true)}
 

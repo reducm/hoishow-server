@@ -6,6 +6,7 @@
   - elasticsearch
   - convert_audio
   - umeng_msg
+  - fetch_image
 staging:
   :concurrency: 25
 production:

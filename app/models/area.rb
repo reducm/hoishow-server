@@ -7,7 +7,7 @@ class Area < ActiveRecord::Base
   SEAT_UNUSED = 'unused'
 
   belongs_to :stadium
-  belongs_to :event
+  belongs_to :event, touch: true
   has_many :show_area_relations, dependent: :destroy
   has_many :shows, through: :show_area_relations
   has_many :tickets, dependent: :destroy

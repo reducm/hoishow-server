@@ -44,6 +44,7 @@ module YongleService
     end
 
     def fetch_play_types
+      yongle_logger.info ">start fetching Yongle's play types..."
       result_data = YongleService::Service.all_category
       if result_data["result"] == '1000' # 成功
         YlPlayType.transaction do
@@ -59,9 +60,11 @@ module YongleService
           end
         end
       end
+      yongle_logger.info ">finish fetching Yongle's play types."
     end
 
     def fetch_cities
+      yongle_logger.info ">start fetching Yongle's cities..."
       result_data = YongleService::Service.get_all_fconfig
       if result_data["result"] == '1000' # 成功
         CitySource.transaction do
@@ -76,6 +79,7 @@ module YongleService
           end
         end
       end
+      yongle_logger.info ">finish fetching Yongle's cities."
     end
 
     def fetch_city_products
@@ -94,80 +98,59 @@ module YongleService
           if result_data["result"] == '1000' && result_data["data"].present? # 成功且有数据
             yl_product = result_data["data"]["products"]["product"]
             products = yl_product.class == Array ? yl_product : [yl_product] # 只有一场演出会返回hash
-            if products.any? # 跳过没有票品的城市
-              products.each_with_index do |product, i|
-                unit_start = Time.now
-                yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
-                # City
-                city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
-                city_source.update!(source_id: product["playCityId"])
-                city = city_source.city
-                # Stadium
-                stadium = fetch_stadium(product["playAddressId"], city)
-                # Star and Concert
-                concert = fetch_star_and_concert(product)
-                if stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
-                  # Show
-                  show = fetch_show(product, city, stadium, concert)
-                  if show.present?
-                    ticket_time_list = product["ticketTimeList"]
-                    if ticket_time_list # 跳过没有场次的票品
-                      tti = ticket_time_list["ticketTimeInfo"]
-                      ticket_time_infos = tti.class == Array ? tti : [tti] # 只有一个场次会返回hash
-                      ticket_time_infos.each do |ticket_time_info|
-                        # Event
-                        event = fetch_event(product, ticket_time_info["ticketTime"], show)
-                        if event.present?
-                          fetch_area_ids = []
-                          tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
-                          tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
-                          tick_set_infos.each do |tick_set_info|
-                            # Area and relation and Seat
-                            if ['1', '4'].include?(tick_set_info["priceStarus"]) # 跳过不可卖的
-                              seats_count = tick_set_info["priceNum"].to_i
-                              if seats_count > 0 || seats_count == -1 # 跳过库存不足的
-                                area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
-                                area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
-                                if seats_count == -1 # -1代表无限库存，暂定库存为30
-                                  seats_count = 30
-                                  area.update!(is_infinite: true)
-                                end
-                                fetch_area_ids.push(area.id)
-                                relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
-                                relation.update!(price: tick_set_info["price"])
-
-                                update_inventory(show, area, relation, seats_count, tick_set_info["price"])
-                              end
-                            end
-                          end
-                          if fetch_area_ids.any?
-                            event_area_ids = event.areas.pluck(:id)
-                            delete_area_ids = event_area_ids - fetch_area_ids
-                            event.areas.where(id: delete_area_ids).each do |a|
-                              relation = a.show_area_relations.first
-                              a.update(seats_count: 0, left_seats: 0)
-                              relation.update(seats_count: 0, left_seats: 0)
-                            end
-                          end
-                        end
-                      end
-                    end
-                  end
-                end
-                unit_end = Time.now
-                @total_spend = @total_spend + (unit_end - unit_start)
-                @show_fetched = @show_fetched + 1
-                yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
-                yongle_logger.info "...Show fetched: #{@show_fetched}"
-                yongle_logger.info "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
-              end
-            end
+            fetch_products(products) if products.any? # 跳过没有票品的城市
           end
         end
       end
     end
 
     ############ private method ############
+
+    def fetch_products(products)
+      products.each_with_index do |product, i|
+        unit_start = Time.now
+        yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
+        # City
+        city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
+        city_source.update!(source_id: product["playCityId"])
+        city = city_source.city
+        # Stadium
+        stadium = fetch_stadium(product["playAddressId"], city)
+        # Star and Concert
+        concert = fetch_star_and_concert(product)
+        if stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
+          # Show
+          show = fetch_show(product, city, stadium, concert)
+          if show.present?
+            ticket_time_list = product["ticketTimeList"]
+            if ticket_time_list # 跳过没有场次的票品
+              tti = ticket_time_list["ticketTimeInfo"]
+              ticket_time_infos = tti.class == Array ? tti : [tti] # 只有一个场次会返回hash
+              ticket_time_infos.each do |ticket_time_info|
+                # Event
+                event = fetch_event(product, ticket_time_info["ticketTime"], show)
+                if event.present?
+                  @fetch_area_ids = []
+                  tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
+                  tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
+                  # Area and relation and Seat
+                  fetch_area_relation_and_seat(tick_set_infos, event, show)
+                  empty_inventory(@fetch_area_ids, event) if @fetch_area_ids.any?
+                  event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
+                end
+              end
+            end
+            show.update(is_display: false) if show.events.where(is_display: true).blank? # 隐藏没有场次的演出
+          end
+        end
+        unit_end = Time.now
+        @total_spend = @total_spend + (unit_end - unit_start)
+        @show_fetched = @show_fetched + 1
+        yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
+        yongle_logger.info "...Show fetched: #{@show_fetched}"
+        yongle_logger.info "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
+      end
+    end
 
     def fetch_stadium(source_id, city)
       result_data = YongleService::Service.get_venue_info(source_id)
@@ -210,9 +193,10 @@ module YongleService
     end
 
     def fetch_show(product, city, stadium, concert)
-      if ['0', '1'].include?(product["status"]) # 跳过不可卖的
+      if ['0', '1'].include?(product["status"]) && product["shelfStatus"].to_i == 1 # 跳过不可卖的
         if product["ProductProfile"].length > 65535 # 跳过各种电影卡
           yongle_logger.info "跳过各种电影卡, length: #{product["ProductProfile"].length}"
+          return nil
         else
           show = stadium.shows.where(source_id: product["productId"].to_i, source: Show.sources["yongle"]).first_or_initialize
 
@@ -221,26 +205,21 @@ module YongleService
             city_id:            city.id,
             yl_play_city_id:    product["playCityId"],
             yl_fconfig_id:      product["fconfigId"],
-            is_display:         product["shelfStatus"].to_i == 1 ? true : false,
             yl_play_address_id: product["playAddressId"],
             yl_play_type_a_id:  product["playTypeAId"],
             yl_play_type_b_id:  product["playTypeBId"],
             name:               product["playName"],
             description:        product["ProductProfile"],
             status:             Show.statuses["selling"],
-            is_presell:         product["status"].to_i.zero?,
+            is_presell:         product["status"].to_i == 1,
             ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
             yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
             seat_type:          Show.seat_types["selected"]
           )
 
-          begin # carrierwave remote_url 404
-            show.remote_poster_url = product["productPicture"] unless show.poster_url.present?
-            show.remote_ticket_pic_url = product["productPictureSmall"] unless show.ticket_pic_url.present?
-            show.remote_stadium_map_url = product["seatPicture"] unless show.stadium_map_url.present? # 场区图
-          rescue => e
-            yongle_logger.info "更新图片出错, #{e}"
-          end
+          FetchImageWorker.perform_async(show.id, product["productPicture"], 'poster')
+          FetchImageWorker.perform_async(show.id, product["productPictureSmall"], 'ticket_pic')
+          FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map')
 
           show
         end
@@ -266,6 +245,29 @@ module YongleService
         return nil
       end
     end
+
+    def fetch_area_relation_and_seat(tick_set_infos, event, show)
+      tick_set_infos.each do |tick_set_info|
+        if ['1', '4'].include?(tick_set_info["priceStarus"]) # 跳过不可卖的
+          seats_count = tick_set_info["priceNum"].to_i
+          if seats_count > 0 || seats_count == -1 # 跳过库存不足的
+            area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
+            area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
+            if seats_count == -1 # -1代表无限库存，暂定库存为30
+              seats_count = 30
+              area.update!(is_infinite: true)
+            end
+            @fetch_area_ids.push(area.id)
+            relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
+            relation.update!(price: tick_set_info["price"])
+
+            update_inventory(show, area, relation, seats_count, tick_set_info["price"])
+          end
+        end
+      end
+    end
+
+
 
     def update_inventory(show, area, relation, seats_count, price)
       old_seats_count = relation.seats_count
@@ -299,12 +301,42 @@ module YongleService
       end
     end
 
+    def empty_inventory(fetch_area_ids, event)
+      event_area_ids = event.areas.pluck(:id)
+      delete_area_ids = event_area_ids - fetch_area_ids
+      event.areas.where(id: delete_area_ids).each do |a|
+        relation = a.show_area_relations.first
+        a.update(seats_count: 0, left_seats: 0)
+        relation.update(seats_count: 0, left_seats: 0)
+      end
+    end
+
+    def fetch_image(show_id, url, image_desc)
+      show = Show.find(show_id)
+      begin
+        case image_desc
+        when 'poster'
+          show.remote_poster_url = url unless show.poster_url.present?
+        when 'ticket_pic'
+          show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
+        when 'stadium_map'
+          show.remote_stadium_map_url = url unless show.stadium_map_url.present?
+        end
+        show.save!
+      rescue => e
+        yongle_logger.info "更新#{image_desc}出错，#{e}"
+      end
+    end
+
     class << self
+      private :fetch_products
       private :fetch_stadium
       private :fetch_star_and_concert
       private :fetch_show
       private :fetch_event
+      private :fetch_area_relation_and_seat
       private :update_inventory
+      private :empty_inventory
     end
   end
 end
