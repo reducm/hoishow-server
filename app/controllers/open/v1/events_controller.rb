@@ -24,6 +24,6 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   end
 
   def today_shows
-    @today_event_shows = Show.where('updated_at > ?', DateTime.now.beginning_of_day).is_display
+    @today_event_shows = Show.where('updated_at > ?', Time.now - 1.hour).is_display
   end
 end

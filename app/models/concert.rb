@@ -6,7 +6,7 @@ class Concert < ActiveRecord::Base
   default_scope {order('concerts.is_top DESC, concerts.created_at DESC')}
 
   has_many :videos
-  has_many :shows
+  has_many :shows, dependent: :destroy
 
   has_many :user_follow_concerts
   has_many :followers, through: :user_follow_concerts, source: :user

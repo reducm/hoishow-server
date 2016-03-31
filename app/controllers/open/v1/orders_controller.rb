@@ -59,7 +59,6 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
     if co_logic.success?
       @order = co_logic.order
-      @order.add_order_to_yongle if @order.source == 'yongle'
     else
       @error_code = co_logic.response
       @message = co_logic.error_msg
@@ -86,27 +85,6 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def confirm
-    # 自有库存的演出，可以直接出票
-    if @order.show.hoishow?
-      if !@order.pre_pay! || !@order.success_pay!
-        @error_code = 3012
-        @message = '订单确认失败'
-      end
-    elsif @order.show.yongle?
-      if !@order.pre_pay! || @order.update_pay_status_to_yongle['result'] != '1000'
-        @error_code = 3012
-        @message = '订单确认失败'
-      end
-    # 第三方的演出，必须确定库存才能出票
-    else !@order.pre_pay! || (@order.show.hoishow? && !@order.success_pay!)
-      @error_code = 3012
-      @message = '订单确认失败'
-    end
-
-    # 更新用户邮箱
-    if params[:email].present?
-      @order.user.update(email: params[:email])
-    end
     # 实体票的话，可更新快递信息
     if @order.user_address.nil? && @order.show.r_ticket?
       # user_name 暂时就不关联到 bike_ticket_user
@@ -115,6 +93,30 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
         p[:user_address] = expresses_params[:address]
       end
       @order.update_attributes!(express_attr)
+    end
+
+    # 更新用户邮箱
+    if params[:email].present?
+      @order.user.update(email: params[:email])
+    end
+
+    # 自有库存的演出，可以直接出票
+    if @order.show.hoishow?
+      if !@order.pre_pay! || !@order.success_pay!
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
+    elsif @order.show.yongle?
+      if !@order.pre_pay! || (@order.add_order_to_yongle && @order.update_pay_status_to_yongle['result'] != '1000')
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
+    # 第三方的演出，必须确定库存才能出票
+    else
+      if !@order.pre_pay!
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
     end
   end
 

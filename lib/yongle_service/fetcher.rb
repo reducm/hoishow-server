@@ -19,7 +19,7 @@ module YongleService
 
     # 实时数据（目前只有票区，如果还有别的实时数据，也考虑做成一个方法，把需要的实时数据加进去）
     def fetch_productprice_info(area_source_id)
-      area = where(source_id: area_source_id, source: Area.sources['yongle']).first
+      area = Area.where(source_id: area_source_id, source: Area.sources['yongle']).first
       relation = area.show_area_relations.first
       result_data = YongleService::Service.find_productprice_info(area_source_id)
       if result_data["result_data"] == '1000'
@@ -140,7 +140,13 @@ module YongleService
                 end
               end
             end
-            show.update(is_display: false) if show.events.where(is_display: true).blank? # 隐藏没有场次的演出
+            if show.events.blank? # 没有场次的演出如果没有下过单就直接删除，否则隐藏
+              if show.orders.blank?
+                show.concert.destroy
+              else
+                show.update(is_display: false)
+              end
+            end
           end
         end
         unit_end = Time.now

@@ -47,6 +47,9 @@ class CreateOrderLogic
   def check_inventory
     @response = 0
 
+    area = Area.where(id: options[:area_id]).first
+    YongleService::Fetcher.fetch_productprice_info(area.source_id) if show.yongle?
+
     if show.selected?
       @relation = ShowAreaRelation.where(show_id: show.id, area_id: options[:area_id]).first
 
