@@ -217,22 +217,9 @@ module YongleService
             seat_type:          Show.seat_types["selected"]
           )
 
-          begin # carrierwave remote_url 404
-            show.remote_poster_url = product["productPicture"] unless show.poster_url.present?
-          rescue => e
-            yongle_logger.info "更新海报出错, #{e}"
-          end
-          begin # carrierwave remote_url 404
-            show.remote_ticket_pic_url = product["productPictureSmall"] unless show.ticket_pic_url.present?
-          rescue => e
-            yongle_logger.info "更新票图出错, #{e}"
-          end
-          begin # carrierwave remote_url 404
-            show.remote_stadium_map_url = product["seatPicture"] unless show.stadium_map_url.present? # 场区图
-          rescue => e
-            yongle_logger.info "更新场区图出错, #{e}"
-          end
-          show.save!
+          FetchImageWorker.perform_async(show.id, product["productPicture"], 'poster')
+          FetchImageWorker.perform_async(show.id, product["productPictureSmall"], 'ticket_pic')
+          FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map')
 
           show
         end
@@ -321,6 +308,23 @@ module YongleService
         relation = a.show_area_relations.first
         a.update(seats_count: 0, left_seats: 0)
         relation.update(seats_count: 0, left_seats: 0)
+      end
+    end
+
+    def fetch_image(show_id, url, image_desc)
+      show = Show.find(show_id)
+      begin
+        case image_desc
+        when 'poster'
+          show.remote_poster_url = url unless show.poster_url.present?
+        when 'ticket_pic'
+          show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
+        when 'stadium_map'
+          show.remote_stadium_map_url = url unless show.stadium_map_url.present?
+        end
+        show.save!
+      rescue => e
+        yongle_logger.info "更新#{image_desc}出错，#{e}"
       end
     end
 
