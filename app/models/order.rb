@@ -103,7 +103,7 @@ class Order < ActiveRecord::Base
   end
 
   def area
-    Area.find_by(source_id: area_source_id)
+    show.areas.where(source_id: area_source_id).first
   end
 
   def area_is_infinite?

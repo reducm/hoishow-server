@@ -244,7 +244,7 @@ module YongleService
     def fetch_event(product, ticket_time, show)
       # "2015-11-15-2016-05-08-10:00"这种场次的，不做拉取
       begin
-        show_time = DateTime.strptime(ticket_time, '%Y-%m-%d %H:%M')
+        show_time = DateTime.strptime(ticket_time, '%Y-%m-%d %H:%M') - 8.hours
         show.events.where(show_time: show_time).first_or_create
       rescue => e
         yongle_logger.info "跳过特殊场次, #{e}"
