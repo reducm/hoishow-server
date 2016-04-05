@@ -117,23 +117,25 @@ class Order < ActiveRecord::Base
     old_left_seats = relation.left_seats
     rest_tickets = 30 - old_left_seats
 
-    # sinagle mass insert
-    inserts = []
-    show_id = show.id
-    area_id = area.id
-    status = Ticket::statuses[:pending]
-    seat_type = Ticket::seat_types[:avaliable]
-    price = relation.price
-    timenow = Time.now.strftime('%Y-%m-%d %H:%M:%S')
-    rest_tickets.times do
-      inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{price}, '#{timenow}', '#{timenow}')"
-    end
-    sql = "INSERT INTO tickets (show_id, area_id, status, seat_type, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
-    ActiveRecord::Base.connection.execute sql
-    #####################
+    if rest_tickets > 0
+      # sinagle mass insert
+      inserts = []
+      show_id = show.id
+      area_id = area.id
+      status = Ticket::statuses[:pending]
+      seat_type = Ticket::seat_types[:avaliable]
+      price = relation.price
+      timenow = Time.now.strftime('%Y-%m-%d %H:%M:%S')
+      rest_tickets.times do
+        inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{price}, '#{timenow}', '#{timenow}')"
+      end
+      sql = "INSERT INTO tickets (show_id, area_id, status, seat_type, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
+      ActiveRecord::Base.connection.execute sql
+      #####################
 
-    relation.update(left_seats: 30)
-    area.update(left_seats: 30)
+      relation.update(left_seats: 30)
+      area.update(left_seats: 30)
+    end
     return true
   end
 
@@ -210,7 +212,11 @@ class Order < ActiveRecord::Base
           raise RuntimeError, 'area_id not uniq' if area_id.size != 1
           relation = show.show_area_relations.where(area_id: area_id[0]).first
           # update 库存
-          relation.increment(:left_seats, tickets_count ).save!
+          if relation.area.is_infinite && relation.left_seats + tickets_count >= 30
+            relation.update!(left_seats: 30)
+          else
+            relation.increment(:left_seats, tickets_count).save!
+          end
         elsif show.selectable? # 选座也要更新库存
           # 更新座位信息
           self.tickets.each do |t|
@@ -319,7 +325,6 @@ class Order < ActiveRecord::Base
         Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
                                       ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
-        order.refill_inventory if order.area_is_infinite?
         order
       end
     end
