@@ -71,6 +71,19 @@ class Operation::OrdersController < Operation::ApplicationController
     redirect_to operation_order_url(@order)
   end
 
+  def update_buy_price
+    # 前端去判断参数是否存在
+    if params["buy_price"] && @order.update(buy_price: params["buy_price"])
+      respond_to do |format|
+        format.json { render json: { message: '更新成功！', status: 200 } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { message: '更新失败！', status: 403 } }
+      end
+    end
+  end
+
   def finish_order
     if @order.paid?
       #变更状态

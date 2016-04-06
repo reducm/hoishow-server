@@ -198,6 +198,7 @@ Rails.application.routes.draw do
         post :manual_refund
         get :manual_send_msg
         post "update_order_data"
+        post :update_buy_price
         post :finish_order
       end
       collection do

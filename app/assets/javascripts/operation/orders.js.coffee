@@ -173,10 +173,53 @@ $ ->
     $('#export_excel').on 'click', ->
       window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
 
-  #点击确认出票按钮时监测有没有输入购买价格
-  $(".finish_order_btn").on "click", (e)->
-    buy_price = $("#order_buy_price").val()
-    unless buy_price && parseFloat(buy_price) > 0
-      e.preventDefault()
-      alert("确认出票之前请输入购入价格")
-      return false
+  ##点击确认出票按钮时监测有没有输入购买价格
+  #$(".finish_order_btn").on "click", (e)->
+    #buy_price = $("#order_buy_price").val()
+    #unless buy_price && parseFloat(buy_price) > 0
+      #e.preventDefault()
+      #alert("确认出票之前请输入购入价格")
+  #    return false
+
+  # order show
+  order_id = $('#order_id').val()
+  new Vue(
+    el: '#order_detail'
+    data:
+      buy_price: $('#order_buy_price').val(),
+      buy_price_original: 0
+      buy_price_updatable: false
+    methods:
+      enable_change: ->
+        this.buy_price_updatable = true
+        this.buy_price_original = this.buy_price
+      undo_change: ->
+        this.buy_price_updatable = false
+        this.buy_price = this.buy_price_original
+      buy_price_valid: ->
+        parseFloat(this.buy_price) > 0
+      update_buy_price: ->
+        this.buy_price_updatable = false
+        $.ajax
+          type: 'POST',
+          url: order_id + '/update_buy_price.json',
+          data:
+            buy_price: this.buy_price
+          dataType: 'json'
+          success: (data, textStatus, xhr) ->
+            if xhr.responseJSON.status == 200
+              $.notify(xhr.responseJSON.message,
+                position: "top center",
+                className: 'success'
+              )
+            else
+              $.notify(xhr.responseJSON.message,
+                position: "top center",
+                className: 'error'
+              )
+          error: (xhr, textStatus, errorThrown) ->
+            $.notify(errorThrown,
+              position: "top center",
+              className: 'error'
+            )
+  )
