@@ -34,6 +34,26 @@
       <tr><td>付款时间</td><td><%= @order.generate_ticket_at_format %></td></tr>
       <tr><td>退款时间</td><td><%= get_datetime(@order.payments.first.try(:refund_at)) %></td></tr>
       <tr><td>退款人</td><td><%= @order.refund_by %></td></tr>
+      <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
+      <tr>
+        <td>购入价格</td>
+        <td>
+          <div v-show="buy_price_updatable">
+            <input v-model="buy_price" value="<%= @order.buy_price || 0 %>" type="number" name="order[buy_price]" id="order_buy_price"></input>
+            <button class="btn btn-default" @click.prevent="undo_change()">放弃修改</button>
+            <button v-show="buy_price_valid()" class="btn btn-default" @click.prevent="update_buy_price">保存价格</button>
+          </div>
+          <div v-else>
+            {{ buy_price }}
+            <button class="btn btn-default" @click.prevent="enable_change()">修改</button>
+          </div>
+          <div v-show="!buy_price_valid()" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            请填入门票的购入价格
+          </div>
+        </td>
+      </tr>
 
       <%= form_for @order, url: "/operation/orders/#{@order.id}/update_order_data", method: :post, html: { multipart: true  } do |f| %>
         <tr>
@@ -60,26 +80,6 @@
                 <% event = show.events.last %>
                 <a class="btn btn-primary" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问viagogo原链接</a>
               <% end %>
-            </td>
-          </tr>
-          <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
-          <tr>
-            <td>购入价格</td>
-            <td>
-              <div v-show="buy_price_updatable">
-                <input v-model="buy_price" value="<%= @order.buy_price || 0 %>" type="number" name="order[buy_price]" id="order_buy_price"></input>
-                <button class="btn btn-default" @click.prevent="undo_change()">放弃修改</button>
-                <button v-show="buy_price_valid()" class="btn btn-default" @click.prevent="update_buy_price">保存价格</button>
-                <div v-show="!buy_price_valid()" class="alert alert-danger" role="alert">
-                  <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                  <span class="sr-only">Error:</span>
-                  请填入门票的购入价格
-                </div>
-              </div>
-              <div v-else>
-                {{ buy_price }}
-                <button class="btn btn-default" @click.prevent="enable_change()">修改</button>
-              </div>
             </td>
           </tr>
           <tr>
