@@ -72,7 +72,6 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def update_buy_price
-    # 前端去判断参数是否存在
     if params["buy_price"] && @order.update(buy_price: params["buy_price"])
       respond_to do |format|
         format.json { render json: { message: '更新成功！', status: 200, buy_price: @order.buy_price } }

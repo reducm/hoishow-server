@@ -42,15 +42,15 @@
             <input v-model="buy_price" value="<%= @order.buy_price || 0 %>" type="number" name="order[buy_price]" id="order_buy_price"></input>
             <button class="btn btn-default" @click.prevent="undo_change()">放弃修改</button>
             <button v-show="buy_price_valid()" class="btn btn-default" @click.prevent="update_buy_price">保存价格</button>
-            <div v-show="!buy_price_valid()" class="alert alert-danger" role="alert">
-              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-              <span class="sr-only">Error:</span>
-              请填入门票的购入价格
-            </div>
           </div>
           <div v-else>
             {{ buy_price }}
             <button class="btn btn-default" @click.prevent="enable_change()">修改</button>
+          </div>
+          <div v-show="!order_valid()" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            请填入门票的购入价格
           </div>
         </td>
       </tr>
@@ -67,11 +67,11 @@
           <tr>
             <td>门票</td>
             <td>
-              <%= f.file_field :ticket_pic %>
+              <input @change="notify_file_input" type="file" name="order[ticket_pic]" id="order_ticket_pic"></input>
               <p></p>
               <p></p>
               <% if @order.ticket_pic_url %>
-                <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
+                <a id="ticket_pic_url" class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
                 <% if @order.success? %>
                   <%= link_to "再次通知用户", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
                 <% elsif @order.paid? %>
@@ -84,7 +84,7 @@
           </tr>
           <tr>
             <td></td>
-            <td>
+            <td v-show="order_valid()">
               <%= f.submit "保存", class: "btn btn-primary" %>
             </td>
           </tr>
