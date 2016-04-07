@@ -167,6 +167,7 @@ class CreateOrderLogic
       # create_order and create_tickets callback
       @order = Order.init_and_create_tickets_by_relations(show, order_attrs, @relation)
 
+      @order.refill_inventory if @order.area_is_infinite?
       batch_overtime!(pending_orders) unless pending_orders.blank?
 
       @response = 0
