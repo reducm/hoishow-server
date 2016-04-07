@@ -42,15 +42,15 @@
             <input v-model="buy_price" value="<%= @order.buy_price || 0 %>" type="number" name="order[buy_price]" id="order_buy_price"></input>
             <button class="btn btn-default" @click.prevent="undo_change()">放弃修改</button>
             <button v-show="buy_price_valid()" class="btn btn-default" @click.prevent="update_buy_price">保存价格</button>
+            <div v-show="!buy_price_valid()" class="alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              请填入门票的购入价格
+            </div>
           </div>
           <div v-else>
             {{ buy_price }}
             <button class="btn btn-default" @click.prevent="enable_change()">修改</button>
-          </div>
-          <div v-show="!buy_price_valid()" class="alert alert-danger" role="alert">
-            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            <span class="sr-only">Error:</span>
-            请填入门票的购入价格
           </div>
         </td>
       </tr>
@@ -84,7 +84,7 @@
           </tr>
           <tr>
             <td></td>
-            <td v-show="buy_price_valid()">
+            <td>
               <%= f.submit "保存", class: "btn btn-primary" %>
             </td>
           </tr>
