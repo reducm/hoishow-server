@@ -166,8 +166,8 @@ module YongleService
         stadium.update(
           name:       venue["venueName"],
           address:    venue["address"],
-          longitude:  venue["longitude"].to_f,
-          latitude:   venue["latitude"].to_f
+          longitude:  venue["longitude"].to_f - 0.0065,
+          latitude:   venue["latitude"].to_f - 0.006
         )
 
         stadium
@@ -272,8 +272,6 @@ module YongleService
         end
       end
     end
-
-
 
     def update_inventory(show, area, relation, seats_count, price)
       old_seats_count = relation.seats_count
