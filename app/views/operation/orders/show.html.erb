@@ -4,7 +4,7 @@
   <h1 class="pull-left">订单详情</h1>
   <%= hidden_field_tag "order_id", @order.id %>
 </div>
-<div>
+<div id="order_detail">
   <% show = @order.show%>
   <table class="table">
     <tbody>
@@ -34,6 +34,26 @@
       <tr><td>付款时间</td><td><%= @order.generate_ticket_at_format %></td></tr>
       <tr><td>退款时间</td><td><%= get_datetime(@order.payments.first.try(:refund_at)) %></td></tr>
       <tr><td>退款人</td><td><%= @order.refund_by %></td></tr>
+      <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
+      <tr>
+        <td>购入价格</td>
+        <td>
+          <div v-show="buy_price_updatable">
+            <input v-model="buy_price" value="<%= @order.buy_price || 0 %>" type="number" name="order[buy_price]" id="order_buy_price"></input>
+            <button class="btn btn-default" @click.prevent="undo_change()">放弃修改</button>
+            <button v-show="buy_price_valid()" class="btn btn-default" @click.prevent="update_buy_price">保存价格</button>
+          </div>
+          <div v-else>
+            {{ buy_price }}
+            <button class="btn btn-default" @click.prevent="enable_change()">修改</button>
+          </div>
+          <div v-show="!order_valid()" class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            请填入门票的购入价格
+          </div>
+        </td>
+      </tr>
 
       <%= form_for @order, url: "/operation/orders/#{@order.id}/update_order_data", method: :post, html: { multipart: true  } do |f| %>
         <tr>
@@ -47,11 +67,11 @@
           <tr>
             <td>门票</td>
             <td>
-              <%= f.file_field :ticket_pic %>
+              <input @change="notify_file_input" type="file" name="order[ticket_pic]" id="order_ticket_pic"></input>
               <p></p>
               <p></p>
               <% if @order.ticket_pic_url %>
-                <a class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
+                <a id="ticket_pic_url" class="btn btn-primary" target="_blank" href=<%= @order.ticket_pic_url %>>查看门票</a>
                 <% if @order.success? %>
                   <%= link_to "再次通知用户", "/operation/orders/#{@order.id}/finish_order", method: :post, class: 'btn btn-primary finish_order_btn', data:{confirm:"确定发送出票邮件和短信给用户?"} %>
                 <% elsif @order.paid? %>
@@ -62,16 +82,9 @@
               <% end %>
             </td>
           </tr>
-          <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>
-          <tr>
-            <td>购入价格</td>
-            <td>
-              <%= f.text_field :buy_price %>
-            </td>
-          </tr>
           <tr>
             <td></td>
-            <td>
+            <td v-show="order_valid()">
               <%= f.submit "保存", class: "btn btn-primary" %>
             </td>
           </tr>

@@ -43,6 +43,7 @@
 #= require jquery.qeditor
 
 #= require operation/jquery.datetimepicker
+#= require vue.min
 
 $ ->
   #datetimepicker
