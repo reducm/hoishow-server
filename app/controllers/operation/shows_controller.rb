@@ -3,6 +3,7 @@ require "get_bmp_coordinate"
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
   before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
+  before_action :get_event, only: [:event_detail, :update_event, :del_event, :get_coordinates, :upload_map]
   before_action :get_orders_filters, only: :show
   before_action :get_shows_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
@@ -259,7 +260,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def add_event
-    event = @show.events.new(show_time: params[:show_time], is_display: params[:is_display])
+    event = @show.events.new(event_params)
     if event.save
       flash[:notice] = '增加场次成功'
     else
@@ -268,47 +269,47 @@ class Operation::ShowsController < Operation::ApplicationController
     redirect_to event_list_operation_show_url(@show)
   end
 
+  def event_detail
+  end
+
   def update_event
-    event = @show.events.find_by_id params[:event_id]
-    if event && event.update(show_time: params[:show_time], is_display: params[:is_display])
+    if @event && @event.update(event_params)
       flash[:notice] = '修改场次成功'
     else
       flash[:error] = '修改场次失败'
+    end
+    redirect_to event_detail_operation_show_url(@show, event_id: @event.id)
+  end
+
+  def del_event
+    if @event && @event.destroy
+      flash[:notice] = '删除场次成功'
+    else
+      flash[:error] = '删除场次失败'
     end
     redirect_to event_list_operation_show_url(@show)
   end
 
   def upload_map
-    event = @show.events.find_by_id params[:event_id]
-    if event
+    if @event
       if params[:stadium_map]
-        event.update(stadium_map: params[:stadium_map])
-        render json: {file_path: event.stadium_map_url}
+        @event.update(stadium_map: params[:stadium_map])
+        render json: {file_path: @event.stadium_map.url}
       elsif params[:coordinate_map]
-        event.update(coordinate_map: params[:coordinate_map])
+        @event.update(coordinate_map: params[:coordinate_map])
         render json: {success: true}
       end
     end
   end
 
   def get_coordinates
-    event = @show.events.find_by_id params[:event_id]
-    Rails.cache.write("#{event.id}_all_areas_coodinates",draw_image(event.coordinate_map_url))
+    Rails.cache.write("#{@event.id}_all_areas_coodinates",draw_image(@event.coordinate_map.url))
     render json: {
-      coords: Rails.cache.read("#{event.id}_all_areas_coodinates"),
-      color_ids: event.areas.pluck(:color, :id),
-      area_id_name: event.areas.pluck(:id, :name).to_h,
-      area_coordinates: event.areas.pluck(:coordinates).compact
+      coords: Rails.cache.read("#{@event.id}_all_areas_coodinates"),
+      color_ids: @event.areas.pluck(:color, :id),
+      area_id_name: @event.areas.pluck(:id, :name).to_h,
+      area_coordinates: @event.areas.pluck(:coordinates).compact
     }
-  end
-
-  def del_event
-    event = @show.events.find_by_id params[:event_id]
-    if event && event.destroy
-      render json: {success: true}
-    else
-      render json: {error: true}
-    end
   end
 
   def toggle_area_is_top
@@ -323,10 +324,10 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event_info
     if event = Event.find(params[:event_id])
-      ticket_info_array = ViagogoDataToHoishow::Service.fetch_event_data(event.ticket_path) 
-      rate = ViagogoDataToHoishow::Service.get_exchange_rate 
+      ticket_info_array = ViagogoDataToHoishow::Service.fetch_event_data(event.ticket_path)
+      rate = ViagogoDataToHoishow::Service.get_exchange_rate
       if ticket_info_array.present? && rate.present?
-        ViagogoDataToHoishow::Service.update_event_data(event, @show, ticket_info_array, rate) 
+        ViagogoDataToHoishow::Service.update_event_data(event, @show, ticket_info_array, rate)
         event.reload
         render partial: "area_table", locals: {show: @show, event: event}
       else
@@ -342,8 +343,16 @@ class Operation::ShowsController < Operation::ApplicationController
     params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell)
   end
 
+  def event_params
+    params.require(:event).permit(:show_time, :is_display, :end_time, :is_multi_day)
+  end
+
   def get_show
     @show = Show.find(params[:id])
+  end
+
+  def get_event
+    @event = @show.events.find_by_id params[:event_id]
   end
 
   def get_shows_filters

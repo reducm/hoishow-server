@@ -3,71 +3,33 @@
   <%= link_to '增加场次', '##', class: 'btn btn-default', data: {toggle: 'modal', target: '.addEventModal'} %>
 </div>
 <div class="event_list">
-  <ul class="nav nav-tabs" role="tablist" id='event_tabs'>
-    <% @events.each do |event| %>
-      <li role="presentation"><a href="#<%= event.id %>" aria-controls="<%= event.id %>" role="tab" data-toggle="tab"><button class="close" type="button" data-id="<%= event.id %>">×</button><%= get_datetime(event.show_time) %></a></li>
-    <% end %>
-  </ul>
-  <div class="tab-content">
-    <% @events.each do |event| %>
-      <div role="tabpanel" class="tab-pane" id="<%= event.id %>">
-        <div class="toolbar">
-          <% if @show.viagogo? %>
-            <a class="btn btn-default" target="_blank" href="http://www.viagogo.com<%= event.ticket_path %>">访问原链接</a>
-            <%= link_to '更新信息', 'javascript:void(0);', class: 'btn btn-default update_event_info', data: {id: event.id} %>
-          <% end %>
-          <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event', data: {id: event.id, event: event.show_time} %>
-          <%= link_to '增加区域', 'javascript:void(0);', class: 'btn btn-default add_area', data: {id: event.id} %>
-          <span class="upload_stadium_map" data-id="<%= event.id %>">
-            <span class="btn btn-default">上传场馆地图</span>
-            <input type="file" name="stadium_map">
-          </span>
-          <span class="upload_coordinate_map" data-id="<%= event.id %>">
-            <span class="btn btn-default">更新场馆图坐标</span>
-            <input type="file" name="coordinate_map">
-          </span>
-          <% unless event.coordinate_map_url %>
-            <span class="warning">请上传坐标图</span>
-          <% end %>
-        </div>
-        <div class='stadium_map_preview' data-id="<%= event.id %>">
-          <% if event.stadium_map_url %>
-            <div class="coordinate_hash"></div>
-            <% if event.coordinate_map_url %>
-              <div class="stadium_pic_div" style="background-image: url('<%= event.stadium_map %>'); background-repeat: repeat; position: relative;">
-                <canvas class='stadium_canvas' style="position:absolute; top:0; left:0;">你的浏览器不支持canvas！！！！！！</canvas>
-                <img src="<%= event.stadium_map %>" usemap="#s_pic_<%= event.id %>" style="border: 0px none;position:absolute;left:0;top:0;opacity:0;" />
-                <map id="event_map_<%= event.id %>" class="stadium_pic_map" name="s_pic_<%= event.id %>"></map>
-              </div>
-            <% else %>
-              <%= image_tag event.stadium_map_url, width: 500 %>
-            <% end %>
-          <% end %>
-        </div>
-        <table class="table <%= event.id %>_areas areas" data-id="<%= event.id %>">
-          <thead>
-            <tr>
-              <th>区域名</th>
-              <% if @show.selected? %>
-                <th>票价</th>
-                <% if @show.viagogo? %>
-                  <th>价格区间</th>
-                  <th>销售状态</th>
-                <% end %>
-              <% end %>
-              <th>座位数(座位数不能少于已售出数量)</th>
-              <th>库存</th>
-              <th>当前区域售出票数</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <%= render partial: "area_table", locals: {show: @show, event: event} %>
-          </tbody>
-        </table>
-      </div>
-    <% end %>
-  </div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>是否显示</th>
+        <th>描述时间</th>
+        <th>开始时间</th>
+        <th>结束时间</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td><%= event.id %></td>
+          <td><%= event.is_display ? "显示" : "不显示" %></td>
+          <td><%= event.description_time %></td>
+          <td><%= get_datetime event.show_time %></td>
+          <td><%= get_datetime event.end_time %></td>
+          <td>
+            <%= link_to '详情', event_detail_operation_show_url(@show, event_id: event.id) %>
+            <%= link_to '删除', del_event_operation_show_url(@show, event_id: event.id), method: "delete", data: {confirm: "确定删除吗？"} %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <!-- 增加场次 -->
@@ -75,70 +37,12 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body">
-        <%= form_tag add_event_operation_show_path(@show) do %>
-          <div class="form-group">
-             <%= datetime_field_tag "show_time", nil, class: 'form-control' %>
-             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
-          </div>
-          <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 修改场次 -->
-<div class="modal fade editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-body">
-        <%= form_tag update_event_operation_show_path(@show) do %>
-          <div class="form-group">
-             <%= text_field_tag "show_time", nil, class: 'form-control' %>
-             <%= select_tag "is_display", options_for_select([["显示", "true"], ["不显示", "false"]], "显示"), class: 'form-control' %>
-             <%= hidden_field_tag "event_id" %>
-          </div>
-          <%= submit_tag "提交", class: 'btn btn-primary pull-right' %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 数据同步提示 -->
-<div id="data_fetching_tip" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <p>数据同步中，请稍后...</p>
-    </div>
-  </div>
-</div>
-
-
-<!-- 设置渠道 -->
-<div class="modal fade" id="setChannelModal" tabindex="-1" role="dialog" aria-labelledby="setChannelModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="setChannelModalLabel">设置渠道</h4>
-      </div>
-      <div class="modal-body">
-        <%= form_tag do %>
-          <%= check_box_tag 'check_all' %>
-          <%= label_tag 'check_all', '全选' %>
-          <%= check_box_tag 'anti_all' %>
-          <%= label_tag 'anti_all', '反选' %>
-          <div class='channels'>
-            <%= check_box_tag 'channel_hoishow', 'hoishow' %>
-            <%= label_tag 'channel_hoishow', '自有'%>
-            <% ApiAuth.other_channels.each do |channel| %>
-              <%= check_box_tag "channel_#{channel.user}", channel.id %>
-              <%= label_tag "channel_#{channel.user}", channel.user %>
-            <% end %>
-          </div>
-          <%= hidden_field_tag 'area_id' %>
-          <%= submit_tag '提交', class: 'btn btn-primary submit_channel'%>
+        <%= simple_form_for @events.new, url: add_event_operation_show_path(@show) do |f| %>
+          <%= f.input :is_multi_day, label: '是否多日套票' %>
+          <%= f.input :is_display, label: '是否显示' %>
+          <%= f.input :show_time, as: :string, label: '开始时间' %>
+          <%= f.input :end_time, as: :string, label: '结束时间' %>
+          <%= submit_tag '提交', class: 'btn btn-primary' %>
         <% end %>
       </div>
     </div>

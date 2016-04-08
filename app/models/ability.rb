@@ -34,37 +34,20 @@ class Ability
         # Star
         can :create, Star
         can :update, Star
-        # Concert
-        can :create, Concert
-        can :update, Concert
         # Show
         can :create, Show
         can :update, Show
-        # Topic
-        can :create, Topic
-        can :update, Topic
-        # Comment
-        can :create, Comment
-        can :update, Comment
         # Stadium
-        can :create, Stadium
-        can :update, Stadium
+        can :manage, Stadium
         # Area
         can :create, Area
         can :update, Area
-        # Banner
-        can :create, Banner
-        can :update, Banner
         # Order
-        can :create, Order
         can :update, Order
-        # Startup
-        can :create, Startup
-        can :update, Startup
-        # Message
-        can :create, Message
         # SiteSetting
         can :manage, CommonData
+        # City
+        can :manage, City
 
         basic_read_only
       end

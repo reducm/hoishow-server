@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160329034944) do
+ActiveRecord::Schema.define(version: 20160407074135) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -500,14 +500,17 @@ ActiveRecord::Schema.define(version: 20160329034944) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.integer  "show_id",        limit: 4
+    t.integer  "show_id",          limit: 4
     t.datetime "show_time"
-    t.string   "stadium_map",    limit: 255
-    t.string   "coordinate_map", limit: 255
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
-    t.string   "ticket_path",    limit: 255
-    t.boolean  "is_display",     limit: 1,   default: true
+    t.string   "stadium_map",      limit: 255
+    t.string   "coordinate_map",   limit: 255
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.string   "ticket_path",      limit: 255
+    t.boolean  "is_display",       limit: 1,   default: true
+    t.string   "description_time", limit: 255
+    t.datetime "end_time"
+    t.boolean  "is_multi_day",     limit: 1,   default: false
   end
 
   add_index "events", ["show_id"], name: "index_events_on_show_id", using: :btree

@@ -182,8 +182,9 @@ Rails.application.routes.draw do
         delete :del_star
         post :set_area_channels
         get :event_list
+        get :event_detail
         post :add_event
-        post :update_event
+        patch :update_event
         delete :del_event
         post :upload_map
         get :get_coordinates
