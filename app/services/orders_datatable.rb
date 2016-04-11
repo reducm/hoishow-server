@@ -22,7 +22,7 @@ private
       user = order.user
       [
         order.out_id,
-        link_to(order.show_name, "/operation/shows/#{order.show.id}"),
+        link_to(order.show_name, "/operation/shows/#{order.show.id}", target: '_blank'),
         order.buy_origin,
         order.channel,
         order.show.try(:ticket_type_cn),
@@ -30,10 +30,10 @@ private
         order.generate_ticket_at_format,
         order.tickets_count,
         order.amount,
-        link_to(order.get_username(user), "/operation/users/#{user.id}"),
+        link_to(order.get_username(user), "/operation/users/#{user.id}", target: '_blank'),
         order.status_cn,
         refund_link(order),
-        link_to("查看详情", "/operation/orders/#{order.id}")
+        link_to("查看详情", "/operation/orders/#{order.id}", target: '_blank')
       ]
     end
   end

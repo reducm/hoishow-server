@@ -50,7 +50,7 @@ class ShowsDatatable
   end
 
   def control_link(show)
-    "#{link_to '查看详情', "/operation/shows/#{show.id}"} #{link_to '场次管理', "/operation/shows/#{show.id}/event_list"} #{link_to '编辑', "/operation/shows/#{show.id}/edit"} #{link_to (show.is_top ? '取消置顶' : '置顶'), "/operation/shows/#{show.id}/toggle_is_top", method: 'PATCH'}"
+    "#{link_to '查看详情', "/operation/shows/#{show.id}", target: '_blank'} #{link_to '场次管理', "/operation/shows/#{show.id}/event_list", target: '_blank'} #{link_to '编辑', "/operation/shows/#{show.id}/edit", target: '_blank'} #{link_to (show.is_top ? '取消置顶' : '置顶'), "/operation/shows/#{show.id}/toggle_is_top", method: 'PATCH'}"
   end
 
   def shows

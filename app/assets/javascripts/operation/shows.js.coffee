@@ -249,7 +249,7 @@ $ ->
   $('#select_star').attr('data-live-search', true)
   $('#select_star').attr('data-width', '135px')
   $('#select_star').selectpicker()
-  
+
   $('.image-uploader').change ->
     readURL this
 
@@ -491,42 +491,38 @@ $ ->
         )
 
   if $('.event_list').length > 0
-    $(window).scrollTop(0)
     show_id = $("#show_id").val()
-    $('.addEventModal #show_time, .editEventModal #show_time').datetimepicker()
-    if location.hash
-      $("#event_tabs a[href='" + location.hash + "']").tab('show')
-      get_coordinates(show_id, location.hash.substr(1))
-    else
-      $('#event_tabs a:first').tab('show')
-      get_coordinates(show_id, $('#event_tabs a:first').attr('href').substr(1))
+    $('#event_show_time, #event_end_time').datetimepicker()
 
-    $("#event_tabs a").on "click", (e) ->
-      e.preventDefault()
-      $(this).tab('show')
-      $(window).scrollTop(0)
-      get_coordinates(show_id, $(this).attr("href").substr(1))
+    unless $('#event_is_multi_day').is(':checked')
+      $('.event_end_time').hide()
 
-    $("ul.nav-tabs > li > a").on "shown.bs.tab", (e) ->
-      id = $(e.target).attr("href").substr(1)
-      location.hash = id
+    $('#event_is_multi_day').on 'change', ()->
+      if $(this).is(':checked')
+        $('.event_end_time').show()
+      else
+        $('.event_end_time').hide()
 
+  if $('.event_detail').length > 0
+    show_id = $('#show_id').val()
+    event_id = $('#event_id').val()
+    get_coordinates(show_id, event_id)
+    $('#event_show_time, #event_end_time').datetimepicker()
     #修改场次
     $('.edit_event').on 'click', ()->
-      $('#event_id').val($(this).data('id'))
       $('.editEventModal').modal('show')
 
-    #删除场次
-    $('.event_list li .close').on 'click', ()->
-      if confirm('确定要删除该场次吗?')
-        $.post("/operation/shows/#{show_id}/del_event", {_method: 'delete', event_id: $(this).data('id')}, (data)->
-          if data.success
-            location.reload()
-        )
+    unless $('#event_is_multi_day').is(':checked')
+      $('.event_end_time').hide()
+
+    $('#event_is_multi_day').on 'change', ()->
+      if $(this).is(':checked')
+        $('.event_end_time').show()
+      else
+        $('.event_end_time').hide()
 
     #上传场馆图
     $('.upload_stadium_map').on 'click', ()->
-      event_id = $(this).data('id')
       $(this).find('input').fileupload
         url: "/operation/shows/#{show_id}/upload_map"
         dataType: 'json'
@@ -539,7 +535,6 @@ $ ->
 
     #更新坐标图
     $('.upload_coordinate_map').on 'click', ()->
-      event_id = $(this).data('id')
       $(this).find('input').fileupload
         url: "/operation/shows/#{show_id}/upload_map"
         dataType: 'json'
@@ -555,9 +550,8 @@ $ ->
           location.reload()
 
     #绑定区域
-    $('.event_list').on 'click', '.stadium_pic_map area', (el)->
+    $('.event_detail').on 'click', '.stadium_pic_map area', (el)->
       coords_hash = $(this).parents('.stadium_map_preview').find('.coordinate_hash').data('coordinate-data')
-      event_id = $(this).parents('.stadium_map_preview').data('id')
       context = $("##{event_id} canvas")[0].getContext('2d')
       el.preventDefault()
       color = $(this).attr('id').substr(0, 6)
@@ -594,9 +588,8 @@ $ ->
 
     #增加区域
     $('.add_area').on 'click', ()->
-      event_id = $(this).data('id')
       name = prompt('请输入区域名称')
-      if name.length > 0
+      if name && name.length > 0
         $.post("/operation/shows/#{show_id}/new_area", {area_name: name, event_id: event_id}, (data)->
           $(".#{event_id}_areas tbody").html(data)
         )
