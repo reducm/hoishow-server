@@ -5,7 +5,8 @@
     <div class="form-group">
       <%= f.label :name, '场馆名' %>
       <%= f.text_field :name %>
-      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo'%>
+      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo_by_name'%>
+      <small>依靠场馆名定位</small>
     </div>
     <div class="form-group">
       <%= f.label :source_name, '原名' %>
@@ -14,6 +15,8 @@
     <div class="form-group">
       <%= f.label :address, '场馆地址' %>
       <%= f.text_field :address %>
+      <%= link_to "定位", "javascript:void(0);", class: 'btn btn-default get_geo_by_address'%>
+      <small>依靠场馆地址定位</small>
     </div>
     <div class="form-group">
       <label>场馆坐标</label>
@@ -163,11 +166,14 @@
       getMarkerDragendPosition(marker)
     });
 
-    $(".get_geo").on("click", function(){
-      //address = $("#stadium_address").val()
-      //改按场馆名拿数据
+    $(".get_geo_by_name").on("click", function(){
       name = $("#stadium_name").val()
       geoCoder(name)
+    })
+
+    $(".get_geo_by_address").on("click", function(){
+      address = $("#stadium_address").val()
+      geoCoder(address)
     })
   })
   </script>
