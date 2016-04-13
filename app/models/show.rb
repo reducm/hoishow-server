@@ -11,7 +11,7 @@ class Show < ActiveRecord::Base
   has_many :user_follow_shows
   has_many :show_followers, through: :user_follow_shows, source: :user
 
-  has_many :events
+  has_many :events, dependent: :destroy
   has_many :show_area_relations, dependent: :destroy
   has_many :areas, through: :show_area_relations
   has_many :seats
