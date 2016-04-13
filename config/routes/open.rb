@@ -29,6 +29,7 @@ module Routes
                   post ':out_id/confirm' => 'orders#confirm'
                   post ':out_id/cancel_order' => 'orders#cancel_order'
                   post ':out_id/unlock_seat' => 'orders#unlock_seat'
+                  post ':out_id/query_yongle_order' => 'orders#query_yongle_order'
                 end
               end
             end
