@@ -49,7 +49,10 @@ describe YongleService::Fetcher do
             "price"=>"80.00",
             "priceInfo"=>"80",
             "priceType"=>"1",
-            "priceStarus"=>["2", "3"].sample, # not_for_sell 
+            #商品票价状态（1.可售；2.售完；3.隐藏；4.预订；5.无效；）
+            #联盟展示及可卖状态为：1.可售、4.预订；
+            #其他状态不展示；
+            "priceStarus"=>["2", "3", "5"].sample, # not_for_sell
             "priceNum"=>"2"
           }
         }
@@ -88,7 +91,7 @@ describe YongleService::Fetcher do
       expect(@area.is_infinite).to eq true
       expect(Ticket.count).to eq 30
     end
-    
+
     it "should set inventory by fetched number if enough_inventory and for_sell" do
       result_data = {
         "result"=>"1000",
