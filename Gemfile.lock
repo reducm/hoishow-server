@@ -5,6 +5,17 @@ GIT
     quiet_assets (0.0.1)
 
 GIT
+  remote: git://github.com/viagogo/gogokit.rb.git
+  revision: 2dab2ba89fea1ac3d87293c7aa5c8a32c8809c91
+  specs:
+    gogokit (0.4.1)
+      addressable (~> 2.3)
+      faraday (~> 0.9.1)
+      multi_json (~> 1.11)
+      roar (~> 1.0)
+      virtus (~> 1.0)
+
+GIT
   remote: git://github.com/villins/china_sms.git
   revision: e466ff1966338f5ea2307a3e4e8bb7e25efbfef2
   specs:
@@ -49,11 +60,16 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.4.0)
     arel (6.0.0)
     autoprefixer-rails (5.1.8)
       execjs
       json
     awesome_print (1.6.1)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.4.1)
@@ -106,6 +122,8 @@ GEM
       timers (>= 4.1.1)
     chronic (0.10.2)
     coderay (1.1.0)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -120,6 +138,8 @@ GEM
     dalli (2.7.4)
     database_cleaner (1.3.0)
     debug_inspector (0.0.2)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
     domain_name (0.5.23)
       unf (>= 0.0.5, < 1.0.0)
@@ -141,6 +161,7 @@ GEM
     em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
       http_parser.rb (~> 0.6.0)
+    equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.7)
     exception_notification (4.0.1)
@@ -187,6 +208,7 @@ GEM
     httpi (2.4.0)
       rack
     i18n (0.7.0)
+    ice_nine (0.11.2)
     jbuilder (2.2.12)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
@@ -283,10 +305,14 @@ GEM
     redis-objects (1.1.0)
       redis (>= 3.0.2)
     ref (1.0.5)
+    representable (2.3.0)
+      uber (~> 0.0.7)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
+    roar (1.0.4)
+      representable (>= 2.0.1, < 2.4.0)
     rspec-collection_matchers (1.1.2)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.1.7)
@@ -363,12 +389,18 @@ GEM
       hitimes
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    uber (0.0.15)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
     web-console (2.1.2)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
@@ -414,6 +446,7 @@ DEPENDENCIES
   faker (~> 1.4.3)
   fakeweb
   font-awesome-sass (~> 4.3.0)
+  gogokit!
   guard-livereload (~> 2.4)
   httpi
   jbuilder (~> 2.0)
