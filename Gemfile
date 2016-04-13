@@ -123,3 +123,6 @@ gem 'aasm', '~> 4.1'
 #node
 gem 'execjs'
 gem 'therubyracer', '~> 0.12.2', :platforms => :ruby
+
+#for viagogo api
+gem 'gogokit', git: "git://github.com/viagogo/gogokit.rb.git"
