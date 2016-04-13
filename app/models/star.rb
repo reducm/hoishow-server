@@ -7,7 +7,7 @@ class Star < ActiveRecord::Base
   has_many :user_follow_stars
   has_many :followers, through: :user_follow_stars, source: :user
 
-  has_many :star_concert_relations
+  has_many :star_concert_relations, dependent: :destroy
   has_many :concerts, through: :star_concert_relations
 
   has_many :topics, -> { where subject_type: Topic::SUBJECT_STAR }, :foreign_key => 'subject_id'

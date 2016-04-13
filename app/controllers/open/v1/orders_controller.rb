@@ -1,10 +1,10 @@
 # encoding: utf-8
 class Open::V1::OrdersController < Open::V1::ApplicationController
   # before_action :user_auth!
-  before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm, :cancel_order]
+  before_action :mobile_auth!, only: [:show, :create, :unlock_seat, :confirm, :cancel_order, :query_yongle_order]
   before_action :show_auth!, only: [:check_inventory, :create]
   before_action :show_status_auth!, only: [:check_inventory, :create]
-  before_action :order_auth!, only: [:show, :unlock_seat, :confirm, :cancel_order]
+  before_action :order_auth!, only: [:show, :unlock_seat, :confirm, :cancel_order, :query_yongle_order]
   before_action :replay_create_auth!, only: [:create] # 重复提交同一 bike_out_id 的订单
 
   def cancel_order
@@ -107,13 +107,32 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
         @message = '订单确认失败'
       end
     elsif @order.show.yongle?
-      if !@order.pre_pay! || (@order.add_order_to_yongle && @order.update_pay_status_to_yongle['result'] != '1000')
+      if !@order.pre_pay! || @order.update_pay_status_to_yongle['result'] != '1000'
         @error_code = 3012
         @message = '订单确认失败'
       end
     # 第三方的演出，必须确定库存才能出票
     else
       if !@order.pre_pay!
+        @error_code = 3012
+        @message = '订单确认失败'
+      end
+    end
+  end
+
+  def query_yongle_order
+    if @order.show.yongle? && @order.source_id.nil?
+      if @order.user_address.nil?
+        return if expresses_params.blank?
+        express_attr = expresses_params.slice(:user_name, :user_mobile).tap do |p|
+          p[:user_address] = expresses_params[:address]
+        end
+        @order.update_attributes!(express_attr)
+      end
+
+      if @order.add_order_to_yongle['result'] == '1000'
+        @order.sync_yongle_status
+      else
         @error_code = 3012
         @message = '订单确认失败'
       end
