@@ -64,7 +64,7 @@ module ViagogoDataToHoishow
               end
 
               #update_event_data
-              update_event_data_with_api(show, rate)
+              update_event_data_with_api(client, show, rate)
             end#--------endof events
           end#-------endof star-transaction
 
@@ -122,8 +122,7 @@ module ViagogoDataToHoishow
       end
     end
 
-    def update_event_data_with_api(show, rate)
-      client = get_client
+    def update_event_data_with_api(client, show, rate)
       if client.present?
         event = show.events.last
         viagogo_event_id_string = show.event_url_id
@@ -156,12 +155,17 @@ module ViagogoDataToHoishow
             ticket_info_array = name_info_hash[1]
             next if ticket_info_array.blank? || area_name.blank?
 
-            seats_count = ticket_info_array.inject(0){|sum, hash| sum+hash["number_of_tickets"]}
+            seats_count = ticket_info_array.inject(0){|sum, hash| sum + hash["number_of_tickets"]}
             #价格为(单价加上最贵的预约费)X汇率
-            max_booking_price = ticket_info_array.map{|i| i["estimated_booking_fee"]["amount"]+i["estimated_shipping"]["amount"]+i["estimated_vat"]["amount"]}.sort.last
-            price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"]}.sort
-            max_price = ( (price_array.last+max_booking_price) * rate ).to_i + 1
-            price_range = "#{( ( price_array.first+max_booking_price ) * rate  ).to_i} - #{max_price.to_i}"
+            max_booking_price = ticket_info_array.map do |i|
+              booking_fee = (i["estimated_booking_fee"].present? ? i["estimated_booking_fee"]["amount"] : 0)
+              shipping = (i["estimated_shipping"].present? ? i["estimated_shipping"]["amount"] : 0)
+              vat = (i["estimated_vat"].present? ? i["estimated_vat"]["amount"] : 0)
+              booking_fee + shipping + vat
+            end.sort.last
+            price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"] if i["estimated_ticket_price"].present?}.compact.sort
+            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 1
+            price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i} - #{max_price.to_i}"
 
             #update_areas_data
             area_id = update_areas_logic(area_name, show, event, max_price, price_range, seats_count)
@@ -326,7 +330,7 @@ module ViagogoDataToHoishow
           event_json = get_url_json("https://api.viagogo.net/v2/events/#{event.ticket_path}/map", client)
           map_url = event_json["_links"]["venuemap:gif"]["href"]
           if map_url.present?
-            map_url = map_url[0..-4]+"png"
+            map_url = "#{map_url[0..-4]}png"
           else
             next
           end

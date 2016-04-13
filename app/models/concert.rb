@@ -8,16 +8,16 @@ class Concert < ActiveRecord::Base
   has_many :videos
   has_many :shows, dependent: :destroy
 
-  has_many :user_follow_concerts
+  has_many :user_follow_concerts, dependent: :destroy
   has_many :followers, through: :user_follow_concerts, source: :user
 
-  has_many :user_vote_concerts
+  has_many :user_vote_concerts, dependent: :destroy
   has_many :voters, through: :user_vote_concerts, source: :user
 
-  has_many :concert_city_relations
+  has_many :concert_city_relations, dependent: :destroy
   has_many :cities, through: :concert_city_relations
 
-  has_many :star_concert_relations
+  has_many :star_concert_relations, dependent: :destroy
   has_many :stars, through: :star_concert_relations
 
   validates :name, presence: {message: "演唱会名不能为空"}
