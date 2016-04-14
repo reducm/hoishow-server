@@ -48,6 +48,7 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def manual_send_msg
+    @order.update(sms_has_been_sent: true) unless @order.sms_has_been_sent
     @order.notify_delivery
 
     flash[:notice] = '短信发送成功'
