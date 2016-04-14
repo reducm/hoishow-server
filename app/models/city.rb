@@ -19,7 +19,8 @@ class City < ActiveRecord::Base
     hoishow: 0, # 自有资源
     damai: 1, # 大麦
     yongle: 2, # 永乐
-    weipiao: 3 # 微票
+    weipiao: 3, # 微票
+    viagogo: 4 # viagogo
   }
 
   def hold_concert(concert)

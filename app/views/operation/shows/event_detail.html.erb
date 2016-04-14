@@ -5,7 +5,7 @@
   </h2>
   <div class="toolbar">
     <% if @show.viagogo? %>
-      <a class="btn btn-default" target="_blank" href="http://www.viagogo.com<%= @event.ticket_path %>">访问原链接</a>
+      <a class="btn btn-default" target="_blank" href="http://www.viagogo.com/E-<%= @event.ticket_path %>">访问原链接</a>
       <%= link_to '更新信息', 'javascript:void(0);', class: 'btn btn-default update_event_info', data: {id: @event.id} %>
     <% end %>
     <%= link_to '修改场次', 'javascript:void(0);', class: 'btn btn-default edit_event' %>

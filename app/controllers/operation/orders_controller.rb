@@ -25,7 +25,7 @@ class Operation::OrdersController < Operation::ApplicationController
   def set_order_to_success
     if @order.success_pay!
       flash[:notice] = "出票成功"
-      redirect_to operation_orders_url 
+      redirect_to operation_orders_url
     end
   end
 
@@ -48,9 +48,8 @@ class Operation::OrdersController < Operation::ApplicationController
   end
 
   def manual_send_msg
-    SendSmsWorker.perform_async(@order.user_mobile, "您订购的演出门票已发货，顺丰速运：#{@order.express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
-    NotifyDeliveryWorker.perform_async(@order.open_trade_no) unless Rails.env.test?
     @order.update(sms_has_been_sent: true) unless @order.sms_has_been_sent
+    @order.notify_delivery
 
     flash[:notice] = '短信发送成功'
     redirect_to operation_orders_url
