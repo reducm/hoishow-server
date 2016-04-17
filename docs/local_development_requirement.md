@@ -56,6 +56,17 @@ hoishow!@#456
 
 ----
 
+##永乐图片处理
+安装ImageMagick
+
+`brew install imagemagick`
+
+(如调用mini_magick时报错，试试先删除再安装)
+
+`brew uninstall imagemagick jpeg libtiff jasper`
+
+----
+
 ##利用cpu多核提高测试速度
 ###配置步骤
 Gemfile development组加入

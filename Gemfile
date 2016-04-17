@@ -47,7 +47,7 @@ gem 'quiet_assets', :git => 'git://github.com/AgilionApps/quiet_assets.git'
 gem 'carrierwave', '0.6.2'
 gem 'carrierwave-upyun', '0.1.5'
 gem 'rails-assets-for-upyun', '>= 0.0.9'
-gem 'mini_magick'
+gem 'mini_magick' #处理永乐图片，需在服务器安装ImageMagick
 
 gem 'awesome_print'
 # Use ActiveModel has_secure_password
