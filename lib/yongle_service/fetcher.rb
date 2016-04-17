@@ -355,7 +355,7 @@ module YongleService
       end
       result.write Rails.root.join("tmp/output#{show_id}.jpg")
       File.delete Rails.root.join("tmp/background#{show_id}.jpg")
-      Show.find(show_id).poster = File.open(Rails.root.join("tmp/output#{show_id}.jpg")) # carrierwave 'upload' a loacal file
+      Show.find(show_id).update!(poster: File.open(Rails.root.join("tmp/output#{show_id}.jpg"))) # carrierwave 'upload' a loacal file
       File.delete Rails.root.join("tmp/output#{show_id}.jpg")
     end
 
