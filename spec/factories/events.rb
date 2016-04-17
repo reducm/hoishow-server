@@ -3,5 +3,6 @@
 FactoryGirl.define do
   factory :event do
     stadium_map { fixture_file_upload(File.join Rails.root, %w(spec fixtures about.png)) }
+    show_time DateTime.now + 15
   end
 end

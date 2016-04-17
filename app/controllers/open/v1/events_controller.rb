@@ -5,6 +5,18 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   skip_before_filter :api_verify!, only: [:areas_map]
   skip_before_filter :find_auth!, only: [:areas_map]
   def index
+    #如果是viagogo的话就更新event的数据
+    if @show.viagogo?
+      rate = ViagogoDataToHoishow::Service.get_exchange_rate
+      client = ViagogoDataToHoishow::Service.get_client
+      if rate.present? && client.present?
+        Area.transaction do
+          ViagogoDataToHoishow::Service.update_event_data_with_api(client, @show, rate)
+        end
+        @show.events.reload
+      end
+    end
+
     @events = @show.events.verified
   end
 

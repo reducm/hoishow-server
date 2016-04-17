@@ -18,30 +18,33 @@ module YongleService
       end
     end
 
-    # 实时数据（目前只有票区，如果还有别的实时数据，也考虑做成一个方法，把需要的实时数据加进去）
+    # 票区实时数据
     def fetch_productprice_info(area_source_id)
       area = Area.where(source_id: area_source_id, source: Area.sources['yongle']).first
       relation = area.show_area_relations.first
+      yongle_logger.info "relation.id: #{relation.id}"
       result_data = YongleService::Service.find_productprice_info(area_source_id)
-      if result_data["result_data"] == '1000'
+      yongle_logger.info "result_data: #{result_data}"
+      if result_data["result"] == '1000'
+        result_data = result_data["data"]["tickSetInfo"]
         area.update!(name: result_data["priceInfo"])
-        relation.update!(price: result_data["price"])
-        # 暂定－1以外的负数库存不可卖
-        # 联盟可卖状态为1、4
-        if (result_data["priceNum"] < 0 && result_data["priceNum"] != -1) || ['1', '4'].exclude?(result_data["priceStarus"])
+        relation.update!(price: result_data["price"].to_i)
+        not_enough_inventory = result_data["priceNum"].to_i < 0 && result_data["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
+        not_for_sell = ['1', '4'].exclude?(result_data["priceStarus"]) # 联盟可卖状态为1、4
+        if not_enough_inventory || not_for_sell
           seats_count = 0
-        elsif result_data["priceNum"] == -1
+        elsif result_data["priceNum"].to_i == -1 # 永乐无限库存
           seats_count = 30
           area.update!(is_infinite: true)
         else
-          seats_count = result_data["priceNum"]
+          seats_count = result_data["priceNum"].to_i
         end
-
-        update_inventory(area.show, area, relation, seats_count, price: result_data["price"])
+        update_inventory(area.shows.first, area, relation, seats_count, result_data["price"].to_i)
       elsif result_data["result"] == '1003' # 假设永乐把该票区删掉了
-        area.update(seats_count: 0, left_seats: 0)
-        relation.update(seats_count: 0, left_seats: 0)
+        seats_count = 0
+        update_inventory(area.shows.first, area, relation, seats_count, result_data["price"].to_i)
       end
+      yongle_logger.info "Fetch finished, relation.seats_count: #{relation.seats_count}, relation.left_seats: #{relation.left_seats}"
     end
 
     def fetch_play_types
@@ -129,54 +132,52 @@ module YongleService
     ############ private method ############
 
     def fetch_products(products)
-      products.each_with_index do |product, i|
-        unit_start = Time.now
-        yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
-        # City
-        city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
-        city_source.update!(source_id: product["playCityId"])
-        city = city_source.city
-        # Stadium
-        stadium = fetch_stadium(product["playAddressId"], city)
-        # Star and Concert
-        concert = fetch_star_and_concert(product)
-        if stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
-          # Show
-          show = fetch_show(product, city, stadium, concert)
-          if show.present?
-            ticket_time_list = product["ticketTimeList"]
-            if ticket_time_list # 跳过没有场次的票品
-              tti = ticket_time_list["ticketTimeInfo"]
-              ticket_time_infos = tti.class == Array ? tti : [tti] # 只有一个场次会返回hash
-              ticket_time_infos.each do |ticket_time_info|
-                # Event
-                event = fetch_event(product, ticket_time_info["ticketTime"], show)
-                if event.present?
-                  @fetch_area_ids = []
-                  tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
-                  tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
-                  # Area and relation and Seat
-                  fetch_area_relation_and_seat(tick_set_infos, event, show)
-                  empty_inventory(@fetch_area_ids, event) if @fetch_area_ids.any?
-                  event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
+      Show.transaction do
+        products.each_with_index do |product, i|
+          unit_start = Time.now
+          yongle_logger.info ">>#{@cityname}(#{i + 1}/#{products.count})"
+          # City
+          city_source = CitySource.where(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle']).first
+          city_source.update!(source_id: product["playCityId"])
+          city = city_source.city
+          # Stadium
+          stadium = fetch_stadium(product["playAddressId"], city)
+          # Star and Concert
+          concert = fetch_star_and_concert(product)
+          if stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
+            # Show
+            show = fetch_show(product, city, stadium, concert)
+            if show.present?
+              ticket_time_list = product["ticketTimeList"]
+              if ticket_time_list # 跳过没有场次的票品
+                tti = ticket_time_list["ticketTimeInfo"]
+                ticket_time_infos = tti.class == Array ? tti : [tti] # 只有一个场次会返回hash
+                ticket_time_infos.each do |ticket_time_info|
+                  # Event
+                  event = fetch_event(product, ticket_time_info["ticketTime"], show)
+                  if event.present?
+                    @fetch_area_ids = []
+                    tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
+                    tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
+                    # Area and relation and Seat
+                    fetch_area_relation_and_seat(tick_set_infos, event, show)
+                    empty_inventory(@fetch_area_ids, event) if @fetch_area_ids.any?
+                    event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
+                  end
+                end
+                if show.events.blank? # 没有场次的演出如果没有下过单就直接删除，否则隐藏
+                  show.orders.blank? ? show.concert.destroy : show.update(is_display: false)
                 end
               end
             end
-            if show.events.blank? # 没有场次的演出如果没有下过单就直接删除，否则隐藏
-              if show.orders.blank?
-                show.concert.destroy
-              else
-                show.update(is_display: false)
-              end
-            end
           end
+          unit_end = Time.now
+          @total_spend = @total_spend + (unit_end - unit_start)
+          @show_fetched = @show_fetched + 1
+          yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
+          yongle_logger.info "...Show fetched: #{@show_fetched}"
+          yongle_logger.info "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
         end
-        unit_end = Time.now
-        @total_spend = @total_spend + (unit_end - unit_start)
-        @show_fetched = @show_fetched + 1
-        yongle_logger.info "...Total spends: #{(@total_spend/60).floor}:#{(@total_spend%60).floor}"
-        yongle_logger.info "...Show fetched: #{@show_fetched}"
-        yongle_logger.info "...Speed: #{(@show_fetched/@total_spend * 60).round(1)} shows/m.\n"
       end
     end
 
@@ -277,22 +278,22 @@ module YongleService
 
     def fetch_area_relation_and_seat(tick_set_infos, event, show)
       tick_set_infos.each do |tick_set_info|
-        if ['1', '4'].include?(tick_set_info["priceStarus"]) # 跳过不可卖的
+        area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
+        area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
+        @fetch_area_ids.push(area.id)
+        relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
+        relation.update!(price: tick_set_info["price"])
+        not_enough_inventory = tick_set_info["priceNum"].to_i < 0 && tick_set_info["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
+        not_for_sell = ['1', '4'].exclude?(tick_set_info["priceStarus"]) # 联盟可卖状态为1、4
+        if not_enough_inventory || not_for_sell
+          seats_count = 0
+        elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
+          seats_count = 30
+          area.update!(is_infinite: true)
+        else
           seats_count = tick_set_info["priceNum"].to_i
-          if seats_count > 0 || seats_count == -1 # 跳过库存不足的
-            area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
-            area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
-            if seats_count == -1 # -1代表无限库存，暂定库存为30
-              seats_count = 30
-              area.update!(is_infinite: true)
-            end
-            @fetch_area_ids.push(area.id)
-            relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
-            relation.update!(price: tick_set_info["price"])
-
-            update_inventory(show, area, relation, seats_count, tick_set_info["price"])
-          end
         end
+        update_inventory(show, area, relation, seats_count, tick_set_info["price"].to_i)
       end
     end
 
@@ -328,7 +329,7 @@ module YongleService
       end
     end
 
-    def empty_inventory(fetch_area_ids, event)
+    def empty_inventory(fetch_area_ids, event) # 永乐没有的票区清空库存
       event_area_ids = event.areas.pluck(:id)
       delete_area_ids = event_area_ids - fetch_area_ids
       event.areas.where(id: delete_area_ids).each do |a|
