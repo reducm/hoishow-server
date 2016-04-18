@@ -31,6 +31,17 @@
 
       <%= f.radio_button :ticket_type, @show.ticket_type %>
       <%= f.label :ticket_type, @show.ticket_type_cn %>
+
+      <% if @show.source == "hoishow" and @show.ticket_type == "e_ticket" %>
+        <div class="row">
+          <label class="col-xs-12" for="show_e_ticket_sms">电子票短信</label>
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+            <%= f.text_area :e_ticket_sms, class: 'form-control' %>
+          </div>
+        </div>
+      <% end %>
     </div>
     <div class="form-group">
       <div class="col-xs-3">

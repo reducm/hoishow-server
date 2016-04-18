@@ -51,6 +51,14 @@
     <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
     <%= f.input :ticket_pic, label: "上传入场券图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
     <%= f.input :ticket_type, collection:[["电子票", "e_ticket"], ["实体票", "r_ticket"]], selected: "电子票", as: :radio_buttons, label: "取票方式" %>
+    <div class="row">
+      <label class="col-xs-12" for="show_e_ticket_sms">电子票短信</label>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <%= f.text_area :e_ticket_sms, class: 'form-control' %>
+      </div>
+    </div>
     <%= f.input :description, label: '图文描述' %>
     <div class="form-group">
       <div class="col-sm-3">
