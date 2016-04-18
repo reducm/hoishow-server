@@ -324,22 +324,13 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event_info
     if event = Event.find(params[:event_id])
-      #ticket_info_array = ViagogoDataToHoishow::Service.fetch_event_data(event.ticket_path)
-      rate = ViagogoDataToHoishow::Service.get_exchange_rate
-      client = ViagogoDataToHoishow::Service.get_client
-      #if ticket_info_array.present? && rate.present?
-      if rate.present? && client.present?
-        #ViagogoDataToHoishow::Service.update_event_data(event, @show, ticket_info_array, rate)
-        Area.transaction do
-          ViagogoDataToHoishow::Service.update_event_data_with_api(client, @show, rate)
-        end
-        event.reload
-        render partial: "area_table", locals: {show: @show, event: event}
-      else
-        render json: {error: true}
+      Area.transaction do
+        ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
       end
+      event.reload
+      render partial: "area_table", locals: {show: @show, event: event}
     else
-      render :index
+      render json: {error: true}
     end
   end
 
