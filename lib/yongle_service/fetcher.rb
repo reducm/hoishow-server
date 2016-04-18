@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'mini_magick'
 
 module YongleService
   module Fetcher
@@ -104,6 +105,27 @@ module YongleService
             fetch_products(products) if products.any? # 跳过没有票品的城市
           end
         end
+      end
+    end
+
+    # TODO write test case for poster
+    def fetch_image(show_id, url, image_desc)
+      show = Show.find(show_id)
+      begin
+        case image_desc
+        when 'poster'
+          # TODO resize first if image is not 288x384
+          unless show.poster_url.present?
+            convert_image(show_id, url)
+          end
+        when 'ticket_pic'
+          show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
+        when 'stadium_map'
+          show.remote_stadium_map_url = url unless show.stadium_map_url.present?
+        end
+        show.save!
+      rescue => e
+        yongle_logger.info "更新#{image_desc}出错，#{e}"
       end
     end
 
@@ -224,9 +246,10 @@ module YongleService
             seat_type:          Show.seat_types["selected"]
           )
 
-          FetchImageWorker.perform_async(show.id, product["productPicture"], 'poster')
-          FetchImageWorker.perform_async(show.id, product["productPictureSmall"], 'ticket_pic')
-          FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map')
+          # skip "wutuwulong"
+          FetchImageWorker.perform_async(show.id, product["productPicture"], 'poster') if product["productPicture"].exclude?("wutuwulogo")
+          FetchImageWorker.perform_async(show.id, product["productPictureSmall"], 'ticket_pic') if product["productPictureSmall"].exclude?("wutuwulogo")
+          FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map') if product["seatPicture"].exclude?("wutuwulogo")
 
           show
         end
@@ -316,21 +339,24 @@ module YongleService
       end
     end
 
-    def fetch_image(show_id, url, image_desc)
-      show = Show.find(show_id)
-      begin
-        case image_desc
-        when 'poster'
-          show.remote_poster_url = url unless show.poster_url.present?
-        when 'ticket_pic'
-          show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
-        when 'stadium_map'
-          show.remote_stadium_map_url = url unless show.stadium_map_url.present?
-        end
-        show.save!
-      rescue => e
-        yongle_logger.info "更新#{image_desc}出错，#{e}"
+    def convert_image(show_id, url)
+      image = MiniMagick::Image.open(url)
+      image.write "tmp/image#{show_id}.jpg" # top image
+      MiniMagick::Tool::Convert.new do |convert| # background image
+        convert << Rails.root.join("tmp/image#{show_id}.jpg")
+        convert.merge! ["-resize", "720x405^", "-gravity", "center", "-extent", "720x405", "-gaussian-blur", "60x20"]
+        convert << Rails.root.join("tmp/background#{show_id}.jpg")
       end
+      File.delete Rails.root.join("tmp/image#{show_id}.jpg")
+      top = MiniMagick::Image.open(url)
+      background = MiniMagick::Image.open(Rails.root.join("tmp/background#{show_id}.jpg"))
+      result = background.composite(top) do |c| # composite
+        c.gravity "center"
+      end
+      result.write Rails.root.join("tmp/output#{show_id}.jpg")
+      File.delete Rails.root.join("tmp/background#{show_id}.jpg")
+      Show.find(show_id).update!(poster: File.open(Rails.root.join("tmp/output#{show_id}.jpg"))) # carrierwave 'upload' a loacal file
+      File.delete Rails.root.join("tmp/output#{show_id}.jpg")
     end
 
     class << self
@@ -342,6 +368,7 @@ module YongleService
       private :fetch_area_relation_and_seat
       private :update_inventory
       private :empty_inventory
+      private :convert_image
     end
   end
 end
