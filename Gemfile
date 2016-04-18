@@ -1,5 +1,5 @@
 #encoding: UTF-8
-source 'https://gems.ruby-china.org'
+source 'https://ruby.taobao.org'
 
 gem 'httpi'
 

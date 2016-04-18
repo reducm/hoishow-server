@@ -22,7 +22,7 @@ GIT
     china_sms (0.0.8)
 
 GEM
-  remote: https://gems.ruby-china.org/
+  remote: https://ruby.taobao.org/
   specs:
     aasm (4.2.0)
     actionmailer (4.2.0)
