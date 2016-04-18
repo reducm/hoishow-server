@@ -16,7 +16,7 @@ $ ->
     $("#expresses_list").on "click", ".express_content_change_submit", (e) ->
       e.preventDefault()
       order_id = $(this).data("order-id")
-      content = $("#express_id_#{order_id}").val()
+      content = $("#express_id_#{order_id}").val().replace(/[^A-Za-z0-9]/g, '') # 数字字母限定
       $.post("/operation/orders/#{order_id}/update_express_id", {content: content}, (data)->
         if data.success
           location.reload()

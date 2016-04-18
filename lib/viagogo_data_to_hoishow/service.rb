@@ -1,5 +1,6 @@
 # coding: utf-8
 require 'timeout'
+require 'gogokit'
 
 module ViagogoDataToHoishow
   module Service
@@ -10,107 +11,217 @@ module ViagogoDataToHoishow
     SERVICE_FEE = 1.3
 
     def data_transform
-      client = SSDB::Client.new.connect
-      if client.connected?
+      client = get_client
+      rate = get_exchange_rate
+      if client.present? && rate.present?
 
-        event_path_array = client.hgetall("viagogo_hot_events", :list).map{|x| JSON.parse x}.flatten
+        default_description = "<span style=\"line-height: 1.42857;\">1. 本场比赛为海外赛事，系统需要确定库存和价格，购票支付成功后 24 小时内将会提供出票状态，出票成功将会以短信形式通知；如出票失败，订单金额将会原路退还；</span><p></p><p><span style=\"line-height: 1.42857;\">2. 本场比赛出票形式为电子票，不支持快递配送业务。成功购票后，订票手机号将会收到电子门票的下载地址，届时凭自助打印纸质票进场；</span></p><p><span style=\"line-height: 1.42857;\">3. 海外体育赛事日期和时间为当地时间，请购票前核对时间信息；</span></p><p><span style=\"line-height: 1.42857;\">4. 赛事门票具有唯一性、时效性等特殊属性，如非比赛变更、取消、票品错误原因外，不提供退还票品服务，购票时请务必仔细核对活动信息；</span></p><p>最终解释权归 <b>单车娱乐</b> 所有</p><p></p><p></p><p></p><p></p><p></p>"
 
-        begin
-          event_path_array.each do |event_path|
-            Star.transaction do
+        nba_url = "https://api.viagogo.net/v2/categories/4954/children?key=%2fSports-Tickets%2fNBA%2fNBA-Regular-Season&only_with_events=true"
 
-              temp_data = client.hget("viagogo_events_info", event_path)
-              if temp_data
-                event_info_array = JSON.parse temp_data
-              else
-                next
-              end
+        res_json = get_url_json(nba_url, client)
+        if res_json.nil? || res_json["total_items"] > 30
+          return
+        end
 
-              if event_info_array.present?
-                star_name = event_path.split("/").last[0..-9]
-                star = Star.where(name: star_name, event_path: event_path).first
-                if star
-                  concert = Concert.where(name: "#{star.id}(自动生成)").first
-                  next unless concert
-                else
-                  star = Star.create(name: star_name, event_path: event_path)
-                  concert = Concert.create(name: "#{star.id}(自动生成)", is_show: "auto_hide", status: "finished")
-                end
-                star.hoi_concert(concert)
-              else
-                next
-              end
+        teams = res_json["_embedded"]["items"]
 
-              #格式为{"stadium_name" => [{}...],...}
-              #一个stadium为一个show,不同日期为不同场次
-              event_info_group_by_stadium_hash = event_info_array.group_by{|x| x["VenueName"]}
-              event_info_group_by_stadium_hash.each do |info_hash|
-                stadium_name = info_hash[0]
-                temp_data = info_hash[1].select{|x| x["VenueCity"].present?}.first
-                if temp_data
-                  city_name = temp_data["VenueCity"]
-                else
-                  next
-                end
-                city = City.where(name: city_name).first_or_create
-                stadium = Stadium.where(name: stadium_name, city_id: city.id).first_or_create
-                show = Show.where(name: (star_name + " In " + stadium_name), concert_id: concert.id, city_id: city.id, stadium_id: stadium.id).first_or_create(source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1)
-                info_hash[1].each do |single_event_info_hash|
-                  show_time = single_event_info_hash["DateVal"]
-
-                  ticket_info_path = single_event_info_hash["EventUrl"]
-
-                  temp_data = client.hget("viagogo_tickets_info", ticket_info_path)
-                  if temp_data
-                    ticket_info_array = JSON.parse temp_data
-                  else
-                    next
-                  end
-
-                  if ticket_info_array.present?
-                    if event = Event.where(ticket_path: ticket_info_path).first
-                      event.update(show_time: show_time, show_id: show.id)
-                    else
-                      event = Event.create(ticket_path: ticket_info_path, show_time: show_time, show_id: show.id)
-                    end
-                  else
-                    next
-                  end
-
-                  #格式为{"section_id" => [{},...],...}
-                  ticket_info_group_by_section_hash = ticket_info_array.group_by{|x| x["Section"]}
-                  ticket_info_group_by_section_hash.each do |name_info_hash|
-                    ticket_info_group_by_section_array = name_info_hash[1]
-                    area_name = name_info_hash[0]
-
-                    next if area_name.blank?
-
-                    seats_count = ticket_info_group_by_section_array.inject(0){|sum, hash| sum + hash["MaxQuantity"]}
-                    price_array = ticket_info_group_by_section_array.map{|x|x["RawPrice"]}.sort
-                    max_price = price_array.last
-                    price_range = "#{price_array.first} - #{max_price}"
-
-                    if area = Area.where(name: area_name, event_id: event.id, stadium_id: stadium.id).first
-                      area.update(seats_count: seats_count, left_seats: seats_count)
-                      if relation = ShowAreaRelation.where(show_id: show.id, area_id: area.id).first
-                        relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                      else
-                        ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                      end
-                    else
-                      area = Area.create(name: area_name, event_id: event.id, stadium_id: stadium.id, seats_count: seats_count, left_seats: seats_count)
-                      ShowAreaRelation.create(show_id: show.id, area_id: area.id, price: max_price, price_range: price_range, seats_count: seats_count, left_seats: seats_count, third_inventory: seats_count)
-                    end
-                  end
-                end
-              end
+        teams.each do |team|
+          Star.transaction do
+            unless star = Star.where(event_path: team["id"].to_s).first
+              star = Star.create(name: team["name"], event_path: team["id"].to_s)
             end
+
+            event_url = "https://api.viagogo.net/v2/categories/#{team["id"].to_s}/events?only_with_tickets=true&page_size=99"
+
+            events_json = get_url_json(event_url, client)
+            if events_json.nil? || events_json["total_items"] == 0
+              next
+            end
+
+            events = events_json["_embedded"]["items"]
+
+            events.each do |event|
+              concert_name = event["name"]
+              concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
+              star.hoi_concert(concert)
+
+              venue_json = event["_embedded"]["venue"]
+              city_name = venue_json["city"]
+              city = City.where(source_name: city_name).first_or_create(name: city_name, source: 4)
+              stadium_name = venue_json["name"]
+              stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
+
+              show = Show.where(event_url_id: event["id"]).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description)
+
+              show_time = event["start_date"]
+              show_events = show.events
+              if show_events.count > 0
+                show_event = show_events.last
+                show_event.update(show_time: show_time)
+              else
+                show_event = Event.create(ticket_path: event["id"].to_s, show_time: show_time, show_id: show.id)
+              end
+
+              #update_event_data
+              update_event_data_with_api(client, show, rate)
+            end#--------endof events
+          end#-------endof star-transaction
+
+        end
+      else
+        return
+      end
+
+    end
+
+    def get_client
+      client = GogoKit::Client.new do |config|
+        config.client_id = ViagogoSetting["client_id"]
+        config.client_secret = ViagogoSetting["client_secret"]
+      end
+
+      access_token = Rails.cache.read("viagogo_access_token")
+
+      if access_token.nil?
+        5.times do
+          begin
+            token = client.get_client_access_token
+            if token.present?
+              access_token = token.access_token
+              Rails.cache.write("viagogo_access_token", access_token, expires_in: 1.day)
+              break
+            else
+              next
+            end
+          rescue Exception => e
+            viagogo_logger.info "获取access_token失败,即将重试"
+            next
+          end
+        end
+        return nil if access_token.nil?
+      end
+
+      client.access_token = access_token
+      client
+    end
+
+    def get_url_json(url, client)
+      5.times do
+        begin
+          res = JSON.parse(client.get(url).body)
+          if res.present?
+            return res
+          else
+            next
           end
         rescue Exception => e
-          viagogo_logger.info "exception: #{e}"
+          viagogo_logger.info "访问#{url}失败,即将重试"
+          next
         end
       end
     end
+
+    def update_event_data_with_api(client, show, rate)
+      if client.present?
+        event = show.events.last
+        viagogo_event_id_string = show.event_url_id
+        ticket_json = nil
+
+        3.times do
+          begin
+            ticket_json = get_url_json("https://api.viagogo.net/v2/events/#{viagogo_event_id_string}/listings?page_size=999", client)
+            if ticket_json.present?
+              break
+            else
+              next
+            end
+          rescue Exception => e
+            viagogo_logger.info "获取ticket数据失败, viagogo_event_id_string为#{viagogo_event_id_string} ,即将重试"
+            next
+          end
+        end
+
+        if ticket_json.present? && ticket_json["total_items"] > 0
+          ticket_items = ticket_json["_embedded"]["items"]
+          e_ticket_items = ticket_items.select{|i| i["_embedded"]["ticket_type"]["type"].include?("ETicket")}
+          group_by_section_ticket_hash = e_ticket_items.group_by{|i| i["seating"]["section"]}
+
+          source_area_ids = event.areas.pluck(:id)
+          updated_area_ids = []
+
+          group_by_section_ticket_hash.each do |name_info_hash|
+            area_name = name_info_hash[0]
+            ticket_info_array = name_info_hash[1]
+            next if ticket_info_array.blank? || area_name.blank?
+
+            seats_count = ticket_info_array.inject(0){|sum, hash| sum + hash["number_of_tickets"]}
+            #价格为(单价加上最贵的预约费)X汇率
+            max_booking_price = ticket_info_array.map do |i|
+              booking_fee = (i["estimated_booking_fee"].present? ? i["estimated_booking_fee"]["amount"] : 0)
+              shipping = (i["estimated_shipping"].present? ? i["estimated_shipping"]["amount"] : 0)
+              vat = (i["estimated_vat"].present? ? i["estimated_vat"]["amount"] : 0)
+              booking_fee + shipping + vat
+            end.sort.last
+            price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"] if i["estimated_ticket_price"].present?}.compact.sort
+            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 1
+            price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i} - #{max_price.to_i}"
+
+            #update_areas_data
+            area_id = update_areas_logic(area_name, show, event, max_price, price_range, seats_count)
+            if area_id.present?
+              updated_area_ids << area_id
+            else
+              viagogo_logger.info "创建#{area_name}失败,show_id为#{show.id},event_id为#{event.id}"
+            end
+          end
+
+          #隐藏不存在的区
+          not_exist_ids = source_area_ids - updated_area_ids
+          Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)
+        end
+      end
+    end
+
+    def update_areas_logic(area_name, show, event, max_price, price_range, seats_count)
+      if area_name && show && event && max_price && price_range
+        area = Area.where(name: area_name, event_id: event.id).first_or_create(seats_count: 0, left_seats: 0, source: 4)
+        if area.present?
+          relation = show.show_area_relations.where(area_id: area.id).first_or_create(seats_count: 0, left_seats: 0)
+          if relation.present?
+            old_seats_count = relation.seats_count
+            old_seats_count ||= 0
+            #新建的区
+            if old_seats_count == 0 && seats_count > 0
+              left_seats = seats_count
+              seats_count.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
+            else
+              #旧有的区
+              #减少了座位
+              if old_seats_count > seats_count
+                rest_tickets = old_seats_count - seats_count
+                left_seats = relation.left_seats - rest_tickets
+                show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
+              #增加了座位
+              elsif old_seats_count < seats_count
+                rest_tickets = seats_count - old_seats_count
+                left_seats = relation.left_seats + rest_tickets
+                rest_tickets.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price)  }
+              #座位数不变
+              else
+                left_seats = relation.left_seats
+              end
+            end
+            area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: left_seats, is_exist: true)
+            relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: left_seats)
+          end
+          return area.id
+        else
+          return nil
+        end
+      end
+    end
+
 
     def update_star_avatar
       #client = SSDB::Client.new.connect
@@ -141,7 +252,8 @@ module ViagogoDataToHoishow
 
       logo_json = JSON.parse(File.open("./public/nba_logos.json","r").readline)
       Star.where("event_path is not null and avatar is null").each do |star|
-        url = logo_json[star.name.gsub("-", " ")]
+        #url = logo_json[star.name.gsub("-", " ")]
+        url = logo_json[star.name]
         update_subject_url(star, url)
       end
 
@@ -153,7 +265,8 @@ module ViagogoDataToHoishow
         stars = show.stars
         if ( stars.count == 2 )
           #确定主场队伍
-          if show.name.start_with?(stars[0].name.gsub("-", " "))
+          #if show.name.start_with?(stars[0].name.gsub("-", " "))
+          if show.name.start_with?(stars[0].name)
             first_star = stars.first
             second_star = stars.last
           else
@@ -182,11 +295,8 @@ module ViagogoDataToHoishow
             show.poster = res
             show.save
           end
-
         end
-
       end
-      
     end
 
     def combine_img(bg_img, over_img, position)
@@ -209,6 +319,22 @@ module ViagogoDataToHoishow
               update_subject_url(event, map_url)
             end
           end
+        end
+      end
+    end
+
+    def update_event_stadium_map_with_api
+      client = get_client
+      if client.present?
+        Event.where("ticket_path is not null and stadium_map is null").each do |event|
+          event_json = get_url_json("https://api.viagogo.net/v2/events/#{event.ticket_path}/map", client)
+          map_url = event_json["_links"]["venuemap:gif"]["href"]
+          if map_url.present?
+            map_url = "#{map_url[0..-4]}png"
+          else
+            next
+          end
+          update_subject_url(event, map_url)
         end
       end
     end
@@ -238,6 +364,9 @@ module ViagogoDataToHoishow
     end
 
     def update_event_data(event, show, ticket_info_array, rate)
+      #TODO
+      #缺少一个transation
+
       #只取电子票
       ticket_info_array = ticket_info_array.select{|x| x["TicketTypeNotes"].present? && ( ( x["TicketTypeNotes"].include?( "E-Ticket" ) ) || ( x["TicketTypeNotes"].include?( "Instant Download" ) ) )}
       if ticket_info_array.present? && show && event
@@ -300,11 +429,12 @@ module ViagogoDataToHoishow
     end
 
     def data_to_hoishow
-      #data_transform
-      nba_data
+      #nba_data
+      data_transform
       update_star_avatar
       update_show_poster
-      update_event_stadium_map
+      #update_event_stadium_map
+      update_event_stadium_map_with_api
     end
 
     def update_subject_url(subject, url)
@@ -491,7 +621,6 @@ module ViagogoDataToHoishow
       end
 
       File.open("./public/nba_logos.json","w"){|f| f << name_logos.to_json }
-
     end
 
   end
