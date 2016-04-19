@@ -58,3 +58,6 @@ config/deploy/assets/
 
 # ignore certs
 config/certs/
+
+#upyun_upload_file
+lib/upyun_form_upload/

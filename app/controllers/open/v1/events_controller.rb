@@ -7,14 +7,8 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   def index
     #如果是viagogo的话就更新event的数据
     if @show.viagogo?
-      rate = ViagogoDataToHoishow::Service.get_exchange_rate
-      client = ViagogoDataToHoishow::Service.get_client
-      if rate.present? && client.present?
-        Area.transaction do
-          ViagogoDataToHoishow::Service.update_event_data_with_api(client, @show, rate)
-        end
-        @show.events.reload
-      end
+      ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
+      @show.events.reload
     end
 
     @events = @show.events.verified
