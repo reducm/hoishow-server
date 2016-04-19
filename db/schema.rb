@@ -761,6 +761,7 @@ ActiveRecord::Schema.define(version: 20160419072933) do
     t.integer  "yl_play_city_id",    limit: 4
     t.integer  "yl_fconfig_id",      limit: 4
     t.integer  "yl_dzp_type",        limit: 4
+    t.string   "e_ticket_sms",       limit: 255
     t.string   "show_type",          limit: 255
   end
 

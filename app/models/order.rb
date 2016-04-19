@@ -456,13 +456,17 @@ class Order < ActiveRecord::Base
 
   def notify_and_send_sms
     NotifyTicketCheckedWorker.perform_async(open_trade_no)
-    if r_ticket? && Rails.env.production?
-      text = if show.is_presell
-               '您订购的预售门票已支付成功，我们将在公售后的一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
-             else
-               '您订购的演出门票已支付成功，我们将在一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
-             end
-      SendSmsWorker.perform_async(user.mobile, text)
+    if Rails.env.production?
+      if r_ticket? && Rails.env.production?
+        text = if show.is_presell
+                 '您订购的预售门票已支付成功，我们将在公售后的一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
+               else
+                 '您订购的演出门票已支付成功，我们将在一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
+               end
+        SendSmsWorker.perform_async(user.mobile, text)
+      elsif e_ticket? && show.hoishow? # 自有资源电子票短信
+        SendSmsWorker.perform_async(user.mobile, show.e_ticket_sms + "【单车娱乐】")
+      end
     end
   end
 
