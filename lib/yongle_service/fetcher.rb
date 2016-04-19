@@ -340,23 +340,21 @@ module YongleService
     end
 
     def convert_image(show_id, url)
+      time = Time.now
+      yongle_logger.info "====== begin at #{time}"
       image = MiniMagick::Image.open(url)
-      image.write "tmp/image#{show_id}.jpg" # top image
       MiniMagick::Tool::Convert.new do |convert| # background image
-        convert << Rails.root.join("tmp/image#{show_id}.jpg")
+        convert << image.path
         convert.merge! ["-resize", "720x405^", "-gravity", "center", "-extent", "720x405", "-gaussian-blur", "60x20"]
         convert << Rails.root.join("tmp/background#{show_id}.jpg")
       end
-      File.delete Rails.root.join("tmp/image#{show_id}.jpg")
-      top = MiniMagick::Image.open(url)
       background = MiniMagick::Image.open(Rails.root.join("tmp/background#{show_id}.jpg"))
-      result = background.composite(top) do |c| # composite
+      result = background.composite(image) do |c| # composite
         c.gravity "center"
       end
       result.write Rails.root.join("tmp/output#{show_id}.jpg")
-      File.delete Rails.root.join("tmp/background#{show_id}.jpg")
       Show.find(show_id).update!(poster: File.open(Rails.root.join("tmp/output#{show_id}.jpg"))) # carrierwave 'upload' a loacal file
-      File.delete Rails.root.join("tmp/output#{show_id}.jpg")
+      yongle_logger.info "====== end at #{Time.now}, spend #{Time.now - time}"
     end
 
     class << self
