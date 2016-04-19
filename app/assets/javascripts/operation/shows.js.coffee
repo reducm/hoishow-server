@@ -396,13 +396,10 @@ $ ->
 #show edit
   if $('#edit_show').length > 0
     new Vue(
-        el: '#edit_show'
-        data:
-          e_ticket_sms: $('#original_e_ticket_sms').data("content")
-        methods:
-          input_count: ->
-            this.e_ticket_sms.length
-      )
+      el: '#edit_show'
+      data:
+        e_ticket_sms: '' + $('#original_e_ticket_sms').data("content")
+    )
   if $('#show_description').length > 0
     $('#show_description').qeditor({})
     init_editor()
@@ -424,9 +421,6 @@ $ ->
       el: '#new_show'
       data:
         e_ticket_sms: "您好，您购买的演出订单审核已通过，请凭【下单手机号码及本短信】入场。感谢您的购买，谢谢！"
-      methods:
-        input_count: ->
-          this.e_ticket_sms.length
     )
 
     $('.add_star').on 'click', ()->
