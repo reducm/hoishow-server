@@ -1,6 +1,6 @@
 <%# encoding: utf-8 %>
 
-<div class="nav edit_show">
+<div class="nav edit_show" id="edit_show">
   <div class="row">
     <h2>编辑演出</h2>
     <h4>演出名称: <%= @show.name %></h4>
@@ -32,13 +32,19 @@
       <%= f.radio_button :ticket_type, @show.ticket_type %>
       <%= f.label :ticket_type, @show.ticket_type_cn %>
 
-      <% if @show.source == "hoishow" and @show.ticket_type == "e_ticket" %>
+      <% if @show.hoishow? and @show.e_ticket? %>
         <div class="row">
           <label class="col-xs-12" for="show_e_ticket_sms">电子票短信</label>
         </div>
         <div class="row">
           <div class="col-xs-12">
-            <%= f.text_area :e_ticket_sms, class: 'form-control' %>
+            <textarea v-model="e_ticket_sms" class="form-control" name="show[e_ticket_sms]" id="show_e_ticket_sms"></textarea>
+            <span>当前短信长度：{{ input_count() }}字</span>
+            <div v-show="input_count() > 200" class="alert alert-danger" role="alert">
+              <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              短信长度请控制在200字以内
+            </div>
           </div>
         </div>
       <% end %>
@@ -85,8 +91,13 @@
       </div>
     </div>
     <%= f.hidden_field :concert_id, value: @concert.id %>
-    <div class="row">
+    <div v-if="input_count() <= 200" class="row">
       <%= f.button :submit, "保存", class: 'btn-primary' %>
     </div>
   <% end %>
 </div>
+
+<%= content_tag :span, id: "original_e_ticket_sms", data: {
+  content: @show.e_ticket_sms
+  } do %>
+<% end %>

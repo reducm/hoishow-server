@@ -24,7 +24,7 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def new
-    @show = Show.new(e_ticket_sms: "您好，您购买的演出订单审核已通过，请凭【下单手机号码及本短信】入场。感谢您的购买，谢谢！")
+    @show = Show.new
     if params[:concert_id]
       @concert = Concert.find(params[:concert_id])
     end
