@@ -60,7 +60,7 @@ module ViagogoDataToHoishow
               stadium_name = venue_json["name"]
               stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
 
-              show = Show.where(event_url_id: event["id"]).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description)
+              show = Show.where(event_url_id: event["id"]).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
 
               show_time = event["start_date"]
               show_events = show.events
@@ -133,42 +133,44 @@ module ViagogoDataToHoishow
     end
 
     def update_area_logic(area_name, show, event, max_price, price_range, seats_count)
-      if area_name && show && event && max_price && price_range
-        area = Area.where(name: area_name, event_id: event.id).first_or_create(seats_count: 0, left_seats: 0, source: 4)
-        if area.present?
-          relation = show.show_area_relations.where(area_id: area.id).first_or_create(seats_count: 0, left_seats: 0)
-          if relation.present?
-            old_seats_count = relation.seats_count
-            old_seats_count ||= 0
-            #新建的区
-            if old_seats_count == 0 && seats_count > 0
-              left_seats = seats_count
-              seats_count.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
-            else
-              #旧有的区
-              #减少了座位
-              if old_seats_count > seats_count
-                rest_tickets = old_seats_count - seats_count
-                left_seats = relation.left_seats - rest_tickets
-                show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
-                #增加了座位
-              elsif old_seats_count < seats_count
-                rest_tickets = seats_count - old_seats_count
-                left_seats = relation.left_seats + rest_tickets
-                rest_tickets.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price)  }
-                #座位数不变
+      if area_name.present? && show.present? && event.present? && max_price.present? && price_range.present?
+        Area.transaction do
+          area = Area.where(name: area_name, event_id: event.id).first_or_create(seats_count: 0, left_seats: 0, source: 4)
+          if area.present?
+            relation = show.show_area_relations.where(area_id: area.id).first_or_create(seats_count: 0, left_seats: 0)
+            if relation.present?
+              old_seats_count = relation.seats_count
+              old_seats_count ||= 0
+              #新建的区
+              if old_seats_count == 0 && seats_count > 0
+                left_seats = seats_count
+                seats_count.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price) }
               else
-                left_seats = relation.left_seats
+                #旧有的区
+                #减少了座位
+                if old_seats_count > seats_count
+                  rest_tickets = old_seats_count - seats_count
+                  left_seats = relation.left_seats - rest_tickets
+                  show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
+                  #增加了座位
+                elsif old_seats_count < seats_count
+                  rest_tickets = seats_count - old_seats_count
+                  left_seats = relation.left_seats + rest_tickets
+                  rest_tickets.times { show.seats.where(area_id: area.id).create(status:Ticket::seat_types[:avaliable], price: max_price)  }
+                  #座位数不变
+                else
+                  left_seats = relation.left_seats
+                end
               end
+              area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: left_seats, is_exist: true)
+              relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: left_seats)
+              area.tickets.update_all(price: max_price)
             end
-            area.update(stadium_id: show.stadium.id, seats_count: seats_count, left_seats: left_seats, is_exist: true)
-            relation.update(price: max_price, price_range: price_range, seats_count: seats_count, left_seats: left_seats)
-            area.tickets.update_all(price: max_price)
+            return area.id
+          else
+            return nil
           end
-          return area.id
-        else
-          return nil
-        end
+        end#-----endof-area_transation
       end
     end
 
@@ -244,6 +246,7 @@ module ViagogoDataToHoishow
       if client.present? && event.present?
         event_json = get_url_json("https://api.viagogo.net/v2/events/#{event.ticket_path}/map", client)
         if event_json.present?
+          return if event_json["_links"].blank? || event_json["_links"]["venuemap:gif"].blank?
           map_url = event_json["_links"]["venuemap:gif"]["href"]
           if map_url.present?
             map_url = "#{map_url[0..-4]}png"
@@ -384,31 +387,6 @@ module ViagogoDataToHoishow
         end
       end
       nil
-    end
-
-    def upyun_upload
-      config = {bucket: 'hoishow-img', secret: 'Q0DnSXzf9xCbSAXbtQMI4ljI27c=', notify_url: 'http://111', save_path: 'uploads/nba/img'}
-      up = UpyunFormUpload::Service::Uploader.new config
-      name_logos = {}
-      host_url = "http://hoishow-img.b0.upaiyun.com"
-
-      #明星logo
-      Star.where("event_path is not null").each do |star|
-        url = "/Users/apple/Downloads/mlb360/#{star.name}.png"
-        res = up.put url
-        if res["code"] == 200
-          name_logos = name_logos.merge({res["ext-param"] => ( host_url + res["url"] )})
-        end
-      end
-
-      #背景图
-      path = "/Users/apple/Downloads/nba/mlbbg.jpg"
-      res = up.put path
-      if res["code"] == 200
-        name_logos = name_logos.merge({res["ext-param"] => ( host_url + res["url"] )})
-      end
-
-      File.open("./public/mlb_logos.json","w"){|f| f << name_logos.to_json }
     end
 
     def data_clear

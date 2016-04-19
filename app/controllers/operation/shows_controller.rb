@@ -324,9 +324,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event_info
     if event = Event.find(params[:event_id])
-      Area.transaction do
-        ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
-      end
+      ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
       event.reload
       render partial: "area_table", locals: {show: @show, event: event}
     else
