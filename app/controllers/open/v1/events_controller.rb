@@ -6,10 +6,7 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   skip_before_filter :find_auth!, only: [:areas_map]
   def index
     #如果是viagogo的话就更新event的数据
-    if @show.viagogo?
-      ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
-      @show.events.reload
-    end
+    UpdateViagogoShowWorker.perform_async(show.id) if @show.viagogo?
 
     @events = @show.events.verified
   end
