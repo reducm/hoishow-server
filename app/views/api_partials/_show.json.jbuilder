@@ -11,11 +11,12 @@ json.ticket_pic show.ticket_pic_url_for_danche || ''
 json.stars show.concert.stars.pluck(:name).join(' | ') rescue ''
 json.price_range show.get_price_range
 json.postage show.r_ticket? ? CommonData.get_value('postage') : 0
+json.show_type show.play_type
 
 events = show.events.verified
 if events.any?
-  json.show_time events.last.show_time.to_i
-  json.stadium_map events.last.stadium_map_url || ''
+  json.show_time events.first.show_time.to_i
+  json.stadium_map events.first.stadium_map_url || ''
 else
   json.show_time show.show_time.to_i
   json.stadium_map show.stadium_map_url || ''

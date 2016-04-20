@@ -59,6 +59,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def edit
     @concert = @show.concert
+    @show.e_ticket_sms ||= "您好，您购买的演出订单审核已通过，请凭【下单手机号码及本短信】入场。感谢您的购买，谢谢！"
   end
 
   def update
@@ -340,7 +341,7 @@ class Operation::ShowsController < Operation::ApplicationController
 
   protected
   def show_params
-    params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell)
+    params.require(:show).permit(:ticket_pic, :description_time, :status, :ticket_type, :name, :show_time, :is_display, :poster, :city_id, :stadium_id, :description, :concert_id, :stadium_map, :seat_type, :source, :is_presell, :e_ticket_sms)
   end
 
   def event_params

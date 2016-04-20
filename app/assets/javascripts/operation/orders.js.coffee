@@ -174,46 +174,47 @@ $ ->
       window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
 
   # order show
-  order_id = $('#order_id').val()
-  new Vue(
-    el: '#order_detail'
-    data:
-      buy_price: $('#order_buy_price').val()
-      file: ''
-      buy_price_original: 0
-      buy_price_updatable: false
-    methods:
-      notify_file_input: (event) ->
-        file_name = event.target.files[0].name
-        this.file = file_name
-      enable_change: ->
-        this.buy_price_updatable = true
-        this.buy_price_original = this.buy_price
-      undo_change: ->
-        this.buy_price_updatable = false
-        this.buy_price = this.buy_price_original
-      buy_price_valid: ->
-        parseFloat(this.buy_price) > 0
-      order_valid: ->
-        if $('a#ticket_pic_url').length > 0 or this.file # 有门票而且价格不当时，才阻止订单保存
-          this.buy_price_valid()
-        else
-          true
-      update_buy_price: ->
-        self = this # 把vm带进去，POST成功后将根据返回值更新vm的buy_price
-        $.ajax
-          type: 'POST',
-          url: order_id + '/update_buy_price.json',
-          data:
-            buy_price: this.buy_price
-          dataType: 'json'
-          success: (data, textStatus, xhr) ->
-            if data["status"] == 200
-              $.notify(data["message"], position: "top center", className: 'success')
-              self.buy_price = data["buy_price"]
-              self.buy_price_updatable = false
-            else
-              $.notify(data["message"], position: "top center", className: 'error')
-          error: (xhr, textStatus, errorThrown) ->
-            $.notify(errorThrown, position: "top center", className: 'error')
-  )
+  if $('#order_detail').length > 0
+    order_id = $('#order_id').val()
+    new Vue(
+      el: '#order_detail'
+      data:
+        buy_price: $('#order_buy_price').val()
+        file: ''
+        buy_price_original: 0
+        buy_price_updatable: false
+      methods:
+        notify_file_input: (event) ->
+          file_name = event.target.files[0].name
+          this.file = file_name
+        enable_change: ->
+          this.buy_price_updatable = true
+          this.buy_price_original = this.buy_price
+        undo_change: ->
+          this.buy_price_updatable = false
+          this.buy_price = this.buy_price_original
+        buy_price_valid: ->
+          parseFloat(this.buy_price) > 0
+        order_valid: ->
+          if $('a#ticket_pic_url').length > 0 or this.file # 有门票而且价格不当时，才阻止订单保存
+            this.buy_price_valid()
+          else
+            true
+        update_buy_price: ->
+          self = this # 把vm带进去，POST成功后将根据返回值更新vm的buy_price
+          $.ajax
+            type: 'POST',
+            url: order_id + '/update_buy_price.json',
+            data:
+              buy_price: this.buy_price
+            dataType: 'json'
+            success: (data, textStatus, xhr) ->
+              if data["status"] == 200
+                $.notify(data["message"], position: "top center", className: 'success')
+                self.buy_price = data["buy_price"]
+                self.buy_price_updatable = false
+              else
+                $.notify(data["message"], position: "top center", className: 'error')
+            error: (xhr, textStatus, errorThrown) ->
+              $.notify(errorThrown, position: "top center", className: 'error')
+    )
