@@ -6,7 +6,6 @@ class Show < ActiveRecord::Base
   belongs_to :concert
   belongs_to :city
   belongs_to :stadium
-  belongs_to :yl_play_type
 
   has_many :user_follow_shows
   has_many :show_followers, through: :user_follow_shows, source: :user
@@ -275,13 +274,23 @@ class Show < ActiveRecord::Base
     end
   end
 
-  private
-  def valids_price
-    if min_price.present? && max_price.present?
-      errors[:min_price] <<  "最小价格不能大于最大价格" if min_price > max_price
+  def play_type
+    if yongle?
+      pt = YlPlayType.where(play_type_a_id: yl_play_type_a_id, play_type_b_id: yl_play_type_b_id).first
+      pt.play_type_a
+    elsif viagogo? #TODO 等待创建字段
+      case show_type
+      when 'Concert', 'Festival'
+        '演唱会'
+      when 'Theatre'
+        '音乐会'
+      else
+        show_type
+      end
     end
   end
 
+  private
   def set_city
     city = stadium.city
   end
