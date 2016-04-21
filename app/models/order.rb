@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
   validates_presence_of ASSOCIATION_ATTRS.map{|sym| ( sym.to_s + "_name" ).to_sym}
 
   after_create :set_attr_after_create
+  after_commit :set_pay_at, if: :paid?, on: :update
 
   paginates_per 10
 
@@ -73,7 +74,7 @@ class Order < ActiveRecord::Base
     state :refunding
 
     # Alipay调用方法 order.pre_pay!({payment_type: 'alipay', trade_id: alipay_params["trade_no"]})
-    event :pre_pay, :after => [:set_pay_at, :set_payment_to_success] do
+    event :pre_pay, :after => [:set_payment_to_success] do
       transitions :from => :pending, :to => :paid
     end
 
@@ -137,10 +138,6 @@ class Order < ActiveRecord::Base
       area.update(left_seats: 30)
     end
     return true
-  end
-
-  def set_pay_at
-    self.update(pay_at: Time.now)
   end
 
   def set_payment_to_success *args
@@ -624,5 +621,9 @@ class Order < ActiveRecord::Base
   def generate_out_id
     t = Time.now
     self.out_id = t.strftime('%Y%m%d%H%M') + "OR" + self.id.to_s.rjust(6, '0')
+  end
+
+  def set_pay_at
+    self.update(pay_at: Time.now) if pay_at.nil?
   end
 end
