@@ -18,6 +18,54 @@ module YongleService
       end
     end
 
+    # 爬取单个商品
+    # TODO maybe reuse this method in #fetch_products
+    def fetch_product(show_source_id)
+      result_data = YongleService::Service.get_product(show_source_id)
+      if result_data["result"] == '1000'
+        product = result_data["data"]["products"]["product"]
+        Show.transaction do
+          # City
+          city_source = CitySource.find_by(yl_fconfig_id: product["fconfigId"].to_i, source: CitySource.sources['yongle'])
+          city_source.update!(source_id: product["playCityId"].to_i)
+          city = city_source.city
+          # Stadium
+          stadium = fetch_stadium(product["playAddressId"].to_i, city)
+          # Star and Concert
+          concert = fetch_star_and_concert(product)
+          return unless stadium.present? && concert.present? # 有可能调场馆接口时网络失败，暂定跳过
+          # Show
+          show = fetch_show(product, city, stadium, concert)
+          return unless show.present?
+          ticket_time_list = product["ticketTimeList"]
+          return unless ticket_time_list.present? # 跳过没有场次的票品
+          tti = ticket_time_list["ticketTimeInfo"]
+          ticket_time_infos = tti.class == Array ? tti : [tti] # 如果永乐返回单个hash把它塞进数组，统一作为数组处理
+          ticket_time_infos.each do |ticket_time_info|
+            # Event
+            event = fetch_event(product, ticket_time_info["ticketTime"], show)
+            next unless event.present?
+            @fetch_area_ids = []
+            tsi = ticket_time_info["tickSetInfoList"]["tickSetInfo"]
+            tick_set_infos = tsi.class == Array ? tsi : [tsi] # 只有一种票价区会返回hash
+            # Area and relation and Seat
+            fetch_area_relation_and_seat(tick_set_infos, event, show)
+            empty_inventory(@fetch_area_ids, event) if @fetch_area_ids.any?
+            event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
+          end
+          if show.events.blank? # 没有场次的演出，如果没有下过单就直接删除，否则隐藏
+            show.orders.blank? ? show.concert.destroy : show.update(is_display: false)
+          end
+        end
+        yongle_logger.info "Product #{show_source_id} fetch finished."
+      elsif result_data["result"] == '1003'
+        yongle_logger.info "Product doesn't exist!"
+      else
+        yongle_logger.info "Fetch fail!"
+        yongle_logger.info "result_data: #{result_data}"
+      end
+    end
+
     # 票区实时数据
     def fetch_productprice_info(area_source_id)
       area = Area.where(source_id: area_source_id, source: Area.sources['yongle']).first
@@ -108,7 +156,6 @@ module YongleService
       end
     end
 
-    # TODO write test case for poster
     def fetch_image(show_id, url, image_desc)
       show = Show.find(show_id)
       begin
@@ -232,17 +279,17 @@ module YongleService
           show.update(
             concert_id:         concert.id,
             city_id:            city.id,
-            yl_play_city_id:    product["playCityId"],
-            yl_fconfig_id:      product["fconfigId"],
-            yl_play_address_id: product["playAddressId"],
-            yl_play_type_a_id:  product["playTypeAId"],
-            yl_play_type_b_id:  product["playTypeBId"],
+            yl_play_city_id:    product["playCityId"].to_i,
+            yl_fconfig_id:      product["fconfigId"].to_i,
+            yl_play_address_id: product["playAddressId"].to_i,
+            yl_play_type_a_id:  product["playTypeAId"].to_i,
+            yl_play_type_b_id:  product["playTypeBId"].to_i,
             name:               product["playName"],
             description:        product["ProductProfile"],
             status:             Show.statuses["selling"],
             is_presell:         product["status"].to_i == 1,
-            ticket_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
-            yl_dzp_type:        product["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dzp_type"]] : nil, # 电子票类型
+            ticket_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
+            yl_dzp_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dispatchWayList"]["dzp_type"]] : nil, # 电子票类型
             seat_type:          Show.seat_types["selected"]
           )
 
