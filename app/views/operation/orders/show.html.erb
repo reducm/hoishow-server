@@ -31,7 +31,7 @@
       <tr><td>演出时间</td><td><%= @order.show_time_format %></td></tr>
 
       <tr><td>下单时间</td><td><%= @order.created_at_format %></td></tr>
-      <tr><td>付款时间</td><td><%= @order.generate_ticket_at_format %></td></tr>
+      <tr><td>付款时间</td><td><%= @order.pay_at_format %></td></tr>
       <tr><td>退款时间</td><td><%= get_datetime(@order.payments.first.try(:refund_at)) %></td></tr>
       <tr><td>退款人</td><td><%= @order.refund_by %></td></tr>
       <tr><td>用户邮箱</td><td><%= @order.user.email %></td></tr>

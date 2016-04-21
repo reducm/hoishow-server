@@ -27,7 +27,7 @@ private
         order.channel,
         order.show.try(:ticket_type_cn),
         order.created_at_format,
-        order.generate_ticket_at_format,
+        order.pay_at_format,
         order.tickets_count,
         order.amount,
         link_to(order.get_username(user), "/operation/users/#{user.id}", target: '_blank'),
