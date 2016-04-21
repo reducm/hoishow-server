@@ -9,28 +9,28 @@ Rails.application.routes.draw do
 
   root to: 'boombox/dj/home#index' #首页自动跳转至DJ后台
 
-  # app帮助
-  get "/helps" => 'pages#show_help'
-  get "/helps/:position" => 'pages#show_sub_help'
+  # # app帮助
+  # get "/helps" => 'pages#show_help'
+  # get "/helps/:position" => 'pages#show_sub_help'
+  #
+  # # web
+  # get "/about" => 'pages#about'
 
-  # web
-  get "/about" => 'pages#about'
-
-  # wap
-  get "/mobile" => 'pages#wap_index'
-  get "/mobile_about" => 'pages#wap_about'
-  get "/service/terms" => 'pages#wap_terms'
-
-  #app下载
-  get "/mobile/download" => 'pages#download'
-  get '/app/download', to: 'pages#app_download'
-
-  #分享页
-  get "/mobile/shows/sharing" => "pages#sharing_show"
-  get "/mobile/concerts/sharing" => "pages#sharing_concert"
-
-  #版权页
-  get "/copyright" => "pages#boombox_copyright"
+  # # wap
+  # get "/mobile" => 'pages#wap_index'
+  # get "/mobile_about" => 'pages#wap_about'
+  # get "/service/terms" => 'pages#wap_terms'
+  #
+  # #app下载
+  # get "/mobile/download" => 'pages#download'
+  # get '/app/download', to: 'pages#app_download'
+  #
+  # #分享页
+  # get "/mobile/shows/sharing" => "pages#sharing_show"
+  # get "/mobile/concerts/sharing" => "pages#sharing_concert"
+  #
+  # #版权页
+  # get "/copyright" => "pages#boombox_copyright"
 
   namespace :api do
     namespace :v1 do
@@ -196,7 +196,6 @@ Rails.application.routes.draw do
       member do
         post :set_order_to_success
         post "update_express_id"
-        post :manual_refund
         get :manual_send_msg
         post "update_order_data"
         post :update_buy_price

@@ -420,13 +420,14 @@ class Order < ActiveRecord::Base
   end
 
   def already_paid?
-    paid? || success? || refund?
+    paid? || success? || refund? || refunding?
   end
 
   def status_cn
     # pending: '未支付'
     # paid: '已支付'
     # success: '已出票'
+    # refunding: '退款中'
     # refund: '已退款'
     # outdate: '已过期'
     tran("status")

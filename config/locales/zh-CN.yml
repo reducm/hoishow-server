@@ -332,6 +332,7 @@ zh-CN:
         pending: '未支付'
         paid: '已支付'
         success: '已出票'
+        refunding: '退款中'
         refund: '已退款'
         outdate: '已过期'
       show/source:

@@ -32,17 +32,8 @@ private
         order.amount,
         link_to(order.get_username(user), "/operation/users/#{user.id}", target: '_blank'),
         order.status_cn,
-        refund_link(order),
         link_to("查看详情", "/operation/orders/#{order.id}", target: '_blank')
       ]
-    end
-  end
-
-  def refund_link(order)
-    if order.need_refund?
-      link_to('退款', "/operation/orders/#{order.id}/manual_refund", method: :post)
-    else
-      ""
     end
   end
 
