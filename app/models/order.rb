@@ -576,7 +576,9 @@ class Order < ActiveRecord::Base
 
   def convert_status(status)
     case status
-    when '1', '2', '3', '4'
+    when '1',
+      Order.statuses['pending']
+    when '2', '3', '4'
       Order.statuses['paid']
     when '5', '6'
       Order.statuses['success']
