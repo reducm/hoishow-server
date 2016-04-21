@@ -54,12 +54,6 @@ RSpec.describe Operation::ShowsController, :type => :controller do
       user.follow_concert(concert)
       user.follow_show(@show)
     end
-
-    it "saves the new show in the database" do
-      expect {
-        post :update_mode, id: @show
-      }.to change(Message, :count).by(1)
-    end
   end
 
 end

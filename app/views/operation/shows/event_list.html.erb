@@ -18,12 +18,13 @@
       <% @events.each do |event| %>
         <tr>
           <td><%= event.id %></td>
-          <td><%= event.is_display ? "显示" : "不显示" %></td>
+          <td><%= event.is_display ? "显示" : "隐藏" %></td>
           <td><%= event.description_time %></td>
           <td><%= get_datetime event.show_time %></td>
           <td><%= get_datetime event.end_time %></td>
           <td>
             <%= link_to '详情', event_detail_operation_show_url(@show, event_id: event.id) %>
+            <%= link_to (event.is_display ? '隐藏' : '显示'), toggle_event_is_display_operation_show_url(@show, event_id: event.id), method: "post" %>
             <%= link_to '删除', del_event_operation_show_url(@show, event_id: event.id), method: "delete", data: {confirm: "确定删除吗？"} %>
           </td>
         </tr>

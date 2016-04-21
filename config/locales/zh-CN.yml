@@ -342,7 +342,7 @@ zh-CN:
         weipiao: "微票"
       show/is_display:
         'true': '显示'
-        'false': '不显示'
+        'false': '隐藏'
       show/is_presell:
         'true': '预售'
         'false': '在售'
@@ -361,7 +361,7 @@ zh-CN:
         all_users: "全部用户都能购买"
       star/is_display:
         'true': '显示'
-        'false': '不显示'
+        'false': '隐藏'
       user/sex:
         male: '男'
         female: '女'

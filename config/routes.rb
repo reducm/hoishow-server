@@ -166,18 +166,15 @@ Rails.application.routes.draw do
     resources :shows do
       collection do
         get "get_city_stadiums"
-        get :search
         post :upload
       end
       member do
         post "update_area_data"
-        post "update_mode"
         patch :toggle_is_top
         post :new_area
         delete :del_area
         get :seats_info
         post :update_seats_info
-        post :send_create_message
         post :add_star
         delete :del_star
         post :set_area_channels
@@ -190,6 +187,7 @@ Rails.application.routes.draw do
         get :get_coordinates
         patch :toggle_area_is_top
         post :update_event_info
+        post :toggle_event_is_display
       end
     end
     resources :orders do
