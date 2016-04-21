@@ -30,6 +30,7 @@ class Order < ActiveRecord::Base
   validates_presence_of ASSOCIATION_ATTRS.map{|sym| ( sym.to_s + "_name" ).to_sym}
 
   after_create :set_attr_after_create
+  after_commit :set_pay_at, if: :paid?, on: :update
 
   paginates_per 10
 
@@ -450,6 +451,11 @@ class Order < ActiveRecord::Base
     generate_ticket_at.strftime("%Y年%m月%d日%H:%M")
   end
 
+  def pay_at_format
+    return nil if self.pay_at.nil?
+    pay_at.strftime("%Y年%m月%d日%H:%M")
+  end
+
   def show_time
     show.show_time
   end
@@ -570,7 +576,9 @@ class Order < ActiveRecord::Base
 
   def convert_status(status)
     case status
-    when '1', '2', '3', '4'
+    when '1',
+      Order.statuses['pending']
+    when '2', '3', '4'
       Order.statuses['paid']
     when '5', '6'
       Order.statuses['success']
@@ -615,5 +623,9 @@ class Order < ActiveRecord::Base
   def generate_out_id
     t = Time.now
     self.out_id = t.strftime('%Y%m%d%H%M') + "OR" + self.id.to_s.rjust(6, '0')
+  end
+
+  def set_pay_at
+    self.update(pay_at: Time.now) if pay_at.nil?
   end
 end

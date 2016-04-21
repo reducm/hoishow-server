@@ -83,7 +83,9 @@ module ViagogoDataToHoishow
       shows.each{|show| UpdateViagogoShowWorker.perform_async(show.id)} if shows.present?
     end
 
+    #返回success变量来区别是否更新数据成功
     def update_event_data_with_api(show_id)
+      success = false
       client = get_client
       rate = get_exchange_rate
       show = Show.find(show_id)
@@ -92,6 +94,7 @@ module ViagogoDataToHoishow
         ticket_json = get_events_data(show.event_url_id, client)
 
         if ticket_json.present? && ticket_json["total_items"] > 0
+          success = true
           ticket_items = ticket_json["_embedded"]["items"]
           e_ticket_items = ticket_items.select{|i| i["_embedded"]["ticket_type"]["type"].include?("ETicket")}
           group_by_section_ticket_hash = e_ticket_items.group_by{|i| i["seating"]["section"]}
@@ -130,6 +133,7 @@ module ViagogoDataToHoishow
           Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)
         end
       end
+      success
     end
 
     def update_area_logic(area_name, show, event, max_price, price_range, seats_count)
@@ -183,7 +187,6 @@ module ViagogoDataToHoishow
           update_subject_url(star, url)
         end
       end
-      
     end
 
     def update_show_poster

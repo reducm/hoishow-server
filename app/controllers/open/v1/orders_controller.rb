@@ -107,7 +107,7 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
         @message = '订单确认失败'
       end
     elsif @order.show.yongle?
-      if @order.update_pay_status_to_yongle['result'] != '1000'
+      if !@order.pre_pay! || @order.update_pay_status_to_yongle['result'] != '1000'
         @error_code = 3012
         @message = '订单确认失败'
       end

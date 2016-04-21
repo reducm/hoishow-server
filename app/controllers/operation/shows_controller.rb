@@ -265,7 +265,7 @@ class Operation::ShowsController < Operation::ApplicationController
     if event.save
       flash[:notice] = '增加场次成功'
     else
-      flash[:error] = '增加场次失败'
+      flash[:alert] = '增加场次失败'
     end
     redirect_to event_list_operation_show_url(@show)
   end
@@ -277,7 +277,7 @@ class Operation::ShowsController < Operation::ApplicationController
     if @event && @event.update(event_params)
       flash[:notice] = '修改场次成功'
     else
-      flash[:error] = '修改场次失败'
+      flash[:alert] = '修改场次失败'
     end
     redirect_to event_detail_operation_show_url(@show, event_id: @event.id)
   end
@@ -286,7 +286,7 @@ class Operation::ShowsController < Operation::ApplicationController
     if @event && @event.destroy
       flash[:notice] = '删除场次成功'
     else
-      flash[:error] = '删除场次失败'
+      flash[:alert] = '删除场次失败'
     end
     redirect_to event_list_operation_show_url(@show)
   end
@@ -325,11 +325,17 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def update_event_info
     if event = Event.find(params[:event_id])
-      ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
-      event.reload
-      render partial: "area_table", locals: {show: @show, event: event}
+      success = ViagogoDataToHoishow::Service.update_event_data_with_api(@show.id)
+      if success
+        event.reload
+        render partial: "area_table", locals: {show: @show, event: event}
+      else
+        flash[:alert] = '更新数据失败'
+        render json: {error: true}
+      end
     else
-      render json: {error: true}
+      flash[:alert] = '找不到event'
+      render :index
     end
   end
 

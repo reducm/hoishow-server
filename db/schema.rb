@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160419072933) do
+ActiveRecord::Schema.define(version: 20160421025656) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -607,6 +607,7 @@ ActiveRecord::Schema.define(version: 20160419072933) do
     t.string   "id_card",            limit: 255
     t.decimal  "buy_price",                        precision: 10, scale: 2
     t.boolean  "sms_has_been_sent",  limit: 1,                              default: false
+    t.datetime "pay_at"
   end
 
   add_index "orders", ["out_id"], name: "index_orders_on_out_id", using: :btree
