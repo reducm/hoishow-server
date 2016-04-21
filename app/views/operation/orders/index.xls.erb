@@ -30,7 +30,7 @@
         <td><%= order.channel %></td>
         <td><%= order.show.try(:ticket_type_cn) %></td>
         <td><%= order.created_at_format %></td>
-        <td><%= order.generate_ticket_at_format %></td>
+        <td><%= order.pay_at_format %></td>
         <td><%= order.tickets_count %></td>
         <td><%= order.amount %></td>
         <td><%= order.get_username(user) %></td>

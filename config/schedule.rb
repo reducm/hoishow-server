@@ -37,7 +37,7 @@ every 1.day do
   runner "Event.hide_finished_event"
 end
 
-every 6.hours, :at => '1:30 am' do
+every '30 1,10,15,20 * * *' do
   rake "fetcher:yongle:day_data"
 end
 
