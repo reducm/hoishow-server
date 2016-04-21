@@ -115,10 +115,10 @@ class Operation::OrdersController < Operation::ApplicationController
 
   def filter_orders
     @orders_for_export = Order.order(created_at: :desc)
-    # 搜订单号和手机号
+    # 搜订单号、手机号、演出名
     if params[:search].present?
       if params[:search][:value].present?
-        @orders_for_export = @orders_for_export.joins(:user).where("orders.out_id like :search or users.mobile like :search", search: "%#{params[:search][:value]}%" )
+        @orders_for_export = @orders_for_export.joins(:user).where("orders.out_id like :search or users.mobile like :search or orders.show_name like :search", search: "%#{params[:search][:value]}%" )
       end
     end
     # 按支付状态过滤
@@ -133,10 +133,10 @@ class Operation::OrdersController < Operation::ApplicationController
     if params[:buy_origin].present?
       @orders_for_export = @orders_for_export.where("orders.buy_origin like :buy_origin", buy_origin: "%#{params[:buy_origin]}%")
     end
-    # 按演出过滤
-    if params[:show].present?
-      @orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
-    end
+    ## 按演出过滤
+    #if params[:show].present?
+      #@orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
+    #end
     # 按下单时间称过滤
     if params[:start_date].present? && params[:end_date].present?
       @orders_for_export = @orders_for_export.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])
