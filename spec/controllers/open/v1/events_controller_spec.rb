@@ -38,7 +38,7 @@ RSpec.describe Open::V1::EventsController, :type => :controller do
         expect(d[:stadium_id]).to eq s.stadium.id
         expect(d[:stadium_name]).to eq s.stadium.name
         #expect(d[:show_time]).to eq s.show_time.to_i
-        expect(d[:show_time]).not_to eq 0 
+        expect(d[:show_time]).not_to eq 0
         expect(d[:poster]).to eq s.poster_url
         expect(d[:ticket_pic]).to eq s.ticket_pic_url
         expect(d[:description]).to eq description_path(subject_id: s.id, subject_type: "Show")
@@ -46,7 +46,6 @@ RSpec.describe Open::V1::EventsController, :type => :controller do
         expect(d[:is_top]).to eq s.is_top
         expect(d[:status]).to eq s.status
         expect(d[:ticket_type]).to eq s.ticket_type
-        expect(d[:stadium_map]).to eq s.stadium_map_url # 这里测的是Show!
         expect(d[:seat_type]).to eq s.seat_type
         expect(d[:mode]).to eq s.source
         expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')

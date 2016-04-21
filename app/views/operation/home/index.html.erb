@@ -1,6 +1,5 @@
 <%# encoding: utf-8 %>
 <div class="nav" id='home'>
-  <h1 class="pull-left">Hoishow后台首页(version 1.0)</h1>
   <table class="table">
     <thead>
       <tr>
@@ -8,16 +7,14 @@
         <th>待发货订单(<%= link_to "查看更多", operation_orders_path %>)</th>
         <th>今日支付金额(<%= link_to "查看更多", operation_orders_path %>)</th>
         <th>今日注册用户数(<%= link_to "查看更多", operation_users_path %>)</th>
-        <th>今日新增投票(<%= link_to "查看更多", operation_concerts_path %>)</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><span><%=Order.today_success_orders.count%></span></td>
-        <td><span><%=Order.paid.select { |order| order.show.r_ticket? }.count%></span></td>
-        <td><span><%=Order.today_success_orders.sum(:amount).round(1)%></span></td>
-        <td><span><%=User.today_registered_users.count%></span></td>
-        <td><span><%=UserVoteConcert.today_votes.count%></span></td>
+        <td><span><%= Order.today_success_orders.count %></span></td>
+        <td><span><%= Order.paid.select { |order| order.show.r_ticket? }.count %></span></td>
+        <td><span><%= Order.today_success_orders.sum(:amount).round(1) %></span></td>
+        <td><span><%= User.today_registered_users.count %></span></td>
       </tr>
     </tbody>
   </table>
@@ -27,14 +24,10 @@
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu select-begin-time" role="menu">
-      <li><a href="javascript:void(0);" id="today">本日</a>
-      </li>
-      <li><a href="javascript:void(0);" id="this_month">本月</a>
-      </li>
-      <li><a href="javascript:void(0);" id="this_year">本年</a>
-      </li>
+      <li><a href="javascript:void(0);" id="today">本日</a></li>
+      <li><a href="javascript:void(0);" id="this_month">本月</a></li>
+      <li><a href="javascript:void(0);" id="this_year">本年</a></li>
     </ul>
   </div>
   <div id="data_collection"></div>
 </div>
-

@@ -36,17 +36,6 @@ class Operation::OrdersController < Operation::ApplicationController
     end
   end
 
-  def manual_refund
-    payment = @order.payments.first
-    if payment && payment.refund_order
-      @order.update(refund_by: @current_admin.name)
-      flash[:notice] = '退款成功'
-    else
-      flash[:notice] = '退款失败'
-    end
-    redirect_to operation_orders_url
-  end
-
   def manual_send_msg
     @order.update(sms_has_been_sent: true) unless @order.sms_has_been_sent
     @order.notify_delivery
