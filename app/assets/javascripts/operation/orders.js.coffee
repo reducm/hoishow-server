@@ -68,7 +68,8 @@ $ ->
               'status': $('#status_filter').val()
               'channel': $('#channel_filter').val()
               'buy_origin': $('#buy_origin_filter').val()
-              'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
+              # Feature replaced by search
+              #'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
               # 控件有问题，现固定每页显示10行
@@ -90,12 +91,13 @@ $ ->
             api.ajax.reload()
           $.each f_data["buyOriginFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单平台：" + key + '</option>'
-          # 按演出过滤：如果从演出详情页访问的，不生成过滤框
-          unless $('#show_id').length > 0
-            select = $('<select><option selected="selected" value="">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
-              api.ajax.reload()
-            $.each f_data["showFilter"], (key, value) ->
-              select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
+          # Feature replaced by search
+          ## 按演出过滤：如果从演出详情页访问的，不生成过滤框
+          #unless $('#show_id').length > 0
+            #select = $('<select><option selected="selected" value="">演出：全部</option></select>').attr("id", "show_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+              #api.ajax.reload()
+            #$.each f_data["showFilter"], (key, value) ->
+          #    select.append '<option value="' + value + '">' + "演出：" + key + '</option>'
           # 时间过滤预设
           timenow = moment().format('YYYY/MM/DD hh:mm')
           # 时间过滤预设：全部
@@ -149,7 +151,7 @@ $ ->
             $('#end_date_filter').val('')
             api.search('').draw()
           # 文本搜索提示
-          $('div#orders_table_filter.dataTables_filter label input').attr('placeholder', '手机号或订单号').removeClass('input-sm')
+          $('div#orders_table_filter.dataTables_filter label input').attr('placeholder', '手机号、订单号、演出名').removeClass('input-sm')
           # 隐藏显示行数控件
           $('#orders_table_length label:first').hide()
     )
@@ -171,7 +173,7 @@ $ ->
     # 下载excel时向服务器回传过滤条件
     url = '/operation/orders.xls'
     $('#export_excel').on 'click', ->
-      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val()
+      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val() + "&search[value]=" + $('input[type=search]').val()
 
   # order show
   if $('#order_detail').length > 0

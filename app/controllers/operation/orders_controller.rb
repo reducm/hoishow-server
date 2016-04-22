@@ -7,14 +7,13 @@ class Operation::OrdersController < Operation::ApplicationController
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
 
   def index
-    filename = Time.now.strfcn_time + '订单列表'
     respond_to do |format|
       format.html
       # 订单json数据组装, 详见app/services/orders_datatable.rb
       format.json { render json: OrdersDatatable.new(view_context) }
       format.xls do
         filter_orders
-        headers["Content-Disposition"] = "attachment; filename=\"#{filename}.xls\""
+        headers["Content-Disposition"] = "attachment; filename=\"订单列表.xls\""
       end
     end
   end
@@ -34,17 +33,6 @@ class Operation::OrdersController < Operation::ApplicationController
       @order.query_express
       render json: {success: true}
     end
-  end
-
-  def manual_refund
-    payment = @order.payments.first
-    if payment && payment.refund_order
-      @order.update(refund_by: @current_admin.name)
-      flash[:notice] = '退款成功'
-    else
-      flash[:notice] = '退款失败'
-    end
-    redirect_to operation_orders_url
   end
 
   def manual_send_msg
@@ -115,10 +103,10 @@ class Operation::OrdersController < Operation::ApplicationController
 
   def filter_orders
     @orders_for_export = Order.order(created_at: :desc)
-    # 搜订单号和手机号
+    # 搜订单号、手机号、演出名
     if params[:search].present?
       if params[:search][:value].present?
-        @orders_for_export = @orders_for_export.joins(:user).where("orders.out_id like :search or users.mobile like :search", search: "%#{params[:search][:value]}%" )
+        @orders_for_export = @orders_for_export.joins(:user).where("orders.out_id like :search or users.mobile like :search or orders.show_name like :search", search: "%#{params[:search][:value]}%" )
       end
     end
     # 按支付状态过滤
@@ -133,10 +121,10 @@ class Operation::OrdersController < Operation::ApplicationController
     if params[:buy_origin].present?
       @orders_for_export = @orders_for_export.where("orders.buy_origin like :buy_origin", buy_origin: "%#{params[:buy_origin]}%")
     end
-    # 按演出过滤
-    if params[:show].present?
-      @orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
-    end
+    ## 按演出过滤
+    #if params[:show].present?
+      #@orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
+    #end
     # 按下单时间称过滤
     if params[:start_date].present? && params[:end_date].present?
       @orders_for_export = @orders_for_export.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])

@@ -21,7 +21,7 @@ class Event < ActiveRecord::Base
   end
 
   def is_display_cn
-    is_display ? '显示' : '不显示'
+    is_display ? '显示' : '隐藏'
   end
 
   def self.hide_finished_event

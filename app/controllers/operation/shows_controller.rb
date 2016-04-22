@@ -2,8 +2,8 @@
 require "get_bmp_coordinate"
 class Operation::ShowsController < Operation::ApplicationController
   before_filter :check_login!
-  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :search, :upload]
-  before_action :get_event, only: [:event_detail, :update_event, :del_event, :get_coordinates, :upload_map]
+  before_action :get_show, except: [:index, :new, :create, :get_city_stadiums, :upload]
+  before_action :get_event, only: [:event_detail, :update_event, :del_event, :get_coordinates, :upload_map, :toggle_event_is_display]
   before_action :get_orders_filters, only: :show
   before_action :get_shows_filters, only: :index
   load_and_authorize_resource only: [:index, :new, :create, :show, :edit, :update]
@@ -14,13 +14,6 @@ class Operation::ShowsController < Operation::ApplicationController
       # 演出json数据组装, 详见app/services/shows_datatable.rb
       format.json { render json: ShowsDatatable.new(view_context) }
     end
-  end
-
-  def search
-    star_ids = Star.where("name like ?", "%#{params[:q]}%").map(&:id).compact
-    concert_ids = StarConcertRelation.where("star_id in (?)", star_ids).map(&:concert_id).compact
-    @shows = Show.where("name like ? or concert_id in (?)", "%#{params[:q]}%", concert_ids).page(params[:page]).order("created_at desc")
-    render :index
   end
 
   def new
@@ -80,33 +73,6 @@ class Operation::ShowsController < Operation::ApplicationController
     else
       render json: {success: false}
     end
-  end
-
-  def send_create_message
-    concert = @show.concert
-    if concert.auto_hide?
-      show_message = Message.new(send_type: 'new_show', creator_type: 'Star', creator_id: @show.first_star.id, subject_type: 'Show', subject_id: @show.id, notification_text: '演出开放售票', title: '演出开放售票', content: "您关注的演出#{@show.name}正式开放售票!")
-      if (result = show_message.send_umeng_message(@show.show_followers, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
-        flash[:alert] = result
-      else
-        flash[:notice] = '推送发送成功'
-      end
-    else
-      user_ids = UserVoteConcert.where(concert_id: concert.id, city_id: @show.city_id).pluck(:user_id)
-      users_array = User.where("id in (?)", user_ids)
-      star_followers = concert.stars.map{|star| star.followers}.flatten
-      concert_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "演出优先购票", title: "演出正式开展", content: "#{@show.name}将在#{@show.city.name}开展,作为忠实粉丝的您可以优先购票了!")
-      star_message = Message.new(send_type: "new_show", creator_type: "Star", creator_id: concert.stars.first.id, subject_type: "Show", subject_id: @show.id, notification_text: "您关注的艺人发布了一个新演出", title: "新的演出", content: "你关注的艺人发布了一个新的演出'#{@show.name}'!")
-      result_1 = concert_message.send_umeng_message(users_array)
-      result_2 = star_message.send_umeng_message(star_followers)
-
-      if result_1 == "success" || result_2 == "success"
-        flash[:notice] = "推送发送成功"
-      else
-        flash[:alert] = "推送发送失败"
-      end
-    end
-    redirect_to operation_show_url(@show)
   end
 
   def get_city_stadiums
@@ -202,17 +168,6 @@ class Operation::ShowsController < Operation::ApplicationController
     end
   end
 
-  def update_mode
-    @show = Show.find(params[:id])
-    if @show.update(mode: params[:mode].to_i)
-      message = Message.new(send_type: "all_users_buy", creator_type: "Star", creator_id: @show.first_star.id, subject_type: "Show", subject_id: @show.id, notification_text: "演出开放售票", title: "演出开放售票", content: "你关注的演出'#{@show.name}'开放售票!")
-      if (result = message.send_umeng_message(@show.show_followers, none_follower: "演出状态更新成功，但是因为关注演出的用户数为0，所以消息创建失败")) != "success"
-        flash[:alert] = result
-      end
-    end
-    redirect_to operation_show_url(@show)
-  end
-
   def toggle_is_top
     if @show.is_top
       @show.update(is_top: false)
@@ -271,6 +226,15 @@ class Operation::ShowsController < Operation::ApplicationController
   end
 
   def event_detail
+  end
+
+  def toggle_event_is_display
+    if @event && @event.update(is_display: !@event.is_display)
+      flash[:notice] = '修改场次成功'
+    else
+      flash[:alert] = '修改场次失败'
+    end
+    redirect_to event_list_operation_show_url(@show)
   end
 
   def update_event

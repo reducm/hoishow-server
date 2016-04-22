@@ -148,7 +148,7 @@ class Show < ActiveRecord::Base
   end
 
   def is_display_cn
-    # is_display ? "显示" : "不显示"
+    # is_display ? "显示" : "隐藏"
     tran("is_display")
   end
 

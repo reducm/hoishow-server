@@ -9,28 +9,28 @@ Rails.application.routes.draw do
 
   root to: 'boombox/dj/home#index' #首页自动跳转至DJ后台
 
-  # app帮助
-  get "/helps" => 'pages#show_help'
-  get "/helps/:position" => 'pages#show_sub_help'
+  # # app帮助
+  # get "/helps" => 'pages#show_help'
+  # get "/helps/:position" => 'pages#show_sub_help'
+  #
+  # # web
+  # get "/about" => 'pages#about'
 
-  # web
-  get "/about" => 'pages#about'
-
-  # wap
-  get "/mobile" => 'pages#wap_index'
-  get "/mobile_about" => 'pages#wap_about'
-  get "/service/terms" => 'pages#wap_terms'
-
-  #app下载
-  get "/mobile/download" => 'pages#download'
-  get '/app/download', to: 'pages#app_download'
-
-  #分享页
-  get "/mobile/shows/sharing" => "pages#sharing_show"
-  get "/mobile/concerts/sharing" => "pages#sharing_concert"
-
-  #版权页
-  get "/copyright" => "pages#boombox_copyright"
+  # # wap
+  # get "/mobile" => 'pages#wap_index'
+  # get "/mobile_about" => 'pages#wap_about'
+  # get "/service/terms" => 'pages#wap_terms'
+  #
+  # #app下载
+  # get "/mobile/download" => 'pages#download'
+  # get '/app/download', to: 'pages#app_download'
+  #
+  # #分享页
+  # get "/mobile/shows/sharing" => "pages#sharing_show"
+  # get "/mobile/concerts/sharing" => "pages#sharing_concert"
+  #
+  # #版权页
+  # get "/copyright" => "pages#boombox_copyright"
 
   namespace :api do
     namespace :v1 do
@@ -166,18 +166,15 @@ Rails.application.routes.draw do
     resources :shows do
       collection do
         get "get_city_stadiums"
-        get :search
         post :upload
       end
       member do
         post "update_area_data"
-        post "update_mode"
         patch :toggle_is_top
         post :new_area
         delete :del_area
         get :seats_info
         post :update_seats_info
-        post :send_create_message
         post :add_star
         delete :del_star
         post :set_area_channels
@@ -190,13 +187,13 @@ Rails.application.routes.draw do
         get :get_coordinates
         patch :toggle_area_is_top
         post :update_event_info
+        post :toggle_event_is_display
       end
     end
     resources :orders do
       member do
         post :set_order_to_success
         post "update_express_id"
-        post :manual_refund
         get :manual_send_msg
         post "update_order_data"
         post :update_buy_price
