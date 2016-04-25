@@ -10,8 +10,8 @@ module ViagogoDataToHoishow
     def data_to_hoishow
       #创建star, concert, city, stadium, show, event, area等数据
       data_transform
-      #用sidekiq更新viagogo的所有show和event的areas的数据
-      update_show_data
+      #用sidekiq更新viagogo的所有event的areas的数据
+      update_events_data
       update_star_avatar
       update_show_poster
       #用sidekiq更新所有event场馆图
@@ -60,16 +60,11 @@ module ViagogoDataToHoishow
               stadium_name = venue_json["name"]
               stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
 
-              show = Show.where(event_url_id: event["id"]).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, stadium_id: stadium.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+              show = Show.where(name: concert_name, stadium_id: stadium.id).first_or_create(concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
 
               show_time = event["start_date"]
-              show_events = show.events
-              if show_events.count > 0
-                show_event = show_events.last
-                show_event.update(show_time: show_time)
-              else
-                show_event = Event.create(ticket_path: event["id"].to_s, show_time: show_time, show_id: show.id)
-              end
+
+              Event.where(ticket_path: event["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
             end
           end#-------endof star-transaction
         end
@@ -78,20 +73,20 @@ module ViagogoDataToHoishow
       end
     end
 
-    def update_show_data
-      shows = Show.viagogo
-      shows.each{|show| UpdateViagogoShowWorker.perform_async(show.id)} if shows.present?
+    def update_events_data
+      events = Event.where("ticket_path is not null")
+      events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)} if events.present?
     end
 
     #返回success变量来区别是否更新数据成功
-    def update_event_data_with_api(show_id)
+    def update_event_data_with_api(event_id)
       success = false
       client = get_client
       rate = get_exchange_rate
-      show = Show.find(show_id)
-      if client.present? && rate.present? && show.present?
-        event = show.events.last
-        ticket_json = get_events_data(show.event_url_id, client)
+      event = Event.find(event_id)
+      show = event.show
+      if client.present? && rate.present? && show.present? && event.present?
+        ticket_json = get_events_data(event.ticket_path, client)
 
         if ticket_json.present? && ticket_json["total_items"] > 0
           success = true
