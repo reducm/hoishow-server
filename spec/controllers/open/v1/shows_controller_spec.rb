@@ -55,7 +55,7 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
 
     it "should return error if request without city_id" do
       get :index, encrypted_params_in_open
-      expect(json[:result_code]).to eq 403
+      expect(json[:result_code]).to eq 1003
     end
   end
 
