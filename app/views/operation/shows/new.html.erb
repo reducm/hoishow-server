@@ -40,8 +40,8 @@
       </div>
       <div class="row">
         <div class="col-xs-8">
-          <textarea style="height: 100px;" v-model="e_ticket_sms" class="form-control" name="show[e_ticket_sms]" id="show_e_ticket_sms"></textarea>
-          <span>当前短信长度：{{ e_ticket_sms.length }}字</span>
+          <textarea style="min-height: 50px;" v-model="e_ticket_sms" class="form-control" name="show[e_ticket_sms]" id="show_e_ticket_sms"></textarea>
+          <span class="pull-right">{{ e_ticket_sms.length }}/200</span>
           <div v-show="e_ticket_sms.length > 200" class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span class="sr-only">Error:</span>
@@ -66,7 +66,7 @@
       </div>
     </div>
     <%= f.input :poster, label: "上传演出海报(建议大小:1280x720)", input_html: {class: "image-uploader"} %>
-    <%= f.input :ticket_pic, label: "上传入场券图片(建议大小:270x270)", input_html: {class: "image-uploader"} %>
+    <%= f.input :ticket_pic, label: "上传入场券图片(建议大小:300x400)", input_html: {class: "image-uploader"} %>
     <%= f.input :description, label: '图文描述' %>
     <div class="form-group">
       <div class="col-sm-3">
