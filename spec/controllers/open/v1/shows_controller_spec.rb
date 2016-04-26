@@ -17,13 +17,13 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
   let(:concert) { create :concert }
 
   context "#action index" do
-    it "should get all shows data" do
+    it "should get some city's all shows data" do
       15.times { create :show, city: city, stadium: stadium, concert: concert, seat_type: "selected" }
       Show.all.each do |show|
         show.update_attributes(description: "/description?subject_id=#{show.id}&subject_type=Show")
       end
 
-      get :index, encrypted_params_in_open
+      get :index, encrypted_params_in_open({city_id: city.id})
 
       expect(json[:result_code]).to eq 0
       expect(json[:data].size).to eq 15
@@ -51,6 +51,11 @@ RSpec.describe Open::V1::ShowsController, :type => :controller do
         expect(d[:stars]).to eq s.concert.stars.pluck(:name).join(' | ')
         expect(d[:is_presell]).to eq s.is_presell
       end
+    end
+
+    it "should return error if request without city_id" do
+      get :index, encrypted_params_in_open
+      expect(json[:result_code]).to eq 1003
     end
   end
 
