@@ -7,7 +7,7 @@
   - convert_audio
   - umeng_msg
   - fetch_image
-  - update_viagogo_show
+  - update_viagogo_event
   - update_viagogo_stadium_map
 staging:
   :concurrency: 25
