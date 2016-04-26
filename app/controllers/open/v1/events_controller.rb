@@ -6,10 +6,6 @@ class Open::V1::EventsController < Open::V1::ApplicationController
   skip_before_filter :find_auth!, only: [:areas_map]
   def index
     @events = @show.events.verified
-    #如果show是viagogo的话就用sidekiq更新event数据
-    if @events.present? && @show.viagogo?
-      @events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
-    end
   end
 
   def areas_map
