@@ -60,7 +60,7 @@ module ViagogoDataToHoishow
               stadium_name = venue_json["name"]
               stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
 
-              show = Show.where(name: concert_name, stadium_id: stadium.id).first_or_create(concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+              show = Show.where(source_name: concert_name, stadium_id: stadium.id).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
 
               show_time = event["start_date"]
 
@@ -111,7 +111,7 @@ module ViagogoDataToHoishow
               booking_fee + shipping + vat
             end.sort.last
             price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"] if i["estimated_ticket_price"].present?}.compact.sort
-            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 1
+            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 200
             price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i} - #{max_price.to_i}"
 
             #update_area_data
