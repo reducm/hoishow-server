@@ -294,8 +294,11 @@ module YongleService
           )
 
           # skip "wutuwulong"
-          FetchImageWorker.perform_async(show.id, product["productPicture"], 'poster') if product["productPicture"].exclude?("wutuwulogo")
-          FetchImageWorker.perform_async(show.id, product["productPictureSmall"], 'ticket_pic') if product["productPictureSmall"].exclude?("wutuwulogo")
+          if product["productPicture"].exclude?("wutuwulogo")
+            ['poster', 'ticket_pic'].each do |text|
+              FetchImageWorker.perform_async(show.id, product["productPicture"], text)
+            end
+          end
           FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map') if product["seatPicture"].exclude?("wutuwulogo")
 
           show
