@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421025656) do
+ActiveRecord::Schema.define(version: 20160427070427) do
 
   create_table "activity_statuses", force: :cascade do |t|
     t.string   "boom_id",    limit: 255
@@ -762,8 +762,9 @@ ActiveRecord::Schema.define(version: 20160421025656) do
     t.integer  "yl_play_city_id",    limit: 4
     t.integer  "yl_fconfig_id",      limit: 4
     t.integer  "yl_dzp_type",        limit: 4
-    t.string   "e_ticket_sms",       limit: 255
     t.string   "show_type",          limit: 255
+    t.string   "e_ticket_sms",       limit: 255
+    t.string   "source_name",        limit: 255
   end
 
   add_index "shows", ["city_id"], name: "index_shows_on_city_id", using: :btree
