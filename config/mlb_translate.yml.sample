@@ -1,0 +1,11 @@
+development: &DEFAULT
+  team_name: ''
+
+test:
+  <<: *DEFAULT
+
+production:
+  <<: *DEFAULT
+
+staging:
+  <<: *DEFAULT

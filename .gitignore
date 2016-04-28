@@ -49,6 +49,7 @@ config/settings/wx_pay.yml
 config/danche.yml
 config/yongle.yml
 config/viagogo.yml
+config/mlb_translate.yml
 
 # ignore local precompile assets file
 config/deploy/assets/
