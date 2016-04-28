@@ -69,7 +69,6 @@ module ViagogoDataToHoishow
               if show.name == concert_name
                 team_names = concert_name.split(" vs. ")
                 if team_names.count == 2
-                  p concert_name
                   translated_name = concert_name.gsub(team_names[0], MLBSetting[team_names[0]]).gsub(team_names[1], MLBSetting[team_names[1]])
                   show.update(name: translated_name)
                 end
