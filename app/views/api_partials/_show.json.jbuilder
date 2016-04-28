@@ -8,10 +8,16 @@ json.description_time show.description_time || ''
 json.poster show.poster_url_for_danche || ''
 json.ticket_pic show.ticket_pic_url_for_danche || ''
 # 可能有效率问题，先用着
-json.stars show.concert.stars.pluck(:name).join(' | ') rescue ''
+if show.show_type == "MLB"
+  json.stars show.name.gsub(' vs. ', ' | ') rescue ''
+else
+  json.stars show.concert.stars.pluck(:name).join(' | ') rescue ''
+end
 json.price_range show.get_price_range
 json.postage show.r_ticket? ? CommonData.get_value('postage') : 0
 json.show_type show.play_type
+json.min_price show.min_price
+json.max_price show.max_price
 
 events = show.events.verified
 if events.any?

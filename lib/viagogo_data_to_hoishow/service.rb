@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'timeout'
 require 'gogokit'
+require 'benchmark'
 
 module ViagogoDataToHoishow
   module Service
@@ -8,14 +9,16 @@ module ViagogoDataToHoishow
     extend self
 
     def data_to_hoishow
-      #创建star, concert, city, stadium, show, event, area等数据
-      data_transform
-      #用sidekiq更新viagogo的所有event的areas的数据
-      update_events_data
-      update_star_avatar
-      update_show_poster
-      #用sidekiq更新所有event场馆图
-      update_events_stadium_map
+      Benchmark.bm do |b|
+        #创建star, concert, city, stadium, show, event, area等数据
+        b.report("data_transform:"){data_transform}
+        #用sidekiq更新viagogo的所有event的areas的数据
+        b.report("update_events_data:"){update_events_data}
+        b.report("update_star_avatar:"){update_star_avatar}
+        b.report("update_show_poster:"){update_show_poster}
+        #用sidekiq更新所有event场馆图
+        b.report("update_events_stadium_map:"){update_events_stadium_map}
+      end
     end
 
     def data_transform
@@ -60,7 +63,16 @@ module ViagogoDataToHoishow
               stadium_name = venue_json["name"]
               stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
 
-              show = Show.where(name: concert_name, stadium_id: stadium.id).first_or_create(concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+              show = Show.where(source_name: concert_name, stadium_id: stadium.id).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+
+              #show的名字中文化
+              if show.name == concert_name
+                team_names = concert_name.split(" vs. ")
+                if team_names.count == 2
+                  translated_name = concert_name.gsub(team_names[0], MLBSetting[team_names[0]]).gsub(team_names[1], MLBSetting[team_names[1]])
+                  show.update(name: translated_name)
+                end
+              end
 
               show_time = event["start_date"]
 
@@ -111,8 +123,8 @@ module ViagogoDataToHoishow
               booking_fee + shipping + vat
             end.sort.last
             price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"] if i["estimated_ticket_price"].present?}.compact.sort
-            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 1
-            price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i} - #{max_price.to_i}"
+            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 200
+            price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i + 200} - #{max_price}"
 
             #update_area_data
             area_id = update_area_logic(area_name, show, event, max_price, price_range, seats_count)

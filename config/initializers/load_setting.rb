@@ -2,6 +2,8 @@ UpyunSetting = YAML.load_file(File.join "#{Rails.root}", "config", "upyun.yml")[
 
 ViagogoSetting = YAML.load_file(File.join "#{Rails.root}", "config", "viagogo.yml")[Rails.env || "development"]
 
+MLBSetting = YAML.load_file(File.join "#{Rails.root}", "config", "mlb_translate.yml")[Rails.env || "development"]
+
 AlipaySetting = YAML.load_file(File.join "#{Rails.root}", "config", "settings", "alipay.yml")
 
 UmengMessageSetting = YAML.load_file(File.join "#{Rails.root}", "config", "umeng_message.yml")[Rails.env || "development"]
