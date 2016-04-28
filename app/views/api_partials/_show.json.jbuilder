@@ -16,6 +16,8 @@ end
 json.price_range show.get_price_range
 json.postage show.r_ticket? ? CommonData.get_value('postage') : 0
 json.show_type show.play_type
+json.min_price show.min_price
+json.max_price show.max_price
 
 events = show.events.verified
 if events.any?

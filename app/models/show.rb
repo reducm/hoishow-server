@@ -229,7 +229,7 @@ class Show < ActiveRecord::Base
     stars.first
   end
 
-  def get_price_range
+  def price_array
     price_array = if selected?
                     show_area_relations.map{|relation| relation.price.to_i}
                   elsif selectable?
@@ -239,11 +239,29 @@ class Show < ActiveRecord::Base
                   end
 
     price_array = price_array.uniq.sort if price_array.present?
+  end
 
+  def min_price
     if price_array.size <= 1
       price_array.first.to_i.to_s
     else
-      "#{price_array.first} - #{price_array.last}"
+      price_array.first
+    end
+  end
+
+  def max_price
+    if price_array.size <= 1
+      price_array.first.to_i.to_s
+    else
+      price_array.last
+    end
+  end
+
+  def get_price_range
+    if min_price == max_price
+      min_price
+    else
+      "#{min_price} - #{max_price}"
     end
   end
 
