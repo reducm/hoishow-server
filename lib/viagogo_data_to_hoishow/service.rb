@@ -74,7 +74,8 @@ module ViagogoDataToHoishow
                 end
               end
 
-              show_time = event["start_date"]
+              #时间数据格式"2016-04-29T13:20:00-05:00"
+              show_time = DateTime.strptime(event["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
 
               Event.where(ticket_path: event["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
             end
@@ -86,7 +87,7 @@ module ViagogoDataToHoishow
     end
 
     def update_events_data
-      events = Event.where("ticket_path is not null")
+      events = Event.where("ticket_path is not null").where(is_display: true)
       events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)} if events.present?
     end
 
@@ -115,16 +116,16 @@ module ViagogoDataToHoishow
             next if ticket_info_array.blank? || area_name.blank?
 
             seats_count = ticket_info_array.inject(0){|sum, hash| sum + hash["number_of_tickets"]}
-            #价格为(单价加上最贵的预约费)X汇率
-            max_booking_price = ticket_info_array.map do |i|
+            price_array = ticket_info_array.map do |i|
+              ticket_price = (i["estimated_ticket_price"].present? ? i["estimated_ticket_price"]["amount"] : 0)
               booking_fee = (i["estimated_booking_fee"].present? ? i["estimated_booking_fee"]["amount"] : 0)
               shipping = (i["estimated_shipping"].present? ? i["estimated_shipping"]["amount"] : 0)
               vat = (i["estimated_vat"].present? ? i["estimated_vat"]["amount"] : 0)
-              booking_fee + shipping + vat
-            end.sort.last
-            price_array = ticket_info_array.map{|i| i["estimated_ticket_price"]["amount"] if i["estimated_ticket_price"].present?}.compact.sort
-            max_price = ( (price_array.last + max_booking_price) * rate ).to_i + 200
-            price_range = "#{( ( price_array.first + max_booking_price ) * rate  ).to_i + 200} - #{max_price}"
+              ticket_price + ( ( booking_fee + shipping + vat ) / i["number_of_tickets"] ).round(2)
+            end.compact.sort
+            #价格为(单价加上预约费)X汇率
+            max_price = ( price_array.last * rate ).to_i + 200
+            price_range = "#{( price_array.first * rate ).to_i + 200} - #{max_price}"
 
             #update_area_data
             area_id = update_area_logic(area_name, show, event, max_price, price_range, seats_count)
@@ -246,7 +247,7 @@ module ViagogoDataToHoishow
     end
 
     def update_events_stadium_map
-      events = Event.where("ticket_path is not null and stadium_map is null")
+      events = Event.where("ticket_path is not null and stadium_map is null").where(is_display: true)
       events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)} if events.present?
     end
 
