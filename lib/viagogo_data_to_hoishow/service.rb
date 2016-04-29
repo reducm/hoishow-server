@@ -87,7 +87,7 @@ module ViagogoDataToHoishow
     end
 
     def update_events_data
-      events = Event.where("ticket_path is not null").where(is_display: true)
+      events = Event.where("ticket_path is not null and is_display is true")
       events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)} if events.present?
     end
 
@@ -247,7 +247,7 @@ module ViagogoDataToHoishow
     end
 
     def update_events_stadium_map
-      events = Event.where("ticket_path is not null and stadium_map is null").where(is_display: true)
+      events = Event.where("ticket_path is not null and stadium_map is null and is_display is true")
       events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)} if events.present?
     end
 
