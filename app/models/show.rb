@@ -236,9 +236,7 @@ class Show < ActiveRecord::Base
                     areas.map(&:all_price_with_seats).flatten
                   else
                     []
-                  end
-
-    price_array = price_array.uniq.sort if price_array.present?
+                  end.uniq.sort
   end
 
   def min_price
