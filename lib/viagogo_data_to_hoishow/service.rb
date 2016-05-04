@@ -77,7 +77,8 @@ module ViagogoDataToHoishow
               #时间数据格式"2016-04-29T13:20:00-05:00"
               show_time = DateTime.strptime(event["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
 
-              Event.where(ticket_path: event["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
+              event = Event.where(ticket_path: event["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
+              event.update(show_time: show_time)
             end
           end#-------endof star-transaction
         end
@@ -141,6 +142,8 @@ module ViagogoDataToHoishow
           Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)
         end
       end
+      event.reload
+      event.update(is_display: false) if event.areas.blank?
       success
     end
 
