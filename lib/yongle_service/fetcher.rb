@@ -287,6 +287,7 @@ module YongleService
             name:               product["playName"],
             description:        product["ProductProfile"],
             status:             Show.statuses["selling"],
+            is_display:         true,
             is_presell:         product["status"].to_i == 1,
             ticket_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
             yl_dzp_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dispatchWayList"]["dzp_type"]] : nil, # 电子票类型
