@@ -23,7 +23,7 @@ class Show < ActiveRecord::Base
   validates :concert, presence: {message: "投票不能为空"}
   validates :stadium, presence: {message: "场馆不能为空"}
 
-  scope :is_display, -> { where(is_display: true).order('shows.is_top DESC, shows.created_at DESC') }
+  scope :is_display, -> { where('status = ? and is_display = ?', 0, 1).order('shows.is_top DESC, shows.created_at DESC') }
 
   before_create :set_city
 
@@ -107,6 +107,10 @@ class Show < ActiveRecord::Base
 
   def self.finished_shows
     Show.where.not(source: 0, status: 1).select{|show| show.events.any? && show.events.last.show_time < Time.now + 3.days}
+  end
+
+  def self.hidden_shows
+    Show.where(is_display: 1).select{|show| show.events.verified.empty?}
   end
 
   # 该区域已出票，但订单未支付的票数
