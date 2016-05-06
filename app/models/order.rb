@@ -557,7 +557,9 @@ class Order < ActiveRecord::Base
       self.update(options)
     end
 
-    notify_delivery if express_id.present?
+    if express_id.present?
+      notify_delivery unless Rails.cache.read("#{user_id}:#{out_id}:#{express_id}")
+    end
   end
 
   def get_express_name
@@ -573,6 +575,9 @@ class Order < ActiveRecord::Base
   def notify_delivery
     SendSmsWorker.perform_async(user_mobile, "您订购的演出门票已发货，#{get_express_name}:#{express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
     NotifyDeliveryWorker.perform_async(open_trade_no) unless Rails.env.test?
+    Rails.cache.fetch("#{user_id}:#{out_id}:#{express_id}") do
+      'delivey'
+    end
   end
 
   def convert_status(status)
