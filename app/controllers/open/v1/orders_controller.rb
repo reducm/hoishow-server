@@ -38,10 +38,6 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
   end
 
   def create
-    # 演出状态判断
-    unless @show.status == 'selling'
-      error_respond(2002, @show.status_cn)
-    end
     # bike_out_id 表示 单车过来的 out_id, 用于对账
     options = params.slice(:area_id, :quantity, :areas, :bike_out_id, :seats, :buy_origin)
 
@@ -141,26 +137,16 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
 
   private
   def order_auth!
-    @order = Order.where(out_id: order_params[:out_id], channel: Order.channels["#{@auth.channel}"]).first
-    if @order.nil?
-      error_respond(3006, '订单不存在')
-    end
+    @order = Order.where(out_id: order_params[:out_id]).first
+    error_respond(3006, '订单不存在') unless @order.present?
   end
 
   def user_auth!
   end
 
   def replay_create_auth!
-    channel = @auth.channel
-    case channel
-    when 'bike_ticket'
-      tag = params[:bike_out_id]
-    end
-
-    if Order.where(open_trade_no: tag, channel: Order.channels[channel],
-      status: Order.statuses[:pending]).exists?
-      error_respond(3016, '重复创建订单')
-    end
+    order = Order.where(open_trade_no: params[:bike_out_id], status: Order.statuses[:pending]).first
+    error_respond(3016, '重复创建订单') if order.present?
   end
 
   def order_params

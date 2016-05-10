@@ -13,7 +13,7 @@ class Event < ActiveRecord::Base
   before_save :update_description_time
 
   def stadium_map_url
-    if show.source == 'yongle' && show.stadium_map_url
+    if show.source == 'yongle' && show.stadium_map_url && stadium_map_url.nil?
       show.stadium_map_url
     else
       super
@@ -25,7 +25,7 @@ class Event < ActiveRecord::Base
   end
 
   def self.hide_finished_event
-    events = Event.eager_load(:areas).where('events.show_time is not null and events.show_time < ? or areas.event_id is null', Time.now)
+    events = Event.eager_load(:areas).where('events.show_time is not null and events.show_time < ? or areas.event_id is null', Time.now + 3.days)
     events.update_all(is_display: false)
   end
 

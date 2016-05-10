@@ -1,6 +1,6 @@
 #encoding: UTF-8
 class Show < ActiveRecord::Base
-  acts_as_cached(:version => 1, :expires_in => 1.week)
+  acts_as_cached(:version => 1, :expires_in => 1.day)
 
   include ModelAttrI18n
   belongs_to :concert
@@ -185,10 +185,10 @@ class Show < ActiveRecord::Base
     # going_to_open: "即将开放"
     tran("status")
   end
-
-  def topics
-    Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
-  end
+  #
+  # def topics
+  #   Topic.where("(subject_type = 'Show' and subject_id = ?) or (subject_type = 'Concert' and subject_id = ? and city_id = ?)", self.id, concert_id, city_id)
+  # end
 
   def area_seats_left(area_id)
     # find all valid tickets
@@ -217,21 +217,21 @@ class Show < ActiveRecord::Base
     end
   end
 
-  def get_show_base_number
-    if relation = ConcertCityRelation.where(concert_id: self.concert_id, city_id: self.city_id).first
-      relation.base_number
-    else
-      0
-    end
-  end
-
-  def voters_count
-    UserVoteConcert.where(concert_id: concert_id, city_id: city_id).count + get_show_base_number
-  end
-
-  def first_star
-    stars.first
-  end
+  # def get_show_base_number
+  #   if relation = ConcertCityRelation.where(concert_id: self.concert_id, city_id: self.city_id).first
+  #     relation.base_number
+  #   else
+  #     0
+  #   end
+  # end
+  #
+  # def voters_count
+  #   UserVoteConcert.where(concert_id: concert_id, city_id: city_id).count + get_show_base_number
+  # end
+  #
+  # def first_star
+  #   stars.first
+  # end
 
   def price_array
     price_array = if selected?
