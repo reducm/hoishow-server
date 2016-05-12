@@ -13,7 +13,7 @@ class Event < ActiveRecord::Base
   before_save :update_description_time
 
   def stadium_map_url
-    if show.source == 'yongle' && show.stadium_map_url && stadium_map_url.nil?
+    if show.source == 'yongle' && show.stadium_map_url && stadium_map.url.nil?
       show.stadium_map_url
     else
       super
