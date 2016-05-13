@@ -43,6 +43,15 @@ module ViagogoDataToHoishow
             viagogo_logger.info "teams name 获取失败"
             return
           end
+
+          team1 = MLBSetting[team_names[0]]
+          team2 = MLBSetting[team_names[1]]
+          if team1.any? && team2.any?
+            translated_name = concert_name.gsub(team_names[0], team1).gsub(team_names[1], team2)
+          else
+            return
+          end
+
           Event.transaction do
             unless star1 = Star.where(name: team_names[0]).first
               star1 = Star.create(name: team_names[0], event_path: "viagogo")
@@ -64,7 +73,6 @@ module ViagogoDataToHoishow
 
             #show的名字中文化
             if show.name == concert_name
-              translated_name = concert_name.gsub(team_names[0], MLBSetting[team_names[0]]).gsub(team_names[1], MLBSetting[team_names[1]])
               show.update(name: translated_name)
             end
 
