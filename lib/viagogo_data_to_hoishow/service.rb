@@ -46,7 +46,7 @@ module ViagogoDataToHoishow
 
           team1 = MLBSetting[team_names[0]]
           team2 = MLBSetting[team_names[1]]
-          if team1.any? && team2.any?
+          if team1.present? && team2.present?
             translated_name = concert_name.gsub(team_names[0], team1).gsub(team_names[1], team2)
           else
             return

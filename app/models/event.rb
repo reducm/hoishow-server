@@ -24,11 +24,6 @@ class Event < ActiveRecord::Base
     is_display ? '显示' : '隐藏'
   end
 
-  def self.hide_finished_event
-    events = Event.eager_load(:areas).where('events.show_time is not null and events.show_time < ? or areas.event_id is null', Time.now + 3.days)
-    events.update_all(is_display: false)
-  end
-
   private
   def update_description_time
     wday = show_time.wday
