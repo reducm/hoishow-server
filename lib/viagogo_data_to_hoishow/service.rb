@@ -1,6 +1,5 @@
 # coding: utf-8
 require 'timeout'
-require 'gogokit'
 require 'benchmark'
 
 module ViagogoDataToHoishow
@@ -22,88 +21,89 @@ module ViagogoDataToHoishow
     end
 
     def data_transform
-      client = get_client
-      rate = get_exchange_rate
-      if client.present? && rate.present?
+      ssdb = SSDB::Client.new.connect
+      if ssdb.connected?
 
-        default_description = "<span style=\"line-height: 1.42857;\">1. 本场比赛为海外赛事，系统需要确定库存和价格，购票支付成功后 24 小时内将会提供出票状态，出票成功将会以短信形式通知；如出票失败，订单金额将会原路退还；</span><p></p><p><span style=\"line-height: 1.42857;\">2. 本场比赛出票形式为电子票，不支持快递配送业务。成功购票后，订票手机号将会收到电子门票的下载地址，届时凭自助打印纸质票进场；</span></p><p><span style=\"line-height: 1.42857;\">3. 海外体育赛事日期和时间为当地时间，请购票前核对时间信息；</span></p><p><span style=\"line-height: 1.42857;\">4. 赛事门票具有唯一性、时效性等特殊属性，如非比赛变更、取消、票品错误原因外，不提供退还票品服务，购票时请务必仔细核对活动信息；</span></p><p>最终解释权归 <b>单车娱乐</b> 所有</p><p></p><p></p><p></p><p></p><p></p>"
+        default_description = ViagogoSetting["default_description"]
 
-        mlb_url = "https://api.viagogo.net/v2/categories/4953/children"
-
-        res_json = get_url_json(mlb_url, client)
-        if res_json.nil? || res_json["total_items"] > 30
-          viagogo_logger.info "total_items数量不正确"
+        unless ids_array = get_event_ids
+          viagogo_logger.info "获取event_ids失败"
           return
         end
-
-        teams = res_json["_embedded"]["items"]
-
-        teams.each do |team|
-          event_url = "https://api.viagogo.net/v2/categories/#{team["id"].to_s}/events?only_with_tickets=true&page_size=199"
-
-          events_json = get_url_json(event_url, client)
-          if events_json.nil? || events_json["total_items"] == 0
-            next
+        ids_array.each do |id|
+          event_json = ssdb.exec(["hget", "viagogo_events", id])
+          unless event_json.first == "ok"
+            viagogo_logger.info "获取single_event失败"
+            return
           end
-
-          events = events_json["_embedded"]["items"]
-
-          events.each do |event|
-            Star.transaction do
-              unless star = Star.where(event_path: team["id"].to_s).first
-                star = Star.create(name: team["name"], event_path: team["id"].to_s)
-              end
-              concert_name = event["name"]
-              concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
-              star.hoi_concert(concert)
-
-              venue_json = event["_embedded"]["venue"]
-              city_name = venue_json["city"]
-              city = City.where(source_name: city_name).first_or_create(name: city_name, source: 4)
-              stadium_name = venue_json["name"]
-              stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
-
-              show = Show.where(source_name: concert_name, stadium_id: stadium.id).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
-
-              #show的名字中文化
-              if show.name == concert_name
-                team_names = concert_name.split(" vs. ")
-                if team_names.count == 2
-                  translated_name = concert_name.gsub(team_names[0], MLBSetting[team_names[0]]).gsub(team_names[1], MLBSetting[team_names[1]])
-                  show.update(name: translated_name)
-                end
-              end
-
-              #时间数据格式"2016-04-29T13:20:00-05:00"
-              show_time = DateTime.strptime(event["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
-
-              event = Event.where(ticket_path: event["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
-              event.update(show_time: show_time)
+          event_json = JSON.parse(event_json.last)
+          concert_name = event_json["name"]
+          team_names = concert_name.split(" vs. ")
+          if team_names.size != 2
+            viagogo_logger.info "teams name 获取失败"
+            return
+          end
+          Event.transaction do
+            unless star1 = Star.where(name: team_names[0]).first
+              star1 = Star.create(name: team_names[0], event_path: "viagogo")
             end
-          end#-------endof star-transaction
+            unless star2 = Star.where(name: team_names[1]).first
+              star2 = Star.create(name: team_names[1], event_path: "viagogo")
+            end
+            concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
+            star1.hoi_concert(concert)
+            star2.hoi_concert(concert)
+
+            venue_json = event_json["_embedded"]["venue"]
+            city_name = venue_json["city"]
+            city = City.where(source_name: city_name).first_or_create(name: city_name, source: 4)
+            stadium_name = venue_json["name"]
+            stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
+
+            show = Show.where(source_name: concert_name, stadium_id: stadium.id).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+
+            #show的名字中文化
+            if show.name == concert_name
+              translated_name = concert_name.gsub(team_names[0], MLBSetting[team_names[0]]).gsub(team_names[1], MLBSetting[team_names[1]])
+              show.update(name: translated_name)
+            end
+
+            #时间数据格式"2016-04-29T13:20:00-05:00"
+            show_time = DateTime.strptime(event_json["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
+
+            event = Event.where(ticket_path: event_json["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
+            event.update(show_time: show_time)
+          end
         end
       else
+        viagogo_logger.info "data_transform连接不到ssdb"
         return
       end
     end
 
     def update_events_data
       events = Event.where("ticket_path is not null and is_display is true")
-      events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)} if events.present?
+      events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
     end
 
     #返回success变量来区别是否更新数据成功
     def update_event_data_with_api(event_id)
-      success = false
-      client = get_client
-      rate = get_exchange_rate
-      event = Event.find(event_id)
-      show = event.show
-      if client.present? && rate.present? && show.present? && event.present?
-        ticket_json = get_events_data(event.ticket_path, client)
+      ssdb = SSDB::Client.new.connect
+      unless ssdb.connected?
+        viagogo_logger.info "update_events_data连接不到ssdb"
+        return
+      end
 
-        if ticket_json.present? && ticket_json["total_items"] > 0
-          success = true
+      success = false
+      event = Event.find(event_id)
+
+      return nil if event.show_time < Time.now
+
+      show = event.show
+      if show.present? && event.present?
+        listing_json = ssdb.exec(["hget", "viagogo_listings", event.ticket_path])
+        if listing_json.first == "ok"
+          ticket_json = JSON.parse( listing_json.last )
           ticket_items = ticket_json["_embedded"]["items"]
           e_ticket_items = ticket_items.select{|i| i["_embedded"]["ticket_type"]["type"].include?("ETicket")}
           group_by_section_ticket_hash = e_ticket_items.group_by{|i| i["seating"]["section"]}
@@ -125,8 +125,8 @@ module ViagogoDataToHoishow
               ticket_price + ( ( booking_fee + shipping + vat ) / i["number_of_tickets"] ).round(2)
             end.compact.sort
             #价格为(单价加上预约费)X汇率
-            max_price = ( price_array.last * rate ).to_i + 200
-            price_range = "#{( price_array.first * rate ).to_i + 200} - #{max_price}"
+            max_price = price_array.last.to_i + 200
+            price_range = "#{price_array.first.to_i + 200} - #{max_price}"
 
             #update_area_data
             area_id = update_area_logic(area_name, show, event, max_price, price_range, seats_count)
@@ -140,6 +140,7 @@ module ViagogoDataToHoishow
           #隐藏不存在的区
           not_exist_ids = source_area_ids - updated_area_ids
           Area.where("id in (?)", not_exist_ids).update_all(is_exist: false)
+          success = true
         end
       end
       event.reload
@@ -250,23 +251,23 @@ module ViagogoDataToHoishow
     end
 
     def update_events_stadium_map
+      
       events = Event.where("ticket_path is not null and stadium_map is null and is_display is true")
-      events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)} if events.present?
+      events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)}
     end
 
     def update_event_stadium_map_with_api(event_id)
-      client = get_client
+      ssdb = SSDB::Client.new.connect
+      unless ssdb.connected?
+        viagogo_logger.info "update_events_stadium_map连接不到ssdb"
+        return
+      end
+
       event = Event.find(event_id)
-      if client.present? && event.present?
-        event_json = get_url_json("https://api.viagogo.net/v2/events/#{event.ticket_path}/map", client)
-        if event_json.present?
-          return if event_json["_links"].blank? || event_json["_links"]["venuemap:gif"].blank?
-          map_url = event_json["_links"]["venuemap:gif"]["href"]
-          if map_url.present?
-            map_url = "#{map_url[0..-4]}png"
-          else
-            return
-          end
+      if event.present?
+        res = ssdb.exec(["hget", "viagogo_stadium_maps", event.ticket_path])
+        if res.first == "ok"
+          map_url = res.last
           update_subject_url(event, map_url)
         end
       end
@@ -315,92 +316,24 @@ module ViagogoDataToHoishow
       end
     end
 
-    def get_url_json(url, client)
-      3.times do
-        begin
-          res = JSON.parse(client.get(url).body)
-          if res.present?
-            return res
+    def get_event_ids
+      ssdb = SSDB::Client.new.connect
+      if ssdb.connected?
+        result = ssdb.exec(["hsize", "viagogo_events"])
+        if result.first == "ok"
+          ids_array = ssdb.exec(["hkeys", "viagogo_events", "", "", result.last])
+          if ids_array.first == "ok"
+            ids_array.delete("ok")
+            ids_array
           else
-            next
+            nil
           end
-        rescue Exception => e
-          viagogo_logger.info "访问#{url}失败,即将重试"
-          next
+        else
+          nil
         end
+      else
+        nil
       end
-      nil
-    end
-
-    def get_events_data(viagogo_event_id_string, client)
-      3.times do
-        begin
-          ticket_json = get_url_json("https://api.viagogo.net/v2/events/#{viagogo_event_id_string}/listings?page_size=999", client)
-          if ticket_json.present?
-            return ticket_json
-          else
-            next
-          end
-        rescue Exception => e
-          viagogo_logger.info "获取ticket数据失败, viagogo_event_id_string为#{viagogo_event_id_string} ,即将重试"
-          next
-        end
-      end
-      nil
-    end
-
-    def get_client
-      client = GogoKit::Client.new do |config|
-        config.client_id = ViagogoSetting["client_id"]
-        config.client_secret = ViagogoSetting["client_secret"]
-      end
-
-      access_token = Rails.cache.read("viagogo_access_token")
-
-      if access_token.nil?
-        3.times do
-          begin
-            token = client.get_client_access_token
-            if token.present?
-              access_token = token.access_token
-              Rails.cache.write("viagogo_access_token", access_token, expires_in: 1.day)
-              break
-            else
-              next
-            end
-          rescue Exception => e
-            viagogo_logger.info "获取access_token失败,即将重试"
-            next
-          end
-        end
-        return nil if access_token.nil?
-      end
-
-      client.access_token = access_token
-      client
-    end
-
-    def get_exchange_rate
-      rate = Rails.cache.read("viagogo_rate")
-      return rate if rate.present?
-
-      url = "http://api.fixer.io/latest?base=USD"
-      3.times do
-        begin
-          res = Timeout::timeout(5) { RestClient.get url } rescue nil
-          if res.present?
-            res = JSON.parse res
-            Rails.cache.write("viagogo_rate", res["rates"]["CNY"], expires_in: 1.day)
-            return res["rates"]["CNY"]
-          else
-            next
-          end
-        rescue Exception => e
-          viagogo_logger.info "获取汇率失败，即将重试"
-          next
-        end
-      end
-      nil
     end
 
     def data_clear
