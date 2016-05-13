@@ -30,18 +30,19 @@ set :output, "log/cron.log"
 
 every 1.day do
   rake "shows:check_finished_shows"
+  rake "shows:check_hidden_shows"
 end
 
-every 1.day do
-  rake "boom_playlists:get_newest_cover"
-  runner "Event.hide_finished_event"
-end
+# every 1.day do
+#   rake "boom_playlists:get_newest_cover"
+#   runner "Event.hide_finished_event"
+# end
 
 every '30 1,10,15,20 * * *' do
   rake "fetcher:yongle:day_data"
 end
 
-#viagogo
-every 1.day, :at => '4:30 am' do
-  rake "viagogo:data"
-end
+# #viagogo
+# every 1.day, :at => '4:30 am' do
+#   rake "viagogo:data"
+# end

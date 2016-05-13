@@ -1,26 +1,27 @@
 <%# encoding: utf-8 %>
 
 <div class="nav show_show">
-  <h2>
-    演出详情
-    <% if can? :update, @show %>
-      <small><%= link_to "编辑", edit_operation_show_path(@show) %></small>
-    <% end %>
-  </h2>
-  <h3><%= @show.name %></h3>
+  <h2><%= @show.name %></h2>
+  <% if can? :update, @show %>
+    <%= link_to "编辑", edit_operation_show_path(@show) %>
+  <% end %>
+  <%= link_to "场次管理", event_list_operation_show_path(@show) %>
   <div class="row">
-  <div class="col-lg-6">
-    <dl class="dl-horizontal">
-      <dt class="dt-left">演出购票状态</dt><dd><%= @show.status_cn %></dd>
-      <dt class="dt-left">演出类型</dt><dd><%= @show.play_type %></dd>
-      <dt class="dt-left">演出时间</dt><dd><%= get_datetime @show.show_time %></dd>
-      <dt class="dt-left">演出城市</dt><dd><%= @show.city.name %></dd>
-      <dt class="dt-left">演出场馆</dt><dd><%= @show.stadium.name %></dd>
-    </dl>
-  </div>
-  <div class="col-lg-6">
-    <p>演出海报</p>
-    <img src="<%= @show.poster_url %>" alt="演出海报" width="300px">
+    <div class="col-lg-6">
+      <dl class="dl-horizontal">
+        <dt class="dt-left">购票状态</dt><dd><%= @show.status_cn %></dd>
+        <dt class="dt-left">是否预售</dt><dd><%= @show.is_presell_cn %></dd>
+        <dt class="dt-left">是否显示</dt><dd><%= @show.is_display_cn %></dd>
+        <dt class="dt-left">演出类型</dt><dd><%= @show.play_type %></dd>
+        <dt class="dt-left">演出时间</dt><dd><%= get_datetime @show.show_time %></dd>
+        <dt class="dt-left">演出城市</dt><dd><%= @show.city.name %></dd>
+        <dt class="dt-left">演出场馆</dt><dd><%= @show.stadium.name %></dd>
+      </dl>
+    </div>
+    <div class="col-lg-6">
+      <p>演出海报</p>
+      <img src="<%= @show.poster_url %>" alt="演出海报" width="300px">
+    </div>
   </div>
   <div class="row">
     <div class="col-lg-12">
