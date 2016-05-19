@@ -69,7 +69,20 @@ module ViagogoDataToHoishow
             stadium_name = venue_json["name"]
             stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
 
-            show = Show.where(source_name: concert_name, stadium_id: stadium.id).first_or_create(name: concert_name, concert_id: concert.id, city_id: city.id, source: 4, ticket_type: 0, mode: 1, status: 0, seat_type: 1, description: default_description, show_type: "MLB")
+            show = Show.where(source_name: concert_name, stadium_id: stadium.id)
+                       .first_or_create({
+                          name: concert_name,
+                          concert_id: concert.id,
+                          city_id: city.id,
+                          source: 4,
+                          ticket_type: 0,
+                          mode: 1,
+                          status: 0,
+                          seat_type: 1,
+                          description: default_description,
+                          is_display: 1,
+                          show_type: "MLB"
+                        })
 
             #show的名字中文化
             if show.name == concert_name
@@ -259,7 +272,7 @@ module ViagogoDataToHoishow
     end
 
     def update_events_stadium_map
-      
+
       events = Event.where("ticket_path is not null and stadium_map is null and is_display is true")
       events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)}
     end
@@ -287,7 +300,7 @@ module ViagogoDataToHoishow
 
         3.times do
           begin
-            temp = 
+            temp =
               Timeout::timeout(5) do
                 case subject_class
                 when "Star"
@@ -295,17 +308,17 @@ module ViagogoDataToHoishow
                   if subject.avatar.present?
                     subject.remove_avatar!
                   end
-                  subject.remote_avatar_url = url  
+                  subject.remote_avatar_url = url
                 when "Show"
                   if subject.poster.present?
                     subject.remove_poster!
                   end
-                  subject.remote_poster_url = url  
+                  subject.remote_poster_url = url
                 when "Event"
                   if subject.stadium_map.present?
                     subject.remove_stadium_map!
                   end
-                  subject.remote_stadium_map_url = url  
+                  subject.remote_stadium_map_url = url
                 end
                 subject.save
               end

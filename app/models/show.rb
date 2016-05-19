@@ -143,6 +143,15 @@ class Show < ActiveRecord::Base
     end
   end
 
+  def description_time
+    if selling?
+      time_array = events.order('show_time asc').map{|e| e.show_time.strftime('%Y-%m-%d %H:%M')}
+      "#{time_array[0]} ~ #{time_array[-1]}"
+    else
+      super
+    end
+  end
+
   def source_cn
     # hoishow: "自有资源"
     # damai: "大麦"
