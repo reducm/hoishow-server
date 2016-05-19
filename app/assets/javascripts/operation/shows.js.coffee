@@ -301,6 +301,8 @@ $ ->
               'source': $('#source_filter').val()
               'is_display': $('#is_display_filter').val()
               'is_upcoming': $('#is_upcoming_filter').val()
+              'min_price': $('#min_price_filter').val()
+              'max_price': $('#max_price_filter').val()
               'start_date': $('#start_date_filter').val()
               'end_date': $('#end_date_filter').val()
               # 控件有问题，现固定每页显示10行
@@ -327,6 +329,14 @@ $ ->
             api.ajax.reload()
           $.each f_data["isDisplayFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "显示状态：" + key + '</option>'
+          # 按最低价过滤
+          $('<br />').appendTo($("#shows_table_length"))
+          input = $('<input type="number"></input>').attr('id', 'min_price_filter').attr('placeholder', '最低价').addClass('form-control price_range').appendTo($("#shows_table_length")).on 'keyup', ->
+            api.ajax.reload()
+          $('<label>～</label>').appendTo($("#shows_table_length"))
+          # 按最高价过滤
+          input = $('<input type="number"></input>').attr('id', 'max_price_filter').attr('placeholder', '最高价').addClass('form-control price_range').appendTo($("#shows_table_length")).on 'keyup', ->
+            api.ajax.reload()
           # 时间过滤预设
           timenow = moment().format('YYYY/MM/DD hh:mm')
           # 时间过滤预设：全部
@@ -376,6 +386,8 @@ $ ->
             $('#channel_filter').val('')
             $('#buy_origin_filter').val('')
             $('#show_filter').val('')
+            $('#min_price_filter').val('')
+            $('#max_price_filter').val('')
             $('#start_date_filter').val('')
             $('#end_date_filter').val('')
             api.search('').draw()
