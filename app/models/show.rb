@@ -144,11 +144,11 @@ class Show < ActiveRecord::Base
   end
 
   def description_time
-    if selling?
-      time_array = events.order('show_time asc').map{|e| e.show_time.strftime('%Y-%m-%d %H:%M')}
+    time_array = events.order('show_time asc').map{|e| e.show_time.strftime('%Y-%m-%d %H:%M')}
+    if time_array.size > 1
       "#{time_array[0]} ~ #{time_array[-1]}"
     else
-      super
+      time_array.first
     end
   end
 
