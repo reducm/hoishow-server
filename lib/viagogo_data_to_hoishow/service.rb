@@ -1,4 +1,4 @@
-# coding: utf-8
+# encoding: utf-8
 require 'timeout'
 require 'benchmark'
 
@@ -13,10 +13,10 @@ module ViagogoDataToHoishow
         b.report("data_transform:"){data_transform}
         #用sidekiq更新viagogo的所有event的areas的数据
         b.report("update_events_data:"){update_events_data}
-        b.report("update_star_avatar:"){update_star_avatar}
-        b.report("update_show_poster:"){update_show_poster}
         #用sidekiq更新所有event场馆图
         b.report("update_events_stadium_map:"){update_events_stadium_map}
+        #
+        #b.report("update_show_poster:"){update_show_poster}
       end
     end
 
@@ -26,74 +26,61 @@ module ViagogoDataToHoishow
 
         default_description = ViagogoSetting["default_description"]
 
-        unless ids_array = get_event_ids
-          viagogo_logger.info "获取event_ids失败"
+        unless categories = get_categories
+          viagogo_logger.info "获取categories失败"
           return
         end
-        ids_array.each do |id|
-          event_json = ssdb.exec(["hget", "viagogo_events", id])
-          unless event_json.first == "ok"
-            viagogo_logger.info "获取single_event失败"
-            return
-          end
-          event_json = JSON.parse(event_json.last)
-          concert_name = event_json["name"]
-          team_names = concert_name.split(" vs. ")
-          if team_names.size != 2
-            viagogo_logger.info "teams name 获取失败"
-            return
-          end
 
-          team1 = MLBSetting[team_names[0]]
-          team2 = MLBSetting[team_names[1]]
-          if team1.present? && team2.present?
-            translated_name = concert_name.gsub(team_names[0], team1).gsub(team_names[1], team2)
-          else
-            return
-          end
-
-          Event.transaction do
-            unless star1 = Star.where(name: team_names[0]).first
-              star1 = Star.create(name: team_names[0], event_path: "viagogo")
-            end
-            unless star2 = Star.where(name: team_names[1]).first
-              star2 = Star.create(name: team_names[1], event_path: "viagogo")
-            end
-            concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
-            star1.hoi_concert(concert)
-            star2.hoi_concert(concert)
-
-            venue_json = event_json["_embedded"]["venue"]
-            city_name = venue_json["city"]
-            city = City.where(source_name: city_name).first_or_create(name: city_name, source: 4)
-            stadium_name = venue_json["name"]
-            stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
-
-            show = Show.where(source_name: concert_name, stadium_id: stadium.id)
-                       .first_or_create({
-                          name: concert_name,
-                          concert_id: concert.id,
-                          city_id: city.id,
-                          source: 4,
-                          ticket_type: 0,
-                          mode: 1,
-                          status: 0,
-                          seat_type: 1,
-                          description: default_description,
-                          is_display: 1,
-                          show_type: "MLB"
-                        })
-
-            #show的名字中文化
-            if show.name == concert_name
-              show.update(name: translated_name)
+        categories.each do |table, category_hash|
+          category_hash.each do |category_id, category_name|
+            unless event_ids = get_event_ids(category_id, table)
+              viagogo_logger.info "获取event_ids失败"
+              next
             end
 
-            #时间数据格式"2016-04-29T13:20:00-05:00"
-            show_time = DateTime.strptime(event_json["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
+            category_name[0] = ""
+            category_name[-1] = ""
 
-            event = Event.where(ticket_path: event_json["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
-            event.update(show_time: show_time)
+            event_ids.each do |event_id|
+              event_json = ssdb.hget("viagogo_#{table}_events_by_#{category_id}", event_id)
+              unless event_json
+                viagogo_logger.info "获取single_event失败"
+                next
+              end
+              event_json = JSON.parse(event_json)
+              concert_name = event_json["name"].force_encoding("utf-8")
+
+              Event.transaction do
+                concert = Concert.where(name: concert_name).first_or_create(is_show: "auto_hide", status: "finished")
+
+                venue_json = event_json["_embedded"]["venue"]
+                city_name = venue_json["city"].force_encoding("utf-8")
+                city = City.where(source_name: city_name).first_or_create(name: city_name, source: 4)
+                stadium_name = venue_json["name"].force_encoding("utf-8")
+                stadium = Stadium.where(source_name: stadium_name, city_id: city.id).first_or_create(name: stadium_name, longitude: venue_json["longitude"], latitude: venue_json["latitude"], source: 4)
+
+                show = Show.where(source_name: concert_name, stadium_id: stadium.id)
+                  .first_or_create({
+                  name: concert_name,
+                  concert_id: concert.id,
+                  city_id: city.id,
+                  source: 4,
+                  ticket_type: 0,
+                  mode: 1,
+                  status: 0,
+                  seat_type: 1,
+                  description: default_description,
+                  is_display: 1,
+                  show_type: category_name.force_encoding("utf-8")
+                })
+
+                  #时间数据格式"2016-04-29T13:20:00-05:00"
+                  show_time = DateTime.strptime(event_json["start_date"], '%Y-%m-%dT%H:%M') - 8.hours
+
+                  event = Event.where(ticket_path: event_json["id"].to_s).first_or_create(show_time: show_time, show_id: show.id)
+                  event.update(show_time: show_time)
+              end
+            end
           end
         end
       else
@@ -104,7 +91,8 @@ module ViagogoDataToHoishow
 
     def update_events_data
       events = Event.where("ticket_path is not null and is_display is true")
-      events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
+      #events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
+      events.each{|event| update_event_data_with_api(event.id)}
     end
 
     #返回success变量来区别是否更新数据成功
@@ -117,16 +105,15 @@ module ViagogoDataToHoishow
 
       success = false
       event = Event.find(event_id)
-
-      return nil if event.show_time < Time.now
-
       show = event.show
       if show.present? && event.present?
-        listing_json = ssdb.exec(["hget", "viagogo_listings", event.ticket_path])
-        if listing_json.first == "ok"
-          ticket_json = JSON.parse( listing_json.last )
-          ticket_items = ticket_json["_embedded"]["items"]
-          e_ticket_items = ticket_items.select{|i| i["_embedded"]["ticket_type"]["type"].include?("ETicket")}
+        type_map = Rails.cache.read("type_map")
+        return nil unless type_map
+        category = type_map[show.show_type]
+        listings_json_array = ssdb.hgetall("viagogo_#{category}_listings_by_#{event.ticket_path}", :list).map{|i| JSON.parse i}
+        if listings_json_array.present?
+          e_ticket_items = listings_json_array.select{|i| i["_embedded"]["ticket_type"]["type"].include?("ETicket")}
+          return nil if e_ticket_items.size < 1
           group_by_section_ticket_hash = e_ticket_items.group_by{|i| i["seating"]["section"]}
 
           source_area_ids = event.areas.pluck(:id)
@@ -143,8 +130,14 @@ module ViagogoDataToHoishow
               booking_fee = (i["estimated_booking_fee"].present? ? i["estimated_booking_fee"]["amount"] : 0)
               shipping = (i["estimated_shipping"].present? ? i["estimated_shipping"]["amount"] : 0)
               vat = (i["estimated_vat"].present? ? i["estimated_vat"]["amount"] : 0)
-              ticket_price + ( ( booking_fee + shipping + vat ) / i["number_of_tickets"] ).round(2)
+              total_fee = booking_fee + shipping + vat
+              if total_fee < 1 or i["number_of_tickets"] < 1
+                ticket_price
+              else
+                ticket_price + ( ( total_fee ) / i["number_of_tickets"] ).round(2)
+              end
             end.compact.sort
+
             #价格为(单价加上预约费)X汇率
             max_price = price_array.last.to_i + 200
             price_range = "#{price_array.first.to_i + 200} - #{max_price}"
@@ -211,68 +204,7 @@ module ViagogoDataToHoishow
       end
     end
 
-    def update_star_avatar
-      logo_json = JSON.parse(File.open("./public/mlb_logos.json","r").readline)
-      stars = Star.where("event_path is not null and avatar is null")
-      if stars.present? && logo_json.present?
-        stars.each do |star|
-          url = logo_json[star.name]
-          update_subject_url(star, url)
-        end
-      end
-    end
-
-    def update_show_poster
-      logo_json = JSON.parse(File.open("./public/mlb_logos.json","r").readline)
-      shows = Show.where("source = 4 and poster is null")
-      if shows.present? && logo_json.present?
-        shows.each do |show|
-          stars = show.stars
-          if ( stars.count == 2 )
-            #确定主场队伍
-            if show.name.start_with?(stars[0].name)
-              first_star = stars.first
-              second_star = stars.last
-            else
-              first_star = stars.last
-              second_star = stars.first
-            end
-
-            bg_url = logo_json["mlbbg"]
-
-            if first_star.avatar && second_star.avatar
-              begin
-                if Rails.env.production? || Rails.env.staging?
-                  first_img = MiniMagick::Image.open(first_star.avatar.url)
-                  second_img = MiniMagick::Image.open(second_star.avatar.url)
-                else
-                  first_img = MiniMagick::Image.open( first_star.avatar.current_path )
-                  second_img = MiniMagick::Image.open( second_star.avatar.current_path )
-                end
-                bg_img = MiniMagick::Image.open(bg_url)
-              rescue Exception => e
-                viagogo_logger.info "打开图片出错，#{e}"
-                next
-              end
-              res = combine_img(bg_img, first_img, "+140+180")
-              res = combine_img(res, second_img, "+780+180")
-              show.poster = res
-              show.save
-            end
-          end
-        end
-      end
-    end
-
-    def combine_img(bg_img, over_img, position)
-      bg_img.composite(over_img) do |c|
-        c.compose "Over"
-        c.geometry position
-      end
-    end
-
     def update_events_stadium_map
-
       events = Event.where("ticket_path is not null and stadium_map is null and is_display is true")
       events.each{|event| UpdateViagogoStadiumMapWorker.perform_async(event.id)}
     end
@@ -285,12 +217,13 @@ module ViagogoDataToHoishow
       end
 
       event = Event.find(event_id)
-      if event.present?
-        res = ssdb.exec(["hget", "viagogo_stadium_maps", event.ticket_path])
-        if res.first == "ok"
-          map_url = res.last
-          update_subject_url(event, map_url)
-        end
+      show = event.show
+      if event.present? && show.present?
+        type_map = Rails.cache.read("type_map")
+        return nil unless type_map
+        category = type_map[show.show_type]
+        map_url = ssdb.hget("viagogo_#{category}_stadium_maps", event.ticket_path)
+        update_subject_url(event, map_url) unless map_url.blank?
       end
     end
 
@@ -337,28 +270,51 @@ module ViagogoDataToHoishow
       end
     end
 
-    def get_event_ids
+    def get_event_ids(category_id, table)
       ssdb = SSDB::Client.new.connect
       if ssdb.connected?
-        result = ssdb.exec(["hsize", "viagogo_events"])
+        result = ssdb.exec(["hsize", "viagogo_#{table}_events_by_#{category_id}"])
         if result.first == "ok"
-          ids_array = ssdb.exec(["hkeys", "viagogo_events", "", "", result.last])
+          ids_array = ssdb.exec(["hkeys", "viagogo_#{table}_events_by_#{category_id}", "", "", result.last])
           if ids_array.first == "ok"
             ids_array.delete("ok")
-            ids_array
-          else
-            nil
+            return ids_array
           end
-        else
-          nil
         end
+      end
+      nil
+    end
+
+    def get_categories
+      ssdb = SSDB::Client.new.connect
+      if ssdb.connected?
+        type_map = {}
+        result = {}
+        ["sport", "theater", "concert", "festival"].each do |category|
+          #{"1006"=>"\"Cricket\"",...}
+          data = ssdb.hgetall("viagogo_#{category}_types")
+          result.merge!( {category => data} )
+
+          #创建缓存数据
+          types = ssdb.hgetall("viagogo_#{category}_types", :list)
+          cache_data = types.map do |type|
+            type[0] = ""
+            type[-1] = ""
+            [type.force_encoding("utf-8"), category]
+          end
+          type_map.merge!(Hash[cache_data])
+        end
+        #写缓存
+        Rails.cache.write("type_map", type_map)
+
+        result
       else
         nil
       end
     end
 
     def data_clear
-      ["Star", "Concert", "City", "Stadium", "Show", "Event", "Area", "ShowAreaRelation"].each{ |x| Object::const_get(x).delete_all }
+      ["Star", "Concert", "City", "Stadium", "Show", "Event", "Area", "ShowAreaRelation", "Ticket"].each{ |x| Object::const_get(x).delete_all }
     end
 
   end

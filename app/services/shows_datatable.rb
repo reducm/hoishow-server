@@ -91,6 +91,10 @@ class ShowsDatatable
     if params[:is_upcoming].present?
       shows = params[:is_upcoming] == '1' ? shows.is_upcoming : shows.is_not_upcoming
     end
+    # 按子分类过滤
+    if params[:show_type].present?
+      shows = shows.where("shows.show_type = ?", params[:show_type])
+    end
     # 按价格范围过滤
     if params[:min_price].present?
       shows = shows.eager_load(:show_area_relations).where("show_area_relations.price > ?", params[:min_price].to_i)
