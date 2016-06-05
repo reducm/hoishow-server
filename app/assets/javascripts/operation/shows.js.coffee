@@ -301,6 +301,7 @@ $ ->
               'source': $('#source_filter').val()
               'is_display': $('#is_display_filter').val()
               'is_upcoming': $('#is_upcoming_filter').val()
+              'show_type': $('#show_type_filter').val()
               'min_price': $('#min_price_filter').val()
               'max_price': $('#max_price_filter').val()
               'start_date': $('#start_date_filter').val()
@@ -329,6 +330,11 @@ $ ->
             api.ajax.reload()
           $.each f_data["isDisplayFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "显示状态：" + key + '</option>'
+          # 按show_type过滤
+          select = $('<select><option selected="selected" value="">子分类：全部</option></select>').attr("id", "show_type_filter").addClass('form-control shows_filters').appendTo($("#shows_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["showTypeFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "子分类：" + key + '</option>'
           # 按最低价过滤
           $('<br />').appendTo($("#shows_table_length"))
           input = $('<input type="number"></input>').attr('id', 'min_price_filter').attr('placeholder', '最低价').addClass('form-control price_range').appendTo($("#shows_table_length")).on 'keyup', ->
@@ -386,6 +392,7 @@ $ ->
             $('#channel_filter').val('')
             $('#buy_origin_filter').val('')
             $('#show_filter').val('')
+            $('#show_type_filter').val('')
             $('#min_price_filter').val('')
             $('#max_price_filter').val('')
             $('#start_date_filter').val('')

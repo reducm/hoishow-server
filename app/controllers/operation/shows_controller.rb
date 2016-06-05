@@ -324,6 +324,7 @@ class Operation::ShowsController < Operation::ApplicationController
     @status_filter = status_filter
     @source_filter = source_filter
     @is_display_filter = is_display_filter
+    @show_type_filter = show_type_filter
   end
   # {"售票中"=>0, "售票结束"=>1, ...}
   def status_filter
@@ -344,5 +345,13 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def is_display_filter
     {"显示"=>1, "不显示"=>0}
+  end
+
+  def show_type_filter
+    hash = {}
+    Show.pluck(:show_type).uniq.compact.each do |type|
+      hash.merge!({type => type})
+    end
+    hash
   end
 end
