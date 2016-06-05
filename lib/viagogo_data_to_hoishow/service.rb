@@ -15,7 +15,8 @@ module ViagogoDataToHoishow
         b.report("update_events_data:"){update_events_data}
         #用sidekiq更新所有event场馆图
         b.report("update_events_stadium_map:"){update_events_stadium_map}
-        #
+        viagogo_logger.info "data_to_hoishow执行完毕"
+        
         #b.report("update_show_poster:"){update_show_poster}
       end
     end
@@ -91,8 +92,7 @@ module ViagogoDataToHoishow
 
     def update_events_data
       events = Event.where("ticket_path is not null and is_display is true")
-      #events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
-      events.each{|event| update_event_data_with_api(event.id)}
+      events.each{|event| UpdateViagogoEventWorker.perform_async(event.id)}
     end
 
     #返回success变量来区别是否更新数据成功
