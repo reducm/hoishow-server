@@ -1,7 +1,7 @@
 # encoding: utf-8
 class Api::V1::ApplicationController < ApplicationController
   skip_before_filter :verify_authenticity_token
-  before_filter :api_verify
+  before_filter :api_verify, :set_logger!
 
   protected
   def api_verify
@@ -66,5 +66,11 @@ class Api::V1::ApplicationController < ApplicationController
         return error_json "账户无验票权限"
       end
     end
+  end
+
+  def set_logger!
+    @logger ||= Logger.new(File.join(Rails.root, 'log', 'api.log'), 'weekly')
+    @logger.info("\nStarted #{request.request_method} #{request.fullpath} for " \
+      "#{request.env['HTTP_HOST']} at #{Time.now}\n Params: #{params.to_hash}\n\n")
   end
 end
