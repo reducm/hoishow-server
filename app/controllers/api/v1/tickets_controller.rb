@@ -5,7 +5,7 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
 
   def get_ticket
     @ticket = Ticket.where(code: params[:code]).first
-    return error_json '获取门票失败' if @ticket.nil?
+    return error_json '无效票码' if @ticket.nil?
   end
 
   def check_tickets
