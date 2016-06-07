@@ -19,7 +19,7 @@ class Api::V1::TicketsController < Api::V1::ApplicationController
 
         render json: {msg: "ok"}, status: 200
       else
-        return error_json "获取门票失败"
+        return error_json "无效票码"
       end
     else
       return error_json "获取票码失败"
