@@ -629,7 +629,7 @@ $ ->
 
     #删除区域
     $('.areas').on 'click', '.del_area', ()->
-      if confirm('确定要删除该区域吗')
+      if confirm('已售出的区域请勿删除，否则会影响验票入场，确定要删除吗？')
         event_id = $(this).parents('table').data('id')
         area_id = $(this).parent().data('id')
         if area_id
@@ -710,15 +710,6 @@ $ ->
             globalPosition: 'top center'
             className: 'success'
         )
-
-  # 删除topic
-  $(".show_show_topics_list").on "click", ".del_topic", ()->
-    if confirm("确定要删除?")
-      topic_id = $(this).parent().data("id")
-      $.post("/operation/topics/#{topic_id}/destroy_topic", {_method: 'delete'}, (data)->
-        if data.success
-          location.reload()
-      )
 
   # 设置选座
   if $('.seats-info').length > 0

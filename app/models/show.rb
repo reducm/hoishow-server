@@ -287,7 +287,7 @@ class Show < ActiveRecord::Base
   end
 
   def ticket_pic_url_for_danche
-    if self.viagogo?
+    if show_type == "MLB"
       #直传地址
       "http://hoishow-img.b0.upaiyun.com/uploads/nba/img/5ef1666c0828d47afbe7e6820ef4bf8a.jpeg"
     else
