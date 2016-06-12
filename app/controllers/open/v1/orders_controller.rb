@@ -96,6 +96,11 @@ class Open::V1::OrdersController < Open::V1::ApplicationController
       @order.user.update(email: params[:email])
     end
 
+    # 电子票更新订单用户手机号
+    if params[:user_mobile].present? && @order.show.e_ticket?
+      @order.update(user_mobile: params[:user_mobile])
+    end
+
     # 自有库存的演出，可以直接出票
     if @order.show.hoishow?
       if !@order.pre_pay! || !@order.success_pay!

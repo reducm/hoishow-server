@@ -470,9 +470,9 @@ class Order < ActiveRecord::Base
                else
                  '您订购的演出门票已支付成功，我们将在一周内为您发货。届时将会有短信通知，可使用客户端查看订单及跟踪物流信息。客服电话：4008805380【单车娱乐】'
                end
-        SendSmsWorker.perform_async(user.mobile, text)
+        SendSmsWorker.perform_async(get_user_mobile, text)
       elsif e_ticket? && show.hoishow? # 自有资源电子票短信
-        SendSmsWorker.perform_async(user.mobile, show.e_ticket_sms + "【单车娱乐】")
+        SendSmsWorker.perform_async(get_user_mobile, show.e_ticket_sms + "【单车娱乐】")
       end
     end
   end
@@ -573,7 +573,7 @@ class Order < ActiveRecord::Base
   end
 
   def notify_delivery
-    SendSmsWorker.perform_async(user_mobile, "您订购的演出门票已发货，#{get_express_name}:#{express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
+    SendSmsWorker.perform_async(get_user_mobile, "您订购的演出门票已发货，#{get_express_name}:#{express_id}。可使用客户端查看订单及物流信息。客服电话：4008805380【单车娱乐】")
     self.update(sms_has_been_sent: true)
     NotifyDeliveryWorker.perform_async(open_trade_no) unless Rails.env.test?
   end
