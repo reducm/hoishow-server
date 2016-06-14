@@ -25,6 +25,10 @@ class Area < ActiveRecord::Base
 
   paginates_per 10
 
+  def show_time
+    event.show_time rescue nil
+  end
+
   def seats_info=(si)
     write_attribute(:seats_info, ActiveSupport::JSON::encode(si))
   end

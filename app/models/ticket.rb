@@ -41,6 +41,10 @@ class Ticket < ActiveRecord::Base
     where("area_id = ? and status = ?", area_id, statuses[:pending]).count
   end
 
+  def self.outdate_tickets
+    sold_tickets.select{|i| i.area.show_time && i.area.show_time < Time.now.beginning_of_day + 2.days}
+  end
+
   def seat_key
     [self.row, self.column].join('|')
   end
