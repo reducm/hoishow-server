@@ -31,6 +31,7 @@ set :output, "log/cron.log"
 every 1.day do
   rake "shows:check_finished_shows"
   rake "shows:check_hidden_shows"
+  rake "orders:check_outdate_tickets"
 end
 
 # every 1.day do
