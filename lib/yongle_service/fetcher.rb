@@ -53,7 +53,7 @@ module YongleService
             empty_inventory(@fetch_area_ids, event) if @fetch_area_ids.any?
             event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
           end
-          if show.events.blank? # 没有场次的演出，如果没有下过单就直接删除，否则隐藏
+          if show.events.is_display.blank? # 没有场次的演出，如果没有下过单就直接删除，否则隐藏
             show.orders.blank? ? show.concert.destroy : show.update(is_display: false)
           end
         end
@@ -69,28 +69,29 @@ module YongleService
     # 票区实时数据
     def fetch_productprice_info(area_source_id)
       area = Area.where(source_id: area_source_id, source: Area.sources['yongle']).first
-      relation = area.show_area_relations.first
-      yongle_logger.info "relation.id: #{relation.id}"
+      relation = area.relation
       result_data = YongleService::Service.find_productprice_info(area_source_id)
       yongle_logger.info "result_data: #{result_data}"
       if result_data["result"] == '1000'
         result_data = result_data["data"]["tickSetInfo"]
-        area.update!(name: result_data["priceInfo"])
-        relation.update!(price: result_data["price"].to_i)
-        not_enough_inventory = result_data["priceNum"].to_i < 0 && result_data["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
         not_for_sell = ['1', '4'].exclude?(result_data["priceStarus"]) # 联盟可卖状态为1、4
-        if not_enough_inventory || not_for_sell
-          seats_count = 0
-        elsif result_data["priceNum"].to_i == -1 # 永乐无限库存
-          seats_count = 30
-          area.update!(is_infinite: true)
+        if not_for_sell && !Order.exists?(area_source_id: result_data["productPlayid"], status: [0, 1, 2, 3, 5])
+          area.destroy
+          yongle_logger.info "跳过没有关联订单的不可卖的场次, 永乐场次为: #{result_data}"
         else
-          seats_count = result_data["priceNum"].to_i
+          not_enough_inventory = result_data["priceNum"].to_i < -1 # 暂定－1以外的负数库存不可卖
+          if not_enough_inventory || not_for_sell
+            seats_count = 0
+          elsif result_data["priceNum"].to_i == -1 # 永乐无限库存
+            seats_count = 30
+            area.update!(is_infinite: true)
+          else
+            seats_count = result_data["priceNum"].to_i
+          end
+          update_inventory(area.show, area, relation, seats_count, result_data)
         end
-        update_inventory(area.shows.first, area, relation, seats_count, result_data["price"].to_i)
       elsif result_data["result"] == '1003' # 假设永乐把该票区删掉了
-        seats_count = 0
-        update_inventory(area.shows.first, area, relation, seats_count, result_data["price"].to_i)
+        update_inventory(area.show, area, relation, 0, result_data)
       end
       yongle_logger.info "Fetch finished, relation.seats_count: #{relation.seats_count}, relation.left_seats: #{relation.left_seats}"
     end
@@ -212,7 +213,7 @@ module YongleService
                     event.update(is_display: false) if event.areas.blank? # 隐藏没有票区的场次
                   end
                 end
-                if show.events.blank? # 没有场次的演出如果没有下过单就直接删除，否则隐藏
+                if show.events.is_display.blank? # 没有场次的演出如果没有下过单就直接删除，否则隐藏
                   show.orders.blank? ? show.concert.destroy : show.update(is_display: false)
                 end
               end
@@ -330,7 +331,9 @@ module YongleService
     def fetch_area_relation_and_seat(tick_set_infos, event, show)
       tick_set_infos.each do |tick_set_info|
         not_for_sell = ['1', '4'].exclude?(tick_set_info["priceStarus"]) # 联盟可卖状态为1、4
-        if not_for_sell && Order.where('area_source_id = ? and status != ?', tick_set_info["productPlayid"].to_i, Order::statuses[:outdate]).blank?
+        if not_for_sell && !Order.exists?(area_source_id: tick_set_info["productPlayid"], status: [0, 1, 2, 3, 5])
+          area = Area.where(source_id: tick_set_info["productPlayid"].to_i).first
+          area.destroy if area.present?
           yongle_logger.info "跳过没有关联订单的不可卖的场次, 永乐场次ID为: #{tick_set_info}"
           return nil
         else
@@ -339,7 +342,7 @@ module YongleService
           @fetch_area_ids.push(area.id)
           relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
           relation.update!(price: tick_set_info["price"])
-          not_enough_inventory = tick_set_info["priceNum"].to_i < 0 && tick_set_info["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
+          not_enough_inventory = tick_set_info["priceNum"].to_i < -1 # 暂定－1以外的负数库存不可卖
           if not_enough_inventory || not_for_sell
             seats_count = 0
           elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
@@ -348,12 +351,12 @@ module YongleService
           else
             seats_count = tick_set_info["priceNum"].to_i
           end
-          update_inventory(show, area, relation, seats_count, tick_set_info["price"].to_i)
+          update_inventory(show, area, relation, seats_count, tick_set_info)
         end
       end
     end
 
-    def update_inventory(show, area, relation, seats_count, price)
+    def update_inventory(show, area, relation, seats_count, data)
       old_seats_count = relation.seats_count
       old_left_seats = relation.left_seats
 
@@ -361,8 +364,8 @@ module YongleService
         rest_tickets = old_seats_count - seats_count
         show.seats.where('area_id = ? and order_id is null', area.id).limit(rest_tickets).destroy_all
         new_left_seats = old_left_seats - rest_tickets
-        relation.update(left_seats: new_left_seats, seats_count: seats_count)
-        area.update(left_seats: new_left_seats, seats_count: seats_count)
+        relation.update(left_seats: new_left_seats, seats_count: seats_count, price: data['price'])
+        area.update(left_seats: new_left_seats, seats_count: seats_count, name: data['priceInfo'])
       elsif old_seats_count < seats_count #增加了座位
         rest_tickets = seats_count - old_seats_count
 
@@ -374,14 +377,14 @@ module YongleService
         status = Ticket::statuses[:pending]
         seat_type = Ticket::seat_types[:avaliable]
         rest_tickets.times do
-          inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{price}, '#{timenow}', '#{timenow}')"
+          inserts.push "(#{show_id}, #{area_id}, #{status}, #{seat_type}, #{data['price']}, '#{timenow}', '#{timenow}')"
         end
         sql = "INSERT INTO tickets (show_id, area_id, status, seat_type, price, created_at, updated_at) VALUES #{inserts.join(', ')}"
         ActiveRecord::Base.connection.execute sql
         #####################
 
-        relation.update(left_seats: rest_tickets + old_left_seats, seats_count: seats_count)
-        area.update(left_seats: rest_tickets + old_left_seats, seats_count: seats_count)
+        relation.update(left_seats: rest_tickets + old_left_seats, seats_count: seats_count, price: data['price'])
+        area.update(left_seats: rest_tickets + old_left_seats, seats_count: seats_count, name: data['priceInfo'])
       end
     end
 
@@ -389,9 +392,13 @@ module YongleService
       event_area_ids = event.areas.pluck(:id)
       delete_area_ids = event_area_ids - fetch_area_ids
       event.areas.where(id: delete_area_ids).each do |a|
-        relation = a.show_area_relations.first
-        a.update(seats_count: 0, left_seats: 0)
-        relation.update(seats_count: 0, left_seats: 0)
+        if Order.exists?(area_source_id: a.source_id)
+          relation = a.relation
+          a.update(seats_count: 0, left_seats: 0)
+          relation.update(seats_count: 0, left_seats: 0)
+        else
+          a.destroy
+        end
       end
     end
 

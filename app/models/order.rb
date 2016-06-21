@@ -113,8 +113,8 @@ class Order < ActiveRecord::Base
 
   def refill_inventory
     # 算库存 如果seats_count为－1每次都要把left_seats补回30
-    relation = area.show_area_relations.first
-    show = area.shows.first
+    relation = area.relation
+    show = area.show
     old_left_seats = relation.left_seats
     rest_tickets = 30 - old_left_seats
 
