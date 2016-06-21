@@ -329,22 +329,27 @@ module YongleService
 
     def fetch_area_relation_and_seat(tick_set_infos, event, show)
       tick_set_infos.each do |tick_set_info|
-        area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
-        area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
-        @fetch_area_ids.push(area.id)
-        relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
-        relation.update!(price: tick_set_info["price"])
-        not_enough_inventory = tick_set_info["priceNum"].to_i < 0 && tick_set_info["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
         not_for_sell = ['1', '4'].exclude?(tick_set_info["priceStarus"]) # 联盟可卖状态为1、4
-        if not_enough_inventory || not_for_sell
-          seats_count = 0
-        elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
-          seats_count = 30
-          area.update!(is_infinite: true)
+        if not_for_sell && Order.where('area_source_id = ? and status != ?', tick_set_info["productPlayid"].to_i, Order::statuses[:outdate]).blank?
+          yongle_logger.info "跳过没有关联订单的不可卖的场次, 永乐场次ID为: #{tick_set_info}"
+          return nil
         else
-          seats_count = tick_set_info["priceNum"].to_i
+          area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
+          area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
+          @fetch_area_ids.push(area.id)
+          relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
+          relation.update!(price: tick_set_info["price"])
+          not_enough_inventory = tick_set_info["priceNum"].to_i < 0 && tick_set_info["priceNum"].to_i != -1 # 暂定－1以外的负数库存不可卖
+          if not_enough_inventory || not_for_sell
+            seats_count = 0
+          elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
+            seats_count = 30
+            area.update!(is_infinite: true)
+          else
+            seats_count = tick_set_info["priceNum"].to_i
+          end
+          update_inventory(show, area, relation, seats_count, tick_set_info["price"].to_i)
         end
-        update_inventory(show, area, relation, seats_count, tick_set_info["price"].to_i)
       end
     end
 
