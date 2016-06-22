@@ -6,6 +6,7 @@ class Event < ActiveRecord::Base
   validates :show_time, presence: true
 
   scope :verified, -> { where('events.show_time > ? AND events.is_display = ?', Time.now, true)}
+  scope :is_display, -> { where(is_display: true)}
 
   mount_uploader :stadium_map, ImageUploader
   mount_uploader :coordinate_map, ImageUploader

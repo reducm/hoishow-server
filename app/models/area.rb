@@ -29,6 +29,14 @@ class Area < ActiveRecord::Base
     event.show_time rescue nil
   end
 
+  def relation
+    show_area_relations.first
+  end
+
+  def show
+    shows.first
+  end
+
   def seats_info=(si)
     write_attribute(:seats_info, ActiveSupport::JSON::encode(si))
   end
