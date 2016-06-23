@@ -121,10 +121,10 @@ class Operation::OrdersController < Operation::ApplicationController
     if params[:buy_origin].present?
       @orders_for_export = @orders_for_export.where("orders.buy_origin like :buy_origin", buy_origin: "%#{params[:buy_origin]}%")
     end
-    ## 按演出过滤
-    #if params[:show].present?
-      #@orders_for_export = @orders_for_export.where("orders.show_id like :show", show: "%#{params[:show]}%")
-    #end
+    ## 按演出来源过滤
+    if params[:mode].present?
+      @orders_for_export = @orders_for_export.joins(:show).where("shows.source like :mode", mode: "%#{params[:mode]}%")
+    end
     # 按下单时间称过滤
     if params[:start_date].present? && params[:end_date].present?
       @orders_for_export = @orders_for_export.where("orders.created_at between ? and ?", params[:start_date], params[:end_date])

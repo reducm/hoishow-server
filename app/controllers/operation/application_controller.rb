@@ -13,12 +13,20 @@ class Operation::ApplicationController < ApplicationController
     @channel_filter = Order.channels
     @buy_origin_filter = buy_origin_filter
     @show_filter = show_filter
+    @mode_filter = mode_filter
   end
   # {"已出票"=>2, "未支付"=>0, ...}
   def status_filter
     hash = {}
     Order.select(:status).distinct.order(:status).each do |order|
       hash[order.tran("status")] = order[:status]
+    end
+    hash
+  end
+  def mode_filter
+    hash = {}
+    Show.sources.each do |k, v|
+      hash[Show.human_attribute_name("source.#{k}")] = v
     end
     hash
   end
