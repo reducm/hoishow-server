@@ -68,6 +68,7 @@ $ ->
               'status': $('#status_filter').val()
               'channel': $('#channel_filter').val()
               'buy_origin': $('#buy_origin_filter').val()
+              'mode': $('#mode_filter').val()
               # Feature replaced by search
               #'show': if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val()
               'start_date': $('#start_date_filter').val()
@@ -91,6 +92,11 @@ $ ->
             api.ajax.reload()
           $.each f_data["buyOriginFilter"], (key, value) ->
             select.append '<option value="' + value + '">' + "下单平台：" + key + '</option>'
+          # 按演出来源过滤
+          select = $('<select><option selected="selected" value="">演出来源：全部</option></select>').attr("id", "mode_filter").addClass('form-control orders_filters').appendTo($("#orders_table_length")).on 'change', ->
+            api.ajax.reload()
+          $.each f_data["modeFilter"], (key, value) ->
+            select.append '<option value="' + value + '">' + "演出来源：" + key + '</option>'
           # Feature replaced by search
           ## 按演出过滤：如果从演出详情页访问的，不生成过滤框
           #unless $('#show_id').length > 0
