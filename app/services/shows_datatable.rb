@@ -31,7 +31,7 @@ class ShowsDatatable
         show.ticket_type_cn,
         show.stadium.try(:name),
         wrap_text(show.event_show_time, '105px'),
-        "#{tickets.sold_tickets.count}/#{show.total_seats_count}",
+        "#{show.sold_tickets_count_by_order}/#{show.total_seats_count}",
         control_link(show)
       ]
     end
