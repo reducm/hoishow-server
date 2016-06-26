@@ -135,6 +135,11 @@ class Show < ActiveRecord::Base
     end
   end
 
+  def sold_tickets_count_by_order
+    o_array = orders.where(status: [Order.statuses[:paid], Order.statuses[:success]])
+    o_array.any? ? o_array.sum(:tickets_count) : 0
+  end
+
   def get_show_time
     if going_to_open?
       description_time
