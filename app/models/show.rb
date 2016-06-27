@@ -113,31 +113,13 @@ class Show < ActiveRecord::Base
     Show.where(is_display: 1).select{|show| show.events.verified.empty?}
   end
 
-  # 该区域已出票，但订单未支付的票数
-  def unpaid_tickets_count(area_id)
-    if orders.any?
-      area = Area.find(area_id)
-      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
-      orders.where(id: this_area_order_ids).pending.sum(:tickets_count)
-    else
-      0
-    end
-  end
-
-  # 该区域已出票，并且订单已支付的票数
   def sold_tickets_count(area_id)
-    if orders.any?
-      area = Area.find(area_id)
-      this_area_order_ids = area.tickets.success.pluck(:order_id).uniq
-      orders.where(id: this_area_order_ids).success.sum(:tickets_count)
-    else
-      0
-    end
+    order_ids = tickets.where(area_id: area_id, status: [Ticket.statuses[:success], Ticket.statuses[:used]]).pluck(:order_id).uniq
+    orders.where(id: order_ids, status: [Order.statuses[:paid], Order.statuses[:success]]).sum(:tickets_count)
   end
 
   def sold_tickets_count_by_order
-    o_array = orders.where(status: [Order.statuses[:paid], Order.statuses[:success]])
-    o_array.any? ? o_array.sum(:tickets_count) : 0
+    orders.where(status: [Order.statuses[:paid], Order.statuses[:success]]).sum(:tickets_count)
   end
 
   def get_show_time
