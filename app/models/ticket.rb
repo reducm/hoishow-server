@@ -42,7 +42,7 @@ class Ticket < ActiveRecord::Base
   end
 
   def self.outdate_tickets
-    sold_tickets.select{|i| i.area.show_time && i.area.show_time < Time.now.beginning_of_day - 2.days}
+    success.select{|i| i.area.show_time && i.area.show_time < Time.now.beginning_of_day - 2.days}
   end
 
   def seat_key
