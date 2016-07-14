@@ -173,7 +173,7 @@ class Order < ActiveRecord::Base
     # transaction 这些是否要加 rollback 处理 ?
     begin
       Order.transaction do
-        self.tickets.each{|t| t.success!}
+        self.tickets.update_all(status: Ticket::statuses['success'])
       end
     rescue => e
       Rails.logger.fatal("*** errors: #{e.message}")
@@ -213,7 +213,7 @@ class Order < ActiveRecord::Base
           raise RuntimeError, 'area_id not uniq' if area_id.size != 1
           relation = show.show_area_relations.where(area_id: area_id[0]).first
           # update 库存
-          if relation.area.is_infinite && relation.left_seats + tickets_count >= 30
+          if relation.area.is_infinite || relation.left_seats + tickets_count >= 30
             relation.update!(left_seats: 30)
           else
             relation.increment(:left_seats, tickets_count).save!
@@ -305,7 +305,7 @@ class Order < ActiveRecord::Base
         quantity = order_attrs[:tickets_count]
         order = Order.init_from_show(show, order_attrs)
         area = relation.area
-        order.ticket_info = "#{relation.area.name} - #{quantity}张"
+        order.ticket_info = "#{area.name} - #{quantity}张"
         order.area_source_id = area.source_id
         order.save!
 
@@ -317,13 +317,13 @@ class Order < ActiveRecord::Base
           UPDATE `show_area_relations`
           SET `left_seats` = `left_seats` - #{quantity}
           WHERE `show_area_relations`.`id` = #{relation.id}
-          AND (`show_id` = #{relation.show_id} and `area_id` = #{relation.area_id})
+          AND (`show_id` = #{show.id} and `area_id` = #{area.id})
           AND (`left_seats` >= #{quantity} and `left_seats` > 0)
           EOQ
                                                 )
 
         # 更新状态，关联 order
-        Ticket.avaliable_tickets.where(area_id: relation.area_id, show_id: relation.show_id,
+        Ticket.avaliable_tickets.where(area_id: area.id, show_id: show.id,
                                       ).limit(quantity).update_all(seat_type: Ticket.seat_types[:locked], order_id: order.id)
 
         order
