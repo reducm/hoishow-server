@@ -334,8 +334,8 @@ module YongleService
         if not_for_sell && !Order.exists?(area_source_id: tick_set_info["productPlayid"], status: [0, 1, 2, 3, 5])
           area = Area.where(source_id: tick_set_info["productPlayid"].to_i).first
           area.destroy if area.present?
-          yongle_logger.info "跳过没有关联订单的不可卖的场次, 永乐场次ID为: #{tick_set_info}"
-          return nil
+          yongle_logger.info "跳过没有关联订单的不可卖的票区, 永乐票区ID为: #{tick_set_info}"
+          next
         else
           area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
           area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
