@@ -179,7 +179,7 @@ $ ->
     # 下载excel时向服务器回传过滤条件
     url = '/operation/orders.xls'
     $('#export_excel').on 'click', ->
-      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val() + "&search[value]=" + $('input[type=search]').val()
+      window.location.href = url + "?status=" + $('#status_filter').val() + "&channel=" + $('#channel_filter').val() + "&buy_origin=" + $('#buy_origin_filter').val() + "&show=" + if $('#show_id').length > 0 then $('#show_id').data()["thisShowId"] else $('#show_filter').val() + "&start_date=" + $('#start_date_filter').val() + "&end_date=" + $('#end_date_filter').val() + "&search[value]=" + $('input[type=search]').val() + "&mode=" + $('#mode_filter').val()
 
   # order show
   if $('#order_detail').length > 0

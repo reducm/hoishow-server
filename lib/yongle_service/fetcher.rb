@@ -276,6 +276,7 @@ module YongleService
           return nil
         else
           show = stadium.shows.where(source_id: product["productId"].to_i, source: Show.sources["yongle"]).first_or_initialize
+          ticket_type = product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"]
 
           show.update(
             concert_id:         concert.id,
@@ -288,10 +289,10 @@ module YongleService
             name:               product["playName"],
             description:        product["ProductProfile"],
             status:             Show.statuses["selling"],
-            is_display:         true,
             is_presell:         product["status"].to_i == 1,
-            ticket_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.ticket_types["e_ticket"] : Show.ticket_types["r_ticket"],
-            yl_dzp_type:        product["dispatchWayList"]["dzp_dispatchWay"].to_i == 1 ? Show.yl_dzp_types[product["dispatchWayList"]["dzp_type"]] : nil, # 电子票类型
+            ticket_type:        ticket_type,
+            is_display:         ticket_type == Show.ticket_types["e_ticket"] ? false : true, # 永乐电子票演出，有待测试，暂时拉取后默认隐藏
+            yl_dzp_type:        ticket_type == Show.ticket_types["e_ticket"] ? Show.yl_dzp_types[product["dispatchWayList"]["dzp_type"]] : nil, # 电子票类型
             seat_type:          Show.seat_types["selected"]
           )
 
