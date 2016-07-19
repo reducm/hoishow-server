@@ -173,7 +173,7 @@ class Order < ActiveRecord::Base
     # transaction 这些是否要加 rollback 处理 ?
     begin
       Order.transaction do
-        self.tickets.update_all(status: Ticket::statuses['success'])
+        self.tickets.each{|t| t.success!}
       end
     rescue => e
       Rails.logger.fatal("*** errors: #{e.message}")
