@@ -549,10 +549,18 @@ class Order < ActiveRecord::Base
     Order.transaction do
       options = {
         source_id: data['orderID'],
-        status: convert_status(data['orderStarus']),
         express_name: data['expressName'],
         express_id: data['expressNo']
       }
+      # 永乐出票失败，没退款的应改为退款，因为永乐不会因为出票失败自动退款
+      yongle_status = convert_status(data['orderStarus'])
+      yongle_fail = yongle_status == Order.statuses['outdate']
+
+      if pay_at.present? && yongle_fail && !refund?
+        options.merge!(status: Order.statuses['refunding'])
+      else
+        options.merge!(status: yongle_status)
+      end
 
       self.update(options)
     end
