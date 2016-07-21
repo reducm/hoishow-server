@@ -110,7 +110,7 @@ module YongleService
         yongle_logger.info wrap_result(result, trade_data)
         wrap_result(result, trade_data)
       rescue => e
-        yongle_logger.info "result: 500, message: #{e.message}"
+        yongle_logger.info "result: 500, message: #{e.message}, request: #{request_options}"
         wrap_result({result_code: '500', result_info: e.message})
       end
     end
