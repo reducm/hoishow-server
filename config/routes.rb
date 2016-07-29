@@ -1,6 +1,8 @@
 #encoding: UTF-8
 Dir.glob("#{Rails.root.to_s}/config/routes/**/*.rb").each {|route_file| load(route_file)}
 require 'sidekiq/web'
+Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base] # 解决Forbidden
+
 Rails.application.routes.draw do
   Routes::OpenRoutes.draw(self)
   Routes::BoomboxRoutes.draw(self)
