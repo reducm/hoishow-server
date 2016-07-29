@@ -158,22 +158,22 @@ module YongleService
     end
 
     def fetch_image(show_id, url, image_desc)
-      show = Show.find(show_id)
-      begin
-        case image_desc
-        when 'poster'
-          # TODO resize first if image is not 288x384
-          unless show.poster_url.present?
-            convert_image(show_id, url)
+      show = Show.find_by(show_id)
+      if show.present?
+        begin
+          case image_desc
+          when 'poster'
+            # TODO resize first if image is not 288x384
+            convert_image(show_id, url) unless show.poster_url.present?
+          when 'ticket_pic'
+            show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
+          when 'stadium_map'
+            show.remote_stadium_map_url = url unless show.stadium_map_url.present?
           end
-        when 'ticket_pic'
-          show.remote_ticket_pic_url = url unless show.ticket_pic_url.present?
-        when 'stadium_map'
-          show.remote_stadium_map_url = url unless show.stadium_map_url.present?
+          show.save!
+        rescue => e
+          yongle_logger.info "更新#{image_desc}出错，#{e}"
         end
-        show.save!
-      rescue => e
-        yongle_logger.info "更新#{image_desc}出错，#{e}"
       end
     end
 
