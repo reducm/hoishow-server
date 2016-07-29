@@ -36,7 +36,7 @@ gem "wysiwyg-rails"
 
 gem 'whenever', :require => false
 gem 'sidekiq', '>= 3.5.1'
-gem 'sinatra', :require => nil
+gem 'sinatra', '~> 1.4.7', :require => nil
 
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
