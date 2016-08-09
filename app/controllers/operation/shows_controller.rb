@@ -122,7 +122,10 @@ class Operation::ShowsController < Operation::ApplicationController
 
   def del_area
     area = @show.areas.find_by_id(params[:area_id])
-    if area && area.destroy
+    if area.show.orders.any?
+      flash[:alert] = '该票区有（历史）订单，请勿删除'
+      render partial: "area_table", locals: {show: @show, event: area.event}
+    elsif area && area.destroy
       render partial: "area_table", locals: {show: @show, event: area.event}
     end
   end
