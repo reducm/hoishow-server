@@ -107,10 +107,10 @@ module YongleService
         response = RestClient::Request.execute(request_options)
         trade_data = Hash.from_xml(response)
         result = :result_code.in?(response.headers) ? response.headers : {result_code: '1000', result_info: '成功'}
-        yongle_logger.info wrap_result(result, trade_data)
+        yongle_logger.info "接口成功返回"
         wrap_result(result, trade_data)
       rescue => e
-        yongle_logger.info "result: 500, message: #{e.message}, request: #{request_options}"
+        yongle_logger.fatal "result: 500, message: #{e.message}, request: #{request_options}"
         wrap_result({result_code: '500', result_info: e.message})
       end
     end
