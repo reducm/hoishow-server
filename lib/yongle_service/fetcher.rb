@@ -95,23 +95,23 @@ module YongleService
     end
 
     def fetch_play_types
-      yongle_logger.info ">start fetching Yongle's play types..."
+      yongle_logger.info "爬取演出分类"
       result_data = YongleService::Service.all_category
       if result_data["result"] == '1000' # 成功
         YlPlayType.transaction do
           result_data["data"]["Response"]["getPlayTypeRsp"]["playTypeAList"]["playTypeAInfo"].each do |type_a|
-            type_a["playTypeBList"]["playTypeBInfo"].each do |type_b|
-              YlPlayType.where(
-                play_type_a_id: type_a["playTypeAId"].to_i,
-                play_type_a:    type_a["playTypeA"],
-                play_type_b_id: type_b["playTypeBId"].to_i,
-                play_type_b:    type_b["playTypeB"]
-              ).first_or_create!
+            YlPlayType.where(play_type_a_id: type_a["playTypeAId"].to_i, play_type_a: type_a["playTypeA"]).first_or_create!
+            begin
+              type_a["playTypeBList"]["playTypeBInfo"].each do |type_b|
+                YlPlayType.where(play_type_b_id: type_b["playTypeBId"].to_i, play_type_b: type_b["playTypeB"]).first_or_create!
+              end
+            rescue
+              yongle_logger.info "大类没有二级分类, play_type_a_id: #{type_a["playTypeAId"].to_i}, play_type_a: #{type_a["playTypeA"]}"
+              next
             end
           end
         end
       end
-      yongle_logger.info ">finish fetching Yongle's play types."
     end
 
     def fetch_cities
@@ -170,7 +170,7 @@ module YongleService
           end
           show.save!
         rescue => e
-          yongle_logger.info "更新#{image_desc}出错，#{e}"
+          yongle_logger.fatal "更新#{image_desc}出错，#{e}"
         end
       end
     end
@@ -292,13 +292,10 @@ module YongleService
             seat_type:          Show.seat_types["selected"]
           )
 
-          # skip "wutuwulong"
-          if product["productPicture"].exclude?("wutuwulogo")
-            ['poster', 'ticket_pic'].each do |text|
-              FetchImageWorker.perform_async(show.id, product["productPicture"], text)
-            end
-          end
-          FetchImageWorker.perform_async(show.id, product["seatPicture"], 'stadium_map') if product["seatPicture"].exclude?("wutuwulogo")
+          # save_url(url, image_desc)
+          save_url(product["productPicture"], 'poster')
+          save_url(product["productPictureSmall"], 'ticket_pic')
+          save_url(product["seatPicture"], 'stadium_map')
 
           show
         end
@@ -326,29 +323,31 @@ module YongleService
     end
 
     def fetch_area_relation_and_seat(tick_set_infos, event, show)
-      tick_set_infos.each do |tick_set_info|
-        not_for_sell = ['1', '4'].exclude?(tick_set_info["priceStarus"]) # 联盟可卖状态为1、4
-        if not_for_sell && !Order.exists?(area_source_id: tick_set_info["productPlayid"], status: [0, 1, 2, 3, 5])
-          area = Area.where(source_id: tick_set_info["productPlayid"].to_i).first
-          area.destroy if area.present?
-          yongle_logger.info "跳过没有关联订单的不可卖的票区, 永乐票区ID为: #{tick_set_info}"
-          next
-        else
-          area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
-          area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
-          @fetch_area_ids.push(area.id)
-          relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
-          relation.update!(price: tick_set_info["price"])
-          not_enough_inventory = tick_set_info["priceNum"].to_i < -1 # 暂定－1以外的负数库存不可卖
-          if not_enough_inventory || not_for_sell
-            seats_count = 0
-          elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
-            seats_count = 30
-            area.update!(is_infinite: true)
+      Area.transaction do
+        tick_set_infos.each do |tick_set_info|
+          not_for_sell = ['1', '4'].exclude?(tick_set_info["priceStarus"]) # 联盟可卖状态为1、4
+          if not_for_sell && !Order.exists?(area_source_id: tick_set_info["productPlayid"], status: [0, 1, 2, 3, 5])
+            area = Area.where(source_id: tick_set_info["productPlayid"].to_i).first
+            area.destroy if area.present?
+            yongle_logger.info "跳过没有关联订单的不可卖的票区, 永乐票区ID为: #{tick_set_info}"
+            next
           else
-            seats_count = tick_set_info["priceNum"].to_i
+            area = event.areas.where(source_id: tick_set_info["productPlayid"].to_i, source: Area.sources['yongle']).first_or_initialize
+            area.update!(name: tick_set_info["priceInfo"], stadium_id: show.stadium.id)
+            @fetch_area_ids.push(area.id)
+            relation = show.show_area_relations.where(area_id: area.id).first_or_initialize
+            relation.update!(price: tick_set_info["price"])
+            not_enough_inventory = tick_set_info["priceNum"].to_i < -1 # 暂定－1以外的负数库存不可卖
+            if not_enough_inventory || not_for_sell
+              seats_count = 0
+            elsif tick_set_info["priceNum"].to_i == -1 # 永乐无限库存
+              seats_count = 30
+              area.update!(is_infinite: true)
+            else
+              seats_count = tick_set_info["priceNum"].to_i
+            end
+            update_inventory(show, area, relation, seats_count, tick_set_info)
           end
-          update_inventory(show, area, relation, seats_count, tick_set_info)
         end
       end
     end
@@ -414,14 +413,22 @@ module YongleService
           c.gravity "center"
         end
         output_image_path = Rails.root.join("tmp/output#{show_id}.jpg")
-        result.write
+        result.write output_image_path
         Show.find(show_id).update!(poster: File.open(output_image_path)) # carrierwave 'upload' a loacal file
         yongle_logger.info "图片转存完成, show_id: #{show_id}, 耗时: #{Time.now - time}"
       rescue => ex
-        yongle_logger.error "图片转存失败, show_id: #{show_id}, errors: #{ex}"
+        yongle_logger.fatal "图片转存失败, ex: #{ex}, backtrace: #{ex.backtrace}"
       ensure
         File.delete(background_image_path) if File.exist?(background_image_path)
         File.delete(output_image_path) if File.exist?(output_image_path)
+      end
+    end
+
+    def save_url(url, image_desc) # skip "wutuwulong" 并且没有url的不放进队列
+      if url.present? && url.exclude?("wutuwulogo")
+        FetchImageWorker.perform_async(show.id, url, image_desc)
+      else
+        yongle_logger.info "演出没有#{image_desc}, show_id: #{show.id}"
       end
     end
 
