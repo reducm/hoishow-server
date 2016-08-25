@@ -400,21 +400,29 @@ module YongleService
     end
 
     def convert_image(show_id, url)
-      time = Time.now
-      yongle_logger.info "====== begin at #{time}"
-      image = MiniMagick::Image.open(url)
-      MiniMagick::Tool::Convert.new do |convert| # background image
-        convert << image.path
-        convert.merge! ["-resize", "720x405^", "-gravity", "center", "-extent", "720x405", "-gaussian-blur", "60x20"]
-        convert << Rails.root.join("tmp/background#{show_id}.jpg")
+      begin
+        time = Time.now
+        image = MiniMagick::Image.open(url)
+        background_image_path = Rails.root.join("tmp/background#{show_id}.jpg")
+        MiniMagick::Tool::Convert.new do |convert| # background image
+          convert << image.path
+          convert.merge! ["-resize", "720x405^", "-gravity", "center", "-extent", "720x405", "-gaussian-blur", "60x20"]
+          convert << background_image_path
+        end
+        background = MiniMagick::Image.open(background_image_path)
+        result = background.composite(image) do |c| # composite
+          c.gravity "center"
+        end
+        output_image_path = Rails.root.join("tmp/output#{show_id}.jpg")
+        result.write
+        Show.find(show_id).update!(poster: File.open(output_image_path)) # carrierwave 'upload' a loacal file
+        yongle_logger.info "图片转存完成, show_id: #{show_id}, 耗时: #{Time.now - time}"
+      rescue => ex
+        yongle_logger.error "图片转存失败, show_id: #{show_id}, errors: #{ex}"
+      ensure
+        File.delete(background_image_path) if File.exist?(background_image_path)
+        File.delete(output_image_path) if File.exist?(output_image_path)
       end
-      background = MiniMagick::Image.open(Rails.root.join("tmp/background#{show_id}.jpg"))
-      result = background.composite(image) do |c| # composite
-        c.gravity "center"
-      end
-      result.write Rails.root.join("tmp/output#{show_id}.jpg")
-      Show.find(show_id).update!(poster: File.open(Rails.root.join("tmp/output#{show_id}.jpg"))) # carrierwave 'upload' a loacal file
-      yongle_logger.info "====== end at #{Time.now}, spend #{Time.now - time}"
     end
 
     class << self
