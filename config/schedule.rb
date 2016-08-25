@@ -43,7 +43,7 @@ every '30 1,10,15,20 * * *' do
   rake "fetcher:yongle:day_data"
 end
 
- #viagogo
- every 1.day, :at => '4:30 am' do
-   rake "viagogo:data"
- end
+# #viagogo
+ #every 1.day, :at => '4:30 am' do
+   #rake "viagogo:data"
+# end
