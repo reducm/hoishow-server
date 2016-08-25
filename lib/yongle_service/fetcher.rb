@@ -292,10 +292,10 @@ module YongleService
             seat_type:          Show.seat_types["selected"]
           )
 
-          # save_url(url, image_desc)
-          save_url(product["productPicture"], 'poster')
-          save_url(product["productPictureSmall"], 'ticket_pic')
-          save_url(product["seatPicture"], 'stadium_map')
+          # save_url(show_id, url, image_desc)
+          save_url(show.id, product["productPicture"], 'poster')
+          save_url(show.id, product["productPictureSmall"], 'ticket_pic')
+          save_url(show.id, product["seatPicture"], 'stadium_map')
 
           show
         end
@@ -424,11 +424,11 @@ module YongleService
       end
     end
 
-    def save_url(url, image_desc) # skip "wutuwulong" 并且没有url的不放进队列
+    def save_url(show_id, url, image_desc) # skip "wutuwulong" 并且没有url的不放进队列
       if url.present? && url.exclude?("wutuwulogo")
-        FetchImageWorker.perform_async(show.id, url, image_desc)
+        FetchImageWorker.perform_async(show_id, url, image_desc)
       else
-        yongle_logger.info "演出没有#{image_desc}, show_id: #{show.id}"
+        yongle_logger.info "演出没有#{image_desc}, show_id: #{show_id}"
       end
     end
 
