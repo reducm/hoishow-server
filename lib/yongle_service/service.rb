@@ -106,7 +106,8 @@ module YongleService
         yongle_logger.info options
         response = RestClient::Request.execute(request_options)
         trade_data = Hash.from_xml(response)
-        result = :result_code.in?(response.headers) ? response.headers : {result_code: '1000', result_info: '成功'}
+        result = :result_code.in?(response.headers) ? response.headers : {result_code: '1000'}
+        result.merge!(result_info: '成功') unless :result_info.in?(response.headers)
         yongle_logger.info "接口成功返回"
         wrap_result(result, trade_data)
       rescue => e
