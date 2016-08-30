@@ -170,7 +170,7 @@ module YongleService
           end
           show.save!
         rescue => e
-          yongle_logger.fatal "更新#{image_desc}出错，#{e}"
+          yongle_logger.fatal "更新#{image_desc}出错，#{e}, show_id: #{show_id}"
         end
       end
     end
@@ -417,7 +417,7 @@ module YongleService
         Show.find(show_id).update!(poster: File.open(output_image_path)) # carrierwave 'upload' a loacal file
         yongle_logger.info "图片转存完成, show_id: #{show_id}, 耗时: #{Time.now - time}"
       rescue => ex
-        yongle_logger.fatal "图片转存失败, ex: #{ex}, backtrace: #{ex.backtrace}"
+        yongle_logger.fatal "图片转存失败, #{ex}, show_id: #{show_id}"
       ensure
         File.delete(background_image_path) if File.exist?(background_image_path)
         File.delete(output_image_path) if File.exist?(output_image_path)
